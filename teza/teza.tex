@@ -1,74 +1,45 @@
-% Format teze zasnovan je na paketu memoir
-% http://tug.ctan.org/macros/latex/contrib/memoir/memman.pdf ili
-% http://texdoc.net/texmf-dist/doc/latex/memoir/memman.pdf
-% 
-% Prilikom zadavanja klase memoir, navedenim opcijama se podešava 
-% veličina slova (12pt) i jednostrano štampanje (oneside).
-% Ove parametre možete menjati samo ako pravite nezvanične verzije
-% mastera za privatnu upotrebu (na primer, u b5 varijanti ima smisla 
-% smanjiti 
-\documentclass[12pt,oneside]{memoir}
+\documentclass[12pt,oneside]{memoir} 
 
-% Paket koji definiše sve specifičnosti mastera Matematičkog fakulteta
-\usepackage{matfmaster}
-%
+% Paket koji definiše sve specifičnosti master rada Matematičkog fakulteta
+\usepackage[latinica,biblatex]{matfmaster} 
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage[cache=false]{minted}
+\usemintedstyle{monokai}
+
+\usepackage{xcolor}
+
 % Podrazumevano pismo je ćirilica.
-%   Ako koristite pdflatex, a ne xetex, sav latinički tekst na srpskom jeziku
-%   treba biti okružen sa \lat{...} ili \begin{latinica}...\end{latinica}.
-%
-% Opicija [latinica]:
-%   ako želite da pišete latiniciom, dodajte opciju "latinica" tj.
-%   prethodni paket uključite pomoću: \usepackage[latinica]{matfmaster}.
-%   Ako koristite pdflatex, a ne xetex, sav ćirilički tekst treba biti
-%   okružen sa \cir{...} ili \begin{cirilica}...\end{cirilica}.
-%
-% Opcija [biblatex]:
-%   ako želite da koristite reference na više jezika i umesto paketa
-%   bibtex da koristite BibLaTeX/Biber, dodajte opciju "biblatex" tj.
-%   prethodni paket uključite pomoću: \usepackage[biblatex]{matfmaster}
-%
-% Opcija [b5paper]:
-%   ako želite da napravite verziju teze u manjem (b5) formatu, navedite
-%   opciju "b5paper", tj. prethodni paket uključite pomoću: 
-%   \usepackage[b5paper]{matfmaster}. Tada ima smisla razmisliti o promeni
-%   veličine slova (izmenom opcije 12pt na 11pt u \documentclass{memoir}).
-%
-% Naravno, opcije je moguće kombinovati.
-% Npr. \usepackage[b5paper,biblatex]{matfmaster}
-
-% Pomoćni paket koji generiše nasumičan tekst u kojem se javljaju sva slova
-% azbuke (nema potrebe koristiti ovo u pravim disertacijama)
-\usepackage{pangrami}
 
 % Datoteka sa literaturom u BibTex tj. BibLaTeX/Biber formatu
-\bib{matfmaster-primer}
+\bib{teza} 
 
 % Ime kandidata na srpskom jeziku (u odabranom pismu)
-\autor{Петар П. Петровић}
+\autor{Nemanja Subotić}
 % Naslov teze na srpskom jeziku (u odabranom pismu)
-\naslov{Мастер рад из математике или рачунарства чији је наслов јако дугачак}
+\naslov{Implementacija portala Metodologija strčnog i naučnog rada korišćenjem funkcijonalnih okruženja Elm i Phoenix}
 % Godina u kojoj je teza predana komisiji
-\godina{2016}
+\godina{2020}
 % Ime i afilijacija mentora (u odabranom pismu)
-\mentor{др Мика \textsc{Микић}, редован професор\\ Универзитет у Београду, Математички факултет}
+\mentor{dr Milena \textsc{Vujošević Janičić}, docent    \\ Univerzitet u Beogradu, Matematički fakultet}
 % Ime i afilijacija prvog člana komisije (u odabranom pismu)
-\komisijaA{др Ана \textsc{Анић}, ванредни професор\\ University of Disneyland, Недођија}
+\komisijaA{dr Ana \textsc{Anić}, vanredni profesor\\ University of Disneyland, Nedođija}
 % Ime i afilijacija drugog člana komisije (u odabranom pismu)
-\komisijaB{др Лаза \textsc{Лазић}, доцент\\ Универзитет у Београду, Математички факултет}
+\komisijaB{dr Laza \textsc{Lazić}, docent\\ Univerzitet u Beogradu, Matematički fakultet}
 % Ime i afilijacija trećeg člana komisije (opciono)
 % \komisijaC{}
 % Ime i afilijacija četvrtog člana komisije (opciono)
 % \komisijaD{}
-% Datum odbrane (obrisati ili iskomentarisati narednu liniju ako datum odbrane nije poznat)
-\datumodbrane{15. јануар 2016.}
+% Datum odbrane (odkomentarisati narednu liniju i upisati datum odbrane ako je poznat)
+% \datumodbrane{}
 
 % Apstrakt na srpskom jeziku (u odabranom pismu)
 \apstr{%
-\pangrami
+Apstrakt rada
 }
 
 % Ključne reči na srpskom jeziku (u odabranom pismu)
-\kljucnereci{анализа, геометрија, алгебра, логика, рачунарство, астрономија}
+\kljucnereci{elm, elixir, ...}
 
 \begin{document}
 % ==============================================================================
@@ -79,8 +50,6 @@
 \naslovna
 % Strana sa podacima o mentoru i članovima komisije
 \komisija
-% Strana sa posvetom (u odabranom pismu)
-\posveta{Мами, тати и деди}
 % Strana sa podacima o disertaciji na srpskom jeziku
 \apstrakt
 % Sadržaj teze
@@ -92,92 +61,202 @@
 % ==============================================================================
 
 % ------------------------------------------------------------------------------
-\chapter{Увод}
+\chapter{Uvod}
 % ------------------------------------------------------------------------------
-\pangrami
 
-\section{Примери коришћења класичних \LaTeX{} елемената}
-% primeri citiranja
-Ово је реченица у којој се јавља цитат \cite{PetrovicMikic2015}.
-Још један цитат \cite{GuSh:243}.
-% primeri navodnika
-Испробавамо наводнике: "Рекао је да му се јавимо сутра".
-% primer referisanja na tabelu (koja se javlja kasnije)
-У табели \ref{tbl:rezultati} која следи приказани су резултати експеримента.
-% primer kraćeg latiničkog teksta
-{\lat Ovo je primer rečenice ispisane latiničkim pismom u okviru ćiriličkog dokumenta.}
-У овој реченици се налази једна {\lat reč} написана латиницом.
-% primer korišćenja fusnota
-Иза ове реченице следи фуснота.\footnote{Ово је фуснота.}
+Funkcionalno programiranje kao programska paradigma nastaje 1959.godine sa
+pojavom LISP-a, prvog funkcionalnog programskog jezika...
+ Elm... Phoenix i Elixir... MSNR Poral...
 
-% primer dužeg latiničkog teksta
-\begin{latinica}
-  Ovo je malo duži blok teksta ispisan latiničkim pismom u okviru
-  ćiriličkog dokumenta. Fijuče vetar u šiblju, ledi pasaže i kuće iza
-  njih i gunđa u odžacima.
-\end{latinica}
-
-% primer korišćenja tabele
-\begin{table}
-\centering
-\caption{Резултати}
-\label{tbl:rezultati}
-\begin{tabular}{c>{\centering}p{2cm}c}
-\toprule
-1 & 2 & 3\\\midrule
-4 & 5 & 6\\\cmidrule(rl){1-2}
-7 & 8 & 8\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-% primer korišćenja slike
+\chapter{Elm}
+2012. godine Evan Zaplicki je objavio svoju tezu "Elm: Konkurento FRP 
+\footnote{FRP-Funkcionalno Reaktivno Programiranje} za funkcionalne GUI-je 
+\footnote{GUI - Grafički korisnički interfjes }" (eng."Elm: Concurrent FRP
+for Functional GUIs") \cite{elm:2012} i, s ciljem da GUI programiranje učini
+prijatnijim, dizajnirao novi programski jezik - Elm.
+Elm je statički tipiziran, čisto funkcionalni programski jezik koji se
+kompilira, tačnije transpilira, u JavaScript i namenjen je isključivo za
+kreiranje korisničkog interfjesa veb aplikacija.
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.5\textwidth]{graph.png}
-  \caption{Графикон}
-  \label{fig:grafikon}
+  \includegraphics[width=0.3\textwidth]{elm.png}
+  \caption{Logo Elm-a}
+\end{figure}
+Takođe, Elm nije samo programski jezik već i platforma za razvoj aplikacija.
+Zbog svoje funkcionalne prirode i prisustva kompilatora, Elm spada među
+najstabilnija i najpouzdanija razvojna okruženja, a za Elm aplikacije važi
+da, u praksi, ne izbacuju neplanirane greške tokom izvođenja (\emph{eng. No Runtime Exceptions}).
+
+\section{Uputstvo za instlaciju}
+Pored želje da frontend programiranje učini prijatnijim, kreator jezika nastoji da ono bude i pristupačnije. 
+Stoga, da biste počeli sa korišćenjem Elm-a instalacija nije potrebna, dovoljeno je otići na zvaničnu veb 
+stranicu i pokrenuti online interaktivni kompilator \cite{tryelm}, gde možete naći dosta primera, kao i vodić kroz Elm.
+
+Za zahtevnije projekte neophodno je izvršiti instalaciju, koja je vrlo
+jednostavna. Potrebno je samo pratiti instrukcije sa zvanične stranice
+\cite{installelm}. Provera uspešne instalacije može se izvršiti pokretanjem
+komande \textbf{elm}  u komandnoj liniji, gde će se prikazati poruka
+dobrodošlice i spisak mogućih komandi o kojima će biti reč u sledećim poglavljima. 
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.95\textwidth]{elm-cmd.png}
+  \caption{Elm - Cmd}
 \end{figure}
 
-% primer jednostavnije matematičke formule
-Ево и један пример математичке формуле: $e^{i\pi} + 1 = 0$. 
-% primer referisanja na sliku
-На слици \ref{fig:grafikon} приказан је један графикон.
+Takođe, mooguća je instalacija pomoću \textbf{npm}
+\footnote{Node Package Manager - JavaScript menadžer paketa} alata \cite{npm}.
 
-% primer kompleksnije matematičke formule
-$$
-\int_a^b f(x)\ \mathrm{d}x \ =_{def}\ \lim_{\max{\Delta x_k \rightarrow 0}} \sum_{k=1}^n f(x_k^*)\Delta x_k
-$$
+\section{Osnovne odlike}
+Pored \emph{No Runtime Exceptions}, jedna od glavnih odlika ovog jezika jeste
+kompilator, koji je izuzetno ugodan za rad. Mnogi programeri smatraju da Elm
+kompilator proizvodi najbolje poruke o greškama. Za razliku od drugih, Elm
+kompilator objašnjava zašto je došlo do greške i daje predloge za njihovo rešavanje,
+a takođe nema kaskadnih poruka. Kreator se vodio razmišljanjem da kompilator treba
+da bude asistent, ne samo alat.
 
-% primer referisanja na poglavlja i strane poglavlja
-Више детаља биће дато у глави \ref{chp:razrada} на страни \pageref{chp:razrada}.
+Elm koristi svoju verziju \emph{virtualnog DOM-a}, koncepta koji se koristi u mnogim
+frontend okruženima. Ideja je da se u memoriji čuva "virtualna" reprezentacija
+korisničkog interfejsa  na osnovu koje se ažurira "stvarni" DOM. Još jeda bitna
+karakteristika Elm-a je nepromenjivost podataka, što znači da se jednom definisani
+podaci ne mogu više menjati. Direkta posldica nepromenjivost podataka je veoma
+brzo renderovanje HTML-a, jer se poređenja u virtuelnom DOM-u mogu vršiti po referenci. 
+Verzija Elm 0.17 imala je najbrže renderovanje u poređenju sa tadašnjim aktuelnim verzijama 
+popularnih okruženja.
 
-% primer liste
-Можемо правити и набрајања:
-\begin{enumerate}
-\item Анализа 1
-\item Линеарна алгебра
-\item Аналитичка геометрија
-\item Основи програмирања
-\end{enumerate}
+Elm se može integrisati i u postojeće JavaScript projetke za implementaciju pojedinačnih komponenti. 
+Takođe, moguća je i komunikacija između Elm-a i JavaScripta. 
 
-\pangrami
+\section{Elm kao platforma}
+Elm sa sobom donosi niz alata (tabela \ref{table:1}) i Elm okruženje (\emph{eng. Elm Runtime}), koji su 
+neophodni za razvoj i izvršavanje aplikacija. Elm kod se nalazi u datotekama sa \emph{.elm} ekstenzijom i 
+prilikom kompilacije kreira se jedna izlazna \emph{.js} datoteka. U izlaznoj datoteci se pored prevedenog 
+koda iz ulaznih \emph{.elm} datoteka nalaze i (runtime) funkcije iz Elm okruženja potrebne za izvršavanje programa.
+
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l l|} 
+ \hline 
+ Alati & Kratat opis  \\ [0.5ex] 
+ \hline
+  \textbf{repl} & Pokretanje interaktivne sesije (\emph{eng. Read-Eval-Print-Loop}) \\ 
+  \textbf{init} & Inicijalizacija projekta \\
+  \textbf{reactor} & Pokretanje lokalnog servera \\
+  \textbf{make} & Upotreba kompilatora \\
+  \textbf{install}  & Preuzimanje paketa \\ 
+  \textbf{diff} & Prikazivanje razlika između različitih verzija istog paketa \\
+  \textbf{bump} & Određivanje broja naredne verzije paketa  \\
+  \textbf{publish} & Publikacija paketa \\[1ex] 
+ \hline
+\end{tabular}
+\caption{Elm alati komandne linije}
+\label{table:1}
+\end{table}
+
+ 
+Kao zaseban jezik Elm ima i zaseban sistem za upravljanje paketima.
+Pokretanjem komande \textbf{elm init} kreira se prazan \emph{src} direktorijum i 
+datoteka \emph{elm.json}, u kojoj se pored informacije o tipu projekta (aplikacija ili paket), 
+Elm verzije i liste direktorijuma sa kodom, nalazi i spisak paketa koji se koriste u projektu. 
+Dodavanje novog paketa se vrši pomoću komande \textbf{elm install} \emph{naziv-paketa}. 
+Svi paketi nalaze se na \url{https://package.elm-lang.org/}, nazivi paketa su oblika \emph{autor/ime-paketa}.
+
+Kompilacija se vrši naredbom \textbf{elm make} \emph{<jedna-ili-više-elm-datoteka>},
+ukoliko se ne navede izlazna datoteka pomoću argumenta \emph{-{}-output} generisaće 
+se \emph{index.html} datoteka sa prevedenim JavaScript kodom. Ostali argumenti ako i
+više informacija o drugim alatima može se videti pomoću naredbe \textbf{elm} \emph{naziv-alata} \textbf{-{}-help}
+
+\section{Elm kao jezik}
+\begin{displayquote}
+"Rekao bih da je Elm ML sa sintaksom poput Haskell-a. Ako poredimo semantiku, Elm je
+dosta  sličniji OCaml-u i SML-u." \emph{--Evan Czaplicki \cite{eczaplicki:2015}} 
+\end{displayquote}
+
+\textbf{ML} (\emph{eng. Meta Language}) je statički tipiziran programski jezik opšte namene koji je razio 
+Robin Miler 1978. godine na Univerzitetu u Edinger. Nastao je pod uticajem LISP-a i ISWIM-a 
+(\emph{eng. If you See What I Mean}) jezika, pripada funkcionalnoj i imperativnoj paradigmi. 
+Neke od osnovnih karakteristika jesu poklapanje obrazaca, Karijeve funkcije, poziv po vrednosti i posedovanje 
+sakupljaca otpadaka. ML nije čist funkcionalan jezik i nema ugrađenu podršku za lenjo izračunavanje. 
+U porodicu ML jezika, između ostalih, spadaju i \textbf{Standard ML}, \textbf{OCaml} i \textbf{F{\#}}.
+
+
+\textbf{Haskell} je čist funkcionalni programski jezik zasnovan na lambda računu.
+Naziv je dobio po matematičaru i logičaru Haskelu Bruks Kariju. Haskell je strogo tipiziran, poseduje automatsko 
+zaključivanje tipova i lenjo izračunavanje. Jezik je opšte namene, pruža podršku za paralelno i distirbuirano programiranje. 
+Haskell omogućava manje grešaka i veću pouzdanost kroz kraći, čistiji i održiviji kod.
+
+
+\subsection{Osnovni tipovi podataka}
+\begin{listing}[ht]
+\begin{minted}[bgcolor=black]{haskell}
+> 'Z'
+'Z' : Char
+> "Zdravo!"
+"Zdravo!" : String
+> True
+True : Bool
+> 42 / 10 
+4.2 : Float
+> 42 // 10 --celobrojno deljenje
+4 : Int
+\end{minted}
+\caption{Osnovni tipovi podataka (elm repl)}
+\label{listing:tipovi}
+\end{listing}
+
+Osnovni tipovi podataka u Elm-u su \textbf{Char}, \textbf{String}, \textbf{Bool}, \textbf{Int} i \textbf{Float}. U Listingu \ref{listing:tipovi} prikazani su osnovni tipovi korišćenjem interpretera, koji nakon unetog izraza ispisuje izračunatu vrednost i tip. 
+
+Tip \textbf{Char} služi za predstavljanje unikod (\emph{eng. unicode}) karaktera. Karakteri se navode između dva apostorfa (\texttt{'a', '0', '\textbackslash t'}...), a moguće je koristiti i unikod zapis  \texttt{'\textbackslash u\{0000\}}' - \texttt{'\textbackslash u\{10FFFF\}'}.
+
+Za razliku od Haskell-a, gde je \textbf{String} zapravo \textbf{Char} lista, u Elm-u je poseban tip i predstavlja sekvencu unikod karaktera. Sekvenca se navodi između jednostrukih ili trostrukih navodnika. 
+\begin{listing}[ht]
+\begin{minted}[bgcolor=black]{haskell}
+> "\t String u jednom redu: escape navodnici \"Zdravo!\""
+"\t String u jednom redu: escape navodnici \"Zdravo!\"" : String
+>
+> """String u više redova
+ sa "navodnicima"! """
+"String u više redova\n  sa \"navodnicima\"! " : String
+\end{minted}
+\caption{Stringovi}
+\label{listing:string}
+\end{listing}
+
+\textbf{Bool} predstavlja logički tip i može imati vrednost \texttt{True} ili \texttt{False}. 
+
+\textbf{Int} se koristi za prikazivanje celih brojeva. Siguran opseg vrednosti je od \(-2^{31}\) do \(2^{31} - 1\), van toga sve zavisi od cilja kopilacije. Kada se prevodi u JavaScript, opseg se proširuje na \(-2^{53}\) do \(2^{53} - 1\) u nekim operacijama, što ne bi važilo ukoliko bi se, nekada kasnije, umesto JavaScript koda generisao WebAssembly, tada bi postojalo prekoračenje celih brojeva(\emph{eng. integer overflow}). Vrednosti se mogu navoditi i u heksadecimalnom obliku  (\texttt{0x2A, -0x2b}).
+
+\textbf{Float} služi za predstavljanje brojeva u pokretnom zarezu po strandardu \emph{IEEE 754}. Vrednosti se mogu navoditi i pomoću eksponencijalnog zapisa, a decimalna tačka se mora nalaziti između dve cifre. Takođe u skup vrednosti spadaju  \texttt{NaN} i \texttt{Infinity}.
+
+U Listingu \ref{listing:brojevi} 
+\begin{listing}[ht]
+\begin{minted}[bgcolor=black]{haskell}
+>0x2A
+42 : number
+> 1e3
+1000 : Float
+> 0/0 
+NaN : Float
+> 1/0 
+Infinity : Float
+\end{minted}
+\caption{Brojevi}
+\label{listing:brojevi}
+\end{listing}
+
+\subsection{Liste} 
+
+
+
+\section{Elm arhitektura}
+\chapter{Razvojno okruženje Phoenix i Elixir}
+
+\chapter{Implementacija MSNR portala}
 
 % ------------------------------------------------------------------------------
-\chapter{Разрада}
-\label{chp:razrada}
+\chapter{Zaključak}
 % ------------------------------------------------------------------------------
 
-\pangrami
-
-\pangrami
-
-% ------------------------------------------------------------------------------
-\chapter{Закључак}
-% ------------------------------------------------------------------------------
-\pangrami
-
-\pangrami
 
 % ------------------------------------------------------------------------------
 % Literatura
@@ -185,28 +264,5 @@ $$
 \literatura
 
 % ==============================================================================
-% Završni deo teze i prilozi
-\backmatter
-% ==============================================================================
 
-% ------------------------------------------------------------------------------
-% Biografija kandidata
-\begin{biografija}
-\textbf{Вук Стефановић Караџић} (\emph{Тршић, 26. октобар/6. новембар
-  1787. — Беч, 7. фебруар 1864.}) био је српски филолог, реформатор
-српског језика, сакупљач народних умотворина и писац првог речника
-српског језика.  Вук је најзначајнија личност српске књижевности прве
-половине XIX века. Стекао је и неколико почасних доктората.
-Учествовао је у Првом српском устанку као писар и чиновник у
-Неготинској крајини, а након слома устанка преселио се у Беч,
-1813. године. Ту је упознао Јернеја Копитара, цензора словенских
-књига, на чији је подстицај кренуо у прикупљање српских народних
-песама, реформу ћирилице и борбу за увођење народног језика у српску
-књижевност. Вуковим реформама у српски језик је уведен фонетски
-правопис, а српски језик је потиснуо славеносрпски језик који је у то
-време био језик образованих људи. Тако се као најважније године Вукове
-реформе истичу 1818., 1836., 1839., 1847. и 1852.
-\end{biografija}
-% ------------------------------------------------------------------------------
-
-\end{document} 
+\end{document}
