@@ -45,3 +45,16 @@
 # elm-repl generated files
 /msnr_portal/assets/elm/repl-temp-*
 
+
+
+/prijava_teze/*
+!/prijava_teze/obrazac.pdf
+!/prijava_teze/obrazac.tex
+
+/teza/*
+!/teza/teza.pdf
+!/teza/teza.tex
+!/teza/teza.bib
+!/teza/matfmaster.sty
+!/teza/elm.png
+!/teza/elm-cmd.png
