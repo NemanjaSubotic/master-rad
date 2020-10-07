@@ -1,51 +1,5 @@
-# The directory Mix will write compiled artifacts to.
-/msnr_portal/_build/
-
-# If you run "mix test --cover", coverage assets end up here.
-/msnr_portal/cover/
-
-# The directory Mix downloads your dependencies sources to.
-/msnr_portal/deps/
-
-# Where 3rd-party dependencies like ExDoc output generated docs.
-/msnr_portal/doc/
-
-# Ignore .fetch files in case you like to edit your project deps locally.
-/msnr_portal/.fetch
-
-# If the VM crashes, it generates a dump, let's ignore it too.
-/msnr_portal/erl_crash.dump
-
-# Also ignore archive artifacts (built via "mix archive.build").
-/msnr_portal/*.ez
-
-# Ignore package tarball (built via "mix hex.build").
-/msnr_portal/msnr_portal-*.tar
-
-# If NPM crashes, it generates a log, let's ignore it too.
-/msnr_portal/npm-debug.log
-
-# The directory NPM downloads your dependencies sources to.
-/msnr_portal/assets/node_modules/
-
-# Since we are building assets from assets/,
-# we ignore priv/static. You may want to comment
-# this depending on your deployment strategy.
-/msnr_portal/priv/static/
-
-
-# Elm section
-
-# Distribution
-/msnr_portal/assets/elm/build/
-
-# elm-package generated files
-/msnr_portal/assets/elm/elm-stuff
-
-# elm-repl generated files
-/msnr_portal/assets/elm/repl-temp-*
-
-
+.vscode
+/portal/msnr_api/.vscode
 
 /prijava_teze/*
 !/prijava_teze/obrazac.pdf
@@ -56,5 +10,4 @@
 !/teza/teza.tex
 !/teza/teza.bib
 !/teza/matfmaster.sty
-!/teza/elm.png
-!/teza/elm-cmd.png
+!/teza/*.png
