@@ -1,5 +1,10 @@
 .vscode
 /portal/msnr_api/.vscode
+/portal/msnr_api/_build
+/portal/msnr_api/deps
+
+/portal/msnr_elm/elm-stuff
+
 
 /prijava_teze/*
 !/prijava_teze/obrazac.pdf
