@@ -121,9 +121,9 @@ kompilator objašnjava zašto je došlo do greške i daje predloge za njihovo re
 a takođe nema kaskadnih poruka. Kreator se vodio razmišljanjem da kompilator treba
 da bude asistent, ne samo alat.
 
-Elm koristi svoju verziju \emph{virtualnog DOM\footnote{DOM --- Obejektni model
+Elm koristi svoju verziju \emph{virtuelnog DOM\footnote{DOM --- Obejektni model
 dokumenta (eng. \emph{Document Object Model})\cite{dom}}-a}, koncepta koji se koristi u mnogim
-frontend okruženima. Ideja je da se u memoriji čuva "virtualna" reprezentacija
+frontend okruženima. Ideja je da se u memoriji čuva "virtuelna" reprezentacija
 korisničkog interfejsa na osnovu koje se ažurira "stvarni" DOM. Još jedna bitna
 karakteristika Elma je nepromenljivost podataka, što znači da se jednom definisani
 podaci ne mogu više menjati. Direktna posledica nepromenljivosti podataka je veoma
@@ -191,7 +191,7 @@ na dizajniranju programskog jezika ML bio je Robin Milner, dobitnik Tjuringove n
 Nastao je pod uticajem programskog jezika LISP, a razvijan je za implementiranje automatskog
 dokazivača teorema. Osnovna karakteristika jeste uvođenje automatskog zaključivanja tipova, a
 odlikuje ga i poklapanje obrazaca, Karijeve funkcije i posedovanje sakupljača otpadaka. ML
-nije čist funkcionalan jezik i nema ugrađenu podršku za lenjo izračunavanje. U porodicu ML 
+nije čist funkcionalan  jezik i nema ugrađenu podršku za lenjo izračunavanje. U porodicu ML 
 jezika, između ostalih, spadaju i \textbf{Standard ML}, \textbf{OCaml} i \textbf{F{\#}}.
 
 
@@ -834,7 +834,7 @@ bi vratila \textbf{ništa}. Upravo tako radi funkcija \texttt{List.head : List a
 ukoliko se pozove \textbf{možda} vrati prvi element.
 
 \texttt{\textbf{Maybe}} se definiše kao \texttt{\textbf{type Maybe a = Just a | Nothing}}
-i može se koristit za opcione argument, obradu grešaka i u slogovima sa opcionim svojstvima.
+i može se koristiti za opcione argument, obradu grešaka i u slogovima sa opcionim svojstvima.
 Zapravo svuda gde očekivani podatak može, ali ne mora, postojati.
 
 \subsubsection{Result}
@@ -877,7 +877,7 @@ na osnovu primljene poruke funkcija \texttt{\textbf{update}} kreira novi\texttt{
 se generiše HTML.
 
 Ovaj obrazac projektovanja ce često naziva i MVU (eng. \emph{Model-View-Update}). Za 
-razliku od obrazaca MVC \cite{mvc} (eng.\emph{Model-View-Controller}) i MVVM \cite{mvvm}
+razliku od obrazaca MVC \cite{jsPatterns} (eng.\emph{Model-View-Controller}) i MVVM \cite{jsPatterns}
 (eng. \emph{Model-View-ViewModel}), koji stanje aplikacije dele na više manjih modela,
 u Elm arhitekturi celokupno stanje apikacije se nalazi na jednom mestu, tj. modelu, a
 protok podataka kroz aplikaciju je uvek u jednom smeru. 
@@ -986,75 +986,79 @@ funkcijama za ažuriranje i prikazivanje modela. Program počinje sa pozivanjem 
 \texttt{\textbf{view}} sa parametrom \texttt{\textbf{init}}. Unutar funkcije
 \texttt{\textbf{view}} se pomoću funkcije za kreiranje atributa iz modula
 \texttt{\textbf{Html.Events}} mogu definisati načini slanja poruka, a kao rezultat 
-izvršavanja nastaje virtualni DOM, na osnovu kog Elm okruženje izmenjuje stvarni DOM.
+izvršavanja nastaje virtuelni DOM, na osnovu kog Elm okruženje izmenjuje stvarni DOM.
 Ukoliko dođe do odgovarajuće akcije korisnika, u ovom sličaju klikom na dugme, Elm okruženje
 generiše poruku i prosleđuje je zajedno sa modelom funkciji \texttt{\textbf{update}} koja
 kreira novi model nad kojim se poziva ponovo funkcija \texttt{\textbf{view}}.
-Elm okruženje poredi prethodni virtualni DOM sa novim i vrši minimalan broj izmena.  
+Elm okruženje poredi prethodni virtuelni DOM sa novim i vrši minimalan broj izmena.  
 
 \chapter{Elixir}
-Sa zvanične stranice Elixir-a \cite{elixir}:
+Osnovne odlike jezika Elixir sažete su u okviru njegove zvanične strane \cite{elixir}:
 \begin{displayquote}
 Elixir je dinamički tipiziran, funkcionlni programski jezik dizajniran za izgradnju skalabilnih
-i održivih aplikacija.
+aplikacija, lakih za održavanje.
 
-Elixir koristi Erlang virtualnu mašinu, poznatu po podršci za rad sistema sa malim kašnjenjem,
+Elixir koristi virtuelnu mašinu programskog jezika Erlang, poznatu po podršci za rad sistema sa malim kašnjenjem,
 distribuiranim sistemima i sistemima otpornim na greške, takođe se uspešno koristi u razvoju
 veba, u sistemima sa ugrađenim računarom (eng. \emph{embedded sotfware}), učitavanju podataka
-(eng. \emph{data ingestion}) i u domenima za obradu mulitmedije. 
+(eng. \emph{data ingestion}) i u domenima za obradu mulitmedije.
 \end{displayquote}
 
-Radeći kao \emph{Ruby} programer, autor jezika, Žozé Valim (José Valim) uvideo je probleme
-rada \emph{Ruby on Rails} okruženja na višejezgarnim sistemima, kao i prednosti funkcionalnog
-programiranja i Erlang virtualne mašine. Stoga se odlučuje da kreira programski jezik Elixir i 
-prvu verziju jezika objavljuje 2011. godine. Najveći uticaj na razvoj Elixir imali su programski
-jezici Erlang, sa kojim je semantički vrlo sličnan, i Ruby u smislu sintakse. 
+Prva verzija programskog jezika Elixir objavljena je 2011. godine. Autor jezika, Žozé Valim
+(José Valim), prethodno je radio kao \emph{Ruby} programer i uvideo je probleme rada \emph{Ruby
+on Rails} okruženja na višejezgarnim sistemima. Rešenje problema video je u novom funkcionalnom
+programskom jeziku koji će koristiti prednosti virtuelne mašine jezika Erlang. Stoga, najveći
+uticaj na razvoj programskog jezika Elixir imali su Erlang, sa kojim je semantički vrlo sličnan,
+i Ruby u smislu sintakse. 
 
-Ruby je dinamički tipiziran programski, jezik opšte namene koji pruža mogućnost rada u više
+Ruby je dinamički tipiziran programski jezik opšte namene koji pruža mogućnost rada u više
 programskih paradigmi. Nastao je sredinom devedesetih godina prošlog veka, a razvio ga je 
-japanski naučnik i programer Jukihiro Macumoto (Yukihiro "Matz" Matsumoto). Ruby je dizajniran
+japanski naučnik i programer Jukihiro Macumoto (Yukihiro Matsumoto). Ruby je dizajniran
 kao programski jezik fokusiran na programera, tako da svojom lakoćom korišćenja, jednostavnošću i 
 fleksibilnošću učini programiranje prijatnijim. Sam autor kaže da pokušava da napravi Ruby 
 što prirodnijim.  
 
-Budući da je Elixir nastao na ideji upotrebe Erlang virtualna mašine, više o Erlang-u biće rečeno
+Budući da je Elixir nastao na ideji upotrebe virtuelne mašine jezika Erlang, više o Erlang-u biće rečeno
 u sledećem poglavlju. Takođe, pored dva navedena programska jezika, uticaj na razvoj Elixir-a 
-imali su Cloujer, Haskell i Python.
+imali su Clojure\cite{clojure}, Haskell\cite{haskell} i Python\cite{python}.
 
 \section{Erlang}
 Erlang nije samo programski jezik, već i razvojna platforma za izgradnju skalabilnih i pouzdanih
-sistema koji neprestano pružaju usluge sa malo ili bez prekida rada. Osmišljena je sredinom 
-osamdesetih godina proslog veka, od strane švedske telekomunikacione kompanije Erikson (eng.
-\emph{Ericsson}). Da bi Erlang mogao da upravlja telekomunikacionim sistemima kompanije, morao
-je da bude pouzdan, skalabilan, da ima brz odziv i bude konstanto dostupan, jer telefonska mreža
+sistema koji gotovo neprestano pružaju usluge. Švedske telekomunikaciona kompanija Erikson (eng.
+\emph{Ericsson}) osmislila je ovu platformu sredinom  osamdesetih godina prošlog veka. 
+Da bi Erlang mogao da upravlja telekomunikacionim sistemima kompanije, morao
+je da bude pouzdan, skalabilan, da ima brz odziv i bude konstantno dostupan, jer telefonska mreža
 mora da funkcioniše bez obzira na broj istovremenih poziva, neočekivane grešake ili hardver.
+
 Iako je prvobitno izgrađen za telekomunikacione sisteme, Erlang ni na koji način nije 
 specijalizovan za ovaj domen, ne sadrži podršku za programiranje telefona i drugih 
-telekomunikacionih uređaja. Zapravo, to je razvojna platforma koja pruža posebnu podršku
+telekomunikacionih uređaja. Erlang predstavlja razvojnu platforma koja pruža posebnu podršku
 tehničkim, nefunkcionalnim zahtevima kao što su: paralelnost, skalabilnost, tolerancija na
-greške, distribuiranost i velika dostupnost. U vreme nastajanja Erlanga, programi su se uglavnom
+greške, distribuiranost i velika dostupnost. U vreme njegovog nastajanja, programi su se uglavnom
 koristili bez komunikacije sa nekim veb servisom (eng. \emph{desktop-based sotfware}), pa je 
-upotreba  Erlang-a bila ograničena na telekomunikacione sisteme. Međutim, zahtevi modernih 
-sistema i aplikacija poklapaju se nefunkcionalnim zahtevima za koje Erlang pruža podršku, tako
-da je u poslednje vreme privukao veću pažnju. Erlang pokreće razne velike sisteme, među kojima
-suaplikacije \emph{WhatsApp} i \emph{WeChat}, \emph{Riak} distribuirana baza podataka i 
-\emph{Heroku Cloud}.
+upotreba Erlang-a bila ograničena na telekomunikacione sisteme. Međutim, zahtevi modernih 
+sistema i aplikacija poklapaju se sa nefunkcionalnim zahtevima za koje Erlang pruža podršku, tako
+da je u poslednje vreme privukao veliku pažnju. Erlang pokreće razne velike sisteme, među kojima
+su aplikacije \emph{WhatsApp}\cite{whatsapp} i \emph{WeChat}\cite{wechat}, \emph{Riak}\cite{riak}  
+distribuirana baza podataka i \emph{Heroku Cloud}\cite{heroku}.
 
-Kao razvojna platforma, Erlang se sastoji od jezika, virtualne mašine, razvojnog okvira (eng.
+Kao razvojna platforma, Erlang se sastoji od jezika, virtuelne mašine, razvojnog okvira (eng.
 \emph{framework}) i alata.
-\subsection{Erlang virtualma mašina --- BEAM}
-Jezik Erlang predstavlja primaran način pisanja koda koji se izvršava na Erlang virtualnoj
-mašini --- BEAM. BEAM je skraćenica za \emph{Bogdan’s Erlang Abstract Machine}, po Bogumilu
-"Bogdanu" Hausmanu koji je kreirao originalnu verziju, ali se može posmatrati i kao
+\subsection{Erlang virtuelna mašina --- BEAM}
+Jezik Erlang predstavlja primaran način pisanja koda koji se izvršava na sopstvenoj virtuelnoj
+mašini koja se naziva BEAM. BEAM je skraćenica za \emph{Bogdan’s Erlang Abstract Machine}, po
+Bogumilu Bogdanu Hausmanu koji je kreirao originalnu verziju, ali se može posmatrati i kao
 \emph{Björn’s Erlang Abstract Machine}, po Bjornu Gustavsonu koji održava trenutnu verziju 
-virtualne mašine. K\^{o}d napisan u Erlang-u se prevodi u binarni k\^{o}d (eng. \emph{bytecode})
+virtuelne mašine. 
+
+K\^{o}d napisan u Erlang-u se prevodi u binarni k\^{o}d (eng. \emph{bytecode})
 koji se unutar BEAM-a izvršava paralelno u vidu veoma lakih \emph{Erlang procesa}. BEAM, umesto 
 da se oslanja na procese i niti operativnog sistema, samostalno raspoređuje konkurente
 \emph{Erlang procese} na dostupna procesorska jezgra, što je prikazano na slici \ref{fig:beam}.
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.6\textwidth]{beam.png}
-  \caption{Način izvršavanja Erlang procesa unutar BEAM-a \cite{elixir}}
+  \caption{Način izvršavanja Erlang procesa unutar BEAM-a \cite{elixirInAction}}
   \label{fig:beam}
 \end{figure}
 Ovi laki procesi su međusobno potpuno izolovani, ne dele memoriju i komuniciraju preko
@@ -1062,40 +1066,42 @@ asinhronih poruka, što pruža mogućnost Erlang sistemima da budu skalabilni, d
 otporni na greške.  
 
 \subsection{OTP razvojni okvir}
-OTP je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv, jer nije
-toliko povezana sa telekom sistemima i predstavlja razvojni okvir opšte namene koji apstrahuje
-tipične zadatke Erlang sistema:
+OTP je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovaj razvojni
+okvir. On nije vezan za telekom sisteme, već predstavlja razvojni okvir opšte namene koji
+apstrahuje tipične zadatke Erlang sistema:
 \begin{itemize}
-  \item Obrasce konkurentnosti i distribanosti
-  \item Detekciju i oporavak od greški u konkurentim sistemima
+  \item Obrasce konkurentnosti i distribuiranosti
+  \item Detekciju i oporavak od grešaka u konkurentim sistemima
   \item Pravljanje biblioteka
   \item Postavljanje (eng. \emph{deployment}) sistema
   \item Uživo ažuriranje softvera 
 \end{itemize}
 OTP predstavlja sastavni deo Erlang-a, stoga i zvanična distribucija nosi naziv Erlang/OTP.
 \subsection{Erlang i Elixir}
-Elixir predstavlja alternativni načina pisanja programa koji se izvršava na Erlang virtualnoj
+Elixir predstavlja alternativni načina pisanja programa koji se izvršava na BEAM virtuelnoj
 mašini i samim tim preuzima sve osobine Erlang platforme. Za razliku od Erlang-a pruža dodatne
 koncepte koji omogućavaju značajno smanjenje ponavljajućeg i šablonskog (eng.
 \emph{boilerplate}) koda. Elixir i Erlang su kompatibilni, pa Elixir može direktno da koristi
-Erlang biblioteke i module, važi i obrnuto, a sve što je moguće implementrati u Erlang-u,
+Erlang biblioteke i module. Važi i obrnuto, a sve što je moguće implementrati u Erlang-u,
 moguće je i u Elixir-u bez razlike u performansama. Takođe, važno je napomenuti da oba jezika
 odlikuje nepromenljivost podataka (imutabilnost).
 \section{Osnovne karakterisike jezika Elixir}
+Za razliku od Elm-a, Elixir nije čist funkcionalni programski jezik, jer dozvoljava bočne efekte.
 Pored prethodno spomenutih karakteristika preuzetih od Erlang-a, dinamičke tipiziranosti i 
 sintakse slične Ruby-ju, Elixir odlikuje izraženo poklapanje obrazaca, polimorfizam, makroi
-i metaprogramiranje, podrška za lenjo izračunavanje, kao i to da nije čist funkcionalni jezik.  
+i metaprogramiranje, kao i podrška za lenjo izračunavanje.   
 \section{Uputstvo za instalaciju}
 Proces instalacije je vrlo jednostavan, potrebno je pratiti uputstva sa zvanične Elixir
-stranice \cite{elixir}. Provera usprešne instalacije može se izvršiti pokretanjem komande
+stranice \cite{elixir} za odgovarajući operativni sistem. Podržani su gotovo svi operatini
+sistemi. Provera usprešne instalacije može se izvršiti pokretanjem komande
 \textbf{\texttt{elixir -{}-version}} u komandnoj liniji ili pokretanjem interaktivnog Elixir-a
 komandom \textbf{\texttt{iex}}.
 
 \section{Osnovni tipovi podataka}
-Osnovni tipovi podataka u Elixir-u predstavljaju brojevi (celobrojni i realni), buleanske
-vrednosti, atomi i stringovi. Takođe, u osnovne tipove Elixir ubraja liste i torke. Pregled
+Osnovni tipovi podataka u Elixir-u predstavljaju brojevi (celobrojni i realni), bulovske
+vrednosti, atomi i stringovi. Takođe, u osnovne tipove podataka jezika Elixir ubrajaju se liste i torke. Pregled
 osnovnih tipova dat je u listingu \ref{listing:tipoviElixir}, gde se može videti i način pisanja
-komentara. Elixir podržava samo linijske komentare i označavaju se simbolom \texttt{\textbf{\#}}.
+komentara. Elixir podržava samo linijske komentare koji se označavaju simbolom \texttt{\textbf{\#}}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 iex> 1          # integer
@@ -1111,7 +1117,7 @@ iex> {1, 2, 3}  # torka
 \end{listing}
 
 \subsection{Celi brojevi}
-Za razliku od Elm-a, celi brojevi u Elixir-u nemaju ograničen opseg vrednosti, takođe pored
+Za razliku od Elm-a, celi brojevi u Elixir-u nemaju ograničen opseg vrednosti. Takođe, pored
 heksadecimalnog zapisa, Elixir pruža mogućnost navođenja celobrojnih vrednosti u binarnom i 
 oktalnom obliku. Simbol \texttt{\textbf{\textunderscore}} može se koristiti za odvajanje 
 cifara i kod celih i kod brojeva u pokretnom zarezu (listing \ref{listing:brojeviElixir}).
@@ -1144,7 +1150,8 @@ nakon koje slede alfanumerički karakteri, simboli \texttt{\textbf{@}} ili
 je koristite i razmake, tada se sadržaj posle dvotačke mora navesti unutar navodnika.
 Postoji i notacija atoma bez početne dvotačke, ali u tom slučaju moraju počinjati velikim
 slovom i takvi atomi se nazivaju \emph{alijasi}. Upotreba atoma prikazana je u listingu
-\ref{listing:atomi}.\\
+\ref{listing:atomi}.
+
 Atom se sastoji od teksta i vrednosti. U toku izvršavanja tekst se čuva u \emph{tabeli atoma},
 dok vrednost predstavlja referencu na tekst u tabeli atoma, što omogućava brže poređenje atoma
 kao i veću uštedu memorije. Obzirom da predstavljaju efikasan način za imenovanje konstanti,
@@ -1163,8 +1170,8 @@ true
 \caption{Primeri atoma u Elixir-u}
 \label{listing:atomi}
 \end{listing}
-\subsubsection{Buleanske vrednosti kao atomi}
-Elixir zapravo nema poseban tip za buleanske vrednosti, već koristi atome \texttt{\textbf{:true}}
+\subsubsection{Bulovske vrednosti kao atomi}
+Elixir zapravo nema poseban tip za bulovske vrednosti, već koristi atome \texttt{\textbf{:true}}
 i \texttt{\textbf{:false}}, i pruža mogućnost njihovog navođenja bez početne dvotačke. U okviru
 modula \texttt{Kernel}, koji predstavlja pandan modulu \texttt{Basics} u Elm-u, Elixir pruža
 funkcije za proveru tipa, među kojima su \texttt{\textbf{is{\textunderscore}atom}} i
@@ -1179,16 +1186,16 @@ true
 iex> false == :false
 true
 \end{minted}
-\caption{Predstavljanje booleanskih vrednosti preko atoma}
+\caption{Predstavljanje bulovskih vrednosti preko atoma}
 \label{listing:boolAtomi}
 \end{listing}
 
-Pored booleanskih vrednosti, jos jedna specifična vrednost predstavljena atomom jeste
+Pored bulovskih vrednosti, jos jedna specifična vrednost predstavljena atomom jeste
 \texttt{\textbf{:nil}}, slična vrednosti \texttt{\textbf{null}} u drugim programskim jezicima.
 Ona se takođe može navoditi bez početne dvotačke.
 \subsection{Stringovi}
 Stringovi se navode identično kao u Elm-u, unutar jednostrukih ili trostrukih navodnika. 
-U Elixir-u koriste UTF-8 kodiranje i pružaju mogućnost ugrađivanja izraza --- interpolaciju
+U Elixir-u, stringovi koriste UTF-8 kodiranje i pružaju mogućnost ugrađivanja izraza --- interpolaciju
 stringova, što se može videti u listingu \ref{listing:elixirString}. Modul \texttt{Kernel}
 pruža operator konkatenacije (\texttt{\textbf{<>}}), a funkcije za rad sa stringovima nalaze
 se u modulu \texttt{String}.
@@ -1206,12 +1213,15 @@ iex> String.length("Ćao")
 \caption{Primeri stringova u Elixir-u}
 \label{listing:elixirString}
 \end{listing}
-\subsubsection{Bitstringovi i sekvence bajtova (eng. \emph{binaries})}
-Kao i kod buleanskih vrednosti, Elixir nema poseban tip za stringove, već za njihovu
-reprezentaciju koristi sekvencu bajtova (eng. \emph{binary}) i UTF-8 kodiranje.
-Zapravo fundamentalni tip za njihovu reprezentaciju jeste \textbf{bitstring}, koji 
-predstavlja neprekidni niz bitova u memoriji. Dok \emph{binary} predstavlja bitstring čiji
-je broj bitova deljiv sa osam. Bitstringovi se navode kao sekvenca brojeva unutar znakova
+\subsubsection{Bitstringovi i sekvence bajtova}
+Kao i kod bulovskih vrednosti, Elixir nema poseban tip za stringove, već za njihovo
+predstavljanje koristi sekvencu bajtova (eng. \emph{binary}) i UTF-8 kodiranje.
+Zapravo fundamentalni tip za njihovo predstaljanje jeste \textbf{bitstring}, kojem odgovara 
+neprekidni niz bitova u memoriji. Bitstringovi mogu biti proizvoljne dužine, a sekvenca
+bajtova ---\emph{binary} predstavlja posebnu vrstu bitstringova čiji je broj bitova deljiv sa
+osam. 
+
+Bitstringovi se navode kao sekvenca brojeva unutar znakova
 \texttt{\textbf{<\smallskip<}} i \texttt{\textbf{>\smallskip>}}. Podrazumevano se koristi
 osam bitova za čuvanje svakog broja u bitstringu, ali je moguće navesti broj bitova pomoću
 modifikatora \texttt{\textbf{::n}} da bi se oznaćila veličina od \texttt{\textbf{n}} bitova,
@@ -1252,13 +1262,13 @@ unutar uglastih zagrada, ali za raliku od Elm-a ne moraju biti istog tipa. Lista
 nabrojive (eng. \emph{enumerable}) tipove, pa se pored funkcija iz modula \texttt{\textbf{List}},
 mogu koristiti i funkcije iz modula \texttt{\textbf{Enum}}. Takođe, u modulu \texttt{\textbf{Kernel}}
 se nalaze operatori za proveru da li element pripada listi (\texttt{\textbf{in}}), za nadovezivanje
-(\texttt{\textbf{++}}) i oduzimanje (\texttt{\textbf{-{}-}}) listi, kao i funkcije za određivanje
+listi (\texttt{\textbf{++}}), kao i operator oduzimanja (\texttt{\textbf{-{}-}}) koji predstavlja
+razliku elemenata levog i desnog operanda. Tu su i funkcije za određivanje
 glave, repa i dužine liste. Umesto operatora \emph{cons}, Elixir pruža sintaksu u obliku
 \texttt{\textbf{[}glava\textbf{|}rep\textbf{]}} koja se može koristiti u kreiranju nove
-list i poklapanju obrazaca. Primeri upotrebe nekih od navedenih funkcija prikazani su u
-listingu \ref{listing:elixirList}, a nešto više o modulu \texttt{\textbf{Enum}} i
-funkcijama višeg reda biće rečeno kasnije. 
-\begin{listing}[!h]
+liste i poklapanju obrazaca. Primeri upotrebe nekih od navedenih funkcija prikazani su u
+listingu \ref{listing:elixirList}, a nešto više o modulu \texttt{\textbf{Enum}} biće rečeno kasnije. 
+\begin{listing}[h]
 \begin{minted}{elixir}
 iex> [1,2,3, "123", true] ++ [:atom, ["aaa", "bbb"]]
 [1, 2, 3, "123", true, :atom, ["aaa", "bbb"]]
@@ -1276,13 +1286,13 @@ iex> Enum.sum([1 | [2 | [3, 4]]])
 \caption{Rad sa listama u Elixir-u}
 \label{listing:elixirList}
 \end{listing}
-\subsubsection{Liste karaktera (eng. \emph{Charlists})}
-Lista karaktera je lista celih brojeva, gde svaki element predstavlja jedan karakter.
+\subsubsection{Liste karaktera }
+Lista karaktera (eng. \emph{charlists}) je lista celih brojeva, gde svaki element predstavlja jedan karakter.
 Veoma je slična stringovima, za navođenje se koriste apostrofi umesto navodnika, 
 ali glavna razlika je u internoj reprezentaciji, kao i funkcijama koje se nad njima
 izvršavaju. Mogu se navoditi u jednostrukoj i trostrukoj notacija, a moguća je i 
 interpolacija. U listingu \ref{listing:elixirCharList} dati su primeri liste karaktera.
-\begin{listing}[!h]
+\begin{listing}[h]
 \begin{minted}{elixir}
 iex>'''
 Primer u
@@ -1305,7 +1315,7 @@ I u Elixir-u, se torke navode unutar vitičastih zagrada i mogu sadržati elemen
 tipova, ali za razliku od Elm-a, broj elemenata nije ograničen i elemenati se mogu uklanjati
 i dodavati. Iako dozvoljavaju promenljiv broj elemeata, torke su zamišljene kao kolekcija
 podataka fiksne dužine i ne spadaju u nabrojive tipove. U modulu \texttt{\textbf{Kernel}}
-se nalaze funkcije za pristupanje i ažuriranje elemenata, kao i funkcija za odrđivanje broja
+se nalaze funkcije za pristupanje i ažuriranje elemenata, kao i funkcija za određivanje broja
 elemenata torke, dok se ostale funkcije za rad sa torkama nalaze u modulu \texttt{\textbf{Tuple}}.
 Prikaz rada navedenih funkcija dat je u listingu \ref{listing:elixirTorke}.
 \begin{listing}[!h]
@@ -1339,7 +1349,7 @@ veoma često koriste u Elixir programima predsavljaju \textbf{liste ključnih re
 \emph{keyword list}) i \textbf{mape}.
 \subsubsection{Liste ključnih reči}
 Liste ključnih reči predstaljaju posebnu vrstu listi gde je svaki element dvočlana torka,
-čiji je priv član (tj. ključna reč) obavezno atom, a drugi može biti bilo kog tipa. Takođe,
+čiji je prvi član (tj. ključna reč) obavezno atom, a drugi može biti bilo kog tipa. Takođe,
 jedna ključna reč može se navesti više puta. Elixir pruža i jednostavniju sintaksu koja izuzima
 pisanje vitičastih zagrada. Za rad sa listama ključnih reči mogu se koristiti sve funkcije i
 operatori kao i sa običnim listama i, dodatno, funkcije iz modula \texttt{Keyword} i operator
@@ -1363,7 +1373,7 @@ iex> [a: 1, b: 2] ++ [c: "3"]
 \end{listing}
 
 \subsubsection{Mape}
-Za razliku od liste ključnih reči, Mape predstavljaju kolekciju elemenata u obliku
+Za razliku od liste ključnih reči, mape predstavljaju kolekciju elemenata u obliku
 \emph{ključ-vrednost} gde oba člana mogu biti proizvoljnog tipa. Liste ključnih
 reči čuvaju uređenje, što je osobina koju nemaju mape, ali u slučaju većeg broja elemenata
 mape pružaju bolju efikasnost. Takođe, ključevi unutar mape moraju biti jedinstveni.
@@ -1378,14 +1388,14 @@ iex> %{1 => false, "bb" => [1,2], {1,2} => 3}
 iex> %{a: 123, b: 'bbb', c: "c"}
 %{a: 123, b: 'bbb', c: "c"}
 \end{minted}
-\caption{}
+\caption{Primeri mapa u Elixi}
 \label{listing:elixirMap}
 \end{listing}
 
 Pristup elementima mape moguć je pomoću operatora \texttt{\textbf{[\smallskip]}}, kao i
 funkcija iz modula \texttt{Map}, a ukoliko su svi ključevi mape atomi, dostupna je 
 sintaksa oblika \emph{mapa.ključ}. Pored funkcija iz modula \texttt{Map}, nad mapama se
-mogu koristit i funkcije iz modula \texttt{Enum}, jer priadaju nabrojivim tipovima.
+mogu koristiti i funkcije iz modula \texttt{Enum}, jer pripadaju nabrojivim tipovima.
 Mape predstavljaju dinamičku strukturu u kojoj se mogu dodavati i uklanjati elementi,
 a moguća je i ažuriranje elemenata. Zbog nepromenljivosti, ne menja se postojeći, već se
 kreira novi element. Pored funkcija iz modula, dostupna je i sintaksa ažuriranja slična 
@@ -1406,7 +1416,29 @@ iex>%{ %{"a" => true, :b => 0} | :b => false}
 \caption{Pristup i ažuriranje elemenata mape}
 \label{listing:elixirMap2}
 \end{listing}
-  
+\subsubsection{Modul Enum}
+Elixir pruža mogućnost rada sa nabrojivim podacima koristeći modul \texttt{Enum}, koji sadrži
+veliki broj funkcija uobičajenih za ovaj tip podataka (pronalazak i transformisanje elemenata,
+grupisanje, sortiranje, filtriranje...). Prethodno su navedene liste i mape kao nabrojivi tipovi.
+Pored njih, Elixir omogućava i rad sa \emph{opsezima} (eng. \emph{ranges}), čija se
+upotreba korišćenjem nekih od funkcija iz modula \texttt{Enum} može videti u listingu
+\ref{listing:elixirEnum}, zajedno sa listama i mapama. U datim primerima korišćene su anonimne
+funkcije, koje će se detaljnije obraditi u poglavlju 3.7. Funkcije iz modula \texttt{Enum}
+mogu raditi sa bilo kojim tipom koji implementira \texttt{Enumerable} protokol. Više
+o protokolima biće rečeno u poglavlju 3.10.
+\begin{listing}[!ht]
+\begin{minted}{elixir}
+iex> Enum.map([1, 2, 3], fn x -> x * 3 end)
+[3, 6, 9]
+iex> Enum.reduce(%{1 => 2, 3 => 4}, 0, fn {k, v}, s -> s + k + v end)
+10
+iex> Enum.filter(1..10, fn x -> rem(x, 3) == 0 end)
+[3, 6, 9]
+\end{minted}
+\caption{Upotreba funkcija iz modula \texttt{Enum} nad listama, mapama i opsezima}
+\label{listing:elixirEnum}
+\end{listing}
+
 \section{Osnovni operatori}
 Za razliku od Elm-a, Elixir vrši implicitnu konverziju celih brojeva u realne prilikom
 primene aritmetičkih operatora \textbf{\texttt{+}}, \textbf{\texttt{-}} i
@@ -1416,15 +1448,15 @@ celobrojno deljenje i izračunavanje ostatka pri celobrojnom deljenju koriste se
 \textbf{\texttt{div}} i \textbf{\texttt{rem}}, koje se mogu koristiti samo nad celim brojevima.
 
 Logički operatori u Elixir-u su specifični po tome što rezultat njihove primene ne mora
-biti buleanska vrednost, već vrednost bilo kod tipa. Takođe, Elixir ima dvostruke operatore
+biti bulovska vrednost, već može biti vrednost proizvoljnog tipa. Takođe, Elixir ima dvostruke operatore
 za logičko \emph{i}, \emph{ili} i \emph{ne}, koji se mogu podeliti u dve grupe:
 \begin{enumerate}
   \item \textbf{\texttt{and}}, \textbf{\texttt{or}} i \textbf{\texttt{not}} --- prvi operand
-  mora biti buleanska vrednosti
+  mora biti bulovska vrednost
   \item \textbf{\texttt{\&\&}}, \textbf{\texttt{||}} i \textbf{\texttt{!}} --- oba operanda 
-  mogu biti bilo kog tipa
+  mogu biti proizvoljnog tipa
 \end{enumerate}
-Operatori čiji operandi mogu biti bilo kog tipa zasnivaju se na konceptu istinitosti, gde
+Operatori čiji operandi mogu biti proizvoljnog tipa zasnivaju se na konceptu istinitosti, gde
 se vrednosti \textbf{\texttt{nil}} i \textbf{\texttt{false}} smatraju za lažne, a sve ostale
 za istinite. Operatori su lenjo izračunljivi, tako da u slučaju primene operatora konjukcije
 rezultat predstavlja drugi operand samo ako je prvi istinit ili se može smatrati istinitim
@@ -1514,8 +1546,8 @@ iex> ^x = 1
 
 Operator uparivanja se često upotrebljava za pristupanje elementima torki, listi i mapa,
 gde se može izvršiti vezivanje više promenljivih odjednom. Kao i u Elm-u, simbol 
-\texttt{\textbf{\textunderscore}} se može koristit za poklapanje vrednosti koje se neće
-dalje koristit. Primeri poklapanja obrazaca listi i torki dati su u listingu
+\texttt{\textbf{\textunderscore}} se može koristiti za poklapanje vrednosti koje se neće
+dalje koristiti. Primeri poklapanja obrazaca listi i torki dati su u listingu
 \ref{listing:elixirPoklapanjeTorki}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
@@ -1535,7 +1567,7 @@ iex> rep
 
 U slučaju mapa moguće je parcijalno poklapanje, tj. leva strana ne mora da sadrži sve
 ključeve desne, što omogućava pristupanje samo potrebnim vrednostima iz mape. Parcijalno
-poklapanje prikazano u listingu \ref{listing:elixirPoklapanjeMapa}.
+poklapanje je prikazano u listingu \ref{listing:elixirPoklapanjeMapa}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 iex> %{ime: ime, godine: godine} = %{ime: "Pera", godine: 25}
@@ -1571,7 +1603,7 @@ defmodule Kalkulator do
   end
 end
 \end{minted}
-\caption{Poklapanje obrazaca listi i torki}
+\caption{Primeri definisanja funkcija}
 \label{listing:elixirModul}
 \end{listing}
 
@@ -1583,7 +1615,7 @@ jednog izraza unutar funkcije može se koristiti i skraćena sintaksa --- funkci
 funkcija koje imaju bočne efekte. Ukoliko je predviđeno da se neke funkcije koriste samo
 unutar modula, one se definišu kao privatne ključnom rečju \texttt{\textbf{defp}}.
 
-Naziv modula mora počinjati velikim slovom i po konvenciji se pišu u kamilja notaciji, dok je 
+Naziv modula mora počinjati velikim slovom i po konvenciji se pišu u kamiljoj notaciji, dok je 
 imenovanje funkcija identično imenovanju promenljivih, s tim što funkcija čiji naziv se 
 završava simbolom \texttt{\textbf{?}} po konvenciji vraća vrednosti \texttt{\textbf{true}} ili
 \texttt{\textbf{false}}, a simbolom \texttt{\textbf{!}} se označava funkcija koja može izazvati
@@ -1593,7 +1625,7 @@ razdvojeni zarezima. Na primer, funkciju \texttt{pomnozi} možemo pozvati sa:\\
 \texttt{Kalkulator.pomnozi(2, 3)} i \texttt{Kalkulator.pomnozi 2, 3}.
 
 Elixir, nasuprot Elm-u, nema ugrađene Karijeve funkcije, dozvoljava navođenje
-podrazumevanjih vrednosti, kao i preopterećivanje funkcija, što je i prikazano u listingu
+podrazumevanih vrednosti, kao i preopterećivanje funkcija, što je i prikazano u listingu
 \ref{listing:elixirOverload}. Funkciju potpuno određuje modul u kome se nalazi, naziv i
 arnost (broj argumenata), tako da potpun naziv operatora nadovezivanja listi jeste
 \emph{Kernel.++/2}. 
@@ -1609,11 +1641,11 @@ defmodule Brojac do
   def uvecaj(x, n \\ 1), do: x + n
 end
 \end{minted}
-\caption{Primeri definisanja funkcija}
+\caption{Upotreba preopterećivanja funkcija i podrazumevanih vrednosti }
 \label{listing:elixirOverload}
 \end{listing}
 
-Prilikom definisanja funkcija može se koristi poklapanje obrazaca za destrukciju argumenata,
+Prilikom definisanja funkcija može se koristi poklapanje obrazaca za razlaganje argumenata,
 ali i za preopterećivanje funkcija iste arnosti koršćenjem različitih šablona. Takođe,
 preopterećivanje funkcije, pored različitog broja argumenata i obrazaca, može se vršiti 
 korišćenjem \emph{čuvara} (eng. \emph{guards}), tj. postavljanjem uslova nad argumentima
@@ -1649,7 +1681,7 @@ end
 \subsection{Anonimne funkcije}
 Sintaksa navođenja anonimnih funkcija prikazana je u listingu \ref{listing:elixirLambda}. Za
 razliku od imenovanih funkcija, argumenti se ne navode unutar zagrada po konvenciji, mada je
-moguće koristit zagrade. Takođe, prilikom pozivanja anonimnjih funkcija obavezno je korišćenje
+moguće koristiti zagrade. Takođe, prilikom pozivanja anonimnih funkcija obavezno je korišćenje
 zagrada i navođenje tačke (\texttt{\textbf{.}}) pre njih. 
 \begin{listing}[!h]
 \begin{minted}{elixir}
@@ -1665,9 +1697,9 @@ saberi.(1, 2)
 
 Anonimne (lambda) funkcije u Elixir-u se razlikuju od imenovanih i ubrajaju se u osnovne tipove
 podataka. Imenovane funkcije nije moguće proslediti kao parametar ili vezati za promenljivu,
-već isključivo anonimne. Ovaj nedostatak imenovanih funkcija se može prevazići upotrebom
+već se za to mogu korisiti isključivo anonimne funkcije. Ovaj nedostatak imenovanih funkcija se može prevazići upotrebom
 operatora \texttt{\textbf{\&}} (eng. \emph{capture}), koji imenovanu funkciju pretvara u
-anonimnu. Operator \texttt{\textbf{\&}} se može koristiti za kraću sintaksu anonimnih funkcija,
+anonimnu. Operator \texttt{\textbf{\&}} se može koristiti i za kraću sintaksu anonimnih funkcija,
 što je i prikazano u listingu \ref{listing:elixirCapture}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
@@ -1683,9 +1715,9 @@ iex> saberi2.(5, 6)
 \end{listing}
 
 Zatvorenja (eng. \emph{closures}) predstavljaju još jednu specifičnost lambda funkcija u
-Elixir-u. Prilikom definisanje, lambda funkcija ima pristup svim promenljivim unutar opsega u
-kom se definiše. Ukoliko koristi promenljive van svog opsega, kreiraju se reference na trenutne
-vrednost promenljivih i ponovno vezivanje promenljivih ne utiče na izvršavanje funkcije. U
+Elixir-u. Prilikom definisanja, lambda funkcija ima pristup svim vrednostima unutar opsega u
+kom se definiše. Ukoliko koristi vrednosti promenljivih van svog opsega, kreiraju se reference na trenutne
+vrednosti promenljivih i ponovno vezivanje promenljivih ne utiče na izvršavanje funkcije. U
 listingu \ref{listing:elixirClosures} dat je primer zatvorenja.
 \begin{listing}[!h]
 \begin{minted}{elixir}
@@ -1706,7 +1738,7 @@ iex(35)> saberi_sa_3.(3)
 \subsubsection{Operator prosleđivanja - \emph{pipe} operator (\texttt{\textbf{|>}})}
 Operator \texttt{\textbf{|>}} u Elixir-u prosleđuje vrednost sa leve strane kao prvi argument
 funkciji sa desne strana, što je različito ponašanje koje isti operator ima u Elm-u, gde se
-može reći da se vrednost sa leve strane prosleđuje kao poslednji argument funkciji sa desne
+vrednost sa leve strane prosleđuje kao poslednji argument funkciji sa desne
 strane. Takođe, Elixir ne podržava slične operatore koji postoje u Elm-u. Različito ponašanje
 operatora \texttt{\textbf{|>}} u oba jezika predstavljeno je listingu \ref{listing:elixirPipe}.
 \begin{figure}[!h]
@@ -1733,7 +1765,7 @@ operatora \texttt{\textbf{|>}} u oba jezika predstavljeno je listingu \ref{listi
 Pored funkcija, moduli u Elixir-u mogu sadržati dva veoma važna koncepta --- atribute i
 stukture.
 \subsubsection{Atributi}
-Atributi u modulu se mogu koristit za definisanje konstanti, takođe Elixir pruža atribute
+Atributi u modulu se mogu koristiti za definisanje konstanti. Takođe, Elixir pruža atribute
 za dokumentovanje koda: \texttt{@moduledoc} i \texttt{@doc}, čija je upotreba prikazana u
 listingu \ref{listing:elixirAtributi}.
 \begin{listing}[!h]
@@ -1754,13 +1786,13 @@ end
 \label{listing:elixirAtributi}
 \end{listing}
 Atributi imaju višestruku upotrebu i mnogi bitni koncepti se zasnivaju na njima, među kojima
-je i specifikacija tipova (eng. \emph{typespecs}) koja se može koristit za definisanje
+je i specifikacija tipova (eng. \emph{typespecs}) koja se može koristiti za definisanje
 korisničkih tipova, kao i za anotaciju tipova sličnu anotaciji u Elm-u. Više o specifikaciji
-tipova i samim atributima može se videti na zvaničnoj stranici.
+tipova i samim atributima može se videti na zvaničnoj stranici \cite{elixir}.
 \subsubsection{Strukture}
 Strukture predstavljaju koncept razvijen na osnovu mapa, s tim što imaju podrazumevane 
 vrednosti, a ključevi su isključivo atomi. Sintaksa definisanja struktura data je u listingu
-\ref{listing:elixirStruct}, mogu se navoditi samo unutar modula i to najviše jedna.
+\ref{listing:elixirStruct}. Mogu se navoditi samo unutar modula i to najviše jedna.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 defmodule Osoba do
@@ -1779,7 +1811,7 @@ Ukoliko se postavljaju podrazumevane vrednosti svih ključeva, moguće je izosta
 uglastih zagrada. U suprotnom obavezno je njihovo koršćenje, pri čemu se nenavedenim ključevima
 podrazumevana vrednost postavlja na \texttt{nil}. U slučaju da se nekim ključevima ne dodeljuje
 podrazumevana vrednost, takvi ključevi se obavezno navode na početku liste. Sintaksa kreiranja
-modula slična je sintaksi kreiranju mapa --- \texttt{\textbf{\%\emph{NazivModula}\{\}}}, u 
+modula slična je sintaksi kreiranju mapa --- \texttt{\textbf{\%\emph{NazivModula}\{\}}}. U 
 listingu \ref{listing:elixirStruct1} može se videti kreiranje stuktura iz listinga
 \ref{listing:elixirStruct}.
 \begin{listing}[!h]
@@ -1814,11 +1846,10 @@ Upotrebom direktive \texttt{import} sve funkcije navedenog modula uključuju se 
 modul i mogu se pozivati bez navođenja imena modula, a moguće je ograničiti uključivanje samo
 određenih funkcija. Sa druge strane, \texttt{alias} omogućava korišćenja određenog imena
 (alijasa) za bilo koji modul i prilikom pozivanja funkcija obavezno je njegovo navođenje.
-\begin{listing}[!ht]
+\begin{listing}[h]
 \begin{minted}{elixir}
 alias Api.Accounts.User, as: AccUser
-#indentično kao alias Api.Accounts.User, as: User
-alias Api.Accounts.User 
+alias Api.Accounts.User #isto kao alias Api.Accounts.User, as: User
 
 # uključivanje samo authenticate/2 funkcija 
 import Api.Accounts, :only [authenticate: 2] 
@@ -1828,33 +1859,48 @@ import Api.Accounts, :only [authenticate: 2]
 \end{listing}
 
 \section{Makroi}
-Makroi predstavljaju jednu od najvažnijih karakteristika Elixir-a u poređenju sa Erlang-om.
-Omogućavaju metaprogramiranje, tj. pisanje koda koji generiše k\^{o}d, što dovodi do 
+Makroi predstavljaju jednu od najvažnijih novouvedenih karakteristika Elixira u odnosu na Erlang.
+Makroi omogućavaju metaprogramiranje, tj. pisanje koda koji generiše k\^{o}d, što dovodi do 
 značajnog smanjenja količine šablonskog (eng. \emph{boilerplate}) koda, a samim tim i do
-vrlo čitljivog i elegantong koda. Upotrebom makroa se tokom kompilacije vrše transformacije
-nad kodom, čime se ne utiče na performase izvršavanja. Markoi i metaprogramiranje nisu predmet
+vrlo čitljivog i elegantnog koda. Upotrebom makroa se tokom kompilacije vrše transformacije
+nad kodom, čime se ne utiče na performase izvršavanja. Makroi i metaprogramiranje nisu predmet
 ovog rada, ali je neophodno razumeti kako makroi funkcionišu, jer su mnoge funkcionalnosti
 Elixir-a implementirane pomoću njih i njihova upotreba je gotovo neizbežna. 
 
 Makroi se definišu unutar modula. Pre upotrebe, budući da se prevode tokom kompilacije, moduli
 u kojima su definisani moraju biti dostupni, što se obezbeđuje direktivom \texttt{require}. 
 
-Veoma bitan marko koji se često povezuje sa direktivama jeste marko \texttt{\textbf{use}},
-koji omogućava ubacivanje spoljne funkcionalnosti (koda) u trenutni modul.
+Veoma bitan makro koji se često povezuje sa direktivama jeste makro \texttt{\textbf{use}},
+koji omogućava ubacivanje spoljne funkcionalnosti (koda) u trenutni modul. U listingu 
+\ref{listing:use} prikazan je primer upotrebe makroa \texttt{\textbf{use}} za kreiranje modula
+sa jediničnim testovima pomoću okruženja \emph{ExUnit}, koje je instalirano zajedno sa Elixir-om.
+\begin{listing}[h]
+\begin{minted}{elixir}
+defmodule ModulSaTestom do
+  use ExUnit.Case
 
+  test "uvek prolazi" do
+    assert true
+  end
+end
+\end{minted}
+\caption{Upotreba makroa \texttt{use}}
+\label{listing:use}
+\end{listing}
+  
 \section{Kontrola toka}
 U delu o funkcijama prikazano je kako se korišćenjem čuvara i poklapanja obrazaca može
 vršiti kontorla toka izvršavanja, ali ovakva rešenja nisu uvek adekvatna i jednostavna za
 upotrebu jer podrazumevaju kreiranje zasebnih funkcija i prosleđivanje neophodnih
-argumenata. Stoga Elixir omogućava i upotrebu makroa \texttt{if,unless,cond} i
+argumenata. Stoga Elixir omogućava i upotrebu makroa \texttt{if, unless, cond} i
 \texttt{case} za standardan način grananja.
 
 \subsection{Upotreba makroa \emph{if} i \emph{unless}}
-Makro\texttt{unless} se zapravo može posmatrati kao \texttt{if not}, tako da sve što važi za
-\texttt{if}, važi i za \texttt{unless}. Sintaksa upotrene  oba makroa data je u listingu
+Makro \texttt{if} se koristi za standardno \emph{if-else} grananje. Makro \texttt{unless} suprotan
+je makrou \texttt{if} i može se posmatrati kao \texttt{if not}. Sintaksa upotrebe oba makroa data je u listingu
 \ref{listing:elixirIf}. 
 \begin{figure}[!h]
-\begin{minipage}{0.5\textwidth}
+\begin{minipage}{0.5\textwidth} 
   \centering
   \begin{minted}{elixir}
     if uslov do
@@ -1885,8 +1931,9 @@ Makro\texttt{unless} se zapravo može posmatrati kao \texttt{if not}, tako da sv
 \end{figure}
   
 Kao kod operatora \texttt{\&\&} i \texttt{||} uslov se smatra tačnim ukoliko njegova vrednosti
-nije \texttt{nil} ili \texttt{false}. Dok za razliku od Elm-a, \texttt{else} grana nije
-obavezna i ukoliko se ne navede, a uslov nije istinit, vrednost izrara je \texttt{nil}.
+nije \texttt{nil} ili \texttt{false}. Za razliku od Elm-a, gde je navođenje \texttt{else} grane
+obavezno, u Elixir-u to nije slučaj. Ukoliko se \texttt{else} grana ne navede, a uslov nije istinit
+(odnosno nije neistinit u slučaju makroa \texttt{unless}), vrednost izraza je \texttt{nil}.
 \subsection{Upotreba makroa \emph{cond} i \emph{case}}
 Makroi \texttt{cond} i \texttt{case} se mogu posmatrati kao grananje oblika \texttt{if...else
 if ... else}, pri čemu se u slučaju makroa \texttt{cond} proverava istinitost izraza, a kod
@@ -1917,38 +1964,18 @@ listingu \ref{listing:elixirCond}.
 \label{listing:elixirCond}
 \end{figure}
 
-Bitan je redosled navođenja, jer će se izvršiti blok prvog istinitog izraza(\texttt{cond}) ili
+Bitan je redosled navođenja, jer će se izvršiti blok prvog istinitog izraza (\texttt{cond}) ili
 poklopljenog obrasca (\texttt{case}). Povratna verednost predstavlja vrednost izvršenog bloka, a
 u slučaju da se ne izvrši nijedan blok izbacuje se grešaka. 
 
 \subsection{Iteracija}
 Slično Elm-u, Elixir umesto petlji koristi rekurziju i funkcije modula \texttt{Enum}, s tim
-što Elixir pruža mogućnost lenjog izračunavanja kao i upotebu \emph{ubrajanja}
+što Elixir pruža mogućnost lenjog izračunavanja kao i upotebu \emph{skraćenica}
 (eng. \emph{comprehensions}).
-\subsubsection{Modul Enum}
-Elixir pruža mogućnost rada sa nabrojivim podacima koristeći modul \texttt{Enum}, koji sadrži
-veliki broj funkcija za filtriranje, sortiranje, transformasanje i mnogim drugim uobičajenim
-operacijama za ovaj tip podataka. Prethodno su navedene liste i mape kao nabrojivi tipovi, 
-pored njih Elixir omogućava i rad sa \emph{opsezima} (eng. \emph{ranges}), čija se
-upotreba korišćenjem nekih od funkcija iz modula \texttt{Enum} može videti u listingu
-\ref{listing:elixirEnum}, zajedno sa listama i mapa. Funkcije iz modula \texttt{Enum}
-mogu raditi sa bilo kojim tipom koji implementira \texttt{Enumerable} protokol. Više
-o protokolima biće kasnije u tekstu.
-\begin{listing}[!ht]
-\begin{minted}{elixir}
-iex> Enum.map([1, 2, 3], fn x -> x * 3 end)
-[3, 6, 9]
-iex> Enum.reduce(%{1 => 2, 3 => 4}, 0, fn {k, v}, s -> s + k + v end)
-10
-iex> Enum.filter(1..10, fn x -> rem(x, 3) == 0 end)
-[3, 6, 9]
-\end{minted}
-\caption{Upotreba funkcija iz modula \texttt{Enum} nad listama, mapama i opsezima}
-\label{listing:elixirEnum}
-\end{listing}
-\subsubsection{Tokovi (eng. \emph{Streams})}
-Tokovi predstavljaju posebnu vrstu nabrojivih tipova koji se mogu koristit za kreiranje
-lenjih kompozitnih operacija nad nabrojivim podacima. Tokovi su definisani u modulu
+
+\subsubsection{Tokovi}
+Tokovi (eng. \emph{Streams}) predstavljaju posebnu vrstu nabrojivih tipova koji se mogu koristiti za kreiranje
+složenih lenjih operacija nad nabrojivim podacima. Tokovi su definisani u modulu
 \texttt{Stream} i funkcije unutar ovog modula izgledaju vrlo slično funkcijama u modulu
 \texttt{Enum}, s tim da je povratna vrednost ovih funkcija uvek tok, što omogućava
 njihovu kompoziciju. Primer lenjog izračunavanja upotrebom tokova dat je u listingu
@@ -1966,11 +1993,12 @@ iex> stream |> Enum.take(5)
 \caption{Kompozicaija tokova i lenjo izračunavanje}
 \label{listing:elixirStream}
 \end{listing}
-\subsubsection{Ubrajanja}
+\subsubsection{Skraćenice}
 Filtriranje i mapiranje nad nabrojivim podacima predstaljaju čestu pojavu u Elixir programima,
-te su uvedena \emph{ubrajanja} kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
-grupiše ovakve operacije u \texttt{\textbf{for}} specijalnu formu. Upotreba ubrajanja 
-prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj stranici.
+te su uvedene \emph{skraćenica} kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
+grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}} . Upotreba skraćenica
+prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj
+\cite{elixir} stranici.
 \begin{listing}[!ht]
 \begin{minted}{elixir}
 for n <- 1..5, do: n * n
@@ -1981,7 +2009,7 @@ iex> nije_paran? = &(rem(&1, 2) != 0)
 iex> for n <- 1..10, nije_paran?.(n), do: 2 * n
 [2, 6, 10, 14, 18]
 \end{minted}
-\caption{Primeri upotrebe ubrajanja}
+\caption{Primeri upotrebe skraćenica}
 \label{listing:elixirComprehensions}
 \end{listing}
 \subsection{Upravljanje greškama}
@@ -2002,7 +2030,7 @@ iex> case File.read "primer.txt" do
 Ipak, u nekim vrlo retkim slučajevim kada neke biblioteke ili delovi koda nisu implementirani
 u duhu funkcionalnog programiranja, moguća je obrada grešaka slična većini drugih programskih
 jezika --- koršćenjem \texttt{try}, \texttt{catch} i \texttt{rescue} mehanizma o kom se može
-videti više na zvaničnoj dokumentaciji.
+videti više u zvaničnoj dokumentaciji \cite{elixir}.
 \section{Polimorfizam preko protokola}
 Protokoli predstavljaju mehanizam za postizanje polimorfizma ukoliko je potrebno razlikovati
 ponašanje u odnosu na tip podatka. Ovo je takođe moguće uraditi korišćenjem poklapanja
@@ -2011,7 +2039,7 @@ različitim delovima koda.
 
 Protokol je zapravo modul koji sadrži samo deklaracije funkcija ali ne i implementaciju,
 sličan je interfejsima ili apstraktnim klasama u drugim programskim jezicima. Definiše se
-pomoću makroa \texttt{defprotocol},a primer protokola za izračunavanje veličine podatka dat
+pomoću makroa \texttt{defprotocol}, a primer protokola za izračunavanje veličine podatka dat
 je u listingu \ref{listing:elixirDefProtocol}.
 \begin{listing}[!ht]
 \begin{minted}{elixir}
@@ -2026,7 +2054,7 @@ Kada postoji definisan protokol moguće je dodati neograničen broj implementaci
 različitim modulima. Za implementiranje protokola koristi se makro \texttt{defimpl} pri čemu
 se mora navesti protokol koji se implementira, za koji tip i implementacija funkcija.
 Prilikom implementacije protokola nad strukturama moguće je izostaviti navođenje tipa.
-Primeri nekoliko implementacij protokola iz listinga može se videti u
+Primeri nekoliko implementacija protokola iz listinga \ref{listing:elixirDefProtocol} može se videti u
 listingu \ref{listing:elixirImplProtocol}.
 \begin{listing}[!ht]
 \begin{minted}{elixir}
