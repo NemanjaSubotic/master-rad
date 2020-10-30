@@ -1,4 +1,4 @@
-module User.Login exposing (Model, Msg, update, view, initialModel)
+module User.Login exposing (Model, Msg , update, view, initialModel)
 
 import Util exposing (viewInput)
 import Html exposing (Html, div, form, button, text)
@@ -6,7 +6,10 @@ import Html.Attributes exposing (class, type_)
 import Html.Events exposing (onSubmit)
 import Http
 import Json.Encode
-import User.Session as Session
+import User.Session as S
+
+import Task
+import User.Session exposing (Session)
 
 type alias Model =
     { email : String
@@ -16,14 +19,16 @@ type alias Model =
 type Msg
     = Email String
     | Password String
+    | LoginError Http.Error
     | SubmittedForm
 
-update : Msg -> Model -> ( Model, Cmd Session.Msg )
+update : Msg -> Model -> ( Model, Cmd S.Msg )
 update msg model =
     case msg of
         Email email -> ({model | email = email}, Cmd.none)
         Password password -> ({model | password = password}, Cmd.none)
-        SubmittedForm -> (model, loginPost model)
+        SubmittedForm -> (model, S.getSession model.email model.password)
+        LoginError err -> Debug.log (Debug.toString err) (model, Cmd.none)
 
 view : Model -> Html Msg
 view model = 
@@ -37,27 +42,3 @@ view model =
   
 initialModel : Model
 initialModel = Model "" ""
-
-createBody: Model -> Json.Encode.Value
-createBody model =
-    Json.Encode.object 
-        [ ("email", Json.Encode.string model.email)
-        , ("password", Json.Encode.string  model.password)
-        ]
-loginPost: Model -> Cmd Session.Msg
-loginPost model = 
-    Http.riskyRequest
-        { method = "POST"
-        , headers = []
-        , url = "http://localhost:4000/api/auth/login"
-        , body = Http.jsonBody (createBody model)
-        , expect = Http.expectJson Session.GotLoginResult Session.decodeSession
-        , timeout = Nothing
-        , tracker = Nothing
-        }
-    -- Http.post
-    --     { url = "http://localhost:4000/api/auth/login"
-    --     , body = Http.jsonBody (createBody model)
-    --     , expect = Http.expectJson Session.GotLoginResult Session.decodeSession
-    --     }
-

@@ -16,7 +16,10 @@ config :msnr_api, MsnrApiWeb.Endpoint,
   secret_key_base: "GSE1WWPCglFC+6hRJmcbaDJEEJGiyow160GF11IgaPQcwz1xYSuzBFJHHyZRVAFZ",
   render_errors: [view: MsnrApiWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: MsnrApi.PubSub,
-  live_view: [signing_salt: "B5MEouqh"],
+  live_view: [signing_salt: "B5MEouqh"]
+
+
+config :token,
   refresh_token_expiration: 604800, #7 dana
   access_token_expiration: 1800, #30 minua
   secure_cookie: false
@@ -31,7 +34,6 @@ config :phoenix, :json_library, Jason
 
 config :cors_plug,
   origin: ["http://localhost:8080"],
-  max_age: 86400,
   methods: ["GET", "POST"]
 
 # Import environment specific config. This must remain at the bottom

@@ -1,6 +1,6 @@
 defmodule MsnrApiWeb.AuthController do
   use MsnrApiWeb, :controller
-
+  require Logger
   alias MsnrApi.Accounts.User
   alias MsnrApi.Repo
   import Plug.Conn, only: [put_resp_cookie: 4, put_status: 2]
@@ -54,7 +54,7 @@ defmodule MsnrApiWeb.AuthController do
   end
 
   defp get_user_by_token(token) do
-    case MsnrApiWeb.Authentication.verify_access_token token do
+    case MsnrApiWeb.Authentication.verify_refresh_token token do
       {:ok,  %{id: id, uuid: uuid }} -> Repo.get_by(User, [id: id, refresh_token: uuid])
       _ -> nil
     end
@@ -62,8 +62,8 @@ defmodule MsnrApiWeb.AuthController do
 
   defp set_refresh_cookie(conn, refresh_token) do
     opts = [
-      max_age: 84000, 
-      secure: Application.get_env(:msnr_api, MsnrApiWeb.Endpoint, :secure_cookie)
+      max_age: Application.get_env(:token, :refresh_token_expiration),
+      secure: Application.get_env(:token, :secure_cookie)
     ]
     put_resp_cookie(conn, "refresh_token", refresh_token, opts)
   end

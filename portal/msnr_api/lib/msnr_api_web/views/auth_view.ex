@@ -4,7 +4,7 @@ defmodule MsnrApiWeb.AuthView do
   def render("login.json",  %{user: user, token: token}) do
     %{
       access_token: token,
-      expires_in: 600,
+      expires_in: Application.get_env(:token, :access_token_expiration),
       user: %{
         email: user.email,
         name: "#{user.first_name} #{user.last_name}",
