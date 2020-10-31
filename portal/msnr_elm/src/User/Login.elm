@@ -1,4 +1,4 @@
-module User.Login exposing (Model, Msg , update, view, initialModel)
+module User.Login exposing (Model, Msg, update, view, initialModel)
 
 import Util exposing (viewInput)
 import Html exposing (Html, div, form, button, text)
@@ -14,12 +14,12 @@ import User.Session exposing (Session)
 type alias Model =
     { email : String
     , password : String
+    , error : Maybe Http.Error
     }
 
 type Msg
     = Email String
     | Password String
-    | LoginError Http.Error
     | SubmittedForm
 
 update : Msg -> Model -> ( Model, Cmd S.Msg )
@@ -28,7 +28,6 @@ update msg model =
         Email email -> ({model | email = email}, Cmd.none)
         Password password -> ({model | password = password}, Cmd.none)
         SubmittedForm -> (model, S.getSession model.email model.password)
-        LoginError err -> Debug.log (Debug.toString err) (model, Cmd.none)
 
 view : Model -> Html Msg
 view model = 
@@ -41,4 +40,4 @@ view model =
     ]
   
 initialModel : Model
-initialModel = Model "" ""
+initialModel = Model "" "" Nothing

@@ -69,19 +69,25 @@ update msg model =
         Err httpError  -> (model, Cmd.none)
     
     GotSessionMsg (Session.GotSessionResult result) ->   
-      case result of
-        Ok session -> ({model | session = Just session}, Nav.pushUrl model.key "/")
-        Err httpError -> toLogin model ( )
+      case (result, model.page) of
+        (Ok session, _ ) -> 
+          ({model | session = Just session}, Nav.pushUrl model.key "/")
+        
+        (Err httpError, LoginPage loginModel) -> 
+          ( {model | page = LoginPage {loginModel | error = Just httpError}} , Cmd.none)
+        
+        _ -> (model, Cmd.none)
 
     GotLoginMsg loginMsg ->
       case model.page of
-        LoginPage loginModel ->\
-          toLogin model (Login.update loginMsg loginModel)
+        LoginPage loginModel -> toLogin model (Login.update loginMsg loginModel)
         _ -> (model, Cmd.none)
 
-    RefreshTick _ -> (model, silentTokenRefresh |>  Cmd.map GotSessionMsg)
+    RefreshTick _ -> 
+      (model, silentTokenRefresh |>  Cmd.map GotSessionMsg)
 
-    ProfileDropdownMsg state -> ({model | profileDropdownState = state}, Cmd.none)
+    ProfileDropdownMsg state -> 
+      ({model | profileDropdownState = state}, Cmd.none)
     
 
 toLogin : Model -> ( Login.Model, Cmd Session.Msg ) -> ( Model, Cmd Msg )
