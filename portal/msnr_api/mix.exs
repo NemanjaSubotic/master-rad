@@ -46,6 +46,7 @@ defmodule MsnrApi.MixProject do
       {:comeonin, "~> 5.3"},
       {:pbkdf2_elixir, "~> 1.2"},
       {:cors_plug, "~> 2.0"},
+      {:bamboo, "~> 1.6"},
       {:iona, "~> 0.4"}
     ]
   end

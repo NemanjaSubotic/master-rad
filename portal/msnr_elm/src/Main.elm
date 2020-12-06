@@ -1,38 +1,29 @@
-module Main exposing (main, Msg)
+module Main exposing (main)
 
 import Browser exposing (Document)
+import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Browser.Navigation as Nav
+import Html.Events exposing (onClick)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, s, string)
 import Http
 import Time
-import Json.Encode
-import Json.Decode
-import User.Session as Session
-import User.Login as Login 
-import User.Session exposing (Session, silentTokenRefresh)
+
 import Bootstrap.Button as Button
 import Bootstrap.Dropdown as Dropdown
+
+import User.Login as Login
+import User.Session as Session exposing (Session, silentTokenRefresh, logout)
+import Registration
+import Professor
+import SetPassword
 import Util exposing (emptyHtmlNode)
 import Icons exposing (..)
-import Expect exposing (false)
-
-type Page
-  = HomePage
-  | LoginPage Login.Model
-  | RegistrationPage
-  | EnterPasswordPage
-  | ProfesorPage
-  | StudentPage
-  | AdminPage
-  | NotFound
-
-type Route
-  = HomeRoute
-  | StudentRoute
-  | LoginRoute
+import SetPassword
+import Route exposing (..)
+import Page exposing (..)
+import Page exposing (Page(..))
 
 type alias Model =
   { session: Maybe Session.Session 
@@ -44,57 +35,89 @@ type alias Model =
 type Msg
   = ClickedLink Browser.UrlRequest
   | ChangedUrl Url
+  | GotProfessorMsg Professor.Msg
   | GotLoginMsg Login.Msg
+  | GotRegistrationMsg Registration.Msg
+  | GotPasswordMsg SetPassword.Msg
   | GotSessionMsg Session.Msg
   | RefreshTick Time.Posix
-  | ProfileDropdownMsg Dropdown.State 
+  | ProfileDropdownMsg Dropdown.State
+  | Logout
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    ClickedLink urlRequest ->
+  case ( msg, model.page) of
+    ( ClickedLink urlRequest, _ ) ->
       case urlRequest of
         Browser.External href ->
           ( model, Nav.load href )
 
         Browser.Internal url ->
-          ( model, Nav.pushUrl model.key (Url.toString url) )
+           ( model, Nav.pushUrl model.key (Url.toString url) )
 
-    ChangedUrl url ->
+    ( ChangedUrl url, _ ) ->
       updateUrl url model Cmd.none
         
-    GotSessionMsg (Session.GotTokenResult result) ->   
+    ( GotSessionMsg (Session.GotTokenResult result), _ ) ->   
       case result of
         Ok session -> ({model | session = Just session}, Cmd.none)
         Err httpError  -> (model, Cmd.none)
     
-    GotSessionMsg (Session.GotSessionResult result) ->   
+    ( GotSessionMsg (Session.GotSessionResult result), _ ) ->   
       case (result, model.page) of
         (Ok session, _ ) -> 
           ({model | session = Just session}, Nav.pushUrl model.key "/")
-        
+
         (Err httpError, LoginPage loginModel) -> 
-          ( {model | page = LoginPage {loginModel | error = Just httpError}} , Cmd.none)
+          ( {model | page = LoginPage (Login.updateError loginModel httpError)} , Cmd.none)
         
         _ -> (model, Cmd.none)
+    
+    
+    ( GotLoginMsg loginMsg, LoginPage loginModel ) ->
+      Login.update loginMsg loginModel
+        |> toPage LoginPage GotSessionMsg model
 
-    GotLoginMsg loginMsg ->
-      case model.page of
-        LoginPage loginModel -> toLogin model (Login.update loginMsg loginModel)
-        _ -> (model, Cmd.none)
+    ( GotPasswordMsg setPwdMsg, SetPasswordPage setPwdModel ) ->
+      case setPwdMsg of
+        SetPassword.SessionMsg (Session.GotSessionResult (Ok session)) -> 
+         ({model | session = Just session}, Nav.pushUrl model.key "/")
 
-    RefreshTick _ -> 
+        _ ->
+          SetPassword.update setPwdMsg setPwdModel
+            |> toPage SetPasswordPage GotPasswordMsg model
+
+    ( GotRegistrationMsg regMsg, RegistrationPage regModel ) ->
+      Registration.update regMsg regModel
+        |> toPage RegistrationPage GotRegistrationMsg model
+
+    ( GotProfessorMsg profMsg, ProfessorPage profModel ) ->
+      Professor.update profMsg profModel
+        |> toPage ProfessorPage GotProfessorMsg model 
+
+    ( RefreshTick _, _ ) -> 
       (model, silentTokenRefresh |>  Cmd.map GotSessionMsg)
 
-    ProfileDropdownMsg state -> 
+    ( ProfileDropdownMsg state, _) -> 
       ({model | profileDropdownState = state}, Cmd.none)
-    
 
-toLogin : Model -> ( Login.Model, Cmd Session.Msg ) -> ( Model, Cmd Msg )
-toLogin model (loginModel, cmd) = 
-  ( {model | page = LoginPage loginModel}
-  , Cmd.map GotSessionMsg cmd
+    ( Logout, _ ) -> 
+      ( {model | session = Nothing}
+      , Cmd.batch 
+        [ Nav.pushUrl model.key "/"
+        , logout |> Cmd.map GotSessionMsg
+        ]
+      )
+    
+    -- ( GotSessionMsg (Session.DeleteSessionResult _), _ )  -> (model, Cmd.none)
+    _ -> (model, Cmd.none)
+
+toPage : (pageModel -> Page)-> (subMsg -> Msg) -> Model -> (pageModel, Cmd subMsg) -> ( Model, Cmd Msg )
+toPage page toMsg model (pageModel, pageCmd) =
+  ( { model | page = page pageModel }
+  , Cmd.map toMsg pageCmd 
   )
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
@@ -105,10 +128,9 @@ subscriptions model =
         Nothing -> Sub.none    
     ]
    
-
 updateUrl : Url -> Model -> Cmd Msg -> ( Model, Cmd Msg )
 updateUrl url model cmd =
-  case Parser.parse parser url of
+  case Route.fromUrl url of
     Just HomeRoute ->
       ( {model | page = HomePage}, cmd)
 
@@ -116,19 +138,23 @@ updateUrl url model cmd =
       ( {model | page = StudentPage}, cmd)
 
     Just LoginRoute ->
-      ( {model | page = LoginPage Login.initialModel}, cmd)
+      ( {model | page = LoginPage Login.init}, cmd)
+
+    Just RegistrationRoute ->
+      ( { model | page = RegistrationPage Registration.init}, cmd)
+
+    Just ProfessorRoute ->
+      ( { model | page = ProfessorPage Professor.init}, Professor.loadRequests |> Cmd.map GotProfessorMsg)
+
+    Just (SetPassword uuid) ->
+      ( { model | page = SetPasswordPage SetPassword.init}, SetPassword.loadRequest uuid |> Cmd.map GotPasswordMsg)
+
+    Just AdminRoute ->
+      ( {model | page = AdminPage}, cmd)
 
     Nothing ->
       ( { model | page = NotFound }, cmd )
 
-parser : Parser (Route -> a) a
-parser =
-  Parser.oneOf
-    [ Parser.map HomeRoute Parser.top
-    , Parser.map StudentRoute (Parser.s "student")
-    , Parser.map LoginRoute (Parser.s "login")
-    ]
-    
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
   updateUrl 
@@ -147,11 +173,21 @@ view model =
       case model.page of
         HomePage -> text "Home"
         StudentPage -> text "Student"
-        ProfesorPage -> text "Profesor"
+        
         AdminPage -> text "Admin"
+        
+        ProfessorPage profModel ->
+          Professor.view profModel |> Html.map GotProfessorMsg
+
         LoginPage loginModel ->
-          Login.view loginModel
-            |> Html.map GotLoginMsg
+          Login.view loginModel |> Html.map GotLoginMsg
+
+        RegistrationPage regModel ->
+          Registration.view regModel |> Html.map GotRegistrationMsg
+
+        SetPasswordPage setPwsModel ->
+          SetPassword.view setPwsModel |> Html.map GotPasswordMsg
+        
         _ -> text "Not Found"
   in
   { title = "MSNR"
@@ -165,32 +201,35 @@ viewHeader model =
   let
     { page, session } = model
     
-    navIcon name link targetPage = 
+    navIcon: { route: Route,  url : String, name : String } -> Html Msg
+    navIcon {route, url, name } = 
       let
-        active = targetPage == page      
+        active =  isActive { link = route, page = page }
       in
-      div 
+      div
         [class "nav-icon"] 
         [ a 
-          [href link, classList [ ( "active", active ) ] ] 
+          [href url, classList [ ( "active", active ) ] ] 
           [getNavIcon name active]
         ] 
 
-    mapRolesToPage role =
+    userIcon role = 
       case role of
-        "student" -> StudentPage
-        "profesor" -> ProfesorPage
-        "admin" -> AdminPage
-        _ -> NotFound
-
-    navItems roles = 
+        "student" -> {route = StudentRoute, url = "/student", name = "student"}
+        "admin" -> {route = AdminRoute, url = "/admin", name = "admin"}
+        "professor" -> {route = ProfessorRoute, url = "/professor", name = "professor"}
+        _ -> {route = HomeRoute, url = "/", name = "home"}
+        
+    navItems role = Debug.log role
       nav []
-       (navIcon "home" "/" HomePage :: List.map (\r -> navIcon r ("/" ++ r) (mapRolesToPage r)) roles)
+       [ navIcon {route = HomeRoute, url = "/", name = "home"}
+       , navIcon (userIcon role)
+       ]
         
     navbar = 
       case session of
         Nothing -> emptyHtmlNode
-        Just {user} -> navItems user.roles
+        Just {user} -> navItems user.role
     
     profileDropUp = 
       Dropdown.dropdown
@@ -204,7 +243,7 @@ viewHeader model =
               Nothing -> [ Dropdown.anchorItem [ href "/login"] [ text "Prijavi se" ] ]
               Just _ ->
                 [ Dropdown.anchorItem [ href "#"] [ text "Promeni lozinku" ]
-                , Dropdown.buttonItem [] [ text "Odjavi se" ]
+                , Dropdown.buttonItem [ onClick Logout] [ text "Odjavi se" ]
                 ]
         }
   in
@@ -213,7 +252,16 @@ viewHeader model =
     , navbar
     , profileDropUp
     ]
-  
+
+isActive: {link: Route, page: Page} -> Bool
+isActive { link, page } =
+  case (link, page) of
+    (HomeRoute, HomePage) -> True
+    (StudentRoute, StudentPage ) -> True
+    (ProfessorRoute, ProfessorPage _) -> True
+    (AdminRoute, AdminPage) -> True
+    _ -> False
+
 main : Program () Model Msg
 main =
   Browser.application

@@ -1,7 +1,7 @@
 defmodule MsnrApiWeb.Authentication do
   @salt "user_auth"
-  @access_token_expiration Application.get_env(:token, :access_token_expiration)
-  @refresh_token_expiration Application.get_env(:token, :refresh_token_expiration)
+  @access_token_expiration Application.get_env(:msnr_api, :access_token_expiration)
+  @refresh_token_expiration Application.get_env(:msnr_api, :refresh_token_expiration)
 
   def sign(data) do
     Phoenix.Token.sign(MsnrApiWeb.Endpoint, @salt, data)

@@ -62,7 +62,7 @@ button > * {
   fill:#007bff
 }
 
-svg:hover{
+a > svg:hover{
   fill:#007bff
 }
 

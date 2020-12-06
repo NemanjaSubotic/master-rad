@@ -1,8 +1,7 @@
 defmodule MsnrApi.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-
-  alias MsnrApi.Accounts.Roles
+  alias MsnrApi.Accounts.Role
 
   schema "users" do
     field :email, :string
@@ -10,9 +9,10 @@ defmodule MsnrApi.Accounts.User do
     field :last_name, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
-    field :is_active, :boolean, default: true
-    field :roles, {:array, :string}, default: [Roles.student]
-    field :refresh_token, :string
+    field :is_active, :boolean
+    belongs_to :role, Role
+    field :refresh_token,  Ecto.UUID, autogenerate: true
+    field :password_url_path, Ecto.UUID, autogenerate: true
     timestamps()
   end
 
@@ -33,10 +33,9 @@ defmodule MsnrApi.Accounts.User do
     |> changeset(attrs)
   end
 
-  def changeset_roles(user, attrs \\ %{}) do
+  def changeset_role(user, %Role{} = role) do
     user
-    |> cast(attrs, [:roles])
-    |> validate_inclusion(:roles, [Roles.student, Roles.professor, Roles.admin])
+    |> put_assoc(:role, role)
   end
 
   def changeset_token(user, attrs \\ %{}) do

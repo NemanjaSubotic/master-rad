@@ -1,9 +1,15 @@
 defmodule MsnrApiWeb.Router do
   use MsnrApiWeb, :router
+  import MsnrApiWeb.Plugs
+
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
+  end
 
   pipeline :api do
     plug CORSPlug, origin: ["http://localhost:8080"]
     plug :accepts, ["json"]
+    plug :set_user_info
   end
 
   scope "/api", MsnrApiWeb do
@@ -11,6 +17,11 @@ defmodule MsnrApiWeb.Router do
 
     get "/auth/refresh", AuthController, :refresh
     post "/auth/login", AuthController, :login
+    get "/auth/logout", AuthController, :logout
+
+    resources "/registrations", RegistrationController, only: [:index, :create, :update]
+    resources "/students", StudentController, only: [:index, :create, :update, :show]
+    resources "/users", UserController, only: [:update, :show]
   end
 
   # Enables LiveDashboard only for development

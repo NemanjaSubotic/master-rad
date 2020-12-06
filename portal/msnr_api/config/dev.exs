@@ -8,7 +8,6 @@ config :msnr_api, MsnrApi.Repo,
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -21,6 +20,11 @@ config :msnr_api, MsnrApiWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: []
+
+config :msnr_api, MsnrApi.Mailer,
+  adapter: Bamboo.LocalAdapter,
+  open_email_in_browser_url: "http://localhost:4000/sent_emails"
+
 
 # ## SSL Support
 #

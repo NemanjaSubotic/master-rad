@@ -1,11 +1,12 @@
 module User.Session exposing (..)
 import Http
-import Json.Decode exposing (Decoder, map2, map3, field, string, list, float)
+import Json.Decode exposing (Decoder, map2, map3, field, string, float)
 import Json.Encode
 
 type Msg 
     = GotSessionResult (Result Http.Error Session)
     | GotTokenResult (Result Http.Error Session)
+    | DeleteSessionResult (Result Http.Error ())
 
 type alias Session = 
     { accessToken: String
@@ -15,7 +16,7 @@ type alias Session =
 type alias User =
     { email: String
     , name: String
-    , roles: List String
+    , role: String
     }
 
 decodeSession : Decoder Session
@@ -30,7 +31,7 @@ decodeUser =
     map3 User
     (field "email" string)
     (field "name" string)
-    (field "roles" (list string))
+    (field "role" string)
 
 silentTokenRefresh : Cmd Msg
 silentTokenRefresh = 
@@ -61,4 +62,17 @@ getSession email password =
         , expect = Http.expectJson GotSessionResult decodeSession
         , timeout = Nothing
         , tracker = Nothing 
+        }
+
+
+logout : Cmd Msg
+logout = 
+  Http.riskyRequest
+        { method = "GET"
+        , headers = []
+        , url = "http://localhost:4000/api/auth/logout"
+        , body = Http.emptyBody
+        , expect = Http.expectWhatever DeleteSessionResult
+        , timeout = Nothing
+        , tracker = Nothing
         }
