@@ -1,17 +1,20 @@
 module User.Login exposing (Model, Msg, update, view, init, updateError)
 
-import Html exposing (Html, text)
+import Html exposing (Html, text, form, div, h2)
 import Html.Attributes exposing (class, for, disabled, type_)
 import Html.Events exposing (onSubmit)
-import User.Session as S
+import User.Session as Session exposing (getSession)
 import Util exposing (emptyHtmlNode)
-import Bootstrap.Form as Form
-import Bootstrap.Form.Input as Input
-import Bootstrap.Button as Button
-import Bootstrap.Alert as Alert
-import Bootstrap.Spinner as Spinner
-import Bootstrap.Utilities.Spacing as Spacing
 import Http
+
+import Material.Button as Button
+import Material.Card as Card
+import Material.FormField as FormField
+import Material.TextField as TextField
+import Material.Typography as Typography
+
+import Util exposing (..)
+-- import Material.Snackbar as Snackbar
 
 type alias Model =
     { email: String
@@ -25,62 +28,45 @@ type Msg
     | Password String
     | SubmittedForm
 
-update : Msg -> Model -> ( Model, Cmd S.Msg )
+update : Msg -> Model -> ( Model, Cmd Session.Msg )
 update msg model =
     case msg of
         Email email -> ({model | email = email}, Cmd.none)
         Password password -> ({model | password = password}, Cmd.none)
-        SubmittedForm -> ( { model | error = Nothing, processing = True}, S.getSession model.email model.password)
+        SubmittedForm -> ( { model | error = Nothing, processing = True}, getSession model.email model.password)
 
-view : Model -> Html Msg
-view model = 
-    let
-      errorAlert = 
-        case model.error of
-            Just httpError ->
-              let
-                message =
-                  case httpError of
-                    Http.BadStatus 401 -> "Pogrešan email ili lozinka!"
-                    _ -> "Došlo je do neočekivane greške 😞"
-              in
-              Alert.simpleDanger [] [text message]
-            Nothing -> emptyHtmlNode
-      loginButton = 
-        if model.processing then
-          Button.button
-            [ Button.primary, Button.disabled True, Button.attrs [ Spacing.mr3 ] ]
-            [ Spinner.spinner
-                [ Spinner.small, Spinner.attrs [ Spacing.mr1 ] ] []
-            , text "Prijavljivanje..."
-            ]
-        else
-          Button.submitButton [ Button.primary] [text "Prijavi se"]
-    in
-    Form.form 
-      [ class "mt-3 mx-auto loginForm"
-      , onSubmit SubmittedForm
-      , disabled model.processing
-      ]
-      [ Form.group []
-        [ Form.label [for "email" ] [text "Email"]
-        , Input.email 
-          [ Input.id "email"
-          , Input.onInput Email
-          ]
-        ]
-      , Form.group []
-        [ Form.label [for "password" ] [text "Lozinka"]
-        , Input.password 
-          [ Input.id "password"
-          , Input.onInput Password
-          ]
-        ]
-      , errorAlert
-      , loginButton  
-      ] 
 
+init : Model
 init = Model "" "" Nothing False
+
+view :  Model -> Html Msg
+view model = 
+  let
+    viewInput inputType label msg = 
+      formInput 
+      { inputType = inputType
+      , class_ = "login-input"
+      , label = label
+      , msg = msg
+      } 
+
+    submitBtn = 
+      submitButton 
+        { text = "Prijavi se"
+        , disabled = model.processing
+        , icon = Just (Button.icon "login")
+        }
+  in
+  div [class "center"]
+    [ form [onSubmit SubmittedForm]
+        [ h2 [Typography.headline5, class "heading"] [ text "Prijava korisnika" ]
+        , viewInput "email" ( Just "Email" ) Email
+        , viewInput "password" ( Just "Lozinka") Password
+        , submitBtn
+        , progressLine model.processing
+        ]
+    ]
+
 
 updateError : Model -> Http.Error -> Model
 updateError model httpError =

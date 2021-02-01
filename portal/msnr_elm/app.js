@@ -4357,6 +4357,23 @@ function _Browser_load(url)
 }
 
 
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}
+
 
 // SEND REQUEST
 
@@ -4530,23 +4547,6 @@ function _Http_track(router, xhr, tracker)
 			size: event.lengthComputable ? $elm$core$Maybe$Just(event.total) : $elm$core$Maybe$Nothing
 		}))));
 	});
-}
-
-function _Url_percentEncode(string)
-{
-	return encodeURIComponent(string);
-}
-
-function _Url_percentDecode(string)
-{
-	try
-	{
-		return $elm$core$Maybe$Just(decodeURIComponent(string));
-	}
-	catch (e)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
 }
 
 
@@ -5388,81 +5388,156 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$application = _Browser_application;
-var $author$project$Main$GotSessionMsg = function (a) {
-	return {$: 'GotSessionMsg', a: a};
+var $author$project$Main$GotInitSessionMsg = function (a) {
+	return {$: 'GotInitSessionMsg', a: a};
 };
+var $author$project$User$Type$Guest = {$: 'Guest'};
+var $author$project$Main$NoContent = {$: 'NoContent'};
+var $author$project$Page$AdminPage = {$: 'AdminPage'};
 var $author$project$Page$HomePage = {$: 'HomePage'};
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$Area = F4(
-	function (top, left, width, height) {
-		return {height: height, left: left, top: top, width: width};
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed = {$: 'Closed'};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$State = function (a) {
-	return {$: 'State', a: a};
+var $author$project$Page$LoginPage = function (a) {
+	return {$: 'LoginPage', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$initialState = $rundis$elm_bootstrap$Bootstrap$Dropdown$State(
+var $author$project$Page$NotFoundPage = {$: 'NotFoundPage'};
+var $author$project$Page$ProfessorPage = function (a) {
+	return {$: 'ProfessorPage', a: a};
+};
+var $author$project$Page$RegistrationPage = function (a) {
+	return {$: 'RegistrationPage', a: a};
+};
+var $author$project$Page$SetPasswordPage = function (a) {
+	return {$: 'SetPasswordPage', a: a};
+};
+var $author$project$Page$StudentPage = {$: 'StudentPage'};
+var $author$project$Registration$Model = F7(
+	function (firstName, lastName, email, index, status, processing, queue) {
+		return {email: email, firstName: firstName, index: index, lastName: lastName, processing: processing, queue: queue, status: status};
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$MessageId = function (a) {
+	return {$: 'MessageId', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$Queue = function (a) {
+	return {$: 'Queue', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$initialQueue = $aforemny$material_components_web_elm$Material$Snackbar$Queue(
 	{
-		menuSize: A4($rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$Area, 0, 0, 0, 0),
-		status: $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed,
-		toggleSize: A4($rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$Area, 0, 0, 0, 0)
+		messages: _List_Nil,
+		nextMessageId: $aforemny$material_components_web_elm$Material$Snackbar$MessageId(0)
 	});
-var $elm$core$Platform$Cmd$map = _Platform_map;
-var $author$project$User$Session$GotTokenResult = function (a) {
-	return {$: 'GotTokenResult', a: a};
-};
-var $author$project$User$Session$Session = F3(
-	function (accessToken, expiresIn, user) {
-		return {accessToken: accessToken, expiresIn: expiresIn, user: user};
+var $author$project$Registration$init = A7($author$project$Registration$Model, '', '', '', '', $elm$core$Maybe$Nothing, false, $aforemny$material_components_web_elm$Material$Snackbar$initialQueue);
+var $author$project$User$Login$Model = F4(
+	function (email, password, error, processing) {
+		return {email: email, error: error, password: password, processing: processing};
 	});
-var $author$project$User$Session$User = F3(
-	function (email, name, role) {
-		return {email: email, name: name, role: role};
+var $author$project$User$Login$init = A4($author$project$User$Login$Model, '', '', $elm$core$Maybe$Nothing, false);
+var $author$project$User$SetPassword$Model = F5(
+	function (userId, email, password, confirmPassword, processing) {
+		return {confirmPassword: confirmPassword, email: email, password: password, processing: processing, userId: userId};
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$map3 = _Json_map3;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$User$Session$decodeUser = A4(
-	$elm$json$Json$Decode$map3,
-	$author$project$User$Session$User,
-	A2($elm$json$Json$Decode$field, 'email', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'role', $elm$json$Json$Decode$string));
-var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $author$project$User$Session$decodeSession = A4(
-	$elm$json$Json$Decode$map3,
-	$author$project$User$Session$Session,
-	A2($elm$json$Json$Decode$field, 'access_token', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'expires_in', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser));
-var $elm$http$Http$BadStatus_ = F2(
-	function (a, b) {
-		return {$: 'BadStatus_', a: a, b: b};
-	});
-var $elm$http$Http$BadUrl_ = function (a) {
-	return {$: 'BadUrl_', a: a};
-};
-var $elm$http$Http$GoodStatus_ = F2(
-	function (a, b) {
-		return {$: 'GoodStatus_', a: a, b: b};
-	});
-var $elm$http$Http$NetworkError_ = {$: 'NetworkError_'};
-var $elm$http$Http$Receiving = function (a) {
-	return {$: 'Receiving', a: a};
-};
-var $elm$http$Http$Sending = function (a) {
-	return {$: 'Sending', a: a};
-};
-var $elm$http$Http$Timeout_ = {$: 'Timeout_'};
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Maybe$isJust = function (maybe) {
-	if (maybe.$ === 'Just') {
-		return true;
+var $author$project$User$SetPassword$init = A5($author$project$User$SetPassword$Model, $elm$core$Maybe$Nothing, '', '', '', false);
+var $author$project$Professor$RegistrationRequestsPage = {$: 'RegistrationRequestsPage'};
+var $author$project$Professor$SettingsPage = {$: 'SettingsPage'};
+var $author$project$Professor$pageFromRoute = function (route) {
+	if (route.$ === 'RegistrationRequestsRoute') {
+		return $author$project$Professor$RegistrationRequestsPage;
 	} else {
-		return false;
+		return $author$project$Professor$SettingsPage;
 	}
 };
-var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $author$project$Page$forRoute = function (route) {
+	switch (route.$) {
+		case 'HomeRoute':
+			return $author$project$Page$HomePage;
+		case 'LoginRoute':
+			return $author$project$Page$LoginPage($author$project$User$Login$init);
+		case 'RegistrationRoute':
+			return $author$project$Page$RegistrationPage($author$project$Registration$init);
+		case 'SetPasswordRoute':
+			return $author$project$Page$SetPasswordPage($author$project$User$SetPassword$init);
+		case 'ProfessorRoute':
+			var profRoute = route.a;
+			return $author$project$Page$ProfessorPage(
+				$author$project$Professor$pageFromRoute(profRoute));
+		case 'StudentRoute':
+			return $author$project$Page$StudentPage;
+		case 'AdminRoute':
+			return $author$project$Page$AdminPage;
+		default:
+			return $author$project$Page$NotFoundPage;
+	}
+};
+var $author$project$Route$NotFoundRoute = {$: 'NotFoundRoute'};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$url$Url$Parser$State = F5(
+	function (visited, unvisited, params, frag, value) {
+		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
+	});
+var $elm$url$Url$Parser$getFirstMatch = function (states) {
+	getFirstMatch:
+	while (true) {
+		if (!states.b) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var state = states.a;
+			var rest = states.b;
+			var _v1 = state.unvisited;
+			if (!_v1.b) {
+				return $elm$core$Maybe$Just(state.value);
+			} else {
+				if ((_v1.a === '') && (!_v1.b.b)) {
+					return $elm$core$Maybe$Just(state.value);
+				} else {
+					var $temp$states = rest;
+					states = $temp$states;
+					continue getFirstMatch;
+				}
+			}
+		}
+	}
+};
+var $elm$url$Url$Parser$removeFinalEmpty = function (segments) {
+	if (!segments.b) {
+		return _List_Nil;
+	} else {
+		if ((segments.a === '') && (!segments.b.b)) {
+			return _List_Nil;
+		} else {
+			var segment = segments.a;
+			var rest = segments.b;
+			return A2(
+				$elm$core$List$cons,
+				segment,
+				$elm$url$Url$Parser$removeFinalEmpty(rest));
+		}
+	}
+};
+var $elm$url$Url$Parser$preparePath = function (path) {
+	var _v0 = A2($elm$core$String$split, '/', path);
+	if (_v0.b && (_v0.a === '')) {
+		var segments = _v0.b;
+		return $elm$url$Url$Parser$removeFinalEmpty(segments);
+	} else {
+		var segments = _v0;
+		return $elm$url$Url$Parser$removeFinalEmpty(segments);
+	}
+};
+var $elm$url$Url$Parser$addToParametersHelp = F2(
+	function (value, maybeList) {
+		if (maybeList.$ === 'Nothing') {
+			return $elm$core$Maybe$Just(
+				_List_fromArray(
+					[value]));
+		} else {
+			var list = maybeList.a;
+			return $elm$core$Maybe$Just(
+				A2($elm$core$List$cons, value, list));
+		}
+	});
+var $elm$url$Url$percentDecode = _Url_percentDecode;
 var $elm$core$Basics$compare = _Utils_compare;
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
@@ -5500,6 +5575,7 @@ var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
 		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
 	});
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$Red = {$: 'Red'};
 var $elm$core$Dict$balance = F5(
 	function (color, key, value, left, right) {
@@ -5976,6 +6052,332 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
+var $elm$url$Url$Parser$addParam = F2(
+	function (segment, dict) {
+		var _v0 = A2($elm$core$String$split, '=', segment);
+		if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
+			var rawKey = _v0.a;
+			var _v1 = _v0.b;
+			var rawValue = _v1.a;
+			var _v2 = $elm$url$Url$percentDecode(rawKey);
+			if (_v2.$ === 'Nothing') {
+				return dict;
+			} else {
+				var key = _v2.a;
+				var _v3 = $elm$url$Url$percentDecode(rawValue);
+				if (_v3.$ === 'Nothing') {
+					return dict;
+				} else {
+					var value = _v3.a;
+					return A3(
+						$elm$core$Dict$update,
+						key,
+						$elm$url$Url$Parser$addToParametersHelp(value),
+						dict);
+				}
+			}
+		} else {
+			return dict;
+		}
+	});
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
+	if (maybeQuery.$ === 'Nothing') {
+		return $elm$core$Dict$empty;
+	} else {
+		var qry = maybeQuery.a;
+		return A3(
+			$elm$core$List$foldr,
+			$elm$url$Url$Parser$addParam,
+			$elm$core$Dict$empty,
+			A2($elm$core$String$split, '&', qry));
+	}
+};
+var $elm$url$Url$Parser$parse = F2(
+	function (_v0, url) {
+		var parser = _v0.a;
+		return $elm$url$Url$Parser$getFirstMatch(
+			parser(
+				A5(
+					$elm$url$Url$Parser$State,
+					_List_Nil,
+					$elm$url$Url$Parser$preparePath(url.path),
+					$elm$url$Url$Parser$prepareQuery(url.query),
+					url.fragment,
+					$elm$core$Basics$identity)));
+	});
+var $author$project$Route$AdminRoute = {$: 'AdminRoute'};
+var $author$project$Route$HomeRoute = {$: 'HomeRoute'};
+var $author$project$Route$LoginRoute = {$: 'LoginRoute'};
+var $author$project$Route$ProfessorRoute = function (a) {
+	return {$: 'ProfessorRoute', a: a};
+};
+var $author$project$Route$RegistrationRoute = {$: 'RegistrationRoute'};
+var $author$project$Route$SetPasswordRoute = function (a) {
+	return {$: 'SetPasswordRoute', a: a};
+};
+var $author$project$Route$StudentRoute = {$: 'StudentRoute'};
+var $elm$url$Url$Parser$Parser = function (a) {
+	return {$: 'Parser', a: a};
+};
+var $elm$url$Url$Parser$mapState = F2(
+	function (func, _v0) {
+		var visited = _v0.visited;
+		var unvisited = _v0.unvisited;
+		var params = _v0.params;
+		var frag = _v0.frag;
+		var value = _v0.value;
+		return A5(
+			$elm$url$Url$Parser$State,
+			visited,
+			unvisited,
+			params,
+			frag,
+			func(value));
+	});
+var $elm$url$Url$Parser$map = F2(
+	function (subValue, _v0) {
+		var parseArg = _v0.a;
+		return $elm$url$Url$Parser$Parser(
+			function (_v1) {
+				var visited = _v1.visited;
+				var unvisited = _v1.unvisited;
+				var params = _v1.params;
+				var frag = _v1.frag;
+				var value = _v1.value;
+				return A2(
+					$elm$core$List$map,
+					$elm$url$Url$Parser$mapState(value),
+					parseArg(
+						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
+			});
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $elm$url$Url$Parser$oneOf = function (parsers) {
+	return $elm$url$Url$Parser$Parser(
+		function (state) {
+			return A2(
+				$elm$core$List$concatMap,
+				function (_v0) {
+					var parser = _v0.a;
+					return parser(state);
+				},
+				parsers);
+		});
+};
+var $author$project$Professor$RegistrationRequestsRoute = {$: 'RegistrationRequestsRoute'};
+var $author$project$Professor$SettingsRoute = {$: 'SettingsRoute'};
+var $elm$url$Url$Parser$s = function (str) {
+	return $elm$url$Url$Parser$Parser(
+		function (_v0) {
+			var visited = _v0.visited;
+			var unvisited = _v0.unvisited;
+			var params = _v0.params;
+			var frag = _v0.frag;
+			var value = _v0.value;
+			if (!unvisited.b) {
+				return _List_Nil;
+			} else {
+				var next = unvisited.a;
+				var rest = unvisited.b;
+				return _Utils_eq(next, str) ? _List_fromArray(
+					[
+						A5(
+						$elm$url$Url$Parser$State,
+						A2($elm$core$List$cons, next, visited),
+						rest,
+						params,
+						frag,
+						value)
+					]) : _List_Nil;
+			}
+		});
+};
+var $author$project$Professor$routeParser = $elm$url$Url$Parser$oneOf(
+	_List_fromArray(
+		[
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Professor$RegistrationRequestsRoute,
+			$elm$url$Url$Parser$s('registrations')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Professor$SettingsRoute,
+			$elm$url$Url$Parser$s('settings'))
+		]));
+var $elm$url$Url$Parser$slash = F2(
+	function (_v0, _v1) {
+		var parseBefore = _v0.a;
+		var parseAfter = _v1.a;
+		return $elm$url$Url$Parser$Parser(
+			function (state) {
+				return A2(
+					$elm$core$List$concatMap,
+					parseAfter,
+					parseBefore(state));
+			});
+	});
+var $elm$url$Url$Parser$custom = F2(
+	function (tipe, stringToSomething) {
+		return $elm$url$Url$Parser$Parser(
+			function (_v0) {
+				var visited = _v0.visited;
+				var unvisited = _v0.unvisited;
+				var params = _v0.params;
+				var frag = _v0.frag;
+				var value = _v0.value;
+				if (!unvisited.b) {
+					return _List_Nil;
+				} else {
+					var next = unvisited.a;
+					var rest = unvisited.b;
+					var _v2 = stringToSomething(next);
+					if (_v2.$ === 'Just') {
+						var nextValue = _v2.a;
+						return _List_fromArray(
+							[
+								A5(
+								$elm$url$Url$Parser$State,
+								A2($elm$core$List$cons, next, visited),
+								rest,
+								params,
+								frag,
+								value(nextValue))
+							]);
+					} else {
+						return _List_Nil;
+					}
+				}
+			});
+	});
+var $elm$url$Url$Parser$string = A2($elm$url$Url$Parser$custom, 'STRING', $elm$core$Maybe$Just);
+var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
+	function (state) {
+		return _List_fromArray(
+			[state]);
+	});
+var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
+	_List_fromArray(
+		[
+			A2($elm$url$Url$Parser$map, $author$project$Route$HomeRoute, $elm$url$Url$Parser$top),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$StudentRoute,
+			$elm$url$Url$Parser$s('student')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$LoginRoute,
+			$elm$url$Url$Parser$s('login')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$RegistrationRoute,
+			$elm$url$Url$Parser$s('register')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$ProfessorRoute,
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('professor'),
+				$author$project$Professor$routeParser)),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$AdminRoute,
+			$elm$url$Url$Parser$s('admin')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$SetPasswordRoute,
+			A2(
+				$elm$url$Url$Parser$slash,
+				$elm$url$Url$Parser$s('setPassword'),
+				$elm$url$Url$Parser$string)),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$NotFoundRoute,
+			$elm$url$Url$Parser$s('notFound'))
+		]));
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Route$fromUrl = A2(
+	$elm$core$Basics$composeL,
+	$elm$core$Maybe$withDefault($author$project$Route$NotFoundRoute),
+	$elm$url$Url$Parser$parse($author$project$Route$parser));
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $author$project$User$Session$GotTokenResult = function (a) {
+	return {$: 'GotTokenResult', a: a};
+};
+var $author$project$User$Session$Session = F3(
+	function (accessToken, expiresIn, user) {
+		return {accessToken: accessToken, expiresIn: expiresIn, user: user};
+	});
+var $author$project$User$Session$User = F3(
+	function (email, name, role) {
+		return {email: email, name: name, role: role};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$User$Session$decodeUser = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$User$Session$User,
+	A2($elm$json$Json$Decode$field, 'email', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'role', $elm$json$Json$Decode$string));
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $author$project$User$Session$decodeSession = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$User$Session$Session,
+	A2($elm$json$Json$Decode$field, 'access_token', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'expires_in', $elm$json$Json$Decode$float),
+	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser));
+var $elm$http$Http$BadStatus_ = F2(
+	function (a, b) {
+		return {$: 'BadStatus_', a: a, b: b};
+	});
+var $elm$http$Http$BadUrl_ = function (a) {
+	return {$: 'BadUrl_', a: a};
+};
+var $elm$http$Http$GoodStatus_ = F2(
+	function (a, b) {
+		return {$: 'GoodStatus_', a: a, b: b};
+	});
+var $elm$http$Http$NetworkError_ = {$: 'NetworkError_'};
+var $elm$http$Http$Receiving = function (a) {
+	return {$: 'Receiving', a: a};
+};
+var $elm$http$Http$Sending = function (a) {
+	return {$: 'Sending', a: a};
+};
+var $elm$http$Http$Timeout_ = {$: 'Timeout_'};
+var $elm$core$Maybe$isJust = function (maybe) {
+	if (maybe.$ === 'Just') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
 var $elm$http$Http$emptyBody = _Http_emptyBody;
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$core$Basics$composeR = F3(
@@ -6227,482 +6629,23 @@ var $author$project$User$Session$silentTokenRefresh = $elm$http$Http$riskyReques
 		tracker: $elm$core$Maybe$Nothing,
 		url: 'http://localhost:4000/api/auth/refresh'
 	});
-var $author$project$Page$AdminPage = {$: 'AdminPage'};
-var $author$project$Main$GotPasswordMsg = function (a) {
-	return {$: 'GotPasswordMsg', a: a};
-};
-var $author$project$Main$GotProfessorMsg = function (a) {
-	return {$: 'GotProfessorMsg', a: a};
-};
-var $author$project$Page$LoginPage = function (a) {
-	return {$: 'LoginPage', a: a};
-};
-var $author$project$Page$NotFound = {$: 'NotFound'};
-var $author$project$Page$ProfessorPage = function (a) {
-	return {$: 'ProfessorPage', a: a};
-};
-var $author$project$Page$RegistrationPage = function (a) {
-	return {$: 'RegistrationPage', a: a};
-};
-var $author$project$Page$SetPasswordPage = function (a) {
-	return {$: 'SetPasswordPage', a: a};
-};
-var $author$project$Page$StudentPage = {$: 'StudentPage'};
-var $elm$url$Url$Parser$State = F5(
-	function (visited, unvisited, params, frag, value) {
-		return {frag: frag, params: params, unvisited: unvisited, value: value, visited: visited};
-	});
-var $elm$url$Url$Parser$getFirstMatch = function (states) {
-	getFirstMatch:
-	while (true) {
-		if (!states.b) {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var state = states.a;
-			var rest = states.b;
-			var _v1 = state.unvisited;
-			if (!_v1.b) {
-				return $elm$core$Maybe$Just(state.value);
-			} else {
-				if ((_v1.a === '') && (!_v1.b.b)) {
-					return $elm$core$Maybe$Just(state.value);
-				} else {
-					var $temp$states = rest;
-					states = $temp$states;
-					continue getFirstMatch;
-				}
-			}
-		}
-	}
-};
-var $elm$url$Url$Parser$removeFinalEmpty = function (segments) {
-	if (!segments.b) {
-		return _List_Nil;
-	} else {
-		if ((segments.a === '') && (!segments.b.b)) {
-			return _List_Nil;
-		} else {
-			var segment = segments.a;
-			var rest = segments.b;
-			return A2(
-				$elm$core$List$cons,
-				segment,
-				$elm$url$Url$Parser$removeFinalEmpty(rest));
-		}
-	}
-};
-var $elm$url$Url$Parser$preparePath = function (path) {
-	var _v0 = A2($elm$core$String$split, '/', path);
-	if (_v0.b && (_v0.a === '')) {
-		var segments = _v0.b;
-		return $elm$url$Url$Parser$removeFinalEmpty(segments);
-	} else {
-		var segments = _v0;
-		return $elm$url$Url$Parser$removeFinalEmpty(segments);
-	}
-};
-var $elm$url$Url$Parser$addToParametersHelp = F2(
-	function (value, maybeList) {
-		if (maybeList.$ === 'Nothing') {
-			return $elm$core$Maybe$Just(
-				_List_fromArray(
-					[value]));
-		} else {
-			var list = maybeList.a;
-			return $elm$core$Maybe$Just(
-				A2($elm$core$List$cons, value, list));
-		}
-	});
-var $elm$url$Url$percentDecode = _Url_percentDecode;
-var $elm$url$Url$Parser$addParam = F2(
-	function (segment, dict) {
-		var _v0 = A2($elm$core$String$split, '=', segment);
-		if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
-			var rawKey = _v0.a;
-			var _v1 = _v0.b;
-			var rawValue = _v1.a;
-			var _v2 = $elm$url$Url$percentDecode(rawKey);
-			if (_v2.$ === 'Nothing') {
-				return dict;
-			} else {
-				var key = _v2.a;
-				var _v3 = $elm$url$Url$percentDecode(rawValue);
-				if (_v3.$ === 'Nothing') {
-					return dict;
-				} else {
-					var value = _v3.a;
-					return A3(
-						$elm$core$Dict$update,
-						key,
-						$elm$url$Url$Parser$addToParametersHelp(value),
-						dict);
-				}
-			}
-		} else {
-			return dict;
-		}
-	});
-var $elm$url$Url$Parser$prepareQuery = function (maybeQuery) {
-	if (maybeQuery.$ === 'Nothing') {
-		return $elm$core$Dict$empty;
-	} else {
-		var qry = maybeQuery.a;
-		return A3(
-			$elm$core$List$foldr,
-			$elm$url$Url$Parser$addParam,
-			$elm$core$Dict$empty,
-			A2($elm$core$String$split, '&', qry));
-	}
-};
-var $elm$url$Url$Parser$parse = F2(
-	function (_v0, url) {
-		var parser = _v0.a;
-		return $elm$url$Url$Parser$getFirstMatch(
-			parser(
-				A5(
-					$elm$url$Url$Parser$State,
-					_List_Nil,
-					$elm$url$Url$Parser$preparePath(url.path),
-					$elm$url$Url$Parser$prepareQuery(url.query),
-					url.fragment,
-					$elm$core$Basics$identity)));
-	});
-var $author$project$Route$AdminRoute = {$: 'AdminRoute'};
-var $author$project$Route$HomeRoute = {$: 'HomeRoute'};
-var $author$project$Route$LoginRoute = {$: 'LoginRoute'};
-var $author$project$Route$ProfessorRoute = {$: 'ProfessorRoute'};
-var $author$project$Route$RegistrationRoute = {$: 'RegistrationRoute'};
-var $author$project$Route$SetPassword = function (a) {
-	return {$: 'SetPassword', a: a};
-};
-var $author$project$Route$StudentRoute = {$: 'StudentRoute'};
-var $elm$url$Url$Parser$Parser = function (a) {
-	return {$: 'Parser', a: a};
-};
-var $elm$url$Url$Parser$mapState = F2(
-	function (func, _v0) {
-		var visited = _v0.visited;
-		var unvisited = _v0.unvisited;
-		var params = _v0.params;
-		var frag = _v0.frag;
-		var value = _v0.value;
-		return A5(
-			$elm$url$Url$Parser$State,
-			visited,
-			unvisited,
-			params,
-			frag,
-			func(value));
-	});
-var $elm$url$Url$Parser$map = F2(
-	function (subValue, _v0) {
-		var parseArg = _v0.a;
-		return $elm$url$Url$Parser$Parser(
-			function (_v1) {
-				var visited = _v1.visited;
-				var unvisited = _v1.unvisited;
-				var params = _v1.params;
-				var frag = _v1.frag;
-				var value = _v1.value;
-				return A2(
-					$elm$core$List$map,
-					$elm$url$Url$Parser$mapState(value),
-					parseArg(
-						A5($elm$url$Url$Parser$State, visited, unvisited, params, frag, subValue)));
-			});
-	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
-var $elm$core$List$concatMap = F2(
-	function (f, list) {
-		return $elm$core$List$concat(
-			A2($elm$core$List$map, f, list));
-	});
-var $elm$url$Url$Parser$oneOf = function (parsers) {
-	return $elm$url$Url$Parser$Parser(
-		function (state) {
-			return A2(
-				$elm$core$List$concatMap,
-				function (_v0) {
-					var parser = _v0.a;
-					return parser(state);
-				},
-				parsers);
-		});
-};
-var $elm$url$Url$Parser$s = function (str) {
-	return $elm$url$Url$Parser$Parser(
-		function (_v0) {
-			var visited = _v0.visited;
-			var unvisited = _v0.unvisited;
-			var params = _v0.params;
-			var frag = _v0.frag;
-			var value = _v0.value;
-			if (!unvisited.b) {
-				return _List_Nil;
-			} else {
-				var next = unvisited.a;
-				var rest = unvisited.b;
-				return _Utils_eq(next, str) ? _List_fromArray(
-					[
-						A5(
-						$elm$url$Url$Parser$State,
-						A2($elm$core$List$cons, next, visited),
-						rest,
-						params,
-						frag,
-						value)
-					]) : _List_Nil;
-			}
-		});
-};
-var $elm$url$Url$Parser$slash = F2(
-	function (_v0, _v1) {
-		var parseBefore = _v0.a;
-		var parseAfter = _v1.a;
-		return $elm$url$Url$Parser$Parser(
-			function (state) {
-				return A2(
-					$elm$core$List$concatMap,
-					parseAfter,
-					parseBefore(state));
-			});
-	});
-var $elm$url$Url$Parser$custom = F2(
-	function (tipe, stringToSomething) {
-		return $elm$url$Url$Parser$Parser(
-			function (_v0) {
-				var visited = _v0.visited;
-				var unvisited = _v0.unvisited;
-				var params = _v0.params;
-				var frag = _v0.frag;
-				var value = _v0.value;
-				if (!unvisited.b) {
-					return _List_Nil;
-				} else {
-					var next = unvisited.a;
-					var rest = unvisited.b;
-					var _v2 = stringToSomething(next);
-					if (_v2.$ === 'Just') {
-						var nextValue = _v2.a;
-						return _List_fromArray(
-							[
-								A5(
-								$elm$url$Url$Parser$State,
-								A2($elm$core$List$cons, next, visited),
-								rest,
-								params,
-								frag,
-								value(nextValue))
-							]);
-					} else {
-						return _List_Nil;
-					}
-				}
-			});
-	});
-var $elm$url$Url$Parser$string = A2($elm$url$Url$Parser$custom, 'STRING', $elm$core$Maybe$Just);
-var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
-	function (state) {
-		return _List_fromArray(
-			[state]);
-	});
-var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
-	_List_fromArray(
-		[
-			A2($elm$url$Url$Parser$map, $author$project$Route$HomeRoute, $elm$url$Url$Parser$top),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$StudentRoute,
-			$elm$url$Url$Parser$s('student')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$LoginRoute,
-			$elm$url$Url$Parser$s('login')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$RegistrationRoute,
-			$elm$url$Url$Parser$s('register')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$ProfessorRoute,
-			$elm$url$Url$Parser$s('professor')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$AdminRoute,
-			$elm$url$Url$Parser$s('admin')),
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Route$SetPassword,
-			A2(
-				$elm$url$Url$Parser$slash,
-				$elm$url$Url$Parser$s('setPassword'),
-				$elm$url$Url$Parser$string))
-		]));
-var $author$project$Route$fromUrl = $elm$url$Url$Parser$parse($author$project$Route$parser);
-var $author$project$Professor$Model = function (data) {
-	return {data: data};
-};
-var $author$project$Professor$init = $author$project$Professor$Model(_List_Nil);
-var $author$project$Registration$Model = F6(
-	function (firstName, lastName, email, index, status, processing) {
-		return {email: email, firstName: firstName, index: index, lastName: lastName, processing: processing, status: status};
-	});
-var $author$project$Registration$init = A6($author$project$Registration$Model, '', '', '', '', $elm$core$Maybe$Nothing, false);
-var $author$project$SetPassword$Model = F5(
-	function (userId, email, password, confirmPassword, processing) {
-		return {confirmPassword: confirmPassword, email: email, password: password, processing: processing, userId: userId};
-	});
-var $author$project$SetPassword$init = A5($author$project$SetPassword$Model, $elm$core$Maybe$Nothing, '', '', '', false);
-var $author$project$User$Login$Model = F4(
-	function (email, password, error, processing) {
-		return {email: email, error: error, password: password, processing: processing};
-	});
-var $author$project$User$Login$init = A4($author$project$User$Login$Model, '', '', $elm$core$Maybe$Nothing, false);
-var $author$project$SetPassword$GotLoadingResult = function (a) {
-	return {$: 'GotLoadingResult', a: a};
-};
-var $elm$http$Http$request = function (r) {
-	return $elm$http$Http$command(
-		$elm$http$Http$Request(
-			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
-};
-var $elm$http$Http$get = function (r) {
-	return $elm$http$Http$request(
-		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
-};
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $author$project$SetPassword$loadRequest = function (uuid) {
-	return $elm$http$Http$get(
-		{
-			expect: A2(
-				$elm$http$Http$expectJson,
-				$author$project$SetPassword$GotLoadingResult,
-				A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int)),
-			url: 'http://localhost:4000/api/users/' + uuid
-		});
-};
-var $author$project$Professor$GotLoadingResult = function (a) {
-	return {$: 'GotLoadingResult', a: a};
-};
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$Professor$RegistrationRequest = F6(
-	function (id, firstName, lastName, email, index, status) {
-		return {email: email, firstName: firstName, id: id, index: index, lastName: lastName, status: status};
-	});
-var $elm$json$Json$Decode$map6 = _Json_map6;
-var $author$project$Professor$requestDecoder = A7(
-	$elm$json$Json$Decode$map6,
-	$author$project$Professor$RegistrationRequest,
-	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
-	A2($elm$json$Json$Decode$field, 'first_name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'last_name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'email', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'index_number', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'status', $elm$json$Json$Decode$string));
-var $author$project$Professor$requestsListDecoder = A2(
-	$elm$json$Json$Decode$field,
-	'data',
-	$elm$json$Json$Decode$list($author$project$Professor$requestDecoder));
-var $author$project$Professor$loadRequests = $elm$http$Http$get(
-	{
-		expect: A2($elm$http$Http$expectJson, $author$project$Professor$GotLoadingResult, $author$project$Professor$requestsListDecoder),
-		url: 'http://localhost:4000/api/registrations'
-	});
-var $author$project$Main$updateUrl = F3(
-	function (url, model, cmd) {
-		var _v0 = $author$project$Route$fromUrl(url);
-		if (_v0.$ === 'Just') {
-			switch (_v0.a.$) {
-				case 'HomeRoute':
-					var _v1 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{page: $author$project$Page$HomePage}),
-						cmd);
-				case 'StudentRoute':
-					var _v2 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{page: $author$project$Page$StudentPage}),
-						cmd);
-				case 'LoginRoute':
-					var _v3 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: $author$project$Page$LoginPage($author$project$User$Login$init)
-							}),
-						cmd);
-				case 'RegistrationRoute':
-					var _v4 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: $author$project$Page$RegistrationPage($author$project$Registration$init)
-							}),
-						cmd);
-				case 'ProfessorRoute':
-					var _v5 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: $author$project$Page$ProfessorPage($author$project$Professor$init)
-							}),
-						A2($elm$core$Platform$Cmd$map, $author$project$Main$GotProfessorMsg, $author$project$Professor$loadRequests));
-				case 'SetPassword':
-					var uuid = _v0.a.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								page: $author$project$Page$SetPasswordPage($author$project$SetPassword$init)
-							}),
-						A2(
-							$elm$core$Platform$Cmd$map,
-							$author$project$Main$GotPasswordMsg,
-							$author$project$SetPassword$loadRequest(uuid)));
-				default:
-					var _v6 = _v0.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{page: $author$project$Page$AdminPage}),
-						cmd);
-			}
-		} else {
-			return _Utils_Tuple2(
-				_Utils_update(
-					model,
-					{page: $author$project$Page$NotFound}),
-				cmd);
-		}
-	});
 var $author$project$Main$init = F3(
 	function (flags, url, key) {
-		return A3(
-			$author$project$Main$updateUrl,
-			url,
-			{key: key, page: $author$project$Page$HomePage, profileDropdownState: $rundis$elm_bootstrap$Bootstrap$Dropdown$initialState, session: $elm$core$Maybe$Nothing},
-			A2($elm$core$Platform$Cmd$map, $author$project$Main$GotSessionMsg, $author$project$User$Session$silentTokenRefresh));
+		var sessionCheck = A2($elm$core$Platform$Cmd$map, $author$project$Main$GotInitSessionMsg, $author$project$User$Session$silentTokenRefresh);
+		var route = $author$project$Route$fromUrl(url);
+		return _Utils_Tuple2(
+			{
+				currentRoute: route,
+				currentUser: $author$project$User$Type$Guest,
+				isMenuOpened: false,
+				key: key,
+				loading: true,
+				mainContent: $author$project$Main$NoContent,
+				page: $author$project$Page$forRoute(route),
+				session: $elm$core$Maybe$Nothing
+			},
+			sessionCheck);
 	});
-var $author$project$Main$ProfileDropdownMsg = function (a) {
-	return {$: 'ProfileDropdownMsg', a: a};
-};
 var $author$project$Main$RefreshTick = function (a) {
 	return {$: 'RefreshTick', a: a};
 };
@@ -6956,11 +6899,6 @@ var $elm$time$Time$onSelfMsg = F3(
 				A2($elm$core$Task$andThen, tellTaggers, $elm$time$Time$now));
 		}
 	});
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var $elm$time$Time$subMap = F2(
 	function (f, _v0) {
 		var interval = _v0.a;
@@ -6978,345 +6916,10 @@ var $elm$time$Time$every = F2(
 			A2($elm$time$Time$Every, interval, tagger));
 	});
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$ListenClicks = {$: 'ListenClicks'};
-var $elm$browser$Browser$AnimationManager$Time = function (a) {
-	return {$: 'Time', a: a};
-};
-var $elm$browser$Browser$AnimationManager$State = F3(
-	function (subs, request, oldTime) {
-		return {oldTime: oldTime, request: request, subs: subs};
-	});
-var $elm$browser$Browser$AnimationManager$init = $elm$core$Task$succeed(
-	A3($elm$browser$Browser$AnimationManager$State, _List_Nil, $elm$core$Maybe$Nothing, 0));
-var $elm$browser$Browser$AnimationManager$now = _Browser_now(_Utils_Tuple0);
-var $elm$browser$Browser$AnimationManager$rAF = _Browser_rAF(_Utils_Tuple0);
-var $elm$browser$Browser$AnimationManager$onEffects = F3(
-	function (router, subs, _v0) {
-		var request = _v0.request;
-		var oldTime = _v0.oldTime;
-		var _v1 = _Utils_Tuple2(request, subs);
-		if (_v1.a.$ === 'Nothing') {
-			if (!_v1.b.b) {
-				var _v2 = _v1.a;
-				return $elm$browser$Browser$AnimationManager$init;
-			} else {
-				var _v4 = _v1.a;
-				return A2(
-					$elm$core$Task$andThen,
-					function (pid) {
-						return A2(
-							$elm$core$Task$andThen,
-							function (time) {
-								return $elm$core$Task$succeed(
-									A3(
-										$elm$browser$Browser$AnimationManager$State,
-										subs,
-										$elm$core$Maybe$Just(pid),
-										time));
-							},
-							$elm$browser$Browser$AnimationManager$now);
-					},
-					$elm$core$Process$spawn(
-						A2(
-							$elm$core$Task$andThen,
-							$elm$core$Platform$sendToSelf(router),
-							$elm$browser$Browser$AnimationManager$rAF)));
-			}
-		} else {
-			if (!_v1.b.b) {
-				var pid = _v1.a.a;
-				return A2(
-					$elm$core$Task$andThen,
-					function (_v3) {
-						return $elm$browser$Browser$AnimationManager$init;
-					},
-					$elm$core$Process$kill(pid));
-			} else {
-				return $elm$core$Task$succeed(
-					A3($elm$browser$Browser$AnimationManager$State, subs, request, oldTime));
-			}
-		}
-	});
-var $elm$browser$Browser$AnimationManager$onSelfMsg = F3(
-	function (router, newTime, _v0) {
-		var subs = _v0.subs;
-		var oldTime = _v0.oldTime;
-		var send = function (sub) {
-			if (sub.$ === 'Time') {
-				var tagger = sub.a;
-				return A2(
-					$elm$core$Platform$sendToApp,
-					router,
-					tagger(
-						$elm$time$Time$millisToPosix(newTime)));
-			} else {
-				var tagger = sub.a;
-				return A2(
-					$elm$core$Platform$sendToApp,
-					router,
-					tagger(newTime - oldTime));
-			}
-		};
-		return A2(
-			$elm$core$Task$andThen,
-			function (pid) {
-				return A2(
-					$elm$core$Task$andThen,
-					function (_v1) {
-						return $elm$core$Task$succeed(
-							A3(
-								$elm$browser$Browser$AnimationManager$State,
-								subs,
-								$elm$core$Maybe$Just(pid),
-								newTime));
-					},
-					$elm$core$Task$sequence(
-						A2($elm$core$List$map, send, subs)));
-			},
-			$elm$core$Process$spawn(
-				A2(
-					$elm$core$Task$andThen,
-					$elm$core$Platform$sendToSelf(router),
-					$elm$browser$Browser$AnimationManager$rAF)));
-	});
-var $elm$browser$Browser$AnimationManager$Delta = function (a) {
-	return {$: 'Delta', a: a};
-};
-var $elm$browser$Browser$AnimationManager$subMap = F2(
-	function (func, sub) {
-		if (sub.$ === 'Time') {
-			var tagger = sub.a;
-			return $elm$browser$Browser$AnimationManager$Time(
-				A2($elm$core$Basics$composeL, func, tagger));
-		} else {
-			var tagger = sub.a;
-			return $elm$browser$Browser$AnimationManager$Delta(
-				A2($elm$core$Basics$composeL, func, tagger));
-		}
-	});
-_Platform_effectManagers['Browser.AnimationManager'] = _Platform_createManager($elm$browser$Browser$AnimationManager$init, $elm$browser$Browser$AnimationManager$onEffects, $elm$browser$Browser$AnimationManager$onSelfMsg, 0, $elm$browser$Browser$AnimationManager$subMap);
-var $elm$browser$Browser$AnimationManager$subscription = _Platform_leaf('Browser.AnimationManager');
-var $elm$browser$Browser$AnimationManager$onAnimationFrame = function (tagger) {
-	return $elm$browser$Browser$AnimationManager$subscription(
-		$elm$browser$Browser$AnimationManager$Time(tagger));
-};
-var $elm$browser$Browser$Events$onAnimationFrame = $elm$browser$Browser$AnimationManager$onAnimationFrame;
-var $elm$browser$Browser$Events$Document = {$: 'Document'};
-var $elm$browser$Browser$Events$MySub = F3(
-	function (a, b, c) {
-		return {$: 'MySub', a: a, b: b, c: c};
-	});
-var $elm$browser$Browser$Events$State = F2(
-	function (subs, pids) {
-		return {pids: pids, subs: subs};
-	});
-var $elm$browser$Browser$Events$init = $elm$core$Task$succeed(
-	A2($elm$browser$Browser$Events$State, _List_Nil, $elm$core$Dict$empty));
-var $elm$browser$Browser$Events$nodeToKey = function (node) {
-	if (node.$ === 'Document') {
-		return 'd_';
-	} else {
-		return 'w_';
-	}
-};
-var $elm$browser$Browser$Events$addKey = function (sub) {
-	var node = sub.a;
-	var name = sub.b;
-	return _Utils_Tuple2(
-		_Utils_ap(
-			$elm$browser$Browser$Events$nodeToKey(node),
-			name),
-		sub);
-};
-var $elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v0, dict) {
-				var key = _v0.a;
-				var value = _v0.b;
-				return A3($elm$core$Dict$insert, key, value, dict);
-			}),
-		$elm$core$Dict$empty,
-		assocs);
-};
-var $elm$browser$Browser$Events$Event = F2(
-	function (key, event) {
-		return {event: event, key: key};
-	});
-var $elm$browser$Browser$Events$spawn = F3(
-	function (router, key, _v0) {
-		var node = _v0.a;
-		var name = _v0.b;
-		var actualNode = function () {
-			if (node.$ === 'Document') {
-				return _Browser_doc;
-			} else {
-				return _Browser_window;
-			}
-		}();
-		return A2(
-			$elm$core$Task$map,
-			function (value) {
-				return _Utils_Tuple2(key, value);
-			},
-			A3(
-				_Browser_on,
-				actualNode,
-				name,
-				function (event) {
-					return A2(
-						$elm$core$Platform$sendToSelf,
-						router,
-						A2($elm$browser$Browser$Events$Event, key, event));
-				}));
-	});
-var $elm$core$Dict$union = F2(
-	function (t1, t2) {
-		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
-	});
-var $elm$browser$Browser$Events$onEffects = F3(
-	function (router, subs, state) {
-		var stepRight = F3(
-			function (key, sub, _v6) {
-				var deads = _v6.a;
-				var lives = _v6.b;
-				var news = _v6.c;
-				return _Utils_Tuple3(
-					deads,
-					lives,
-					A2(
-						$elm$core$List$cons,
-						A3($elm$browser$Browser$Events$spawn, router, key, sub),
-						news));
-			});
-		var stepLeft = F3(
-			function (_v4, pid, _v5) {
-				var deads = _v5.a;
-				var lives = _v5.b;
-				var news = _v5.c;
-				return _Utils_Tuple3(
-					A2($elm$core$List$cons, pid, deads),
-					lives,
-					news);
-			});
-		var stepBoth = F4(
-			function (key, pid, _v2, _v3) {
-				var deads = _v3.a;
-				var lives = _v3.b;
-				var news = _v3.c;
-				return _Utils_Tuple3(
-					deads,
-					A3($elm$core$Dict$insert, key, pid, lives),
-					news);
-			});
-		var newSubs = A2($elm$core$List$map, $elm$browser$Browser$Events$addKey, subs);
-		var _v0 = A6(
-			$elm$core$Dict$merge,
-			stepLeft,
-			stepBoth,
-			stepRight,
-			state.pids,
-			$elm$core$Dict$fromList(newSubs),
-			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
-		var deadPids = _v0.a;
-		var livePids = _v0.b;
-		var makeNewPids = _v0.c;
-		return A2(
-			$elm$core$Task$andThen,
-			function (pids) {
-				return $elm$core$Task$succeed(
-					A2(
-						$elm$browser$Browser$Events$State,
-						newSubs,
-						A2(
-							$elm$core$Dict$union,
-							livePids,
-							$elm$core$Dict$fromList(pids))));
-			},
-			A2(
-				$elm$core$Task$andThen,
-				function (_v1) {
-					return $elm$core$Task$sequence(makeNewPids);
-				},
-				$elm$core$Task$sequence(
-					A2($elm$core$List$map, $elm$core$Process$kill, deadPids))));
-	});
-var $elm$browser$Browser$Events$onSelfMsg = F3(
-	function (router, _v0, state) {
-		var key = _v0.key;
-		var event = _v0.event;
-		var toMessage = function (_v2) {
-			var subKey = _v2.a;
-			var _v3 = _v2.b;
-			var node = _v3.a;
-			var name = _v3.b;
-			var decoder = _v3.c;
-			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
-		};
-		var messages = A2($elm$core$List$filterMap, toMessage, state.subs);
-		return A2(
-			$elm$core$Task$andThen,
-			function (_v1) {
-				return $elm$core$Task$succeed(state);
-			},
-			$elm$core$Task$sequence(
-				A2(
-					$elm$core$List$map,
-					$elm$core$Platform$sendToApp(router),
-					messages)));
-	});
-var $elm$browser$Browser$Events$subMap = F2(
-	function (func, _v0) {
-		var node = _v0.a;
-		var name = _v0.b;
-		var decoder = _v0.c;
-		return A3(
-			$elm$browser$Browser$Events$MySub,
-			node,
-			name,
-			A2($elm$json$Json$Decode$map, func, decoder));
-	});
-_Platform_effectManagers['Browser.Events'] = _Platform_createManager($elm$browser$Browser$Events$init, $elm$browser$Browser$Events$onEffects, $elm$browser$Browser$Events$onSelfMsg, 0, $elm$browser$Browser$Events$subMap);
-var $elm$browser$Browser$Events$subscription = _Platform_leaf('Browser.Events');
-var $elm$browser$Browser$Events$on = F3(
-	function (node, name, decoder) {
-		return $elm$browser$Browser$Events$subscription(
-			A3($elm$browser$Browser$Events$MySub, node, name, decoder));
-	});
-var $elm$browser$Browser$Events$onClick = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'click');
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$updateStatus = F2(
-	function (status, _v0) {
-		var stateRec = _v0.a;
-		return $rundis$elm_bootstrap$Bootstrap$Dropdown$State(
-			_Utils_update(
-				stateRec,
-				{status: status}));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$subscriptions = F2(
-	function (state, toMsg) {
-		var status = state.a.status;
-		switch (status.$) {
-			case 'Open':
-				return $elm$browser$Browser$Events$onAnimationFrame(
-					function (_v1) {
-						return toMsg(
-							A2($rundis$elm_bootstrap$Bootstrap$Dropdown$updateStatus, $rundis$elm_bootstrap$Bootstrap$Dropdown$ListenClicks, state));
-					});
-			case 'ListenClicks':
-				return $elm$browser$Browser$Events$onClick(
-					$elm$json$Json$Decode$succeed(
-						toMsg(
-							A2($rundis$elm_bootstrap$Bootstrap$Dropdown$updateStatus, $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed, state))));
-			default:
-				return $elm$core$Platform$Sub$none;
-		}
-	});
 var $author$project$Main$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
-				A2($rundis$elm_bootstrap$Bootstrap$Dropdown$subscriptions, model.profileDropdownState, $author$project$Main$ProfileDropdownMsg),
 				function () {
 				var _v0 = model.session;
 				if (_v0.$ === 'Just') {
@@ -7328,10 +6931,290 @@ var $author$project$Main$subscriptions = function (model) {
 			}()
 			]));
 };
+var $author$project$Main$GotPasswordMsg = function (a) {
+	return {$: 'GotPasswordMsg', a: a};
+};
+var $author$project$Main$GotProfessorMsg = function (a) {
+	return {$: 'GotProfessorMsg', a: a};
+};
 var $author$project$Main$GotRegistrationMsg = function (a) {
 	return {$: 'GotRegistrationMsg', a: a};
 };
+var $author$project$Main$GotSessionMsg = function (a) {
+	return {$: 'GotSessionMsg', a: a};
+};
+var $author$project$Main$ProfessorModel = function (a) {
+	return {$: 'ProfessorModel', a: a};
+};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$User$Type$Admin = {$: 'Admin'};
+var $author$project$User$Type$Professor = {$: 'Professor'};
+var $author$project$User$Type$Student = {$: 'Student'};
+var $author$project$User$Type$getUserType = function (result) {
+	if (result.$ === 'Ok') {
+		var user = result.a.user;
+		var _v1 = user.role;
+		switch (_v1) {
+			case 'student':
+				return $author$project$User$Type$Student;
+			case 'admin':
+				return $author$project$User$Type$Admin;
+			case 'professor':
+				return $author$project$User$Type$Professor;
+			default:
+				return $author$project$User$Type$Guest;
+		}
+	} else {
+		return $author$project$User$Type$Guest;
+	}
+};
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Professor$routeToString = function (route) {
+	if (route.$ === 'RegistrationRequestsRoute') {
+		return '/registrations';
+	} else {
+		return '/settings';
+	}
+};
+var $author$project$Route$toString = function (route) {
+	switch (route.$) {
+		case 'HomeRoute':
+			return '/';
+		case 'StudentRoute':
+			return '/student';
+		case 'LoginRoute':
+			return '/login';
+		case 'RegistrationRoute':
+			return '/register';
+		case 'ProfessorRoute':
+			var subRoute = route.a;
+			return '/professor' + $author$project$Professor$routeToString(subRoute);
+		case 'AdminRoute':
+			return '/adim';
+		case 'SetPasswordRoute':
+			var uuid = route.a;
+			return '/setPassword/' + uuid;
+		default:
+			return '/notFound';
+	}
+};
+var $author$project$Route$redirectTo = F2(
+	function (key, route) {
+		return A2(
+			$elm$browser$Browser$Navigation$pushUrl,
+			key,
+			$author$project$Route$toString(route));
+	});
+var $author$project$Route$guard = F3(
+	function (user, route, key) {
+		var redirectWithKey = $author$project$Route$redirectTo(key);
+		var _v0 = _Utils_Tuple2(user, route);
+		switch (_v0.a.$) {
+			case 'Guest':
+				switch (_v0.b.$) {
+					case 'HomeRoute':
+						var _v1 = _v0.a;
+						var _v2 = _v0.b;
+						return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$HomeRoute};
+					case 'LoginRoute':
+						var _v3 = _v0.a;
+						var _v4 = _v0.b;
+						return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$LoginRoute};
+					case 'RegistrationRoute':
+						var _v5 = _v0.a;
+						var _v6 = _v0.b;
+						return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$RegistrationRoute};
+					case 'SetPasswordRoute':
+						var _v7 = _v0.a;
+						var uuid = _v0.b.a;
+						return {
+							redirection: $elm$core$Platform$Cmd$none,
+							route: $author$project$Route$SetPasswordRoute(uuid)
+						};
+					default:
+						return {
+							redirection: redirectWithKey($author$project$Route$NotFoundRoute),
+							route: $author$project$Route$NotFoundRoute
+						};
+				}
+			case 'Student':
+				if (_v0.b.$ === 'StudentRoute') {
+					var _v8 = _v0.a;
+					var _v9 = _v0.b;
+					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$StudentRoute};
+				} else {
+					var _v10 = _v0.a;
+					return {
+						redirection: redirectWithKey($author$project$Route$HomeRoute),
+						route: $author$project$Route$HomeRoute
+					};
+				}
+			case 'Professor':
+				if (_v0.b.$ === 'ProfessorRoute') {
+					var _v11 = _v0.a;
+					var subRoute = _v0.b.a;
+					return {
+						redirection: $elm$core$Platform$Cmd$none,
+						route: $author$project$Route$ProfessorRoute(subRoute)
+					};
+				} else {
+					var _v12 = _v0.a;
+					return {
+						redirection: redirectWithKey($author$project$Route$HomeRoute),
+						route: $author$project$Route$HomeRoute
+					};
+				}
+			default:
+				if (_v0.b.$ === 'AdminRoute') {
+					var _v13 = _v0.a;
+					var _v14 = _v0.b;
+					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$AdminRoute};
+				} else {
+					var _v15 = _v0.a;
+					return {
+						redirection: redirectWithKey($author$project$Route$HomeRoute),
+						route: $author$project$Route$HomeRoute
+					};
+				}
+		}
+	});
+var $author$project$Professor$GotRequestsMsg = function (a) {
+	return {$: 'GotRequestsMsg', a: a};
+};
+var $author$project$Professor$RegistrationRequests$GotLoadingResult = function (a) {
+	return {$: 'GotLoadingResult', a: a};
+};
+var $elm$http$Http$Header = F2(
+	function (a, b) {
+		return {$: 'Header', a: a, b: b};
+	});
+var $elm$http$Http$header = $elm$http$Http$Header;
+var $author$project$Api$authHeader = function (token) {
+	return A2($elm$http$Http$header, 'Authorization', 'Bearer ' + token);
+};
+var $elm$http$Http$request = function (r) {
+	return $elm$http$Http$command(
+		$elm$http$Http$Request(
+			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
+};
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $author$project$Professor$RegistrationRequests$RegistrationRequest = F6(
+	function (id, firstName, lastName, email, index, status) {
+		return {email: email, firstName: firstName, id: id, index: index, lastName: lastName, status: status};
+	});
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$map6 = _Json_map6;
+var $author$project$Professor$RegistrationRequests$requestDecoder = A7(
+	$elm$json$Json$Decode$map6,
+	$author$project$Professor$RegistrationRequests$RegistrationRequest,
+	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'first_name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'last_name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'email', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'index_number', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'status', $elm$json$Json$Decode$string));
+var $author$project$Professor$RegistrationRequests$requestsListDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'data',
+	$elm$json$Json$Decode$list($author$project$Professor$RegistrationRequests$requestDecoder));
+var $author$project$Professor$RegistrationRequests$loadRequests = function (token) {
+	return $elm$http$Http$request(
+		{
+			body: $elm$http$Http$emptyBody,
+			expect: A2($elm$http$Http$expectJson, $author$project$Professor$RegistrationRequests$GotLoadingResult, $author$project$Professor$RegistrationRequests$requestsListDecoder),
+			headers: _List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			method: 'GET',
+			timeout: $elm$core$Maybe$Nothing,
+			tracker: $elm$core$Maybe$Nothing,
+			url: 'http://localhost:4000/api/registrations'
+		});
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$Professor$initCmd = F2(
+	function (token, model) {
+		return A2(
+			$elm$core$Debug$log,
+			$elm$core$Debug$toString(model),
+			model.requstesModel.isInitialized ? $elm$core$Platform$Cmd$none : A2(
+				$elm$core$Platform$Cmd$map,
+				$author$project$Professor$GotRequestsMsg,
+				$author$project$Professor$RegistrationRequests$loadRequests(token)));
+	});
+var $author$project$User$SetPassword$GotLoadingResult = function (a) {
+	return {$: 'GotLoadingResult', a: a};
+};
+var $elm$http$Http$get = function (r) {
+	return $elm$http$Http$request(
+		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $author$project$User$SetPassword$loadRequest = function (uuid) {
+	return $elm$http$Http$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				$author$project$User$SetPassword$GotLoadingResult,
+				A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int)),
+			url: 'http://localhost:4000/api/users/' + uuid
+		});
+};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$Main$tokenFrom = function (session) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		'',
+		A2(
+			$elm$core$Maybe$map,
+			function (s) {
+				return s.accessToken;
+			},
+			session));
+};
+var $author$project$Main$initCommand = F2(
+	function (route, model) {
+		var _v0 = model;
+		var session = _v0.session;
+		var mainContent = _v0.mainContent;
+		var token = $author$project$Main$tokenFrom(session);
+		var _v1 = _Utils_Tuple2(route, mainContent);
+		_v1$2:
+		while (true) {
+			switch (_v1.a.$) {
+				case 'SetPasswordRoute':
+					var uuid = _v1.a.a;
+					return A2(
+						$elm$core$Platform$Cmd$map,
+						$author$project$Main$GotPasswordMsg,
+						$author$project$User$SetPassword$loadRequest(uuid));
+				case 'ProfessorRoute':
+					if (_v1.b.$ === 'ProfessorModel') {
+						var model_ = _v1.b.a;
+						return A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$Main$GotProfessorMsg,
+							A2($author$project$Professor$initCmd, token, model_));
+					} else {
+						break _v1$2;
+					}
+				default:
+					break _v1$2;
+			}
+		}
+		return $elm$core$Platform$Cmd$none;
+	});
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $author$project$User$Session$DeleteSessionResult = function (a) {
 	return {$: 'DeleteSessionResult', a: a};
@@ -7363,9 +7246,44 @@ var $author$project$User$Session$logout = $elm$http$Http$riskyRequest(
 		tracker: $elm$core$Maybe$Nothing,
 		url: 'http://localhost:4000/api/auth/logout'
 	});
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
-var $author$project$Main$toPage = F4(
+var $author$project$Main$AdminModel = {$: 'AdminModel'};
+var $author$project$Main$StudentModel = {$: 'StudentModel'};
+var $author$project$Professor$Model = F2(
+	function (currentPage, requstesModel) {
+		return {currentPage: currentPage, requstesModel: requstesModel};
+	});
+var $author$project$Professor$RegistrationRequests$Model = F6(
+	function (acceptedRequests, rejectedRequests, pendingRequests, processingRequests, tab, isInitialized) {
+		return {acceptedRequests: acceptedRequests, isInitialized: isInitialized, pendingRequests: pendingRequests, processingRequests: processingRequests, rejectedRequests: rejectedRequests, tab: tab};
+	});
+var $author$project$Professor$RegistrationRequests$Pending = {$: 'Pending'};
+var $author$project$Professor$RegistrationRequests$init = A6($author$project$Professor$RegistrationRequests$Model, _List_Nil, _List_Nil, _List_Nil, _List_Nil, $author$project$Professor$RegistrationRequests$Pending, false);
+var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequestsPage, $author$project$Professor$RegistrationRequests$init);
+var $author$project$Main$setContentModel = F2(
+	function (user, model) {
+		switch (user.$) {
+			case 'Professor':
+				return _Utils_update(
+					model,
+					{
+						currentUser: user,
+						mainContent: $author$project$Main$ProfessorModel($author$project$Professor$init)
+					});
+			case 'Student':
+				return _Utils_update(
+					model,
+					{currentUser: user, mainContent: $author$project$Main$StudentModel});
+			case 'Admin':
+				return _Utils_update(
+					model,
+					{currentUser: user, mainContent: $author$project$Main$AdminModel});
+			default:
+				return _Utils_update(
+					model,
+					{currentUser: user, mainContent: $author$project$Main$NoContent});
+		}
+	});
+var $author$project$Main$toPageWithModel = F4(
 	function (page, toMsg, model, _v0) {
 		var pageModel = _v0.a;
 		var pageCmd = _v0.b;
@@ -7421,10 +7339,75 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
-var $elm$core$Debug$log = _Debug_log;
-var $author$project$Professor$statusAccepted = 'accepted';
-var $author$project$Professor$statusRejected = 'rejected';
-var $author$project$Professor$StatusChanged = function (a) {
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$Professor$RegistrationRequests$statusAccepted = 'accepted';
+var $author$project$Professor$RegistrationRequests$changeStatus = F2(
+	function (model, request) {
+		var processingRequests = A2(
+			$elm$core$List$filter,
+			function (_v0) {
+				var id = _v0.a;
+				return !_Utils_eq(id, request.id);
+			},
+			model.processingRequests);
+		var pendingRequests = A2(
+			$elm$core$List$filter,
+			function (x) {
+				return !_Utils_eq(x.id, request.id);
+			},
+			model.pendingRequests);
+		return _Utils_eq(request.status, $author$project$Professor$RegistrationRequests$statusAccepted) ? _Utils_update(
+			model,
+			{
+				acceptedRequests: A2($elm$core$List$cons, request, model.acceptedRequests),
+				pendingRequests: pendingRequests,
+				processingRequests: processingRequests
+			}) : _Utils_update(
+			model,
+			{
+				pendingRequests: pendingRequests,
+				processingRequests: processingRequests,
+				rejectedRequests: A2($elm$core$List$cons, request, model.rejectedRequests)
+			});
+	});
+var $author$project$Professor$RegistrationRequests$statusPending = 'pending';
+var $author$project$Professor$RegistrationRequests$statusRejected = 'rejected';
+var $author$project$Professor$RegistrationRequests$processData = F2(
+	function (model, data) {
+		var rejectedRequests = A2(
+			$elm$core$List$filter,
+			function (x) {
+				return _Utils_eq(x.status, $author$project$Professor$RegistrationRequests$statusRejected);
+			},
+			data);
+		var pendingRequests = A2(
+			$elm$core$List$filter,
+			function (x) {
+				return _Utils_eq(x.status, $author$project$Professor$RegistrationRequests$statusPending);
+			},
+			data);
+		var acceptedRequests = A2(
+			$elm$core$List$filter,
+			function (x) {
+				return _Utils_eq(x.status, $author$project$Professor$RegistrationRequests$statusAccepted);
+			},
+			data);
+		return _Utils_update(
+			model,
+			{acceptedRequests: acceptedRequests, isInitialized: true, pendingRequests: pendingRequests, rejectedRequests: rejectedRequests});
+	});
+var $author$project$Professor$RegistrationRequests$StatusChanged = function (a) {
 	return {$: 'StatusChanged', a: a};
 };
 var $elm$http$Http$jsonBody = function (value) {
@@ -7447,8 +7430,12 @@ var $elm$json$Json$Encode$object = function (pairs) {
 			pairs));
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Professor$updateRequestStatus = F2(
-	function (id, status) {
+var $author$project$Professor$RegistrationRequests$updateRequestStatus = F3(
+	function (id, status, token) {
+		var headers = _List_fromArray(
+			[
+				$author$project$Api$authHeader(token)
+			]);
 		var body = $elm$json$Json$Encode$object(
 			_List_fromArray(
 				[
@@ -7467,70 +7454,180 @@ var $author$project$Professor$updateRequestStatus = F2(
 				body: $elm$http$Http$jsonBody(body),
 				expect: A2(
 					$elm$http$Http$expectJson,
-					$author$project$Professor$StatusChanged,
-					A2($elm$json$Json$Decode$field, 'data', $author$project$Professor$requestDecoder)),
-				headers: _List_Nil,
+					$author$project$Professor$RegistrationRequests$StatusChanged,
+					A2($elm$json$Json$Decode$field, 'data', $author$project$Professor$RegistrationRequests$requestDecoder)),
+				headers: headers,
 				method: 'PATCH',
 				timeout: $elm$core$Maybe$Nothing,
 				tracker: $elm$core$Maybe$Nothing,
 				url: 'http://localhost:4000/api/registrations/' + $elm$core$String$fromInt(id)
 			});
 	});
-var $author$project$Professor$update = F2(
-	function (msg, model) {
+var $author$project$Professor$RegistrationRequests$update = F3(
+	function (msg, model, token) {
 		switch (msg.$) {
 			case 'GotLoadingResult':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var data = result.a;
 					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{data: data}),
+						A2($author$project$Professor$RegistrationRequests$processData, model, data),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					return A2(
-						$elm$core$Debug$log,
-						'greksa',
-						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'AcceptRequest':
 				var id = msg.a;
 				return _Utils_Tuple2(
-					model,
-					A2($author$project$Professor$updateRequestStatus, id, $author$project$Professor$statusAccepted));
+					_Utils_update(
+						model,
+						{
+							processingRequests: A2(
+								$elm$core$List$cons,
+								_Utils_Tuple2(id, true),
+								model.processingRequests)
+						}),
+					A3($author$project$Professor$RegistrationRequests$updateRequestStatus, id, $author$project$Professor$RegistrationRequests$statusAccepted, token));
 			case 'RejecteRequest':
 				var id = msg.a;
 				return _Utils_Tuple2(
-					model,
-					A2($author$project$Professor$updateRequestStatus, id, $author$project$Professor$statusRejected));
-			default:
+					_Utils_update(
+						model,
+						{
+							processingRequests: A2(
+								$elm$core$List$cons,
+								_Utils_Tuple2(id, false),
+								model.processingRequests)
+						}),
+					A3($author$project$Professor$RegistrationRequests$updateRequestStatus, id, $author$project$Professor$RegistrationRequests$statusRejected, token));
+			case 'StatusChanged':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var req = result.a;
-					var updateChangedStatus = function (x) {
-						return _Utils_eq(x.id, req.id) ? _Utils_update(
-							x,
-							{status: req.status}) : x;
-					};
-					return A2(
-						$elm$core$Debug$log,
-						'StatusChanged',
-						_Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									data: A2($elm$core$List$map, updateChangedStatus, model.data)
-								}),
-							$elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(
+						A2($author$project$Professor$RegistrationRequests$changeStatus, model, req),
+						$elm$core$Platform$Cmd$none);
 				} else {
-					return A2(
-						$elm$core$Debug$log,
-						'greksa',
-						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
+			default:
+				var tab = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{tab: tab}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Professor$update = F3(
+	function (msg, model, token) {
+		var _v0 = _Utils_Tuple2(msg, model.currentPage);
+		if ((_v0.a.$ === 'GotRequestsMsg') && (_v0.b.$ === 'RegistrationRequestsPage')) {
+			var reqMsg = _v0.a.a;
+			var _v1 = _v0.b;
+			var _v2 = A3($author$project$Professor$RegistrationRequests$update, reqMsg, model.requstesModel, token);
+			var reqModel = _v2.a;
+			var cmd = _v2.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{requstesModel: reqModel}),
+				A2($elm$core$Platform$Cmd$map, $author$project$Professor$GotRequestsMsg, cmd));
+		} else {
+			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$Registration$SnackbarClosed = function (a) {
+	return {$: 'SnackbarClosed', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$inc = function (_v0) {
+	var messageId = _v0.a;
+	return $aforemny$material_components_web_elm$Material$Snackbar$MessageId(messageId + 1);
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$addMessage = F2(
+	function (message_, _v0) {
+		var queue = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Snackbar$Queue(
+			_Utils_update(
+				queue,
+				{
+					messages: _Utils_ap(
+						queue.messages,
+						_List_fromArray(
+							[
+								_Utils_Tuple2(queue.nextMessageId, message_)
+							])),
+					nextMessageId: $aforemny$material_components_web_elm$Material$Snackbar$inc(queue.nextMessageId)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$close = F2(
+	function (messageId, _v0) {
+		var queue = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Snackbar$Queue(
+			_Utils_update(
+				queue,
+				{
+					messages: function () {
+						var _v1 = queue.messages;
+						if (!_v1.b) {
+							return _List_Nil;
+						} else {
+							var _v2 = _v1.a;
+							var currentMessageId = _v2.a;
+							var otherMessages = _v1.b;
+							return _Utils_eq(currentMessageId, messageId) ? otherMessages : queue.messages;
+						}
+					}()
+				}));
+	});
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $aforemny$material_components_web_elm$Material$Snackbar$Icon = function (a) {
+	return {$: 'Icon', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$customIcon = F3(
+	function (node, attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$Snackbar$Icon(
+			{attributes: attributes, node: node, nodes: nodes});
+	});
+var $elm$html$Html$i = _VirtualDom_node('i');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $aforemny$material_components_web_elm$Material$Snackbar$icon = function (iconName) {
+	return A3(
+		$aforemny$material_components_web_elm$Material$Snackbar$customIcon,
+		$elm$html$Html$i,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('material-icons')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(iconName)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$Message = function (a) {
+	return {$: 'Message', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$message = function (label) {
+	return $aforemny$material_components_web_elm$Material$Snackbar$Message(
+		{
+			actionButton: $elm$core$Maybe$Nothing,
+			actionIcon: $elm$core$Maybe$Nothing,
+			label: label,
+			leading: false,
+			onActionButtonClick: $elm$core$Maybe$Nothing,
+			onActionIconClick: $elm$core$Maybe$Nothing,
+			stacked: false,
+			timeoutMs: $elm$core$Maybe$Just(5000)
+		});
+};
 var $author$project$Registration$GotRegistrationResult = function (a) {
 	return {$: 'GotRegistrationResult', a: a};
 };
@@ -7568,6 +7665,24 @@ var $author$project$Registration$sendRequest = function (model) {
 			url: 'http://localhost:4000/api/registrations'
 		});
 };
+var $aforemny$material_components_web_elm$Material$Snackbar$setActionIcon = F2(
+	function (actionIcon, _v0) {
+		var message_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Snackbar$Message(
+			_Utils_update(
+				message_,
+				{actionIcon: actionIcon}));
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$setOnActionIconClick = F2(
+	function (onActionIconClick, _v0) {
+		var message_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Snackbar$Message(
+			_Utils_update(
+				message_,
+				{
+					onActionIconClick: $elm$core$Maybe$Just(onActionIconClick)
+				}));
+	});
 var $author$project$Registration$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -7605,13 +7720,37 @@ var $author$project$Registration$update = F2(
 						model,
 						{processing: true, status: $elm$core$Maybe$Nothing}),
 					$author$project$Registration$sendRequest(model));
-			default:
+			case 'GotRegistrationResult':
 				var result = msg.a;
+				var snackbarMessage = function (text) {
+					return A2(
+						$aforemny$material_components_web_elm$Material$Snackbar$setOnActionIconClick,
+						$author$project$Registration$SnackbarClosed,
+						A2(
+							$aforemny$material_components_web_elm$Material$Snackbar$setActionIcon,
+							$elm$core$Maybe$Just(
+								$aforemny$material_components_web_elm$Material$Snackbar$icon('close')),
+							$aforemny$material_components_web_elm$Material$Snackbar$message(text)));
+				};
+				var setQueueMessage = function (message) {
+					return A2(
+						$aforemny$material_components_web_elm$Material$Snackbar$addMessage,
+						snackbarMessage(message),
+						model.queue);
+				};
 				var newModel = function () {
 					if (result.$ === 'Ok') {
-						return $author$project$Registration$init;
+						return _Utils_update(
+							$author$project$Registration$init,
+							{
+								queue: setQueueMessage('Uspešno ste podneli prijavu!')
+							});
 					} else {
-						return model;
+						return _Utils_update(
+							model,
+							{
+								queue: setQueueMessage('Došlo je do neočekivane greške 😞')
+							});
 					}
 				}();
 				return _Utils_Tuple2(
@@ -7622,11 +7761,17 @@ var $author$project$Registration$update = F2(
 							status: $elm$core$Maybe$Just(result)
 						}),
 					$elm$core$Platform$Cmd$none);
+			default:
+				var messageId = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							queue: A2($aforemny$material_components_web_elm$Material$Snackbar$close, messageId, model.queue)
+						}),
+					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$SetPassword$SessionMsg = function (a) {
-	return {$: 'SessionMsg', a: a};
-};
 var $author$project$User$Session$GotSessionResult = function (a) {
 	return {$: 'GotSessionResult', a: a};
 };
@@ -7653,29 +7798,38 @@ var $author$project$User$Session$getSession = F2(
 				url: 'http://localhost:4000/api/auth/login'
 			});
 	});
-var $author$project$SetPassword$GotSetPasswordResult = function (a) {
+var $author$project$User$Login$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'Email':
+				var email = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{email: email}),
+					$elm$core$Platform$Cmd$none);
+			case 'Password':
+				var password = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{password: password}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{error: $elm$core$Maybe$Nothing, processing: true}),
+					A2($author$project$User$Session$getSession, model.email, model.password));
+		}
+	});
+var $author$project$User$SetPassword$SessionMsg = function (a) {
+	return {$: 'SessionMsg', a: a};
+};
+var $author$project$User$SetPassword$GotSetPasswordResult = function (a) {
 	return {$: 'GotSetPasswordResult', a: a};
 };
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$SetPassword$setPassword = function (_v0) {
+var $author$project$User$SetPassword$setPassword = function (_v0) {
 	var email = _v0.email;
 	var password = _v0.password;
 	var userId = _v0.userId;
@@ -7702,7 +7856,7 @@ var $author$project$SetPassword$setPassword = function (_v0) {
 	return $elm$http$Http$request(
 		{
 			body: $elm$http$Http$jsonBody(body),
-			expect: $elm$http$Http$expectWhatever($author$project$SetPassword$GotSetPasswordResult),
+			expect: $elm$http$Http$expectWhatever($author$project$User$SetPassword$GotSetPasswordResult),
 			headers: _List_Nil,
 			method: 'PATCH',
 			timeout: $elm$core$Maybe$Nothing,
@@ -7710,8 +7864,7 @@ var $author$project$SetPassword$setPassword = function (_v0) {
 			url: 'http://localhost:4000/api/users/' + id
 		});
 };
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$SetPassword$update = F2(
+var $author$project$User$SetPassword$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'Email':
@@ -7740,46 +7893,34 @@ var $author$project$SetPassword$update = F2(
 					_Utils_update(
 						model,
 						{processing: true}),
-					$author$project$SetPassword$setPassword(model));
+					$author$project$User$SetPassword$setPassword(model));
 			case 'GotLoadingResult':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var userId = result.a;
-					return A2(
-						$elm$core$Debug$log,
-						'GotLoadingResult',
-						_Utils_Tuple2(
-							_Utils_update(
-								model,
-								{
-									userId: $elm$core$Maybe$Just(userId)
-								}),
-							$elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								userId: $elm$core$Maybe$Just(userId)
+							}),
+						$elm$core$Platform$Cmd$none);
 				} else {
 					var error = result.a;
-					return A2(
-						$elm$core$Debug$log,
-						$elm$core$Debug$toString(error),
-						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			case 'GotSetPasswordResult':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
-					return A2(
-						$elm$core$Debug$log,
-						'Ok',
-						_Utils_Tuple2(
-							model,
-							A2(
-								$elm$core$Platform$Cmd$map,
-								$author$project$SetPassword$SessionMsg,
-								A2($author$project$User$Session$getSession, model.email, model.password))));
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$User$SetPassword$SessionMsg,
+							A2($author$project$User$Session$getSession, model.email, model.password)));
 				} else {
 					var error = result.a;
-					return A2(
-						$elm$core$Debug$log,
-						$elm$core$Debug$toString(error),
-						_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			default:
 				return _Utils_Tuple2(
@@ -7787,31 +7928,6 @@ var $author$project$SetPassword$update = F2(
 						model,
 						{processing: false}),
 					$elm$core$Platform$Cmd$none);
-		}
-	});
-var $author$project$User$Login$update = F2(
-	function (msg, model) {
-		switch (msg.$) {
-			case 'Email':
-				var email = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{email: email}),
-					$elm$core$Platform$Cmd$none);
-			case 'Password':
-				var password = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{password: password}),
-					$elm$core$Platform$Cmd$none);
-			default:
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{error: $elm$core$Maybe$Nothing, processing: true}),
-					A2($author$project$User$Session$getSession, model.email, model.password));
 		}
 	});
 var $author$project$User$Login$updateError = F2(
@@ -7823,10 +7939,25 @@ var $author$project$User$Login$updateError = F2(
 				processing: false
 			});
 	});
+var $author$project$Main$updateUrl = F2(
+	function (url, model) {
+		return A2(
+			$elm$core$Debug$log,
+			$elm$url$Url$toString(url),
+			function () {
+				var route = $author$project$Route$fromUrl(url);
+				var page = $author$project$Page$forRoute(route);
+				var model_ = _Utils_update(
+					model,
+					{currentRoute: route, isMenuOpened: false, page: page});
+				var cmd = A2($author$project$Main$initCommand, route, model_);
+				return _Utils_Tuple2(model_, cmd);
+			}());
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		var _v0 = _Utils_Tuple2(msg, model.page);
-		_v0$11:
+		var _v0 = _Utils_Tuple3(msg, model.page, model.mainContent);
+		_v0$13:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'ClickedLink':
@@ -7847,40 +7978,81 @@ var $author$project$Main$update = F2(
 					}
 				case 'ChangedUrl':
 					var url = _v0.a.a;
-					return A3($author$project$Main$updateUrl, url, model, $elm$core$Platform$Cmd$none);
+					return A2($author$project$Main$updateUrl, url, model);
+				case 'GotInitSessionMsg':
+					if (_v0.a.a.$ === 'GotTokenResult') {
+						var result = _v0.a.a.a;
+						var user = $author$project$User$Type$getUserType(result);
+						var session = function () {
+							if (result.$ === 'Ok') {
+								var sess = result.a;
+								return $elm$core$Maybe$Just(sess);
+							} else {
+								return $elm$core$Maybe$Nothing;
+							}
+						}();
+						var model_ = A2(
+							$author$project$Main$setContentModel,
+							user,
+							_Utils_update(
+								model,
+								{loading: false, session: session}));
+						var _v2 = model;
+						var currentRoute = _v2.currentRoute;
+						var key = _v2.key;
+						var _v3 = A3($author$project$Route$guard, user, currentRoute, key);
+						var route = _v3.route;
+						var redirection = _v3.redirection;
+						var cmd = $elm$core$Platform$Cmd$batch(
+							_List_fromArray(
+								[
+									A2($author$project$Main$initCommand, route, model_),
+									redirection
+								]));
+						return _Utils_Tuple2(model_, cmd);
+					} else {
+						break _v0$13;
+					}
 				case 'GotSessionMsg':
 					switch (_v0.a.a.$) {
 						case 'GotTokenResult':
 							var result = _v0.a.a.a;
 							if (result.$ === 'Ok') {
 								var session = result.a;
-								return _Utils_Tuple2(
+								var user = $author$project$User$Type$getUserType(result);
+								var model_ = A2(
+									$author$project$Main$setContentModel,
+									user,
 									_Utils_update(
 										model,
 										{
 											session: $elm$core$Maybe$Just(session)
-										}),
-									$elm$core$Platform$Cmd$none);
+										}));
+								return _Utils_Tuple2(model_, $elm$core$Platform$Cmd$none);
 							} else {
-								var httpError = result.a;
 								return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 							}
 						case 'GotSessionResult':
 							var result = _v0.a.a.a;
-							var _v3 = _Utils_Tuple2(result, model.page);
-							if (_v3.a.$ === 'Ok') {
-								var session = _v3.a.a;
-								return _Utils_Tuple2(
+							var _v6 = _Utils_Tuple2(result, model.page);
+							if (_v6.a.$ === 'Ok') {
+								var session = _v6.a.a;
+								var user = $author$project$User$Type$getUserType(result);
+								var model_ = A2(
+									$author$project$Main$setContentModel,
+									user,
 									_Utils_update(
 										model,
 										{
 											session: $elm$core$Maybe$Just(session)
-										}),
-									A2($elm$browser$Browser$Navigation$pushUrl, model.key, '/'));
+										}));
+								return _Utils_Tuple2(
+									model_,
+									A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute));
 							} else {
-								if (_v3.b.$ === 'LoginPage') {
-									var httpError = _v3.a.a;
-									var loginModel = _v3.b.a;
+								if (_v6.b.$ === 'LoginPage') {
+									var httpError = _v6.a.a;
+									var loginModel = _v6.b.a;
 									return _Utils_Tuple2(
 										_Utils_update(
 											model,
@@ -7894,20 +8066,20 @@ var $author$project$Main$update = F2(
 								}
 							}
 						default:
-							break _v0$11;
+							break _v0$13;
 					}
 				case 'GotLoginMsg':
 					if (_v0.b.$ === 'LoginPage') {
 						var loginMsg = _v0.a.a;
 						var loginModel = _v0.b.a;
 						return A4(
-							$author$project$Main$toPage,
+							$author$project$Main$toPageWithModel,
 							$author$project$Page$LoginPage,
 							$author$project$Main$GotSessionMsg,
 							model,
 							A2($author$project$User$Login$update, loginMsg, loginModel));
 					} else {
-						break _v0$11;
+						break _v0$13;
 					}
 				case 'GotPasswordMsg':
 					if (_v0.b.$ === 'SetPasswordPage') {
@@ -7919,67 +8091,85 @@ var $author$project$Main$update = F2(
 								_Utils_update(
 									model,
 									{
+										currentUser: $author$project$User$Type$getUserType(
+											$elm$core$Result$Ok(session)),
 										session: $elm$core$Maybe$Just(session)
 									}),
-								A2($elm$browser$Browser$Navigation$pushUrl, model.key, '/'));
+								A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute));
 						} else {
 							return A4(
-								$author$project$Main$toPage,
+								$author$project$Main$toPageWithModel,
 								$author$project$Page$SetPasswordPage,
 								$author$project$Main$GotPasswordMsg,
 								model,
-								A2($author$project$SetPassword$update, setPwdMsg, setPwdModel));
+								A2($author$project$User$SetPassword$update, setPwdMsg, setPwdModel));
 						}
 					} else {
-						break _v0$11;
+						break _v0$13;
 					}
 				case 'GotRegistrationMsg':
 					if (_v0.b.$ === 'RegistrationPage') {
 						var regMsg = _v0.a.a;
 						var regModel = _v0.b.a;
 						return A4(
-							$author$project$Main$toPage,
+							$author$project$Main$toPageWithModel,
 							$author$project$Page$RegistrationPage,
 							$author$project$Main$GotRegistrationMsg,
 							model,
 							A2($author$project$Registration$update, regMsg, regModel));
 					} else {
-						break _v0$11;
+						break _v0$13;
 					}
 				case 'GotProfessorMsg':
-					if (_v0.b.$ === 'ProfessorPage') {
+					if (_v0.c.$ === 'ProfessorModel') {
 						var profMsg = _v0.a.a;
-						var profModel = _v0.b.a;
-						return A4(
-							$author$project$Main$toPage,
-							$author$project$Page$ProfessorPage,
-							$author$project$Main$GotProfessorMsg,
-							model,
-							A2($author$project$Professor$update, profMsg, profModel));
+						var professorPage = _v0.b;
+						var model_ = _v0.c.a;
+						var _v8 = A3(
+							$author$project$Professor$update,
+							profMsg,
+							model_,
+							$author$project$Main$tokenFrom(model.session));
+						var profModel = _v8.a;
+						var cmd = _v8.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									mainContent: $author$project$Main$ProfessorModel(profModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$GotProfessorMsg, cmd));
 					} else {
-						break _v0$11;
+						break _v0$13;
 					}
 				case 'RefreshTick':
 					return _Utils_Tuple2(
 						model,
 						A2($elm$core$Platform$Cmd$map, $author$project$Main$GotSessionMsg, $author$project$User$Session$silentTokenRefresh));
-				case 'ProfileDropdownMsg':
-					var state = _v0.a.a;
+				case 'MenuOpened':
+					var _v9 = _v0.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{profileDropdownState: state}),
+							{isMenuOpened: true}),
+						$elm$core$Platform$Cmd$none);
+				case 'MenuClosed':
+					var _v10 = _v0.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{isMenuOpened: false}),
 						$elm$core$Platform$Cmd$none);
 				default:
-					var _v5 = _v0.a;
+					var _v11 = _v0.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{session: $elm$core$Maybe$Nothing}),
+							{currentUser: $author$project$User$Type$Guest, isMenuOpened: false, session: $elm$core$Maybe$Nothing}),
 						$elm$core$Platform$Cmd$batch(
 							_List_fromArray(
 								[
-									A2($elm$browser$Browser$Navigation$pushUrl, model.key, '/'),
+									A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute),
 									A2($elm$core$Platform$Cmd$map, $author$project$Main$GotSessionMsg, $author$project$User$Session$logout)
 								])));
 			}
@@ -7992,204 +8182,529 @@ var $author$project$Main$GotLoginMsg = function (a) {
 var $elm$html$Html$main_ = _VirtualDom_node('main');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $rundis$elm_bootstrap$Bootstrap$Card$Config = function (a) {
-	return {$: 'Config', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Card$config = function (options) {
-	return $rundis$elm_bootstrap$Bootstrap$Card$Config(
-		{blocks: _List_Nil, footer: $elm$core$Maybe$Nothing, header: $elm$core$Maybe$Nothing, imgBottom: $elm$core$Maybe$Nothing, imgTop: $elm$core$Maybe$Nothing, options: options});
-};
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$ListGroup = function (a) {
-	return {$: 'ListGroup', a: a};
-};
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$applyModifier = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'Roled':
-				var role = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						role: $elm$core$Maybe$Just(role)
-					});
-			case 'Action':
-				return _Utils_update(
-					options,
-					{action: true});
-			case 'Disabled':
-				return _Utils_update(
-					options,
-					{disabled: true});
-			case 'Active':
-				return _Utils_update(
-					options,
-					{active: true});
-			default:
-				var attrs = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$defaultOptions = {action: false, active: false, attributes: _List_Nil, disabled: false, role: $elm$core$Maybe$Nothing};
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$html$Html$Attributes$classList = function (classes) {
-	return $elm$html$Html$Attributes$class(
-		A2(
-			$elm$core$String$join,
-			' ',
-			A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
-};
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass = F2(
-	function (prefix, role) {
-		return $elm$html$Html$Attributes$class(
-			prefix + ('-' + function () {
-				switch (role.$) {
-					case 'Primary':
-						return 'primary';
-					case 'Secondary':
-						return 'secondary';
-					case 'Success':
-						return 'success';
-					case 'Info':
-						return 'info';
-					case 'Warning':
-						return 'warning';
-					case 'Danger':
-						return 'danger';
-					case 'Light':
-						return 'light';
-					default:
-						return 'dark';
-				}
-			}()));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$itemAttributes = function (options) {
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$classList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2('list-group-item', true),
-						_Utils_Tuple2('disabled', options.disabled),
-						_Utils_Tuple2('active', options.active),
-						_Utils_Tuple2('list-group-item-action', options.action)
-					]))
-			]),
-		_Utils_ap(
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$disabled(options.disabled)
-				]),
-			_Utils_ap(
-				A2(
-					$elm$core$Maybe$withDefault,
-					_List_Nil,
-					A2(
-						$elm$core$Maybe$map,
-						function (r) {
-							return _List_fromArray(
-								[
-									A2($rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass, 'list-group-item', r)
-								]);
-						},
-						options.role)),
-				options.attributes)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$renderItem = function (_v0) {
-	var itemFn = _v0.a.itemFn;
-	var options = _v0.a.options;
-	var children = _v0.a.children;
-	return A2(
-		itemFn,
-		$rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$itemAttributes(
-			A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$applyModifier, $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$defaultOptions, options)),
-		children);
-};
-var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$listGroup = function (items) {
-	return $rundis$elm_bootstrap$Bootstrap$Card$Internal$ListGroup(
-		A2(
-			$elm$html$Html$ul,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('list-group list-group-flush')
-				]),
-			A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$renderItem, items)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Card$listGroup = F2(
-	function (items, _v0) {
-		var conf = _v0.a;
-		return $rundis$elm_bootstrap$Bootstrap$Card$Config(
-			_Utils_update(
-				conf,
-				{
-					blocks: _Utils_ap(
-						conf.blocks,
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Card$Internal$listGroup(items)
-							]))
-				}));
-	});
-var $author$project$Professor$AcceptRequest = function (a) {
+var $author$project$Professor$RegistrationRequests$AcceptRequest = function (a) {
 	return {$: 'AcceptRequest', a: a};
 };
-var $author$project$Professor$RejecteRequest = function (a) {
+var $author$project$Professor$RegistrationRequests$RejecteRequest = function (a) {
 	return {$: 'RejecteRequest', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Attrs = function (a) {
-	return {$: 'Attrs', a: a};
+var $aforemny$material_components_web_elm$Material$CircularProgress$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Button$attrs = function (attrs_) {
-	return $rundis$elm_bootstrap$Bootstrap$Internal$Button$Attrs(attrs_);
+var $aforemny$material_components_web_elm$Material$CircularProgress$Large = {$: 'Large'};
+var $aforemny$material_components_web_elm$Material$CircularProgress$config = $aforemny$material_components_web_elm$Material$CircularProgress$Config(
+	{additionalAttributes: _List_Nil, closed: false, fourColored: false, label: $elm$core$Maybe$Nothing, size: $aforemny$material_components_web_elm$Material$CircularProgress$Large});
+var $aforemny$material_components_web_elm$Material$IconButton$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$ColAttrs = function (a) {
-	return {$: 'ColAttrs', a: a};
+var $aforemny$material_components_web_elm$Material$IconButton$config = $aforemny$material_components_web_elm$Material$IconButton$Internal$Config(
+	{additionalAttributes: _List_Nil, disabled: false, label: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing});
+var $aforemny$material_components_web_elm$Material$List$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Grid$Col$attrs = function (attrs_) {
-	return $rundis$elm_bootstrap$Bootstrap$Grid$Internal$ColAttrs(attrs_);
+var $aforemny$material_components_web_elm$Material$List$config = $aforemny$material_components_web_elm$Material$List$Config(
+	{additionalAttributes: _List_Nil, avatarList: false, dense: false, nonInteractive: false, twoLine: false, vertical: false, wrapFocus: false});
+var $aforemny$material_components_web_elm$Material$List$Item$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $elm$html$Html$button = _VirtualDom_node('button');
+var $aforemny$material_components_web_elm$Material$List$Item$config = $aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
+	{
+		additionalAttributes: _List_Nil,
+		disabled: false,
+		href: $elm$core$Maybe$Nothing,
+		node: $elm$html$Html$text(''),
+		onClick: $elm$core$Maybe$Nothing,
+		selection: $elm$core$Maybe$Nothing,
+		target: $elm$core$Maybe$Nothing
+	});
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $aforemny$material_components_web_elm$Material$List$Item$graphic = F2(
+	function (additionalAttributes, nodes) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$class('mdc-list-item__graphic'),
+				additionalAttributes),
+			nodes);
+	});
+var $aforemny$material_components_web_elm$Material$Icon$icon = F2(
+	function (additionalAttributes, iconName) {
+		return A2(
+			$elm$html$Html$i,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$class('material-icons'),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(iconName)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$IconButton$Internal$Icon = function (a) {
+	return {$: 'Icon', a: a};
+};
+var $aforemny$material_components_web_elm$Material$IconButton$customIcon = F3(
+	function (node, attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$IconButton$Internal$Icon(
+			{attributes: attributes, node: node, nodes: nodes});
+	});
+var $aforemny$material_components_web_elm$Material$IconButton$icon = function (iconName) {
+	return A3(
+		$aforemny$material_components_web_elm$Material$IconButton$customIcon,
+		$elm$html$Html$i,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('material-icons')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(iconName)
+			]));
+};
+var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $aforemny$material_components_web_elm$Material$IconButton$clickHandler = function (_v0) {
+	var onClick = _v0.a.onClick;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, onClick);
+};
+var $elm$virtual_dom$VirtualDom$node = function (tag) {
+	return _VirtualDom_node(
+		_VirtualDom_noScript(tag));
+};
+var $elm$html$Html$node = $elm$virtual_dom$VirtualDom$node;
+var $aforemny$material_components_web_elm$Material$IconButton$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-icon-button'));
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
+};
+var $aforemny$material_components_web_elm$Material$IconButton$tabIndexProp = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$tabindex(0));
+var $aforemny$material_components_web_elm$Material$IconButton$iconButton = F2(
+	function (config_, icon_) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-icon-button',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$IconButton$rootCs,
+							$aforemny$material_components_web_elm$Material$IconButton$tabIndexProp,
+							$aforemny$material_components_web_elm$Material$IconButton$clickHandler(config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$map,
+					$elm$core$Basics$never,
+					function () {
+						if (icon_.$ === 'Icon') {
+							var node = icon_.a.node;
+							var attributes = icon_.a.attributes;
+							var nodes = icon_.a.nodes;
+							return A2(
+								node,
+								A2(
+									$elm$core$List$cons,
+									$elm$html$Html$Attributes$class('mdc-icon-button__icon'),
+									attributes),
+								nodes);
+						} else {
+							var node = icon_.a.node;
+							var attributes = icon_.a.attributes;
+							var nodes = icon_.a.nodes;
+							return A2(
+								node,
+								A2(
+									$elm$core$List$cons,
+									$elm$svg$Svg$Attributes$class('mdc-icon-button__icon'),
+									attributes),
+								nodes);
+						}
+					}())
+				]));
+	});
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $aforemny$material_components_web_elm$Material$CircularProgress$ariaLabelAttr = function (_v0) {
+	var label = _v0.a.label;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$Attributes$attribute('aria-label'),
+		label);
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$ariaValueMaxAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'aria-value-max', '1'));
+var $aforemny$material_components_web_elm$Material$CircularProgress$ariaValueMinAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'aria-value-min', '0'));
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $aforemny$material_components_web_elm$Material$CircularProgress$ariaValueNowAttr = function (progress) {
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$html$Html$Attributes$attribute('aria-value-now'),
+				$elm$core$String$fromFloat),
+			function ($) {
+				return $.progress;
+			}),
+		progress);
+};
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$virtual_dom$VirtualDom$property = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_property,
+			_VirtualDom_noInnerHtmlOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$property = $elm$virtual_dom$VirtualDom$property;
+var $aforemny$material_components_web_elm$Material$CircularProgress$closedProp = function (_v0) {
+	var closed = _v0.a.closed;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'closed',
+			$elm$json$Json$Encode$bool(closed)));
+};
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $aforemny$material_components_web_elm$Material$CircularProgress$circleCs = function (progress) {
+	return $elm$svg$Svg$Attributes$class(
+		(!_Utils_eq(progress, $elm$core$Maybe$Nothing)) ? 'mdc-circular-progress__determinate-circle' : 'mdc-circular-progress__indeterminate-circle');
+};
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$Attributes$strokeDasharray = _VirtualDom_attribute('stroke-dasharray');
+var $aforemny$material_components_web_elm$Material$CircularProgress$strokeDasharrayAttr = function (_v0) {
+	var size = _v0.a.size;
+	return A3(
+		$elm$core$Basics$composeL,
+		$elm$svg$Svg$Attributes$strokeDasharray,
+		$elm$core$String$fromFloat,
+		function () {
+			switch (size.$) {
+				case 'Large':
+					return 113.097;
+				case 'Medium':
+					return 78.54;
+				default:
+					return 54.978;
+			}
+		}());
+};
+var $elm$svg$Svg$Attributes$strokeDashoffset = _VirtualDom_attribute('stroke-dashoffset');
+var $aforemny$material_components_web_elm$Material$CircularProgress$strokeDashoffsetAttr = F2(
+	function (progress, _v0) {
+		var size = _v0.a.size;
+		return A3(
+			$elm$core$Basics$composeL,
+			$elm$svg$Svg$Attributes$strokeDashoffset,
+			$elm$core$String$fromFloat,
+			function () {
+				var _v1 = _Utils_Tuple2(progress, size);
+				if (_v1.a.$ === 'Just') {
+					switch (_v1.b.$) {
+						case 'Large':
+							var _v2 = _v1.b;
+							return 113.097;
+						case 'Medium':
+							var _v5 = _v1.b;
+							return 78.54;
+						default:
+							var _v8 = _v1.b;
+							return 54.978;
+					}
+				} else {
+					switch (_v1.b.$) {
+						case 'Large':
+							var _v3 = _v1.a;
+							var _v4 = _v1.b;
+							return 56.549;
+						case 'Medium':
+							var _v6 = _v1.a;
+							var _v7 = _v1.b;
+							return 39.27;
+						default:
+							var _v9 = _v1.a;
+							var _v10 = _v1.b;
+							return 27.489;
+					}
+				}
+			}());
+	});
+var $aforemny$material_components_web_elm$Material$CircularProgress$circleElt = F2(
+	function (progress, config_) {
+		return A2(
+			$elm$svg$Svg$circle,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$CircularProgress$circleCs(progress),
+					$elm$svg$Svg$Attributes$cx('24'),
+					$elm$svg$Svg$Attributes$cy('24'),
+					$elm$svg$Svg$Attributes$r('18'),
+					$aforemny$material_components_web_elm$Material$CircularProgress$strokeDasharrayAttr(config_),
+					A2($aforemny$material_components_web_elm$Material$CircularProgress$strokeDashoffsetAttr, progress, config_)
+				]),
+			_List_Nil);
+	});
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var $aforemny$material_components_web_elm$Material$CircularProgress$determinateCircleGraphicElt = F2(
+	function (progress, config_) {
+		return A2(
+			$elm$svg$Svg$svg,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$class('mdc-circular-progress__determinate-circle-graphic'),
+					$elm$svg$Svg$Attributes$viewBox('0 0 48 48')
+				]),
+			_List_fromArray(
+				[
+					A2($aforemny$material_components_web_elm$Material$CircularProgress$circleElt, progress, config_)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$CircularProgress$determinateContainerElt = F2(
+	function (progress, config_) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-circular-progress__determinate-container')
+				]),
+			_List_fromArray(
+				[
+					A2($aforemny$material_components_web_elm$Material$CircularProgress$determinateCircleGraphicElt, progress, config_)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$CircularProgress$determinateProp = function (progress) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'determinate',
+			$elm$json$Json$Encode$bool(
+				!_Utils_eq(progress, $elm$core$Maybe$Nothing))));
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCircleGraphicElt = function (config_) {
+	return A2(
+		$elm$svg$Svg$svg,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$class('mdc-circular-progress__indeterminate-circle-graphic'),
+				$elm$svg$Svg$Attributes$viewBox('0 0 48 48')
+			]),
+		_List_fromArray(
+			[
+				A2($aforemny$material_components_web_elm$Material$CircularProgress$circleElt, $elm$core$Maybe$Nothing, config_)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt = F2(
+	function (config_, additionalAttributes) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$class('mdc-circular-progress__spinner-layer'),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('mdc-circular-progress__circle-clipper'),
+							$elm$html$Html$Attributes$class('mdc-circular-progress__circle-left')
+						]),
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCircleGraphicElt(config_)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('mdc-circular-progress__gap-patch')
+						]),
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCircleGraphicElt(config_)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('mdc-circular-progress__circle-clipper'),
+							$elm$html$Html$Attributes$class('mdc-circular-progress__circle-right')
+						]),
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCircleGraphicElt(config_)
+						]))
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$CircularProgress$indeterminateContainerElt = function (config_) {
+	var fourColored = config_.a.fourColored;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-circular-progress__indeterminate-container')
+			]),
+		fourColored ? _List_fromArray(
+			[
+				A2(
+				$aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt,
+				config_,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-circular-progress__color-1')
+					])),
+				A2(
+				$aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt,
+				config_,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-circular-progress__color-2')
+					])),
+				A2(
+				$aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt,
+				config_,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-circular-progress__color-3')
+					])),
+				A2(
+				$aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt,
+				config_,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-circular-progress__color-4')
+					]))
+			]) : _List_fromArray(
+			[
+				A2($aforemny$material_components_web_elm$Material$CircularProgress$spinnerLayerElt, config_, _List_Nil)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCs = function (progress) {
+	return (!_Utils_eq(progress, $elm$core$Maybe$Nothing)) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-circular-progress--indeterminate'));
+};
+var $elm$json$Json$Encode$float = _Json_wrap;
+var $aforemny$material_components_web_elm$Material$CircularProgress$progressProp = function (progress) {
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$html$Html$Attributes$property('progress'),
+				$elm$json$Json$Encode$float),
+			function ($) {
+				return $.progress;
+			}),
+		progress);
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$progressbarRole = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'progressbar'));
+var $aforemny$material_components_web_elm$Material$CircularProgress$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-circular-progress'));
+var $aforemny$material_components_web_elm$Material$CircularProgress$sizeCs = function (_v0) {
+	var size = _v0.a.size;
+	return A3(
+		$elm$core$Basics$composeL,
+		$elm$core$Maybe$Just,
+		$elm$html$Html$Attributes$class,
+		function () {
+			switch (size.$) {
+				case 'Large':
+					return 'mdc-circular-progress--large';
+				case 'Medium':
+					return 'mdc-circular-progress--medium';
+				default:
+					return 'mdc-circular-progress--small';
+			}
+		}());
+};
+var $aforemny$material_components_web_elm$Material$CircularProgress$circularProgress = F2(
+	function (progress, config_) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-circular-progress',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$CircularProgress$rootCs,
+							$aforemny$material_components_web_elm$Material$CircularProgress$indeterminateCs(progress),
+							$aforemny$material_components_web_elm$Material$CircularProgress$sizeCs(config_),
+							$aforemny$material_components_web_elm$Material$CircularProgress$progressbarRole,
+							$aforemny$material_components_web_elm$Material$CircularProgress$ariaLabelAttr(config_),
+							$aforemny$material_components_web_elm$Material$CircularProgress$ariaValueMinAttr,
+							$aforemny$material_components_web_elm$Material$CircularProgress$ariaValueMaxAttr,
+							$aforemny$material_components_web_elm$Material$CircularProgress$ariaValueNowAttr(progress),
+							$aforemny$material_components_web_elm$Material$CircularProgress$determinateProp(progress),
+							$aforemny$material_components_web_elm$Material$CircularProgress$progressProp(progress),
+							$aforemny$material_components_web_elm$Material$CircularProgress$closedProp(config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$CircularProgress$determinateContainerElt,
+					A2(
+						$elm$core$Maybe$withDefault,
+						$elm$core$Maybe$Just(
+							{progress: 0}),
+						A2($elm$core$Maybe$map, $elm$core$Maybe$Just, progress)),
+					config_),
+					$aforemny$material_components_web_elm$Material$CircularProgress$indeterminateContainerElt(config_)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$CircularProgress$indeterminate = function (config_) {
+	return A2($aforemny$material_components_web_elm$Material$CircularProgress$circularProgress, $elm$core$Maybe$Nothing, config_);
+};
+var $aforemny$material_components_web_elm$Material$List$avatarListCs = function (_v0) {
+	var avatarList = _v0.a.avatarList;
+	return avatarList ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list--avatar-list')) : $elm$core$Maybe$Nothing;
+};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (maybeValue.$ === 'Just') {
@@ -8199,1254 +8714,836 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$applyModifier = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'Size':
-				var size = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						size: $elm$core$Maybe$Just(size)
-					});
-			case 'Coloring':
-				var coloring = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						coloring: $elm$core$Maybe$Just(coloring)
-					});
-			case 'Block':
-				return _Utils_update(
-					options,
-					{block: true});
-			case 'Disabled':
-				var val = modifier.a;
-				return _Utils_update(
-					options,
-					{disabled: val});
-			default:
-				var attrs = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs)
-					});
-		}
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$defaultOptions = {attributes: _List_Nil, block: false, coloring: $elm$core$Maybe$Nothing, disabled: false, size: $elm$core$Maybe$Nothing};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$roleClass = function (role) {
-	switch (role.$) {
-		case 'Primary':
-			return 'primary';
-		case 'Secondary':
-			return 'secondary';
-		case 'Success':
-			return 'success';
-		case 'Info':
-			return 'info';
-		case 'Warning':
-			return 'warning';
-		case 'Danger':
-			return 'danger';
-		case 'Dark':
-			return 'dark';
-		case 'Light':
-			return 'light';
-		default:
-			return 'link';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption = function (size) {
-	switch (size.$) {
-		case 'XS':
-			return $elm$core$Maybe$Nothing;
-		case 'SM':
-			return $elm$core$Maybe$Just('sm');
-		case 'MD':
-			return $elm$core$Maybe$Just('md');
-		case 'LG':
-			return $elm$core$Maybe$Just('lg');
-		default:
-			return $elm$core$Maybe$Just('xl');
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Internal$Button$applyModifier, $rundis$elm_bootstrap$Bootstrap$Internal$Button$defaultOptions, modifiers);
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$classList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2('btn', true),
-						_Utils_Tuple2('btn-block', options.block),
-						_Utils_Tuple2('disabled', options.disabled)
-					])),
-				$elm$html$Html$Attributes$disabled(options.disabled)
-			]),
-		_Utils_ap(
-			function () {
-				var _v0 = A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption, options.size);
-				if (_v0.$ === 'Just') {
-					var s = _v0.a;
-					return _List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('btn-' + s)
-						]);
-				} else {
-					return _List_Nil;
-				}
-			}(),
-			_Utils_ap(
-				function () {
-					var _v1 = options.coloring;
-					if (_v1.$ === 'Just') {
-						if (_v1.a.$ === 'Roled') {
-							var role = _v1.a.a;
-							return _List_fromArray(
-								[
-									$elm$html$Html$Attributes$class(
-									'btn-' + $rundis$elm_bootstrap$Bootstrap$Internal$Button$roleClass(role))
-								]);
-						} else {
-							var role = _v1.a.a;
-							return _List_fromArray(
-								[
-									$elm$html$Html$Attributes$class(
-									'btn-outline-' + $rundis$elm_bootstrap$Bootstrap$Internal$Button$roleClass(role))
-								]);
-						}
-					} else {
-						return _List_Nil;
-					}
-				}(),
-				options.attributes)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Button$button = F2(
-	function (options, children) {
-		return A2(
-			$elm$html$Html$button,
-			$rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes(options),
-			children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Column = function (a) {
-	return {$: 'Column', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$col = F2(
-	function (options, children) {
-		return $rundis$elm_bootstrap$Bootstrap$Grid$Column(
-			{children: children, options: options});
-	});
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $rundis$elm_bootstrap$Bootstrap$Grid$container = F2(
-	function (attributes, children) {
-		return A2(
-			$elm$html$Html$div,
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('container')
-					]),
-				attributes),
-			children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring = function (a) {
-	return {$: 'Coloring', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Danger = {$: 'Danger'};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled = function (a) {
-	return {$: 'Roled', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Button$danger = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring(
-	$rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled($rundis$elm_bootstrap$Bootstrap$Internal$Button$Danger));
-var $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Item = function (a) {
-	return {$: 'Item', a: a};
-};
-var $elm$html$Html$li = _VirtualDom_node('li');
-var $rundis$elm_bootstrap$Bootstrap$ListGroup$li = F2(
-	function (options, children) {
-		return $rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Item(
-			{children: children, itemFn: $elm$html$Html$li, options: options});
-	});
-var $rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr1 = $elm$html$Html$Attributes$class('mr-1');
-var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
-	return {$: 'MayPreventDefault', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$preventDefaultOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Button$onClick = function (message) {
-	return $rundis$elm_bootstrap$Bootstrap$Button$attrs(
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$Events$preventDefaultOn,
-				'click',
-				$elm$json$Json$Decode$succeed(
-					_Utils_Tuple2(message, true)))
-			]));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Col = {$: 'Col'};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width = F2(
-	function (screenSize, columnCount) {
-		return {columnCount: columnCount, screenSize: screenSize};
-	});
-var $rundis$elm_bootstrap$Bootstrap$General$Internal$XS = {$: 'XS'};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColAlign = F2(
-	function (align_, options) {
-		var _v0 = align_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						alignXs: $elm$core$Maybe$Just(align_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						alignSm: $elm$core$Maybe$Just(align_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						alignMd: $elm$core$Maybe$Just(align_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						alignLg: $elm$core$Maybe$Just(align_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						alignXl: $elm$core$Maybe$Just(align_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOffset = F2(
-	function (offset_, options) {
-		var _v0 = offset_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						offsetXs: $elm$core$Maybe$Just(offset_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						offsetSm: $elm$core$Maybe$Just(offset_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						offsetMd: $elm$core$Maybe$Just(offset_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						offsetLg: $elm$core$Maybe$Just(offset_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						offsetXl: $elm$core$Maybe$Just(offset_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOrder = F2(
-	function (order_, options) {
-		var _v0 = order_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						orderXs: $elm$core$Maybe$Just(order_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						orderSm: $elm$core$Maybe$Just(order_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						orderMd: $elm$core$Maybe$Just(order_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						orderLg: $elm$core$Maybe$Just(order_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						orderXl: $elm$core$Maybe$Just(order_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPull = F2(
-	function (pull_, options) {
-		var _v0 = pull_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						pullXs: $elm$core$Maybe$Just(pull_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						pullSm: $elm$core$Maybe$Just(pull_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						pullMd: $elm$core$Maybe$Just(pull_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						pullLg: $elm$core$Maybe$Just(pull_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						pullXl: $elm$core$Maybe$Just(pull_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPush = F2(
-	function (push_, options) {
-		var _v0 = push_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						pushXs: $elm$core$Maybe$Just(push_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						pushSm: $elm$core$Maybe$Just(push_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						pushMd: $elm$core$Maybe$Just(push_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						pushLg: $elm$core$Maybe$Just(push_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						pushXl: $elm$core$Maybe$Just(push_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColWidth = F2(
-	function (width_, options) {
-		var _v0 = width_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						widthXs: $elm$core$Maybe$Just(width_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						widthSm: $elm$core$Maybe$Just(width_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						widthMd: $elm$core$Maybe$Just(width_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						widthLg: $elm$core$Maybe$Just(width_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						widthXl: $elm$core$Maybe$Just(width_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOption = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'ColAttrs':
-				var attrs = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs)
-					});
-			case 'ColWidth':
-				var width_ = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColWidth, width_, options);
-			case 'ColOffset':
-				var offset_ = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOffset, offset_, options);
-			case 'ColPull':
-				var pull_ = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPull, pull_, options);
-			case 'ColPush':
-				var push_ = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColPush, push_, options);
-			case 'ColOrder':
-				var order_ = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOrder, order_, options);
-			case 'ColAlign':
-				var align = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColAlign, align, options);
-			default:
-				var align = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						textAlign: $elm$core$Maybe$Just(align)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$columnCountOption = function (size) {
-	switch (size.$) {
-		case 'Col':
-			return $elm$core$Maybe$Nothing;
-		case 'Col1':
-			return $elm$core$Maybe$Just('1');
-		case 'Col2':
-			return $elm$core$Maybe$Just('2');
-		case 'Col3':
-			return $elm$core$Maybe$Just('3');
-		case 'Col4':
-			return $elm$core$Maybe$Just('4');
-		case 'Col5':
-			return $elm$core$Maybe$Just('5');
-		case 'Col6':
-			return $elm$core$Maybe$Just('6');
-		case 'Col7':
-			return $elm$core$Maybe$Just('7');
-		case 'Col8':
-			return $elm$core$Maybe$Just('8');
-		case 'Col9':
-			return $elm$core$Maybe$Just('9');
-		case 'Col10':
-			return $elm$core$Maybe$Just('10');
-		case 'Col11':
-			return $elm$core$Maybe$Just('11');
-		case 'Col12':
-			return $elm$core$Maybe$Just('12');
-		default:
-			return $elm$core$Maybe$Just('auto');
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthClass = function (_v0) {
-	var screenSize = _v0.screenSize;
-	var columnCount = _v0.columnCount;
-	return $elm$html$Html$Attributes$class(
-		'col' + (A2(
-			$elm$core$Maybe$withDefault,
-			'',
-			A2(
-				$elm$core$Maybe$map,
-				function (v) {
-					return '-' + v;
-				},
-				$rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(screenSize))) + A2(
-			$elm$core$Maybe$withDefault,
-			'',
-			A2(
-				$elm$core$Maybe$map,
-				function (v) {
-					return '-' + v;
-				},
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$columnCountOption(columnCount)))));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthsToAttributes = function (widths) {
-	var width_ = function (w) {
-		return A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthClass, w);
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, width_, widths));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultColOptions = {alignLg: $elm$core$Maybe$Nothing, alignMd: $elm$core$Maybe$Nothing, alignSm: $elm$core$Maybe$Nothing, alignXl: $elm$core$Maybe$Nothing, alignXs: $elm$core$Maybe$Nothing, attributes: _List_Nil, offsetLg: $elm$core$Maybe$Nothing, offsetMd: $elm$core$Maybe$Nothing, offsetSm: $elm$core$Maybe$Nothing, offsetXl: $elm$core$Maybe$Nothing, offsetXs: $elm$core$Maybe$Nothing, orderLg: $elm$core$Maybe$Nothing, orderMd: $elm$core$Maybe$Nothing, orderSm: $elm$core$Maybe$Nothing, orderXl: $elm$core$Maybe$Nothing, orderXs: $elm$core$Maybe$Nothing, pullLg: $elm$core$Maybe$Nothing, pullMd: $elm$core$Maybe$Nothing, pullSm: $elm$core$Maybe$Nothing, pullXl: $elm$core$Maybe$Nothing, pullXs: $elm$core$Maybe$Nothing, pushLg: $elm$core$Maybe$Nothing, pushMd: $elm$core$Maybe$Nothing, pushSm: $elm$core$Maybe$Nothing, pushXl: $elm$core$Maybe$Nothing, pushXs: $elm$core$Maybe$Nothing, textAlign: $elm$core$Maybe$Nothing, widthLg: $elm$core$Maybe$Nothing, widthMd: $elm$core$Maybe$Nothing, widthSm: $elm$core$Maybe$Nothing, widthXl: $elm$core$Maybe$Nothing, widthXs: $elm$core$Maybe$Nothing};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetCountOption = function (size) {
-	switch (size.$) {
-		case 'Offset0':
-			return '0';
-		case 'Offset1':
-			return '1';
-		case 'Offset2':
-			return '2';
-		case 'Offset3':
-			return '3';
-		case 'Offset4':
-			return '4';
-		case 'Offset5':
-			return '5';
-		case 'Offset6':
-			return '6';
-		case 'Offset7':
-			return '7';
-		case 'Offset8':
-			return '8';
-		case 'Offset9':
-			return '9';
-		case 'Offset10':
-			return '10';
-		default:
-			return '11';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString = function (screenSize) {
-	var _v0 = $rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(screenSize);
-	if (_v0.$ === 'Just') {
-		var s = _v0.a;
-		return '-' + (s + '-');
-	} else {
-		return '-';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetClass = function (_v0) {
-	var screenSize = _v0.screenSize;
-	var offsetCount = _v0.offsetCount;
-	return $elm$html$Html$Attributes$class(
-		'offset' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetCountOption(offsetCount)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetsToAttributes = function (offsets) {
-	var offset_ = function (m) {
-		return A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetClass, m);
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, offset_, offsets));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderColOption = function (size) {
-	switch (size.$) {
-		case 'OrderFirst':
-			return 'first';
-		case 'Order1':
-			return '1';
-		case 'Order2':
-			return '2';
-		case 'Order3':
-			return '3';
-		case 'Order4':
-			return '4';
-		case 'Order5':
-			return '5';
-		case 'Order6':
-			return '6';
-		case 'Order7':
-			return '7';
-		case 'Order8':
-			return '8';
-		case 'Order9':
-			return '9';
-		case 'Order10':
-			return '10';
-		case 'Order11':
-			return '11';
-		case 'Order12':
-			return '12';
-		default:
-			return 'last';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderToAttributes = function (orders) {
-	var order_ = function (m) {
-		if (m.$ === 'Just') {
-			var screenSize = m.a.screenSize;
-			var moveCount = m.a.moveCount;
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class(
-					'order' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderColOption(moveCount))));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, order_, orders));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$moveCountOption = function (size) {
-	switch (size.$) {
-		case 'Move0':
-			return '0';
-		case 'Move1':
-			return '1';
-		case 'Move2':
-			return '2';
-		case 'Move3':
-			return '3';
-		case 'Move4':
-			return '4';
-		case 'Move5':
-			return '5';
-		case 'Move6':
-			return '6';
-		case 'Move7':
-			return '7';
-		case 'Move8':
-			return '8';
-		case 'Move9':
-			return '9';
-		case 'Move10':
-			return '10';
-		case 'Move11':
-			return '11';
-		default:
-			return '12';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$pullsToAttributes = function (pulls) {
-	var pull_ = function (m) {
-		if (m.$ === 'Just') {
-			var screenSize = m.a.screenSize;
-			var moveCount = m.a.moveCount;
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class(
-					'pull' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$moveCountOption(moveCount))));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, pull_, pulls));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$pushesToAttributes = function (pushes) {
-	var push_ = function (m) {
-		if (m.$ === 'Just') {
-			var screenSize = m.a.screenSize;
-			var moveCount = m.a.moveCount;
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class(
-					'push' + ($rundis$elm_bootstrap$Bootstrap$Grid$Internal$screenSizeToPartialString(screenSize) + $rundis$elm_bootstrap$Bootstrap$Grid$Internal$moveCountOption(moveCount))));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, push_, pushes));
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignDirOption = function (dir) {
-	switch (dir.$) {
-		case 'Center':
-			return 'center';
-		case 'Left':
-			return 'left';
-		default:
-			return 'right';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignClass = function (_v0) {
-	var dir = _v0.dir;
-	var size = _v0.size;
-	return $elm$html$Html$Attributes$class(
-		'text' + (A2(
-			$elm$core$Maybe$withDefault,
-			'-',
-			A2(
-				$elm$core$Maybe$map,
-				function (s) {
-					return '-' + (s + '-');
-				},
-				$rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(size))) + $rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignDirOption(dir)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$verticalAlignOption = function (align) {
-	switch (align.$) {
-		case 'Top':
-			return 'start';
-		case 'Middle':
-			return 'center';
-		default:
-			return 'end';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignClass = F2(
-	function (prefix, _v0) {
-		var align = _v0.align;
-		var screenSize = _v0.screenSize;
-		return $elm$html$Html$Attributes$class(
-			_Utils_ap(
-				prefix,
-				_Utils_ap(
-					A2(
-						$elm$core$Maybe$withDefault,
-						'',
-						A2(
-							$elm$core$Maybe$map,
-							function (v) {
-								return v + '-';
-							},
-							$rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(screenSize))),
-					$rundis$elm_bootstrap$Bootstrap$Grid$Internal$verticalAlignOption(align))));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignsToAttributes = F2(
-	function (prefix, aligns) {
-		var align = function (a) {
-			return A2(
-				$elm$core$Maybe$map,
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignClass(prefix),
-				a);
-		};
-		return A2(
-			$elm$core$List$filterMap,
-			$elm$core$Basics$identity,
-			A2($elm$core$List$map, align, aligns));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyColOption, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultColOptions, modifiers);
-	var shouldAddDefaultXs = !$elm$core$List$length(
-		A2(
-			$elm$core$List$filterMap,
-			$elm$core$Basics$identity,
-			_List_fromArray(
-				[options.widthXs, options.widthSm, options.widthMd, options.widthLg, options.widthXl])));
-	return _Utils_ap(
-		$rundis$elm_bootstrap$Bootstrap$Grid$Internal$colWidthsToAttributes(
-			_List_fromArray(
-				[
-					shouldAddDefaultXs ? $elm$core$Maybe$Just(
-					A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$Width, $rundis$elm_bootstrap$Bootstrap$General$Internal$XS, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$Col)) : options.widthXs,
-					options.widthSm,
-					options.widthMd,
-					options.widthLg,
-					options.widthXl
-				])),
-		_Utils_ap(
-			$rundis$elm_bootstrap$Bootstrap$Grid$Internal$offsetsToAttributes(
-				_List_fromArray(
-					[options.offsetXs, options.offsetSm, options.offsetMd, options.offsetLg, options.offsetXl])),
-			_Utils_ap(
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$pullsToAttributes(
-					_List_fromArray(
-						[options.pullXs, options.pullSm, options.pullMd, options.pullLg, options.pullXl])),
-				_Utils_ap(
-					$rundis$elm_bootstrap$Bootstrap$Grid$Internal$pushesToAttributes(
-						_List_fromArray(
-							[options.pushXs, options.pushSm, options.pushMd, options.pushLg, options.pushXl])),
-					_Utils_ap(
-						$rundis$elm_bootstrap$Bootstrap$Grid$Internal$orderToAttributes(
-							_List_fromArray(
-								[options.orderXs, options.orderSm, options.orderMd, options.orderLg, options.orderXl])),
-						_Utils_ap(
-							A2(
-								$rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignsToAttributes,
-								'align-self-',
-								_List_fromArray(
-									[options.alignXs, options.alignSm, options.alignMd, options.alignLg, options.alignXl])),
-							_Utils_ap(
-								function () {
-									var _v0 = options.textAlign;
-									if (_v0.$ === 'Just') {
-										var a = _v0.a;
-										return _List_fromArray(
-											[
-												$rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignClass(a)
-											]);
-									} else {
-										return _List_Nil;
-									}
-								}(),
-								options.attributes)))))));
-};
-var $elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
-	return _VirtualDom_keyedNode(
-		_VirtualDom_noScript(tag));
-};
-var $elm$html$Html$Keyed$node = $elm$virtual_dom$VirtualDom$keyedNode;
-var $rundis$elm_bootstrap$Bootstrap$Grid$renderCol = function (column) {
-	switch (column.$) {
-		case 'Column':
-			var options = column.a.options;
-			var children = column.a.children;
-			return A2(
-				$elm$html$Html$div,
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes(options),
-				children);
-		case 'ColBreak':
-			var e = column.a;
-			return e;
-		default:
-			var options = column.a.options;
-			var children = column.a.children;
-			return A3(
-				$elm$html$Html$Keyed$node,
-				'div',
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$colAttributes(options),
-				children);
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowHAlign = F2(
-	function (align, options) {
-		var _v0 = align.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						hAlignXs: $elm$core$Maybe$Just(align)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						hAlignSm: $elm$core$Maybe$Just(align)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						hAlignMd: $elm$core$Maybe$Just(align)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						hAlignLg: $elm$core$Maybe$Just(align)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						hAlignXl: $elm$core$Maybe$Just(align)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowVAlign = F2(
-	function (align_, options) {
-		var _v0 = align_.screenSize;
-		switch (_v0.$) {
-			case 'XS':
-				return _Utils_update(
-					options,
-					{
-						vAlignXs: $elm$core$Maybe$Just(align_)
-					});
-			case 'SM':
-				return _Utils_update(
-					options,
-					{
-						vAlignSm: $elm$core$Maybe$Just(align_)
-					});
-			case 'MD':
-				return _Utils_update(
-					options,
-					{
-						vAlignMd: $elm$core$Maybe$Just(align_)
-					});
-			case 'LG':
-				return _Utils_update(
-					options,
-					{
-						vAlignLg: $elm$core$Maybe$Just(align_)
-					});
-			default:
-				return _Utils_update(
-					options,
-					{
-						vAlignXl: $elm$core$Maybe$Just(align_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowOption = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'RowAttrs':
-				var attrs = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs)
-					});
-			case 'RowVAlign':
-				var align = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowVAlign, align, options);
-			default:
-				var align = modifier.a;
-				return A2($rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowHAlign, align, options);
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultRowOptions = {attributes: _List_Nil, hAlignLg: $elm$core$Maybe$Nothing, hAlignMd: $elm$core$Maybe$Nothing, hAlignSm: $elm$core$Maybe$Nothing, hAlignXl: $elm$core$Maybe$Nothing, hAlignXs: $elm$core$Maybe$Nothing, vAlignLg: $elm$core$Maybe$Nothing, vAlignMd: $elm$core$Maybe$Nothing, vAlignSm: $elm$core$Maybe$Nothing, vAlignXl: $elm$core$Maybe$Nothing, vAlignXs: $elm$core$Maybe$Nothing};
-var $rundis$elm_bootstrap$Bootstrap$General$Internal$horizontalAlignOption = function (align) {
-	switch (align.$) {
-		case 'Left':
-			return 'start';
-		case 'Center':
-			return 'center';
-		case 'Right':
-			return 'end';
-		case 'Around':
-			return 'around';
-		default:
-			return 'between';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$General$Internal$hAlignClass = function (_v0) {
-	var align = _v0.align;
-	var screenSize = _v0.screenSize;
-	return $elm$html$Html$Attributes$class(
-		'justify-content-' + (A2(
-			$elm$core$Maybe$withDefault,
-			'',
-			A2(
-				$elm$core$Maybe$map,
-				function (v) {
-					return v + '-';
-				},
-				$rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(screenSize))) + $rundis$elm_bootstrap$Bootstrap$General$Internal$horizontalAlignOption(align)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$hAlignsToAttributes = function (aligns) {
-	var align = function (a) {
-		return A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$General$Internal$hAlignClass, a);
-	};
-	return A2(
-		$elm$core$List$filterMap,
-		$elm$core$Basics$identity,
-		A2($elm$core$List$map, align, aligns));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$Internal$rowAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$applyRowOption, $rundis$elm_bootstrap$Bootstrap$Grid$Internal$defaultRowOptions, modifiers);
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('row')
-			]),
-		_Utils_ap(
-			A2(
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$vAlignsToAttributes,
-				'align-items-',
-				_List_fromArray(
-					[options.vAlignXs, options.vAlignSm, options.vAlignMd, options.vAlignLg, options.vAlignXl])),
-			_Utils_ap(
-				$rundis$elm_bootstrap$Bootstrap$Grid$Internal$hAlignsToAttributes(
-					_List_fromArray(
-						[options.hAlignXs, options.hAlignSm, options.hAlignMd, options.hAlignLg, options.hAlignXl])),
-				options.attributes)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Grid$row = F2(
-	function (options, cols) {
-		return A2(
-			$elm$html$Html$div,
-			$rundis$elm_bootstrap$Bootstrap$Grid$Internal$rowAttributes(options),
-			A2($elm$core$List$map, $rundis$elm_bootstrap$Bootstrap$Grid$renderCol, cols));
-	});
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$html$Html$strong = _VirtualDom_node('strong');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Success = {$: 'Success'};
-var $rundis$elm_bootstrap$Bootstrap$Button$success = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring(
-	$rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled($rundis$elm_bootstrap$Bootstrap$Internal$Button$Success));
-var $author$project$Professor$requestView = function (req) {
-	return A2(
-		$rundis$elm_bootstrap$Bootstrap$ListGroup$li,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Grid$container,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Grid$row,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$rundis$elm_bootstrap$Bootstrap$Grid$col,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$strong,
-										_List_fromArray(
-											[
-												A2($elm$html$Html$Attributes$style, 'display', 'block')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text(req.firstName + (' ' + (req.lastName + (' ' + req.index))))
-											])),
-										A2(
-										$elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(req.email)
-											]))
-									])),
-								A2(
-								$rundis$elm_bootstrap$Bootstrap$Grid$col,
-								_List_fromArray(
-									[
-										$rundis$elm_bootstrap$Bootstrap$Grid$Col$attrs(
-										_List_fromArray(
-											[
-												A2($elm$html$Html$Attributes$style, 'text-align', 'end')
-											]))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$rundis$elm_bootstrap$Bootstrap$Button$button,
-										_List_fromArray(
-											[
-												$rundis$elm_bootstrap$Bootstrap$Button$success,
-												$rundis$elm_bootstrap$Bootstrap$Button$attrs(
-												_List_fromArray(
-													[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr1])),
-												$rundis$elm_bootstrap$Bootstrap$Button$onClick(
-												$author$project$Professor$AcceptRequest(req.id))
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('Prihvati')
-											])),
-										A2(
-										$rundis$elm_bootstrap$Bootstrap$Button$button,
-										_List_fromArray(
-											[
-												$rundis$elm_bootstrap$Bootstrap$Button$danger,
-												$rundis$elm_bootstrap$Bootstrap$Button$onClick(
-												$author$project$Professor$RejecteRequest(req.id))
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('Odbaci')
-											]))
-									]))
-							]))
-					]))
-			]));
-};
-var $author$project$Professor$statusPending = 'pending';
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$applyModifier = F2(
-	function (option, options) {
-		switch (option.$) {
-			case 'Aligned':
-				var align = option.a;
-				return _Utils_update(
-					options,
-					{
-						aligned: $elm$core$Maybe$Just(align)
-					});
-			case 'Coloring':
-				var coloring = option.a;
-				return _Utils_update(
-					options,
-					{
-						coloring: $elm$core$Maybe$Just(coloring)
-					});
-			case 'TextColoring':
-				var coloring = option.a;
-				return _Utils_update(
-					options,
-					{
-						textColoring: $elm$core$Maybe$Just(coloring)
-					});
-			default:
-				var attrs = option.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$defaultOptions = {aligned: $elm$core$Maybe$Nothing, attributes: _List_Nil, coloring: $elm$core$Maybe$Nothing, textColoring: $elm$core$Maybe$Nothing};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Text$textColorClass = function (color) {
-	if (color.$ === 'White') {
-		return $elm$html$Html$Attributes$class('text-white');
-	} else {
-		var role = color.a;
-		return A2($rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass, 'text', role);
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$cardAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Card$Internal$applyModifier, $rundis$elm_bootstrap$Bootstrap$Card$Internal$defaultOptions, modifiers);
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('card')
-			]),
-		_Utils_ap(
-			function () {
-				var _v0 = options.coloring;
-				if (_v0.$ === 'Just') {
-					if (_v0.a.$ === 'Roled') {
-						var role = _v0.a.a;
-						return _List_fromArray(
-							[
-								A2($rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass, 'bg', role)
-							]);
-					} else {
-						var role = _v0.a.a;
-						return _List_fromArray(
-							[
-								A2($rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass, 'border', role)
-							]);
-					}
-				} else {
-					return _List_Nil;
-				}
-			}(),
-			_Utils_ap(
-				function () {
-					var _v1 = options.textColoring;
-					if (_v1.$ === 'Just') {
-						var color = _v1.a;
-						return _List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Internal$Text$textColorClass(color)
-							]);
-					} else {
-						return _List_Nil;
-					}
-				}(),
-				_Utils_ap(
-					function () {
-						var _v2 = options.aligned;
-						if (_v2.$ === 'Just') {
-							var align = _v2.a;
-							return _List_fromArray(
-								[
-									$rundis$elm_bootstrap$Bootstrap$Internal$Text$textAlignClass(align)
-								]);
-						} else {
-							return _List_Nil;
-						}
-					}(),
-					options.attributes))));
-};
-var $rundis$elm_bootstrap$Bootstrap$Card$Internal$renderBlocks = function (blocks) {
-	return A2(
-		$elm$core$List$map,
-		function (block_) {
-			if (block_.$ === 'CardBlock') {
-				var e = block_.a;
-				return e;
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
 			} else {
-				var e = block_.a;
-				return e;
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $aforemny$material_components_web_elm$Material$List$clickHandler = function (listItems) {
+	var getOnClick = function (listItem_) {
+		switch (listItem_.$) {
+			case 'ListItem':
+				var onClick = listItem_.a.a.onClick;
+				return $elm$core$Maybe$Just(onClick);
+			case 'ListItemDivider':
+				return $elm$core$Maybe$Nothing;
+			default:
+				return $elm$core$Maybe$Nothing;
+		}
+	};
+	var nthOnClick = function (index) {
+		return A2(
+			$elm$core$Maybe$andThen,
+			$elm$core$Basics$identity,
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$drop,
+					index,
+					A2(
+						$elm$core$List$filterMap,
+						$elm$core$Basics$identity,
+						A2($elm$core$List$map, getOnClick, listItems)))));
+	};
+	var mergedClickHandler = A2(
+		$elm$json$Json$Decode$andThen,
+		function (index) {
+			var _v0 = nthOnClick(index);
+			if (_v0.$ === 'Just') {
+				var msg_ = _v0.a;
+				return $elm$json$Json$Decode$succeed(msg_);
+			} else {
+				return $elm$json$Json$Decode$fail('');
 			}
 		},
-		blocks);
+		A2(
+			$elm$json$Json$Decode$at,
+			_List_fromArray(
+				['detail', 'index']),
+			$elm$json$Json$Decode$int));
+	return $elm$core$Maybe$Just(
+		A2($elm$html$Html$Events$on, 'MDCList:action', mergedClickHandler));
 };
-var $rundis$elm_bootstrap$Bootstrap$Card$view = function (_v0) {
-	var conf = _v0.a;
-	return A2(
-		$elm$html$Html$div,
-		$rundis$elm_bootstrap$Bootstrap$Card$Internal$cardAttributes(conf.options),
-		_Utils_ap(
+var $aforemny$material_components_web_elm$Material$List$denseCs = function (_v0) {
+	var dense = _v0.a.dense;
+	return dense ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list--dense')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$nonInteractiveCs = function (_v0) {
+	var nonInteractive = _v0.a.nonInteractive;
+	return nonInteractive ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list--non-interactive')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-list'));
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $aforemny$material_components_web_elm$Material$List$selectedIndexProp = function (listItems) {
+	var selectedIndex = A2(
+		$elm$core$List$filterMap,
+		$elm$core$Basics$identity,
+		A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (index, listItem_) {
+					switch (listItem_.$) {
+						case 'ListItem':
+							var selection = listItem_.a.a.selection;
+							return (!_Utils_eq(selection, $elm$core$Maybe$Nothing)) ? $elm$core$Maybe$Just(index) : $elm$core$Maybe$Nothing;
+						case 'ListItemDivider':
+							return $elm$core$Maybe$Nothing;
+						default:
+							return $elm$core$Maybe$Nothing;
+					}
+				}),
 			A2(
-				$elm$core$List$filterMap,
-				$elm$core$Basics$identity,
-				_List_fromArray(
-					[
-						A2(
-						$elm$core$Maybe$map,
-						function (_v1) {
-							var e = _v1.a;
-							return e;
-						},
-						conf.header),
-						A2(
-						$elm$core$Maybe$map,
-						function (_v2) {
-							var e = _v2.a;
-							return e;
-						},
-						conf.imgTop)
-					])),
+				$elm$core$List$filter,
+				function (listItem_) {
+					switch (listItem_.$) {
+						case 'ListItem':
+							return true;
+						case 'ListItemDivider':
+							return false;
+						default:
+							return false;
+					}
+				},
+				listItems)));
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'selectedIndex',
+			A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$int, selectedIndex)));
+};
+var $aforemny$material_components_web_elm$Material$List$twoLineCs = function (_v0) {
+	var twoLine = _v0.a.twoLine;
+	return twoLine ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list--two-line')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$wrapFocusProp = function (_v0) {
+	var wrapFocus = _v0.a.wrapFocus;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'wrapFocus',
+			$elm$json$Json$Encode$bool(wrapFocus)));
+};
+var $aforemny$material_components_web_elm$Material$List$list = F3(
+	function (config_, firstListItem, remainingListItems) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var listItems = A2($elm$core$List$cons, firstListItem, remainingListItems);
+		return A3(
+			$elm$html$Html$node,
+			'mdc-list',
 			_Utils_ap(
-				$rundis$elm_bootstrap$Bootstrap$Card$Internal$renderBlocks(conf.blocks),
 				A2(
 					$elm$core$List$filterMap,
 					$elm$core$Basics$identity,
 					_List_fromArray(
 						[
+							$aforemny$material_components_web_elm$Material$List$rootCs,
+							$aforemny$material_components_web_elm$Material$List$nonInteractiveCs(config_),
+							$aforemny$material_components_web_elm$Material$List$denseCs(config_),
+							$aforemny$material_components_web_elm$Material$List$avatarListCs(config_),
+							$aforemny$material_components_web_elm$Material$List$twoLineCs(config_),
+							$aforemny$material_components_web_elm$Material$List$wrapFocusProp(config_),
+							$aforemny$material_components_web_elm$Material$List$clickHandler(listItems),
+							$aforemny$material_components_web_elm$Material$List$selectedIndexProp(listItems)
+						])),
+				additionalAttributes),
+			A2(
+				$elm$core$List$map,
+				function (listItem_) {
+					switch (listItem_.$) {
+						case 'ListItem':
+							var node = listItem_.a.a.node;
+							return node;
+						case 'ListItemDivider':
+							var node = listItem_.a;
+							return node;
+						default:
+							var node = listItem_.a;
+							return node;
+					}
+				},
+				listItems));
+	});
+var $aforemny$material_components_web_elm$Material$List$Item$Internal$ListItem = function (a) {
+	return {$: 'ListItem', a: a};
+};
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $aforemny$material_components_web_elm$Material$List$Item$Internal$Activated = {$: 'Activated'};
+var $aforemny$material_components_web_elm$Material$List$Item$activatedCs = function (_v0) {
+	var selection = _v0.a.selection;
+	return _Utils_eq(
+		selection,
+		$elm$core$Maybe$Just($aforemny$material_components_web_elm$Material$List$Item$Internal$Activated)) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list-item--activated')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$Item$ariaSelectedAttr = function (_v0) {
+	var selection = _v0.a.selection;
+	return (!_Utils_eq(selection, $elm$core$Maybe$Nothing)) ? $elm$core$Maybe$Just(
+		A2($elm$html$Html$Attributes$attribute, 'aria-selected', 'true')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$Item$disabledCs = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return disabled ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list-item--disabled')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $aforemny$material_components_web_elm$Material$List$Item$hrefAttr = function (_v0) {
+	var href = _v0.a.href;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$href, href);
+};
+var $aforemny$material_components_web_elm$Material$List$Item$listItemCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-list-item'));
+var $aforemny$material_components_web_elm$Material$List$Item$Internal$Selected = {$: 'Selected'};
+var $aforemny$material_components_web_elm$Material$List$Item$selectedCs = function (_v0) {
+	var selection = _v0.a.selection;
+	return _Utils_eq(
+		selection,
+		$elm$core$Maybe$Just($aforemny$material_components_web_elm$Material$List$Item$Internal$Selected)) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-list-item--selected')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $aforemny$material_components_web_elm$Material$List$Item$targetAttr = function (_v0) {
+	var href = _v0.a.href;
+	var target = _v0.a.target;
+	return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A2($elm$core$Maybe$map, $elm$html$Html$Attributes$target, target) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$List$Item$listItemView = F2(
+	function (config_, nodes) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var href = config_.a.href;
+		return function (attributes) {
+			return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A3(
+				$elm$html$Html$node,
+				'mdc-list-item',
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$a, attributes, nodes)
+					])) : A3($elm$html$Html$node, 'mdc-list-item', attributes, nodes);
+		}(
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$List$Item$listItemCs,
+							$aforemny$material_components_web_elm$Material$List$Item$hrefAttr(config_),
+							$aforemny$material_components_web_elm$Material$List$Item$targetAttr(config_),
+							$aforemny$material_components_web_elm$Material$List$Item$disabledCs(config_),
+							$aforemny$material_components_web_elm$Material$List$Item$selectedCs(config_),
+							$aforemny$material_components_web_elm$Material$List$Item$activatedCs(config_),
+							$aforemny$material_components_web_elm$Material$List$Item$ariaSelectedAttr(config_)
+						])),
+				additionalAttributes));
+	});
+var $aforemny$material_components_web_elm$Material$List$Item$listItem = F2(
+	function (_v0, nodes) {
+		var config_ = _v0.a;
+		var additionalAttributes = config_.additionalAttributes;
+		var href = config_.href;
+		return $aforemny$material_components_web_elm$Material$List$Item$Internal$ListItem(
+			$aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
+				_Utils_update(
+					config_,
+					{
+						node: A2(
+							$aforemny$material_components_web_elm$Material$List$Item$listItemView,
+							$aforemny$material_components_web_elm$Material$List$Item$Internal$Config(config_),
+							nodes)
+					})));
+	});
+var $aforemny$material_components_web_elm$Material$List$Item$meta = F2(
+	function (additionalAttributes, nodes) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$class('mdc-list-item__meta'),
+				additionalAttributes),
+			nodes);
+	});
+var $aforemny$material_components_web_elm$Material$IconButton$setOnClick = F2(
+	function (onClick, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$IconButton$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onClick: $elm$core$Maybe$Just(onClick)
+				}));
+	});
+var $author$project$Professor$RegistrationRequests$Accepted = {$: 'Accepted'};
+var $author$project$Professor$RegistrationRequests$Rejected = {$: 'Rejected'};
+var $author$project$Professor$RegistrationRequests$TabClicked = function (a) {
+	return {$: 'TabClicked', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Tab$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Tab$config = $aforemny$material_components_web_elm$Material$Tab$Internal$Config(
+	{
+		active: false,
+		additionalAttributes: _List_Nil,
+		content: {icon: $elm$core$Maybe$Nothing, label: ''},
+		onClick: $elm$core$Maybe$Nothing
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$TabBar$config = $aforemny$material_components_web_elm$Material$TabBar$Config(
+	{additionalAttributes: _List_Nil, align: $elm$core$Maybe$Nothing, indicatorSpansContent: false, minWidth: false, stacked: false});
+var $aforemny$material_components_web_elm$Material$Tab$setActive = F2(
+	function (active, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Tab$Internal$Config(
+			_Utils_update(
+				config_,
+				{active: active}));
+	});
+var $aforemny$material_components_web_elm$Material$Tab$setOnClick = F2(
+	function (onClick, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Tab$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onClick: $elm$core$Maybe$Just(onClick)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$Tab$Internal$Tab = function (a) {
+	return {$: 'Tab', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Tab$tab = F2(
+	function (_v0, content) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Tab$Internal$Tab(
+			$aforemny$material_components_web_elm$Material$Tab$Internal$Config(
+				_Utils_update(
+					config_,
+					{content: content})));
+	});
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$activeTabIndexProp = function (tabs) {
+	var activeTabIndex = A2(
+		$elm$core$Maybe$map,
+		$elm$core$Tuple$first,
+		$elm$core$List$head(
+			A2(
+				$elm$core$List$filter,
+				function (_v0) {
+					var active = _v0.b.a.a.active;
+					return active;
+				},
+				A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, tabs))));
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Attributes$property('activeTabIndex'),
+			$elm$json$Json$Encode$int),
+		activeTabIndex);
+};
+var $aforemny$material_components_web_elm$Material$TabBar$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-tab-bar'));
+var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerAlignCs = function (align) {
+	if (align.$ === 'Just') {
+		switch (align.a.$) {
+			case 'Start':
+				var _v1 = align.a;
+				return $elm$core$Maybe$Just(
+					$elm$html$Html$Attributes$class('mdc-tab-scroller--align-start'));
+			case 'End':
+				var _v2 = align.a;
+				return $elm$core$Maybe$Just(
+					$elm$html$Html$Attributes$class('mdc-tab-scroller--align-end'));
+			default:
+				var _v3 = align.a;
+				return $elm$core$Maybe$Just(
+					$elm$html$Html$Attributes$class('mdc-tab-scroller--align-center'));
+		}
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-tab-scroller'));
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $aforemny$material_components_web_elm$Material$TabBar$tabClickHandler = function (_v0) {
+	var onClick = _v0.a.onClick;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Events$on('MDCTab:interacted'),
+			$elm$json$Json$Decode$succeed),
+		onClick);
+};
+var $aforemny$material_components_web_elm$Material$TabBar$tabIconElt = function (_v0) {
+	var icon = _v0.icon;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$map($elm$core$Basics$never),
+		function () {
+			if (icon.$ === 'Just') {
+				if (icon.a.$ === 'Icon') {
+					var node = icon.a.a.node;
+					var attributes = icon.a.a.attributes;
+					var nodes = icon.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
 							A2(
-							$elm$core$Maybe$map,
-							function (_v3) {
-								var e = _v3.a;
-								return e;
-							},
-							conf.footer),
+								$elm$core$List$cons,
+								$elm$html$Html$Attributes$class('mdc-tab__icon'),
+								attributes),
+							nodes));
+				} else {
+					var node = icon.a.a.node;
+					var attributes = icon.a.a.attributes;
+					var nodes = icon.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
 							A2(
-							$elm$core$Maybe$map,
-							function (_v4) {
-								var e = _v4.a;
-								return e;
-							},
-							conf.imgBottom)
-						])))));
+								$elm$core$List$cons,
+								$elm$svg$Svg$Attributes$class('mdc-tab__icon'),
+								attributes),
+							nodes));
+				}
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		}());
+};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $aforemny$material_components_web_elm$Material$TabBar$tabIndicatorContentElt = A2(
+	$elm$html$Html$span,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-tab-indicator__content'),
+			$elm$html$Html$Attributes$class('mdc-tab-indicator__content--underline')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$TabBar$tabIndicatorElt = function (config_) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-tab-indicator')
+				]),
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$TabBar$tabIndicatorContentElt])));
+};
+var $aforemny$material_components_web_elm$Material$TabBar$tabTextLabelElt = function (_v0) {
+	var label = _v0.label;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-tab__text-label')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(label)
+				])));
+};
+var $aforemny$material_components_web_elm$Material$TabBar$tabContentElt = F3(
+	function (barConfig, config_, content) {
+		var indicatorSpansContent = barConfig.a.indicatorSpansContent;
+		return $elm$core$Maybe$Just(
+			A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-tab__content')
+					]),
+				indicatorSpansContent ? A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$TabBar$tabIconElt(content),
+							$aforemny$material_components_web_elm$Material$TabBar$tabTextLabelElt(content),
+							$aforemny$material_components_web_elm$Material$TabBar$tabIndicatorElt(config_)
+						])) : A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$TabBar$tabIconElt(content),
+							$aforemny$material_components_web_elm$Material$TabBar$tabTextLabelElt(content)
+						]))));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$tabCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-tab'));
+var $aforemny$material_components_web_elm$Material$TabBar$tabMinWidthCs = function (_v0) {
+	var minWidth = _v0.a.minWidth;
+	return minWidth ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-tab--min-width')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TabBar$tabRippleElt = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$span,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-tab__ripple')
+			]),
+		_List_Nil));
+var $aforemny$material_components_web_elm$Material$TabBar$tabRoleAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'tab'));
+var $aforemny$material_components_web_elm$Material$TabBar$tabStackedCs = function (_v0) {
+	var stacked = _v0.a.stacked;
+	return stacked ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-tab--stacked')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TabBar$viewTab = F2(
+	function (barConfig, tab) {
+		var indicatorSpansContent = barConfig.a.indicatorSpansContent;
+		var tabConfig = tab.a;
+		var additionalAttributes = tabConfig.a.additionalAttributes;
+		var content = tabConfig.a.content;
+		return A2(
+			$elm$html$Html$button,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$TabBar$tabCs,
+							$aforemny$material_components_web_elm$Material$TabBar$tabRoleAttr,
+							$aforemny$material_components_web_elm$Material$TabBar$tabStackedCs(barConfig),
+							$aforemny$material_components_web_elm$Material$TabBar$tabMinWidthCs(barConfig),
+							$aforemny$material_components_web_elm$Material$TabBar$tabClickHandler(tabConfig)
+						])),
+				additionalAttributes),
+			A2(
+				$elm$core$List$filterMap,
+				$elm$core$Basics$identity,
+				indicatorSpansContent ? _List_fromArray(
+					[
+						A3($aforemny$material_components_web_elm$Material$TabBar$tabContentElt, barConfig, tabConfig, content),
+						$aforemny$material_components_web_elm$Material$TabBar$tabRippleElt
+					]) : _List_fromArray(
+					[
+						A3($aforemny$material_components_web_elm$Material$TabBar$tabContentElt, barConfig, tabConfig, content),
+						$aforemny$material_components_web_elm$Material$TabBar$tabIndicatorElt(tabConfig),
+						$aforemny$material_components_web_elm$Material$TabBar$tabRippleElt
+					])));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerScrollContentElt = F2(
+	function (barConfig, tabs) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-tab-scroller__scroll-content')
+				]),
+			A2(
+				$elm$core$List$map,
+				$aforemny$material_components_web_elm$Material$TabBar$viewTab(barConfig),
+				tabs));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerScrollAreaElt = F2(
+	function (barConfig, tabs) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-tab-scroller__scroll-area')
+				]),
+			_List_fromArray(
+				[
+					A2($aforemny$material_components_web_elm$Material$TabBar$tabScrollerScrollContentElt, barConfig, tabs)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$tabScroller = F3(
+	function (config_, align, tabs) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$filterMap,
+				$elm$core$Basics$identity,
+				_List_fromArray(
+					[
+						$aforemny$material_components_web_elm$Material$TabBar$tabScrollerCs,
+						$aforemny$material_components_web_elm$Material$TabBar$tabScrollerAlignCs(align)
+					])),
+			_List_fromArray(
+				[
+					A2($aforemny$material_components_web_elm$Material$TabBar$tabScrollerScrollAreaElt, config_, tabs)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$tablistRoleAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'tablist'));
+var $aforemny$material_components_web_elm$Material$TabBar$tabBar = F2(
+	function (config_, tabs) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var align = config_.a.align;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-tab-bar',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$TabBar$rootCs,
+							$aforemny$material_components_web_elm$Material$TabBar$tablistRoleAttr,
+							$aforemny$material_components_web_elm$Material$TabBar$activeTabIndexProp(tabs)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					A3($aforemny$material_components_web_elm$Material$TabBar$tabScroller, config_, align, tabs)
+				]));
+	});
+var $author$project$Professor$RegistrationRequests$tabBar = function (model) {
+	var tabLabel = function (tab) {
+		switch (tab.$) {
+			case 'Pending':
+				return 'Na čekanju';
+			case 'Accepted':
+				return 'Prihvaćeni';
+			default:
+				return 'Odbijeni';
+		}
+	};
+	var isActive = function (tab) {
+		return _Utils_eq(tab, model.tab);
+	};
+	var createTab = function (tab) {
+		return A2(
+			$aforemny$material_components_web_elm$Material$Tab$tab,
+			A2(
+				$aforemny$material_components_web_elm$Material$Tab$setOnClick,
+				$author$project$Professor$RegistrationRequests$TabClicked(tab),
+				A2(
+					$aforemny$material_components_web_elm$Material$Tab$setActive,
+					isActive(tab),
+					$aforemny$material_components_web_elm$Material$Tab$config)),
+			{
+				icon: $elm$core$Maybe$Nothing,
+				label: tabLabel(tab)
+			});
+	};
+	return A2(
+		$aforemny$material_components_web_elm$Material$TabBar$tabBar,
+		$aforemny$material_components_web_elm$Material$TabBar$config,
+		_List_fromArray(
+			[
+				createTab($author$project$Professor$RegistrationRequests$Pending),
+				createTab($author$project$Professor$RegistrationRequests$Accepted),
+				createTab($author$project$Professor$RegistrationRequests$Rejected)
+			]));
+};
+var $author$project$Professor$RegistrationRequests$view = function (model) {
+	var spinnerWithIcon = function (icon) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('spinnerWithIcon')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('center')
+						]),
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$CircularProgress$indeterminate($aforemny$material_components_web_elm$Material$CircularProgress$config)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$List$Item$graphic,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('center')
+						]),
+					_List_fromArray(
+						[
+							A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, icon)
+						]))
+				]));
+	};
+	var iconButton = F2(
+		function (icon, cmd) {
+			return A2(
+				$aforemny$material_components_web_elm$Material$IconButton$iconButton,
+				A2($aforemny$material_components_web_elm$Material$IconButton$setOnClick, cmd, $aforemny$material_components_web_elm$Material$IconButton$config),
+				$aforemny$material_components_web_elm$Material$IconButton$icon(icon));
+		});
+	var listItemMetaContent = function (id) {
+		var pocessingPair = A2(
+			$elm$core$List$filter,
+			function (_v9) {
+				var i = _v9.a;
+				return _Utils_eq(i, id);
+			},
+			model.processingRequests);
+		var _v4 = _Utils_Tuple2(model.tab, pocessingPair);
+		_v4$2:
+		while (true) {
+			if (_v4.a.$ === 'Pending') {
+				if (!_v4.b.b) {
+					var _v5 = _v4.a;
+					return _List_fromArray(
+						[
+							A2(
+							iconButton,
+							'check',
+							$author$project$Professor$RegistrationRequests$AcceptRequest(id)),
+							A2(
+							iconButton,
+							'close',
+							$author$project$Professor$RegistrationRequests$RejecteRequest(id))
+						]);
+				} else {
+					if (!_v4.b.b.b) {
+						var _v6 = _v4.a;
+						var _v7 = _v4.b;
+						var _v8 = _v7.a;
+						var status = _v8.b;
+						return _List_fromArray(
+							[
+								spinnerWithIcon(
+								status ? 'check' : 'close')
+							]);
+					} else {
+						break _v4$2;
+					}
+				}
+			} else {
+				break _v4$2;
+			}
+		}
+		return _List_Nil;
+	};
+	var listItemView = function (_v3) {
+		var id = _v3.id;
+		var firstName = _v3.firstName;
+		var lastName = _v3.lastName;
+		var index = _v3.index;
+		return A2(
+			$aforemny$material_components_web_elm$Material$List$Item$listItem,
+			$aforemny$material_components_web_elm$Material$List$Item$config,
+			_List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$List$Item$graphic,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, 'account_box')
+						])),
+					$elm$html$Html$text(firstName + (' ' + (lastName + (' ' + index)))),
+					A2(
+					$aforemny$material_components_web_elm$Material$List$Item$meta,
+					_List_Nil,
+					listItemMetaContent(id))
+				]));
+	};
+	var _v0 = function () {
+		var _v1 = model.tab;
+		switch (_v1.$) {
+			case 'Accepted':
+				return _Utils_Tuple2(model.acceptedRequests, 'Nema prihvaćenih zahteva');
+			case 'Pending':
+				return _Utils_Tuple2(model.pendingRequests, 'Nema novih zahteva');
+			default:
+				return _Utils_Tuple2(model.rejectedRequests, 'Nema odbijenih zahteva');
+		}
+	}();
+	var data = _v0.a;
+	var noDataMsg = _v0.b;
+	var content = function () {
+		if (data.b) {
+			var head = data.a;
+			var tail = data.b;
+			return A3(
+				$aforemny$material_components_web_elm$Material$List$list,
+				$aforemny$material_components_web_elm$Material$List$config,
+				listItemView(head),
+				A2($elm$core$List$map, listItemView, tail));
+		} else {
+			return $elm$html$Html$text(noDataMsg);
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$author$project$Professor$RegistrationRequests$tabBar(model),
+				content
+			]));
 };
 var $author$project$Professor$view = function (model) {
-	var data = A2(
-		$elm$core$List$filter,
-		function (x) {
-			return _Utils_eq(x.status, $author$project$Professor$statusPending);
-		},
-		model.data);
-	return $rundis$elm_bootstrap$Bootstrap$Card$view(
-		A2(
-			$rundis$elm_bootstrap$Bootstrap$Card$listGroup,
-			A2($elm$core$List$map, $author$project$Professor$requestView, data),
-			$rundis$elm_bootstrap$Bootstrap$Card$config(_List_Nil)));
+	var _v0 = model.currentPage;
+	if (_v0.$ === 'RegistrationRequestsPage') {
+		return A2(
+			$elm$html$Html$map,
+			$author$project$Professor$GotRequestsMsg,
+			$author$project$Professor$RegistrationRequests$view(model.requstesModel));
+	} else {
+		return $elm$html$Html$text('Settings');
+	}
 };
 var $author$project$Registration$Email = function (a) {
 	return {$: 'Email', a: a};
@@ -9461,113 +9558,139 @@ var $author$project$Registration$LastName = function (a) {
 	return {$: 'LastName', a: a};
 };
 var $author$project$Registration$SubmittedForm = {$: 'SubmittedForm'};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$Attrs = function (a) {
-	return {$: 'Attrs', a: a};
+var $aforemny$material_components_web_elm$Material$Snackbar$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Spinner$attrs = function (attrs_) {
-	return $rundis$elm_bootstrap$Bootstrap$Spinner$Attrs(attrs_);
+var $aforemny$material_components_web_elm$Material$Snackbar$config = function (_v0) {
+	var onClosed = _v0.onClosed;
+	return $aforemny$material_components_web_elm$Material$Snackbar$Config(
+		{additionalAttributes: _List_Nil, closeOnEscape: false, onClosed: onClosed});
 };
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Disabled = function (a) {
-	return {$: 'Disabled', a: a};
+var $aforemny$material_components_web_elm$Material$TextField$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Button$disabled = function (disabled_) {
-	return $rundis$elm_bootstrap$Bootstrap$Internal$Button$Disabled(disabled_);
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Email = {$: 'Email'};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Input = function (a) {
-	return {$: 'Input', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Type = function (a) {
-	return {$: 'Type', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$create = F2(
-	function (tipe, options) {
-		return $rundis$elm_bootstrap$Bootstrap$Form$Input$Input(
-			{
-				options: A2(
-					$elm$core$List$cons,
-					$rundis$elm_bootstrap$Bootstrap$Form$Input$Type(tipe),
-					options)
-			});
+var $aforemny$material_components_web_elm$Material$TextField$config = $aforemny$material_components_web_elm$Material$TextField$Config(
+	{additionalAttributes: _List_Nil, disabled: false, endAligned: false, fullwidth: false, label: $elm$core$Maybe$Nothing, leadingIcon: $elm$core$Maybe$Nothing, max: $elm$core$Maybe$Nothing, maxLength: $elm$core$Maybe$Nothing, min: $elm$core$Maybe$Nothing, minLength: $elm$core$Maybe$Nothing, onChange: $elm$core$Maybe$Nothing, onInput: $elm$core$Maybe$Nothing, pattern: $elm$core$Maybe$Nothing, placeholder: $elm$core$Maybe$Nothing, prefix: $elm$core$Maybe$Nothing, required: false, step: $elm$core$Maybe$Nothing, suffix: $elm$core$Maybe$Nothing, trailingIcon: $elm$core$Maybe$Nothing, type_: $elm$core$Maybe$Nothing, valid: true, value: $elm$core$Maybe$Nothing});
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
 	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
+var $aforemny$material_components_web_elm$Material$Typography$headline5 = $elm$html$Html$Attributes$class('mdc-typography--headline5');
+var $aforemny$material_components_web_elm$Material$Button$Internal$Icon = function (a) {
+	return {$: 'Icon', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Button$customIcon = F3(
+	function (node, attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Icon(
+			{attributes: attributes, node: node, nodes: nodes});
+	});
+var $aforemny$material_components_web_elm$Material$Button$icon = function (iconName) {
+	return A3(
+		$aforemny$material_components_web_elm$Material$Button$customIcon,
+		$elm$html$Html$i,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('material-icons')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(iconName)
+			]));
+};
+var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
+	return _Utils_Tuple2(msg, true);
+};
+var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var $elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var $elm$html$Html$Events$onSubmit = function (msg) {
+	return A2(
+		$elm$html$Html$Events$preventDefaultOn,
+		'submit',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysPreventDefault,
+			$elm$json$Json$Decode$succeed(msg)));
+};
+var $aforemny$material_components_web_elm$Material$TextField$disabledCs = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return disabled ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--disabled')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$disabledProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'disabled',
+			$elm$json$Json$Encode$bool(disabled)));
+};
+var $aforemny$material_components_web_elm$Material$TextField$endAlignedCs = function (_v0) {
+	var endAligned = _v0.a.endAligned;
+	return endAligned ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--end-aligned')) : $elm$core$Maybe$Nothing;
+};
+var $elm$core$Basics$not = _Basics_not;
+var $aforemny$material_components_web_elm$Material$TextField$filledCs = function (outlined_) {
+	return (!outlined_) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--filled')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$foucClassNamesProp = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$Attributes$property,
+		'foucClassNames',
+		A2(
+			$elm$json$Json$Encode$list,
+			$elm$json$Json$Encode$string,
+			_List_fromArray(
+				['mdc-text-field--label-floating']))));
+var $aforemny$material_components_web_elm$Material$TextField$fullwidthCs = function (_v0) {
+	var fullwidth = _v0.a.fullwidth;
+	return fullwidth ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--fullwidth')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$ariaLabelAttr = function (_v0) {
+	var fullwidth = _v0.a.fullwidth;
+	var placeholder = _v0.a.placeholder;
+	var label = _v0.a.label;
+	return fullwidth ? A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$Attributes$attribute('aria-label'),
+		label) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $aforemny$material_components_web_elm$Material$TextField$changeHandler = function (_v0) {
+	var onChange = _v0.a.onChange;
+	return A2(
+		$elm$core$Maybe$map,
+		function (f) {
+			return A2(
+				$elm$html$Html$Events$on,
+				'change',
+				A2($elm$json$Json$Decode$map, f, $elm$html$Html$Events$targetValue));
+		},
+		onChange);
+};
 var $elm$html$Html$input = _VirtualDom_node('input');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'Size':
-				var size_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						size: $elm$core$Maybe$Just(size_)
-					});
-			case 'Id':
-				var id_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						id: $elm$core$Maybe$Just(id_)
-					});
-			case 'Type':
-				var tipe = modifier.a;
-				return _Utils_update(
-					options,
-					{tipe: tipe});
-			case 'Disabled':
-				var val = modifier.a;
-				return _Utils_update(
-					options,
-					{disabled: val});
-			case 'Value':
-				var value_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						value: $elm$core$Maybe$Just(value_)
-					});
-			case 'Placeholder':
-				var value_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						placeholder: $elm$core$Maybe$Just(value_)
-					});
-			case 'OnInput':
-				var onInput_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						onInput: $elm$core$Maybe$Just(onInput_)
-					});
-			case 'Validation':
-				var validation_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						validation: $elm$core$Maybe$Just(validation_)
-					});
-			case 'Readonly':
-				var val = modifier.a;
-				return _Utils_update(
-					options,
-					{readonly: val});
-			case 'PlainText':
-				var val = modifier.a;
-				return _Utils_update(
-					options,
-					{plainText: val});
-			default:
-				var attrs_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						attributes: _Utils_ap(options.attributes, attrs_)
-					});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Text = {$: 'Text'};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$defaultOptions = {attributes: _List_Nil, disabled: false, id: $elm$core$Maybe$Nothing, onInput: $elm$core$Maybe$Nothing, placeholder: $elm$core$Maybe$Nothing, plainText: false, readonly: false, size: $elm$core$Maybe$Nothing, tipe: $rundis$elm_bootstrap$Bootstrap$Form$Input$Text, validation: $elm$core$Maybe$Nothing, value: $elm$core$Maybe$Nothing};
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $aforemny$material_components_web_elm$Material$TextField$inputCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-text-field__input'));
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -9581,15 +9704,6 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
 var $elm$html$Html$Events$onInput = function (tagger) {
 	return A2(
 		$elm$html$Html$Events$stopPropagationOn,
@@ -9599,845 +9713,1297 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$html$Html$Attributes$readonly = $elm$html$Html$Attributes$boolProperty('readOnly');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$sizeAttribute = function (size) {
+var $aforemny$material_components_web_elm$Material$TextField$inputHandler = function (_v0) {
+	var onInput = _v0.a.onInput;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onInput, onInput);
+};
+var $aforemny$material_components_web_elm$Material$TextField$maxLengthAttr = function (_v0) {
+	var maxLength = _v0.a.maxLength;
 	return A2(
 		$elm$core$Maybe$map,
-		function (s) {
-			return $elm$html$Html$Attributes$class('form-control-' + s);
-		},
-		$rundis$elm_bootstrap$Bootstrap$General$Internal$screenSizeOption(size));
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Attributes$attribute('maxLength'),
+			$elm$core$String$fromInt),
+		maxLength);
+};
+var $aforemny$material_components_web_elm$Material$TextField$minLengthAttr = function (_v0) {
+	var minLength = _v0.a.minLength;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Attributes$attribute('minLength'),
+			$elm$core$String$fromInt),
+		minLength);
+};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $aforemny$material_components_web_elm$Material$TextField$placeholderAttr = function (_v0) {
+	var placeholder = _v0.a.placeholder;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$placeholder, placeholder);
 };
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$typeAttribute = function (inputType) {
-	return $elm$html$Html$Attributes$type_(
-		function () {
-			switch (inputType.$) {
-				case 'Text':
-					return 'text';
-				case 'Password':
-					return 'password';
-				case 'DatetimeLocal':
-					return 'datetime-local';
-				case 'Date':
-					return 'date';
-				case 'Month':
-					return 'month';
-				case 'Time':
-					return 'time';
-				case 'Week':
-					return 'week';
-				case 'Number':
-					return 'number';
-				case 'Email':
-					return 'email';
-				case 'Url':
-					return 'url';
-				case 'Search':
-					return 'search';
-				case 'Tel':
-					return 'tel';
-				default:
-					return 'color';
-			}
-		}());
+var $aforemny$material_components_web_elm$Material$TextField$typeAttr = function (_v0) {
+	var type_ = _v0.a.type_;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$type_, type_);
 };
-var $rundis$elm_bootstrap$Bootstrap$Form$FormInternal$validationToString = function (validation) {
-	if (validation.$ === 'Success') {
-		return 'is-valid';
-	} else {
-		return 'is-invalid';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$validationAttribute = function (validation) {
-	return $elm$html$Html$Attributes$class(
-		$rundis$elm_bootstrap$Bootstrap$Form$FormInternal$validationToString(validation));
-};
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$toAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Form$Input$applyModifier, $rundis$elm_bootstrap$Bootstrap$Form$Input$defaultOptions, modifiers);
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class(
-				options.plainText ? 'form-control-plaintext' : 'form-control'),
-				$elm$html$Html$Attributes$disabled(options.disabled),
-				$elm$html$Html$Attributes$readonly(options.readonly || options.plainText),
-				$rundis$elm_bootstrap$Bootstrap$Form$Input$typeAttribute(options.tipe)
-			]),
-		_Utils_ap(
-			A2(
-				$elm$core$List$filterMap,
-				$elm$core$Basics$identity,
-				_List_fromArray(
-					[
-						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$id, options.id),
-						A2($elm$core$Maybe$andThen, $rundis$elm_bootstrap$Bootstrap$Form$Input$sizeAttribute, options.size),
-						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$value, options.value),
-						A2($elm$core$Maybe$map, $elm$html$Html$Attributes$placeholder, options.placeholder),
-						A2($elm$core$Maybe$map, $elm$html$Html$Events$onInput, options.onInput),
-						A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Form$Input$validationAttribute, options.validation)
-					])),
-			options.attributes));
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$view = function (_v0) {
-	var options = _v0.a.options;
+var $aforemny$material_components_web_elm$Material$TextField$inputElt = function (config_) {
 	return A2(
 		$elm$html$Html$input,
-		$rundis$elm_bootstrap$Bootstrap$Form$Input$toAttributes(options),
-		_List_Nil);
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$input = F2(
-	function (tipe, options) {
-		return $rundis$elm_bootstrap$Bootstrap$Form$Input$view(
-			A2($rundis$elm_bootstrap$Bootstrap$Form$Input$create, tipe, options));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$email = $rundis$elm_bootstrap$Bootstrap$Form$Input$input($rundis$elm_bootstrap$Bootstrap$Form$Input$Email);
-var $author$project$Util$emptyHtmlNode = $elm$html$Html$text('');
-var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
-var $elm$html$Html$form = _VirtualDom_node('form');
-var $rundis$elm_bootstrap$Bootstrap$Form$form = F2(
-	function (attributes, children) {
-		return A2($elm$html$Html$form, attributes, children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Form$applyModifier = F2(
-	function (modifier, options) {
-		var value = modifier.a;
-		return _Utils_update(
-			options,
-			{
-				attributes: _Utils_ap(options.attributes, value)
-			});
-	});
-var $rundis$elm_bootstrap$Bootstrap$Form$defaultOptions = {attributes: _List_Nil};
-var $rundis$elm_bootstrap$Bootstrap$Form$toAttributes = function (modifiers) {
-	var options = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Form$applyModifier, $rundis$elm_bootstrap$Bootstrap$Form$defaultOptions, modifiers);
-	return _Utils_ap(
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('form-group')
-			]),
-		options.attributes);
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$group = F2(
-	function (options, children) {
-		return A2(
-			$elm$html$Html$div,
-			$rundis$elm_bootstrap$Bootstrap$Form$toAttributes(options),
-			children);
-	});
-var $elm$html$Html$h4 = _VirtualDom_node('h4');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Id = function (a) {
-	return {$: 'Id', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$id = function (id_) {
-	return $rundis$elm_bootstrap$Bootstrap$Form$Input$Id(id_);
-};
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $rundis$elm_bootstrap$Bootstrap$Form$label = F2(
-	function (attributes, children) {
-		return A2(
-			$elm$html$Html$label,
-			A2(
-				$elm$core$List$cons,
-				$elm$html$Html$Attributes$class('form-control-label'),
-				attributes),
-			children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr3 = $elm$html$Html$Attributes$class('mr-3');
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$OnInput = function (a) {
-	return {$: 'OnInput', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$onInput = function (toMsg) {
-	return $rundis$elm_bootstrap$Bootstrap$Form$Input$OnInput(toMsg);
-};
-var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
-	return _Utils_Tuple2(msg, true);
-};
-var $elm$html$Html$Events$onSubmit = function (msg) {
-	return A2(
-		$elm$html$Html$Events$preventDefaultOn,
-		'submit',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysPreventDefault,
-			$elm$json$Json$Decode$succeed(msg)));
-};
-var $rundis$elm_bootstrap$Bootstrap$Internal$Button$Primary = {$: 'Primary'};
-var $rundis$elm_bootstrap$Bootstrap$Button$primary = $rundis$elm_bootstrap$Bootstrap$Internal$Button$Coloring(
-	$rundis$elm_bootstrap$Bootstrap$Internal$Button$Roled($rundis$elm_bootstrap$Bootstrap$Internal$Button$Primary));
-var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Danger = {$: 'Danger'};
-var $rundis$elm_bootstrap$Bootstrap$Alert$Shown = {$: 'Shown'};
-var $rundis$elm_bootstrap$Bootstrap$Alert$Config = function (a) {
-	return {$: 'Config', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Alert$attrs = F2(
-	function (attributes, _v0) {
-		var configRec = _v0.a;
-		return $rundis$elm_bootstrap$Bootstrap$Alert$Config(
-			_Utils_update(
-				configRec,
-				{attributes: attributes}));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$children = F2(
-	function (children_, _v0) {
-		var configRec = _v0.a;
-		return $rundis$elm_bootstrap$Bootstrap$Alert$Config(
-			_Utils_update(
-				configRec,
-				{children: children_}));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Secondary = {$: 'Secondary'};
-var $rundis$elm_bootstrap$Bootstrap$Alert$config = $rundis$elm_bootstrap$Bootstrap$Alert$Config(
-	{attributes: _List_Nil, children: _List_Nil, dismissable: $elm$core$Maybe$Nothing, role: $rundis$elm_bootstrap$Bootstrap$Internal$Role$Secondary, visibility: $rundis$elm_bootstrap$Bootstrap$Alert$Shown, withAnimation: false});
-var $rundis$elm_bootstrap$Bootstrap$Alert$role = F2(
-	function (role_, _v0) {
-		var configRec = _v0.a;
-		return $rundis$elm_bootstrap$Bootstrap$Alert$Config(
-			_Utils_update(
-				configRec,
-				{role: role_}));
-	});
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $rundis$elm_bootstrap$Bootstrap$Alert$Closed = {$: 'Closed'};
-var $rundis$elm_bootstrap$Bootstrap$Alert$StartClose = {$: 'StartClose'};
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $rundis$elm_bootstrap$Bootstrap$Alert$clickHandler = F2(
-	function (visibility, configRec) {
-		var handleClick = F2(
-			function (viz, toMsg) {
-				return $elm$html$Html$Events$onClick(
-					toMsg(viz));
-			});
-		var _v0 = configRec.dismissable;
-		if (_v0.$ === 'Just') {
-			var dismissMsg = _v0.a;
-			return _List_fromArray(
-				[
-					configRec.withAnimation ? A2(handleClick, $rundis$elm_bootstrap$Bootstrap$Alert$StartClose, dismissMsg) : A2(handleClick, $rundis$elm_bootstrap$Bootstrap$Alert$Closed, dismissMsg)
-				]);
-		} else {
-			return _List_Nil;
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$injectButton = F2(
-	function (btn, children_) {
-		if (children_.b) {
-			var head = children_.a;
-			var tail = children_.b;
-			return A2(
-				$elm$core$List$cons,
-				head,
-				A2($elm$core$List$cons, btn, tail));
-		} else {
-			return _List_fromArray(
-				[btn]);
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$isDismissable = function (configRec) {
-	var _v0 = configRec.dismissable;
-	if (_v0.$ === 'Just') {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Alert$maybeAddDismissButton = F3(
-	function (visibilty, configRec, children_) {
-		return $rundis$elm_bootstrap$Bootstrap$Alert$isDismissable(configRec) ? A2(
-			$rundis$elm_bootstrap$Bootstrap$Alert$injectButton,
-			A2(
-				$elm$html$Html$button,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$type_('button'),
-							$elm$html$Html$Attributes$class('close'),
-							A2($elm$html$Html$Attributes$attribute, 'aria-label', 'close')
-						]),
-					A2($rundis$elm_bootstrap$Bootstrap$Alert$clickHandler, visibilty, configRec)),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$span,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('×')
-							]))
-					])),
-			children_) : children_;
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$viewAttributes = F2(
-	function (visibility, configRec) {
-		var visibiltyAttributes = _Utils_eq(visibility, $rundis$elm_bootstrap$Bootstrap$Alert$Closed) ? _List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'display', 'none')
-			]) : _List_Nil;
-		var animationAttributes = function () {
-			if (configRec.withAnimation) {
-				var _v0 = configRec.dismissable;
-				if (_v0.$ === 'Just') {
-					var dismissMsg = _v0.a;
-					return _List_fromArray(
-						[
-							A2(
-							$elm$html$Html$Events$on,
-							'transitionend',
-							$elm$json$Json$Decode$succeed(
-								dismissMsg($rundis$elm_bootstrap$Bootstrap$Alert$Closed)))
-						]);
-				} else {
-					return _List_Nil;
-				}
-			} else {
-				return _List_Nil;
-			}
-		}();
-		var alertAttributes = _List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$attribute, 'role', 'alert'),
-				$elm$html$Html$Attributes$classList(
-				_List_fromArray(
-					[
-						_Utils_Tuple2('alert', true),
-						_Utils_Tuple2(
-						'alert-dismissible',
-						$rundis$elm_bootstrap$Bootstrap$Alert$isDismissable(configRec)),
-						_Utils_Tuple2('fade', configRec.withAnimation),
-						_Utils_Tuple2(
-						'show',
-						_Utils_eq(visibility, $rundis$elm_bootstrap$Bootstrap$Alert$Shown))
-					])),
-				A2($rundis$elm_bootstrap$Bootstrap$Internal$Role$toClass, 'alert', configRec.role)
-			]);
-		return $elm$core$List$concat(
-			_List_fromArray(
-				[configRec.attributes, alertAttributes, visibiltyAttributes, animationAttributes]));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$view = F2(
-	function (visibility, _v0) {
-		var configRec = _v0.a;
-		return A2(
-			$elm$html$Html$div,
-			A2($rundis$elm_bootstrap$Bootstrap$Alert$viewAttributes, visibility, configRec),
-			A3($rundis$elm_bootstrap$Bootstrap$Alert$maybeAddDismissButton, visibility, configRec, configRec.children));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$simple = F3(
-	function (role_, attributes, children_) {
-		return A2(
-			$rundis$elm_bootstrap$Bootstrap$Alert$view,
-			$rundis$elm_bootstrap$Bootstrap$Alert$Shown,
-			A2(
-				$rundis$elm_bootstrap$Bootstrap$Alert$children,
-				children_,
-				A2(
-					$rundis$elm_bootstrap$Bootstrap$Alert$attrs,
-					attributes,
-					A2($rundis$elm_bootstrap$Bootstrap$Alert$role, role_, $rundis$elm_bootstrap$Bootstrap$Alert$config))));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Alert$simpleDanger = $rundis$elm_bootstrap$Bootstrap$Alert$simple($rundis$elm_bootstrap$Bootstrap$Internal$Role$Danger);
-var $rundis$elm_bootstrap$Bootstrap$Internal$Role$Info = {$: 'Info'};
-var $rundis$elm_bootstrap$Bootstrap$Alert$simpleInfo = $rundis$elm_bootstrap$Bootstrap$Alert$simple($rundis$elm_bootstrap$Bootstrap$Internal$Role$Info);
-var $rundis$elm_bootstrap$Bootstrap$Spinner$Size = function (a) {
-	return {$: 'Size', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$Small = {$: 'Small'};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$small = $rundis$elm_bootstrap$Bootstrap$Spinner$Size($rundis$elm_bootstrap$Bootstrap$Spinner$Small);
-var $rundis$elm_bootstrap$Bootstrap$Spinner$applyModifier = F2(
-	function (modifier, options) {
-		switch (modifier.$) {
-			case 'Kind':
-				var spinnerKind = modifier.a;
-				return _Utils_update(
-					options,
-					{kind: spinnerKind});
-			case 'Size':
-				var spinnerSize = modifier.a;
-				return _Utils_update(
-					options,
-					{size: spinnerSize});
-			case 'Color':
-				var color_ = modifier.a;
-				return _Utils_update(
-					options,
-					{
-						color: $elm$core$Maybe$Just(color_)
-					});
-			default:
-				var list = modifier.a;
-				return _Utils_update(
-					options,
-					{attributes: list});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Spinner$Border = {$: 'Border'};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$Normal = {$: 'Normal'};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$defaultOptions = {attributes: _List_Nil, color: $elm$core$Maybe$Nothing, kind: $rundis$elm_bootstrap$Bootstrap$Spinner$Border, size: $rundis$elm_bootstrap$Bootstrap$Spinner$Normal};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$kindClassName = function (kind_) {
-	if (kind_.$ === 'Border') {
-		return 'spinner-border';
-	} else {
-		return 'spinner-grow';
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Spinner$kindClass = A2($elm$core$Basics$composeL, $elm$html$Html$Attributes$class, $rundis$elm_bootstrap$Bootstrap$Spinner$kindClassName);
-var $rundis$elm_bootstrap$Bootstrap$Spinner$sizeAttributes = F2(
-	function (size_, kind_) {
-		switch (size_.$) {
-			case 'Normal':
-				return $elm$core$Maybe$Nothing;
-			case 'Small':
-				return $elm$core$Maybe$Just(
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class(
-							$rundis$elm_bootstrap$Bootstrap$Spinner$kindClassName(kind_) + '-sm')
-						]));
-			default:
-				return $elm$core$Maybe$Just(
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'width', '3rem'),
-							A2($elm$html$Html$Attributes$style, 'height', '3rem')
-						]));
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Spinner$toAttributes = function (options) {
-	return _Utils_ap(
 		A2(
 			$elm$core$List$filterMap,
 			$elm$core$Basics$identity,
 			_List_fromArray(
 				[
-					$elm$core$Maybe$Just(
-					$rundis$elm_bootstrap$Bootstrap$Spinner$kindClass(options.kind)),
-					A2($elm$core$Maybe$map, $rundis$elm_bootstrap$Bootstrap$Internal$Text$textColorClass, options.color)
+					$aforemny$material_components_web_elm$Material$TextField$inputCs,
+					$aforemny$material_components_web_elm$Material$TextField$typeAttr(config_),
+					$aforemny$material_components_web_elm$Material$TextField$ariaLabelAttr(config_),
+					$aforemny$material_components_web_elm$Material$TextField$placeholderAttr(config_),
+					$aforemny$material_components_web_elm$Material$TextField$inputHandler(config_),
+					$aforemny$material_components_web_elm$Material$TextField$changeHandler(config_),
+					$aforemny$material_components_web_elm$Material$TextField$minLengthAttr(config_),
+					$aforemny$material_components_web_elm$Material$TextField$maxLengthAttr(config_)
 				])),
-		_Utils_ap(
+		_List_Nil);
+};
+var $aforemny$material_components_web_elm$Material$TextField$labelElt = function (_v0) {
+	var label = _v0.a.label;
+	var value = _v0.a.value;
+	var fullwidth = _v0.a.fullwidth;
+	var floatingLabelFloatAboveCs = 'mdc-floating-label--float-above';
+	var floatingLabelCs = 'mdc-floating-label';
+	var _v1 = _Utils_Tuple2(fullwidth, label);
+	if ((!_v1.a) && (_v1.b.$ === 'Just')) {
+		var str = _v1.b.a;
+		return A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					(A2($elm$core$Maybe$withDefault, '', value) !== '') ? $elm$html$Html$Attributes$class(floatingLabelCs + (' ' + floatingLabelFloatAboveCs)) : $elm$html$Html$Attributes$class(floatingLabelCs),
+					A2(
+					$elm$html$Html$Attributes$property,
+					'foucClassNames',
+					A2(
+						$elm$json$Json$Encode$list,
+						$elm$json$Json$Encode$string,
+						_List_fromArray(
+							[floatingLabelFloatAboveCs])))
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(str)
+				]));
+	} else {
+		return $elm$html$Html$text('');
+	}
+};
+var $aforemny$material_components_web_elm$Material$TextField$labelFloatingCs = function (_v0) {
+	var label = _v0.a.label;
+	var value = _v0.a.value;
+	var fullwidth = _v0.a.fullwidth;
+	return ((!fullwidth) && ((!_Utils_eq(label, $elm$core$Maybe$Nothing)) && (A2($elm$core$Maybe$withDefault, '', value) !== ''))) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--label-floating')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$Events$keyCode = A2($elm$json$Json$Decode$field, 'keyCode', $elm$json$Json$Decode$int);
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $aforemny$material_components_web_elm$Material$TextField$iconElt = F2(
+	function (modifierCs, icon_) {
+		if (icon_.$ === 'Nothing') {
+			return $elm$html$Html$text('');
+		} else {
+			if (icon_.a.$ === 'Icon') {
+				var node = icon_.a.a.node;
+				var attributes = icon_.a.a.attributes;
+				var nodes = icon_.a.a.nodes;
+				var onInteraction = icon_.a.a.onInteraction;
+				var disabled = icon_.a.a.disabled;
+				return A2(
+					node,
+					A2(
+						$elm$core$List$cons,
+						$elm$html$Html$Attributes$class('mdc-text-field__icon'),
+						A2(
+							$elm$core$List$cons,
+							$elm$html$Html$Attributes$class(modifierCs),
+							function () {
+								if (onInteraction.$ === 'Just') {
+									var msg = onInteraction.a;
+									return (!disabled) ? A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$tabindex(0),
+										A2(
+											$elm$core$List$cons,
+											A2($elm$html$Html$Attributes$attribute, 'role', 'button'),
+											A2(
+												$elm$core$List$cons,
+												$elm$html$Html$Events$onClick(msg),
+												A2(
+													$elm$core$List$cons,
+													A2(
+														$elm$html$Html$Events$on,
+														'keydown',
+														A2(
+															$elm$json$Json$Decode$andThen,
+															function (keyCode) {
+																return (keyCode === 13) ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('');
+															},
+															$elm$html$Html$Events$keyCode)),
+													attributes)))) : A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$tabindex(-1),
+										A2(
+											$elm$core$List$cons,
+											A2($elm$html$Html$Attributes$attribute, 'role', 'button'),
+											attributes));
+								} else {
+									return attributes;
+								}
+							}())),
+					nodes);
+			} else {
+				var node = icon_.a.a.node;
+				var attributes = icon_.a.a.attributes;
+				var nodes = icon_.a.a.nodes;
+				var onInteraction = icon_.a.a.onInteraction;
+				var disabled = icon_.a.a.disabled;
+				return A2(
+					node,
+					A2(
+						$elm$core$List$cons,
+						$elm$svg$Svg$Attributes$class('mdc-text-field__icon'),
+						A2(
+							$elm$core$List$cons,
+							$elm$svg$Svg$Attributes$class(modifierCs),
+							function () {
+								if (onInteraction.$ === 'Just') {
+									var msg = onInteraction.a;
+									return (!disabled) ? A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$tabindex(0),
+										A2(
+											$elm$core$List$cons,
+											A2($elm$html$Html$Attributes$attribute, 'role', 'button'),
+											A2(
+												$elm$core$List$cons,
+												$elm$html$Html$Events$onClick(msg),
+												A2(
+													$elm$core$List$cons,
+													A2(
+														$elm$html$Html$Events$on,
+														'keydown',
+														A2(
+															$elm$json$Json$Decode$andThen,
+															function (keyCode) {
+																return (keyCode === 13) ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('');
+															},
+															$elm$html$Html$Events$keyCode)),
+													attributes)))) : A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$tabindex(-1),
+										A2(
+											$elm$core$List$cons,
+											A2($elm$html$Html$Attributes$attribute, 'role', 'button'),
+											attributes));
+								} else {
+									return attributes;
+								}
+							}())),
+					nodes);
+			}
+		}
+	});
+var $aforemny$material_components_web_elm$Material$TextField$leadingIconElt = function (_v0) {
+	var leadingIcon = _v0.a.leadingIcon;
+	return A2($aforemny$material_components_web_elm$Material$TextField$iconElt, 'mdc-text-field__icon--leading', leadingIcon);
+};
+var $aforemny$material_components_web_elm$Material$TextField$lineRippleElt = A2(
+	$elm$html$Html$span,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-line-ripple')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$TextField$maxLengthProp = function (_v0) {
+	var maxLength = _v0.a.maxLength;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'maxLength',
+			$elm$json$Json$Encode$int(
+				A2($elm$core$Maybe$withDefault, -1, maxLength))));
+};
+var $aforemny$material_components_web_elm$Material$TextField$maxProp = function (_v0) {
+	var max = _v0.a.max;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'max',
+			$elm$json$Json$Encode$string(
+				A2(
+					$elm$core$Maybe$withDefault,
+					'',
+					A2($elm$core$Maybe$map, $elm$core$String$fromInt, max)))));
+};
+var $aforemny$material_components_web_elm$Material$TextField$minLengthProp = function (_v0) {
+	var minLength = _v0.a.minLength;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'minLength',
+			$elm$json$Json$Encode$int(
+				A2($elm$core$Maybe$withDefault, -1, minLength))));
+};
+var $aforemny$material_components_web_elm$Material$TextField$minProp = function (_v0) {
+	var min = _v0.a.min;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'min',
+			$elm$json$Json$Encode$string(
+				A2(
+					$elm$core$Maybe$withDefault,
+					'',
+					A2($elm$core$Maybe$map, $elm$core$String$fromInt, min)))));
+};
+var $aforemny$material_components_web_elm$Material$TextField$noLabelCs = function (_v0) {
+	var label = _v0.a.label;
+	return _Utils_eq(label, $elm$core$Maybe$Nothing) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--no-label')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$notchedOutlineLeadingElt = A2(
+	$elm$html$Html$span,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-notched-outline__leading')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$TextField$notchedOutlineNotchElt = function (config_) {
+	return A2(
+		$elm$html$Html$span,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-notched-outline__notch')
+			]),
+		_List_fromArray(
+			[
+				$aforemny$material_components_web_elm$Material$TextField$labelElt(config_)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$TextField$notchedOutlineTrailingElt = A2(
+	$elm$html$Html$span,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-notched-outline__trailing')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$TextField$notchedOutlineElt = function (config_) {
+	return A2(
+		$elm$html$Html$span,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-notched-outline')
+			]),
+		_List_fromArray(
+			[
+				$aforemny$material_components_web_elm$Material$TextField$notchedOutlineLeadingElt,
+				$aforemny$material_components_web_elm$Material$TextField$notchedOutlineNotchElt(config_),
+				$aforemny$material_components_web_elm$Material$TextField$notchedOutlineTrailingElt
+			]));
+};
+var $aforemny$material_components_web_elm$Material$TextField$outlinedCs = function (outlined_) {
+	return outlined_ ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--outlined')) : $elm$core$Maybe$Nothing;
+};
+var $elm$json$Json$Encode$null = _Json_encodeNull;
+var $aforemny$material_components_web_elm$Material$TextField$patternProp = function (_v0) {
+	var pattern = _v0.a.pattern;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'pattern',
 			A2(
 				$elm$core$Maybe$withDefault,
-				_List_Nil,
-				A2($rundis$elm_bootstrap$Bootstrap$Spinner$sizeAttributes, options.size, options.kind)),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$attribute, 'role', 'status')
-					]),
-				options.attributes)));
+				$elm$json$Json$Encode$null,
+				A2($elm$core$Maybe$map, $elm$json$Json$Encode$string, pattern))));
 };
-var $rundis$elm_bootstrap$Bootstrap$Spinner$spinner = F2(
-	function (options, children) {
-		var opts = A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Spinner$applyModifier, $rundis$elm_bootstrap$Bootstrap$Spinner$defaultOptions, options);
+var $aforemny$material_components_web_elm$Material$TextField$prefixCs = $elm$html$Html$Attributes$class('mdc-text-field__affix mdc-text-field__affix--prefix');
+var $aforemny$material_components_web_elm$Material$TextField$prefixElt = function (_v0) {
+	var prefix = _v0.a.prefix;
+	if (prefix.$ === 'Just') {
+		var prefixStr = prefix.a;
 		return A2(
-			$elm$html$Html$div,
-			$rundis$elm_bootstrap$Bootstrap$Spinner$toAttributes(opts),
-			children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Button$submitButton = F2(
-	function (options, children) {
-		return A2(
-			$elm$html$Html$button,
-			A2(
-				$elm$core$List$cons,
-				$elm$html$Html$Attributes$type_('submit'),
-				$rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes(options)),
-			children);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$text = $rundis$elm_bootstrap$Bootstrap$Form$Input$input($rundis$elm_bootstrap$Bootstrap$Form$Input$Text);
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Value = function (a) {
-	return {$: 'Value', a: a};
+			$elm$html$Html$span,
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$TextField$prefixCs]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(prefixStr)
+				]));
+	} else {
+		return $elm$html$Html$text('');
+	}
 };
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$value = function (value_) {
-	return $rundis$elm_bootstrap$Bootstrap$Form$Input$Value(value_);
+var $aforemny$material_components_web_elm$Material$TextField$requiredProp = function (_v0) {
+	var required = _v0.a.required;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'required',
+			$elm$json$Json$Encode$bool(required)));
 };
-var $author$project$Registration$view = function (model) {
-	var registerButton = model.processing ? A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$button,
-		_List_fromArray(
-			[
-				$rundis$elm_bootstrap$Bootstrap$Button$primary,
-				$rundis$elm_bootstrap$Bootstrap$Button$disabled(true),
-				$rundis$elm_bootstrap$Bootstrap$Button$attrs(
-				_List_fromArray(
-					[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr3]))
-			]),
-		_List_fromArray(
-			[
+var $aforemny$material_components_web_elm$Material$TextField$rippleElt = A2(
+	$elm$html$Html$span,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-text-field__ripple')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$TextField$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-text-field'));
+var $aforemny$material_components_web_elm$Material$TextField$stepProp = function (_v0) {
+	var step = _v0.a.step;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'step',
+			$elm$json$Json$Encode$string(
 				A2(
-				$rundis$elm_bootstrap$Bootstrap$Spinner$spinner,
-				_List_fromArray(
-					[
-						$rundis$elm_bootstrap$Bootstrap$Spinner$small,
-						$rundis$elm_bootstrap$Bootstrap$Spinner$attrs(
+					$elm$core$Maybe$withDefault,
+					'',
+					A2($elm$core$Maybe$map, $elm$core$String$fromInt, step)))));
+};
+var $aforemny$material_components_web_elm$Material$TextField$suffixCs = $elm$html$Html$Attributes$class('mdc-text-field__affix mdc-text-field__affix--suffix');
+var $aforemny$material_components_web_elm$Material$TextField$suffixElt = function (_v0) {
+	var suffix = _v0.a.suffix;
+	if (suffix.$ === 'Just') {
+		var suffixStr = suffix.a;
+		return A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$TextField$suffixCs]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(suffixStr)
+				]));
+	} else {
+		return $elm$html$Html$text('');
+	}
+};
+var $aforemny$material_components_web_elm$Material$TextField$trailingIconElt = function (_v0) {
+	var trailingIcon = _v0.a.trailingIcon;
+	return A2($aforemny$material_components_web_elm$Material$TextField$iconElt, 'mdc-text-field__icon--trailing', trailingIcon);
+};
+var $aforemny$material_components_web_elm$Material$TextField$validProp = function (_v0) {
+	var valid = _v0.a.valid;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'valid',
+			$elm$json$Json$Encode$bool(valid)));
+};
+var $aforemny$material_components_web_elm$Material$TextField$valueProp = function (_v0) {
+	var value = _v0.a.value;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Attributes$property('value'),
+			$elm$json$Json$Encode$string),
+		value);
+};
+var $aforemny$material_components_web_elm$Material$TextField$withLeadingIconCs = function (_v0) {
+	var leadingIcon = _v0.a.leadingIcon;
+	return (!_Utils_eq(leadingIcon, $elm$core$Maybe$Nothing)) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--with-leading-icon')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$withTrailingIconCs = function (_v0) {
+	var trailingIcon = _v0.a.trailingIcon;
+	return (!_Utils_eq(trailingIcon, $elm$core$Maybe$Nothing)) ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-text-field--with-trailing-icon')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$TextField$textField = F2(
+	function (outlined_, config_) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var fullwidth = config_.a.fullwidth;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-text-field',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$TextField$rootCs,
+							$aforemny$material_components_web_elm$Material$TextField$noLabelCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$filledCs(outlined_),
+							$aforemny$material_components_web_elm$Material$TextField$outlinedCs(outlined_),
+							$aforemny$material_components_web_elm$Material$TextField$fullwidthCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$labelFloatingCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$foucClassNamesProp,
+							$aforemny$material_components_web_elm$Material$TextField$disabledCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$withLeadingIconCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$withTrailingIconCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$endAlignedCs(config_),
+							$aforemny$material_components_web_elm$Material$TextField$valueProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$disabledProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$requiredProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$validProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$patternProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$minLengthProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$maxLengthProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$minProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$maxProp(config_),
+							$aforemny$material_components_web_elm$Material$TextField$stepProp(config_)
+						])),
+				additionalAttributes),
+			outlined_ ? _List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$TextField$leadingIconElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$prefixElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$inputElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$suffixElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$notchedOutlineElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$trailingIconElt(config_)
+				]) : _List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$TextField$rippleElt,
+					$aforemny$material_components_web_elm$Material$TextField$leadingIconElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$prefixElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$inputElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$suffixElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$labelElt(config_),
+					$aforemny$material_components_web_elm$Material$TextField$lineRippleElt,
+					$aforemny$material_components_web_elm$Material$TextField$trailingIconElt(config_)
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$outlined = function (config_) {
+	return A2($aforemny$material_components_web_elm$Material$TextField$textField, true, config_);
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$config = $aforemny$material_components_web_elm$Material$LinearProgress$Config(
+	{additionalAttributes: _List_Nil, closed: false, reverse: false});
+var $author$project$Util$emptyHtmlNode = $elm$html$Html$text('');
+var $aforemny$material_components_web_elm$Material$LinearProgress$Indeterminate = {$: 'Indeterminate'};
+var $aforemny$material_components_web_elm$Material$LinearProgress$bufferBarElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__buffer-bar')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$LinearProgress$bufferDotsElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__buffer-dots')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$LinearProgress$bufferElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__buffer')
+		]),
+	_List_fromArray(
+		[$aforemny$material_components_web_elm$Material$LinearProgress$bufferBarElt, $aforemny$material_components_web_elm$Material$LinearProgress$bufferDotsElt]));
+var $aforemny$material_components_web_elm$Material$LinearProgress$bufferProp = function (variant) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'buffer',
+			$elm$json$Json$Encode$float(
+				function () {
+					if (variant.$ === 'Buffered') {
+						var buffer = variant.b;
+						return buffer;
+					} else {
+						return 0;
+					}
+				}())));
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$closedProp = function (_v0) {
+	var closed = _v0.a.closed;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'closed',
+			$elm$json$Json$Encode$bool(closed)));
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$determinateProp = function (variant) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'determinate',
+			$elm$json$Json$Encode$bool(
+				!_Utils_eq(variant, $aforemny$material_components_web_elm$Material$LinearProgress$Indeterminate))));
+};
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $aforemny$material_components_web_elm$Material$LinearProgress$displayCss = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$style, 'display', 'block'));
+var $aforemny$material_components_web_elm$Material$LinearProgress$barInnerElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__bar-inner')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$LinearProgress$primaryBarElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__bar mdc-linear-progress__primary-bar')
+		]),
+	_List_fromArray(
+		[$aforemny$material_components_web_elm$Material$LinearProgress$barInnerElt]));
+var $aforemny$material_components_web_elm$Material$LinearProgress$progressProp = function (variant) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'progress',
+			$elm$json$Json$Encode$float(
+				function () {
+					switch (variant.$) {
+						case 'Determinate':
+							var progress = variant.a;
+							return progress;
+						case 'Buffered':
+							var progress = variant.a;
+							return progress;
+						default:
+							return 0;
+					}
+				}())));
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$reverseProp = function (_v0) {
+	var reverse = _v0.a.reverse;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'reverse',
+			$elm$json$Json$Encode$bool(reverse)));
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$roleAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'progressbar'));
+var $aforemny$material_components_web_elm$Material$LinearProgress$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-linear-progress'));
+var $aforemny$material_components_web_elm$Material$LinearProgress$secondaryBarElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-linear-progress__bar mdc-linear-progress__secondary-bar')
+		]),
+	_List_fromArray(
+		[$aforemny$material_components_web_elm$Material$LinearProgress$barInnerElt]));
+var $aforemny$material_components_web_elm$Material$LinearProgress$variantCs = function (variant) {
+	if (variant.$ === 'Indeterminate') {
+		return $elm$core$Maybe$Just(
+			$elm$html$Html$Attributes$class('mdc-linear-progress--indeterminate'));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $aforemny$material_components_web_elm$Material$LinearProgress$linearProgress = F2(
+	function (variant, config_) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-linear-progress',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$LinearProgress$rootCs,
+							$aforemny$material_components_web_elm$Material$LinearProgress$displayCss,
+							$aforemny$material_components_web_elm$Material$LinearProgress$roleAttr,
+							$aforemny$material_components_web_elm$Material$LinearProgress$variantCs(variant),
+							$aforemny$material_components_web_elm$Material$LinearProgress$determinateProp(variant),
+							$aforemny$material_components_web_elm$Material$LinearProgress$progressProp(variant),
+							$aforemny$material_components_web_elm$Material$LinearProgress$bufferProp(variant),
+							$aforemny$material_components_web_elm$Material$LinearProgress$reverseProp(config_),
+							$aforemny$material_components_web_elm$Material$LinearProgress$closedProp(config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$LinearProgress$bufferElt, $aforemny$material_components_web_elm$Material$LinearProgress$primaryBarElt, $aforemny$material_components_web_elm$Material$LinearProgress$secondaryBarElt]));
+	});
+var $aforemny$material_components_web_elm$Material$LinearProgress$indeterminate = function (config_) {
+	return A2($aforemny$material_components_web_elm$Material$LinearProgress$linearProgress, $aforemny$material_components_web_elm$Material$LinearProgress$Indeterminate, config_);
+};
+var $author$project$Util$progressLine = function (isLoading) {
+	return isLoading ? $aforemny$material_components_web_elm$Material$LinearProgress$indeterminate($aforemny$material_components_web_elm$Material$LinearProgress$config) : $author$project$Util$emptyHtmlNode;
+};
+var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
+var $aforemny$material_components_web_elm$Material$TextField$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setLabel = F2(
+	function (label, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{label: label}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setOnInput = F2(
+	function (onInput, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{
+					onInput: $elm$core$Maybe$Just(onInput)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setValue = F2(
+	function (value, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{value: value}));
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$closeOnEscapeProp = function (_v0) {
+	var closeOnEscape = _v0.a.closeOnEscape;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'closeOnEscape',
+			$elm$json$Json$Encode$bool(closeOnEscape)));
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$closedHandler = F2(
+	function (messageId, _v0) {
+		var onClosed = _v0.a.onClosed;
+		return $elm$core$Maybe$Just(
+			A2(
+				$elm$html$Html$Events$on,
+				'MDCSnackbar:closed',
+				$elm$json$Json$Decode$succeed(
+					onClosed(messageId))));
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$leadingCs = function (message_) {
+	return A2(
+		$elm$core$Maybe$andThen,
+		function (_v0) {
+			var leading = _v0.a.leading;
+			return leading ? $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-snackbar--leading')) : $elm$core$Maybe$Nothing;
+		},
+		message_);
+};
+var $elm$core$Tuple$mapSecond = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			x,
+			func(y));
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$messageIdProp = function (_v0) {
+	var messageId = _v0.a;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'messageId',
+			$elm$json$Json$Encode$int(messageId)));
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-snackbar'));
+var $aforemny$material_components_web_elm$Material$Snackbar$stackedCs = function (message_) {
+	return A2(
+		$elm$core$Maybe$andThen,
+		function (_v0) {
+			var stacked = _v0.a.stacked;
+			return stacked ? $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-snackbar--stacked')) : $elm$core$Maybe$Nothing;
+		},
+		message_);
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$actionButtonClickHandler = F2(
+	function (messageId, _v0) {
+		var onActionButtonClick = _v0.a.onActionButtonClick;
+		return A2(
+			$elm$core$Maybe$map,
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$html$Html$Events$onClick,
+				$elm$core$Basics$apR(messageId)),
+			onActionButtonClick);
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$actionButtonCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-button mdc-snackbar__action'));
+var $aforemny$material_components_web_elm$Material$Snackbar$actionButtonElt = F2(
+	function (messageId, message_) {
+		var actionButton = message_.a.actionButton;
+		return A2(
+			$elm$core$Maybe$map,
+			function (actionButtonLabel) {
+				return A2(
+					$elm$html$Html$button,
+					A2(
+						$elm$core$List$filterMap,
+						$elm$core$Basics$identity,
 						_List_fromArray(
-							[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr1]))
-					]),
-				_List_Nil),
-				$elm$html$Html$text('Slanje prijave...')
-			])) : A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$submitButton,
-		_List_fromArray(
-			[$rundis$elm_bootstrap$Bootstrap$Button$primary]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Podnesi prijavu')
-			]));
-	var alert = function () {
-		var _v0 = model.status;
-		if (_v0.$ === 'Just') {
-			if (_v0.a.$ === 'Err') {
-				return A2(
-					$rundis$elm_bootstrap$Bootstrap$Alert$simpleDanger,
-					_List_Nil,
+							[
+								$aforemny$material_components_web_elm$Material$Snackbar$actionButtonCs,
+								A2($aforemny$material_components_web_elm$Material$Snackbar$actionButtonClickHandler, messageId, message_)
+							])),
 					_List_fromArray(
 						[
-							$elm$html$Html$text('Došlo je do neočekivane greške 😞')
+							$elm$html$Html$text(actionButtonLabel)
 						]));
+			},
+			actionButton);
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$actionIconClickHandler = F2(
+	function (messageId, _v0) {
+		var onActionIconClick = _v0.a.onActionIconClick;
+		return A2(
+			$elm$core$Maybe$map,
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$html$Html$Events$onClick,
+				$elm$core$Basics$apR(messageId)),
+			onActionIconClick);
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$actionIconElt = F2(
+	function (messageId, message_) {
+		var actionIcon = message_.a.actionIcon;
+		if (actionIcon.$ === 'Just') {
+			if (actionIcon.a.$ === 'Icon') {
+				var node = actionIcon.a.a.node;
+				var attributes = actionIcon.a.a.attributes;
+				var nodes = actionIcon.a.a.nodes;
+				return $elm$core$Maybe$Just(
+					A2(
+						node,
+						_Utils_ap(
+							A2(
+								$elm$core$List$filterMap,
+								$elm$core$Basics$identity,
+								_List_fromArray(
+									[
+										$elm$core$Maybe$Just(
+										$elm$html$Html$Attributes$class('mdc-icon-button')),
+										$elm$core$Maybe$Just(
+										$elm$html$Html$Attributes$class('mdc-snackbar__dismiss')),
+										A2($aforemny$material_components_web_elm$Material$Snackbar$actionIconClickHandler, messageId, message_)
+									])),
+							attributes),
+						nodes));
 			} else {
-				return A2(
-					$rundis$elm_bootstrap$Bootstrap$Alert$simpleInfo,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Uspešno ste podneli prijavu!')
-						]));
+				var node = actionIcon.a.a.node;
+				var attributes = actionIcon.a.a.attributes;
+				var nodes = actionIcon.a.a.nodes;
+				return $elm$core$Maybe$Just(
+					A2(
+						node,
+						_Utils_ap(
+							A2(
+								$elm$core$List$filterMap,
+								$elm$core$Basics$identity,
+								_List_fromArray(
+									[
+										$elm$core$Maybe$Just(
+										$elm$svg$Svg$Attributes$class('mdc-icon-button')),
+										$elm$core$Maybe$Just(
+										$elm$svg$Svg$Attributes$class('mdc-snackbar__dismiss')),
+										A2($aforemny$material_components_web_elm$Material$Snackbar$actionIconClickHandler, messageId, message_)
+									])),
+							attributes),
+						nodes));
 			}
 		} else {
-			return $author$project$Util$emptyHtmlNode;
+			return $elm$core$Maybe$Nothing;
 		}
-	}();
-	return A2(
-		$rundis$elm_bootstrap$Bootstrap$Form$form,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('mt-3 mx-auto loginForm'),
-				$elm$html$Html$Events$onSubmit($author$project$Registration$SubmittedForm),
-				$elm$html$Html$Attributes$disabled(model.processing)
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h4,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Pošaljite zahtev za registraciju')
-					])),
-				alert,
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('firstName')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Ime')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('firstName'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Registration$FirstName),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.firstName)
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('lastName')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Prezime')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('lastName'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Registration$LastName),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.lastName)
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('email')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Email')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$email(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('email'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Registration$Email),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.email)
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('index')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Broj indeksa')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('index'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$Registration$Index),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$value(model.index)
-							]))
-					])),
-				registerButton
-			]));
-};
-var $author$project$SetPassword$ConfirmPassword = function (a) {
-	return {$: 'ConfirmPassword', a: a};
-};
-var $author$project$SetPassword$Email = function (a) {
-	return {$: 'Email', a: a};
-};
-var $author$project$SetPassword$Password = function (a) {
-	return {$: 'Password', a: a};
-};
-var $author$project$SetPassword$SubmittedForm = {$: 'SubmittedForm'};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Attrs = function (a) {
-	return {$: 'Attrs', a: a};
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$attrs = function (attrs_) {
-	return $rundis$elm_bootstrap$Bootstrap$Form$Input$Attrs(attrs_);
-};
-var $rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback = F2(
-	function (attributes, children) {
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$actionsElt = F2(
+	function (messageId, message_) {
 		return A2(
 			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-snackbar__actions')
+				]),
 			A2(
-				$elm$core$List$cons,
-				$elm$html$Html$Attributes$class('invalid-feedback'),
-				attributes),
-			children);
+				$elm$core$List$filterMap,
+				$elm$core$Basics$identity,
+				_List_fromArray(
+					[
+						A2($aforemny$material_components_web_elm$Material$Snackbar$actionButtonElt, messageId, message_),
+						A2($aforemny$material_components_web_elm$Material$Snackbar$actionIconElt, messageId, message_)
+					])));
 	});
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$Password = {$: 'Password'};
-var $rundis$elm_bootstrap$Bootstrap$Form$Input$password = $rundis$elm_bootstrap$Bootstrap$Form$Input$input($rundis$elm_bootstrap$Bootstrap$Form$Input$Password);
-var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
-var $author$project$SetPassword$validForm = function (model) {
-	return !_Utils_eq(model.password, model.confirmPassword);
-};
-var $author$project$SetPassword$formView = function (model) {
-	var submitButton = model.processing ? A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$button,
-		_List_fromArray(
-			[
-				$rundis$elm_bootstrap$Bootstrap$Button$primary,
-				$rundis$elm_bootstrap$Bootstrap$Button$disabled(true),
-				$rundis$elm_bootstrap$Bootstrap$Button$attrs(
-				_List_fromArray(
-					[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr3]))
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Spinner$spinner,
-				_List_fromArray(
-					[
-						$rundis$elm_bootstrap$Bootstrap$Spinner$small,
-						$rundis$elm_bootstrap$Bootstrap$Spinner$attrs(
-						_List_fromArray(
-							[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr1]))
-					]),
-				_List_Nil),
-				$elm$html$Html$text('Slanje prijave...')
-			])) : A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$submitButton,
-		_List_fromArray(
-			[
-				$rundis$elm_bootstrap$Bootstrap$Button$primary,
-				$rundis$elm_bootstrap$Bootstrap$Button$disabled(
-				$author$project$SetPassword$validForm(model))
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Podnesi prijavu')
-			]));
+var $aforemny$material_components_web_elm$Material$Snackbar$ariaPoliteLiveAttr = A2($elm$html$Html$Attributes$attribute, 'aria-live', 'polite');
+var $aforemny$material_components_web_elm$Material$Snackbar$ariaStatusRoleAttr = A2($elm$html$Html$Attributes$attribute, 'aria-role', 'status');
+var $aforemny$material_components_web_elm$Material$Snackbar$labelElt = function (_v0) {
+	var label = _v0.a.label;
 	return A2(
-		$rundis$elm_bootstrap$Bootstrap$Form$form,
+		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('mt-3 mx-auto loginForm'),
-				$elm$html$Html$Events$onSubmit($author$project$SetPassword$SubmittedForm),
-				$elm$html$Html$Attributes$disabled(model.processing)
+				$elm$html$Html$Attributes$class('mdc-snackbar__label'),
+				$aforemny$material_components_web_elm$Material$Snackbar$ariaStatusRoleAttr,
+				$aforemny$material_components_web_elm$Material$Snackbar$ariaPoliteLiveAttr
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(label)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$surfaceElt = F2(
+	function (messageId, message_) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-snackbar__surface')
+				]),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Snackbar$labelElt(message_),
+					A2($aforemny$material_components_web_elm$Material$Snackbar$actionsElt, messageId, message_)
+				]));
+	});
+var $elm$core$Basics$clamp = F3(
+	function (low, high, number) {
+		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
+	});
+var $aforemny$material_components_web_elm$Material$Snackbar$timeoutMsProp = function (message_) {
+	var indefiniteTimeout = -1;
+	var normalizedTimeoutMs = A2(
+		$elm$core$Maybe$withDefault,
+		indefiniteTimeout,
+		A2(
+			$elm$core$Maybe$andThen,
+			function (_v0) {
+				var timeoutMs = _v0.a.timeoutMs;
+				return A2(
+					$elm$core$Maybe$map,
+					A2($elm$core$Basics$clamp, 4000, 10000),
+					timeoutMs);
+			},
+			message_));
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'timeoutMs',
+			$elm$json$Json$Encode$int(normalizedTimeoutMs)));
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$snackbar = F2(
+	function (config_, queue) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var messages = queue.a.messages;
+		var nextMessageId = queue.a.nextMessageId;
+		var _v0 = A2(
+			$elm$core$Maybe$withDefault,
+			_Utils_Tuple2(
+				$aforemny$material_components_web_elm$Material$Snackbar$MessageId(-1),
+				$elm$core$Maybe$Nothing),
+			A2(
+				$elm$core$Maybe$map,
+				$elm$core$Tuple$mapSecond($elm$core$Maybe$Just),
+				$elm$core$List$head(messages)));
+		var currentMessageId = _v0.a;
+		var currentMessage = _v0.b;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-snackbar',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Snackbar$rootCs,
+							$aforemny$material_components_web_elm$Material$Snackbar$closeOnEscapeProp(config_),
+							$aforemny$material_components_web_elm$Material$Snackbar$leadingCs(currentMessage),
+							$aforemny$material_components_web_elm$Material$Snackbar$stackedCs(currentMessage),
+							$aforemny$material_components_web_elm$Material$Snackbar$messageIdProp(currentMessageId),
+							$aforemny$material_components_web_elm$Material$Snackbar$timeoutMsProp(currentMessage),
+							A2($aforemny$material_components_web_elm$Material$Snackbar$closedHandler, currentMessageId, config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$Snackbar$surfaceElt,
+					currentMessageId,
+					A2(
+						$elm$core$Maybe$withDefault,
+						$aforemny$material_components_web_elm$Material$Snackbar$message(''),
+						currentMessage))
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$Button$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Button$config = $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+	{additionalAttributes: _List_Nil, dense: false, disabled: false, href: $elm$core$Maybe$Nothing, icon: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing, touch: true, trailingIcon: false});
+var $aforemny$material_components_web_elm$Material$Button$Raised = {$: 'Raised'};
+var $aforemny$material_components_web_elm$Material$Button$clickHandler = function (_v0) {
+	var onClick = _v0.a.onClick;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, onClick);
+};
+var $aforemny$material_components_web_elm$Material$Button$denseCs = function (_v0) {
+	var dense = _v0.a.dense;
+	return dense ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-button--dense')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$disabledAttr = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$disabled(disabled));
+};
+var $aforemny$material_components_web_elm$Material$Button$disabledProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'disabled',
+			$elm$json$Json$Encode$bool(disabled)));
+};
+var $aforemny$material_components_web_elm$Material$Button$hrefAttr = function (_v0) {
+	var href = _v0.a.href;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$href, href);
+};
+var $aforemny$material_components_web_elm$Material$Button$labelElt = function (label) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-button__label')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(label)
+				])));
+};
+var $aforemny$material_components_web_elm$Material$Button$iconElt = function (_v0) {
+	var config_ = _v0.a;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$map($elm$core$Basics$never),
+		function () {
+			var _v1 = config_.icon;
+			if (_v1.$ === 'Just') {
+				if (_v1.a.$ === 'Icon') {
+					var node = _v1.a.a.node;
+					var attributes = _v1.a.a.attributes;
+					var nodes = _v1.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$html$Html$Attributes$class('mdc-button__icon'),
+								A2(
+									$elm$core$List$cons,
+									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
+									attributes)),
+							nodes));
+				} else {
+					var node = _v1.a.a.node;
+					var attributes = _v1.a.a.attributes;
+					var nodes = _v1.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$svg$Svg$Attributes$class('mdc-button__icon'),
+								A2(
+									$elm$core$List$cons,
+									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
+									attributes)),
+							nodes));
+				}
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		}());
+};
+var $aforemny$material_components_web_elm$Material$Button$leadingIconElt = function (config_) {
+	var trailingIcon = config_.a.trailingIcon;
+	return (!trailingIcon) ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$rippleElt = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-button__ripple')
+			]),
+		_List_Nil));
+var $aforemny$material_components_web_elm$Material$Button$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-button'));
+var $aforemny$material_components_web_elm$Material$Button$tabIndexProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return disabled ? $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'tabIndex',
+			$elm$json$Json$Encode$int(-1))) : $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'tabIndex',
+			$elm$json$Json$Encode$int(0)));
+};
+var $aforemny$material_components_web_elm$Material$Button$targetAttr = function (_v0) {
+	var href = _v0.a.href;
+	var target = _v0.a.target;
+	return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A2($elm$core$Maybe$map, $elm$html$Html$Attributes$target, target) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$touchCs = function (_v0) {
+	var touch = _v0.a.touch;
+	return touch ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-button--touch')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$touchElt = function (_v0) {
+	var touch = _v0.a.touch;
+	return touch ? $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-button__touch')
+				]),
+			_List_Nil)) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$trailingIconElt = function (config_) {
+	var trailingIcon = config_.a.trailingIcon;
+	return trailingIcon ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$variantCs = function (variant) {
+	switch (variant.$) {
+		case 'Text':
+			return $elm$core$Maybe$Nothing;
+		case 'Raised':
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--raised'));
+		case 'Unelevated':
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--unelevated'));
+		default:
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--outlined'));
+	}
+};
+var $aforemny$material_components_web_elm$Material$Button$button = F3(
+	function (variant, config_, label) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var touch = config_.a.touch;
+		var href = config_.a.href;
+		var wrapTouch = function (node) {
+			return touch ? A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-touch-target-wrapper')
+					]),
+				_List_fromArray(
+					[node])) : node;
+		};
+		return wrapTouch(
+			A3(
+				$elm$html$Html$node,
+				'mdc-button',
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Button$disabledProp(config_)
+						])),
+				_List_fromArray(
+					[
+						A2(
+						(!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? $elm$html$Html$a : $elm$html$Html$button,
+						_Utils_ap(
+							A2(
+								$elm$core$List$filterMap,
+								$elm$core$Basics$identity,
+								_List_fromArray(
+									[
+										$aforemny$material_components_web_elm$Material$Button$rootCs,
+										$aforemny$material_components_web_elm$Material$Button$variantCs(variant),
+										$aforemny$material_components_web_elm$Material$Button$denseCs(config_),
+										$aforemny$material_components_web_elm$Material$Button$touchCs(config_),
+										$aforemny$material_components_web_elm$Material$Button$disabledAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$tabIndexProp(config_),
+										$aforemny$material_components_web_elm$Material$Button$hrefAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$targetAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$clickHandler(config_)
+									])),
+							additionalAttributes),
+						A2(
+							$elm$core$List$filterMap,
+							$elm$core$Basics$identity,
+							_List_fromArray(
+								[
+									$aforemny$material_components_web_elm$Material$Button$rippleElt,
+									$aforemny$material_components_web_elm$Material$Button$leadingIconElt(config_),
+									$aforemny$material_components_web_elm$Material$Button$labelElt(label),
+									$aforemny$material_components_web_elm$Material$Button$trailingIconElt(config_),
+									$aforemny$material_components_web_elm$Material$Button$touchElt(config_)
+								])))
+					])));
+	});
+var $aforemny$material_components_web_elm$Material$Button$raised = F2(
+	function (config_, label) {
+		return A3($aforemny$material_components_web_elm$Material$Button$button, $aforemny$material_components_web_elm$Material$Button$Raised, config_, label);
+	});
+var $aforemny$material_components_web_elm$Material$Button$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
+	});
+var $aforemny$material_components_web_elm$Material$Button$setDisabled = F2(
+	function (disabled, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+			_Utils_update(
+				config_,
+				{disabled: disabled}));
+	});
+var $aforemny$material_components_web_elm$Material$Button$setIcon = F2(
+	function (icon_, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+			_Utils_update(
+				config_,
+				{icon: icon_}));
+	});
+var $author$project$Util$submitButton = function (_v0) {
+	var text = _v0.text;
+	var icon = _v0.icon;
+	var disabled = _v0.disabled;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('form-item')
 			]),
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$h4,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Podesite lozinku')
-					])),
+				$aforemny$material_components_web_elm$Material$Button$raised,
 				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
+					$aforemny$material_components_web_elm$Material$Button$setIcon,
+					icon,
+					A2(
+						$aforemny$material_components_web_elm$Material$Button$setDisabled,
+						disabled,
 						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('email')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Email')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$text(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('email'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$SetPassword$Email),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$attrs(
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$required(true)
-									]))
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('password')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Lozinka')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$password(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('password'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$SetPassword$Password),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$attrs(
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$required(true)
-									]))
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('confirmPassword')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Potvrda lozinke')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$password(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('confirmPassword'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$SetPassword$ConfirmPassword),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$attrs(
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$required(true),
-										$elm$html$Html$Attributes$classList(
-										_List_fromArray(
-											[
-												_Utils_Tuple2(
-												'is-invalid',
-												!_Utils_eq(model.password, model.confirmPassword))
-											]))
-									]))
-							])),
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$invalidFeedback,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Lozinke se ne poklapaju!')
-							]))
-					])),
-				submitButton
+							$aforemny$material_components_web_elm$Material$Button$setAttributes,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('submit')
+								]),
+							$aforemny$material_components_web_elm$Material$Button$config))),
+				text)
 			]));
 };
-var $author$project$SetPassword$view = function (model) {
-	var _v0 = model.userId;
-	if (_v0.$ === 'Just') {
-		var reg = _v0.a;
-		return $author$project$SetPassword$formView(model);
-	} else {
-		return $elm$html$Html$text('Loading...');
-	}
+var $author$project$Registration$view = function (model) {
+	var registerButton = $author$project$Util$submitButton(
+		{
+			disabled: model.processing,
+			icon: $elm$core$Maybe$Just(
+				$aforemny$material_components_web_elm$Material$Button$icon('person_add')),
+			text: 'Podnesi prijavu'
+		});
+	var formInput = F3(
+		function (value, label, msg) {
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('form-item')
+					]),
+				_List_fromArray(
+					[
+						$aforemny$material_components_web_elm$Material$TextField$outlined(
+						A2(
+							$aforemny$material_components_web_elm$Material$TextField$setValue,
+							$elm$core$Maybe$Just(value),
+							A2(
+								$aforemny$material_components_web_elm$Material$TextField$setAttributes,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$required(true)
+									]),
+								A2(
+									$aforemny$material_components_web_elm$Material$TextField$setOnInput,
+									msg,
+									A2(
+										$aforemny$material_components_web_elm$Material$TextField$setLabel,
+										$elm$core$Maybe$Just(label),
+										$aforemny$material_components_web_elm$Material$TextField$config)))))
+					]));
+		});
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('center')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$form,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onSubmit($author$project$Registration$SubmittedForm),
+								$elm$html$Html$Attributes$disabled(model.processing)
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$h4,
+								_List_fromArray(
+									[
+										$aforemny$material_components_web_elm$Material$Typography$headline5,
+										$elm$html$Html$Attributes$class('heading')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Podnesite zahtev za registraciju')
+									])),
+								A3(formInput, model.firstName, 'Ime', $author$project$Registration$FirstName),
+								A3(formInput, model.lastName, 'Prezime', $author$project$Registration$LastName),
+								A3(formInput, model.email, 'Email', $author$project$Registration$Email),
+								A3(formInput, model.index, 'Broj indeksa', $author$project$Registration$Index),
+								registerButton,
+								$author$project$Util$progressLine(model.processing)
+							]))
+					])),
+				A2(
+				$aforemny$material_components_web_elm$Material$Snackbar$snackbar,
+				$aforemny$material_components_web_elm$Material$Snackbar$config(
+					{onClosed: $author$project$Registration$SnackbarClosed}),
+				model.queue)
+			]));
 };
 var $author$project$User$Login$Email = function (a) {
 	return {$: 'Email', a: a};
@@ -10446,706 +11012,320 @@ var $author$project$User$Login$Password = function (a) {
 	return {$: 'Password', a: a};
 };
 var $author$project$User$Login$SubmittedForm = {$: 'SubmittedForm'};
-var $author$project$User$Login$view = function (model) {
-	var loginButton = model.processing ? A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$button,
-		_List_fromArray(
-			[
-				$rundis$elm_bootstrap$Bootstrap$Button$primary,
-				$rundis$elm_bootstrap$Bootstrap$Button$disabled(true),
-				$rundis$elm_bootstrap$Bootstrap$Button$attrs(
-				_List_fromArray(
-					[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr3]))
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Spinner$spinner,
-				_List_fromArray(
-					[
-						$rundis$elm_bootstrap$Bootstrap$Spinner$small,
-						$rundis$elm_bootstrap$Bootstrap$Spinner$attrs(
-						_List_fromArray(
-							[$rundis$elm_bootstrap$Bootstrap$Utilities$Spacing$mr1]))
-					]),
-				_List_Nil),
-				$elm$html$Html$text('Prijavljivanje...')
-			])) : A2(
-		$rundis$elm_bootstrap$Bootstrap$Button$submitButton,
-		_List_fromArray(
-			[$rundis$elm_bootstrap$Bootstrap$Button$primary]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Prijavi se')
-			]));
-	var errorAlert = function () {
-		var _v0 = model.error;
-		if (_v0.$ === 'Just') {
-			var httpError = _v0.a;
-			var message = function () {
-				if ((httpError.$ === 'BadStatus') && (httpError.a === 401)) {
-					return 'Pogrešan email ili lozinka!';
-				} else {
-					return 'Došlo je do neočekivane greške 😞';
-				}
-			}();
-			return A2(
-				$rundis$elm_bootstrap$Bootstrap$Alert$simpleDanger,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(message)
-					]));
-		} else {
-			return $author$project$Util$emptyHtmlNode;
-		}
-	}();
+var $aforemny$material_components_web_elm$Material$TextField$setType = F2(
+	function (type_, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{type_: type_}));
+	});
+var $author$project$Util$formInput = function (_v0) {
+	var inputType = _v0.inputType;
+	var label = _v0.label;
+	var class_ = _v0.class_;
+	var msg = _v0.msg;
 	return A2(
-		$rundis$elm_bootstrap$Bootstrap$Form$form,
+		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('mt-3 mx-auto loginForm'),
-				$elm$html$Html$Events$onSubmit($author$project$User$Login$SubmittedForm),
-				$elm$html$Html$Attributes$disabled(model.processing)
+				$elm$html$Html$Attributes$class('form-item')
+			]),
+		_List_fromArray(
+			[
+				$aforemny$material_components_web_elm$Material$TextField$outlined(
+				A2(
+					$aforemny$material_components_web_elm$Material$TextField$setAttributes,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class(class_),
+							$elm$html$Html$Attributes$required(true)
+						]),
+					A2(
+						$aforemny$material_components_web_elm$Material$TextField$setType,
+						$elm$core$Maybe$Just(inputType),
+						A2(
+							$aforemny$material_components_web_elm$Material$TextField$setOnInput,
+							msg,
+							A2($aforemny$material_components_web_elm$Material$TextField$setLabel, label, $aforemny$material_components_web_elm$Material$TextField$config)))))
+			]));
+};
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $author$project$User$Login$view = function (model) {
+	var viewInput = F3(
+		function (inputType, label, msg) {
+			return $author$project$Util$formInput(
+				{class_: 'login-input', inputType: inputType, label: label, msg: msg});
+		});
+	var submitBtn = $author$project$Util$submitButton(
+		{
+			disabled: model.processing,
+			icon: $elm$core$Maybe$Just(
+				$aforemny$material_components_web_elm$Material$Button$icon('login')),
+			text: 'Prijavi se'
+		});
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('center')
 			]),
 		_List_fromArray(
 			[
 				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
+				$elm$html$Html$form,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onSubmit($author$project$User$Login$SubmittedForm)
+					]),
 				_List_fromArray(
 					[
 						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
+						$elm$html$Html$h2,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$for('email')
+								$aforemny$material_components_web_elm$Material$Typography$headline5,
+								$elm$html$Html$Attributes$class('heading')
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text('Email')
+								$elm$html$Html$text('Prijava korisnika')
 							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$email(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('email'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$User$Login$Email)
-							]))
-					])),
-				A2(
-				$rundis$elm_bootstrap$Bootstrap$Form$group,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$rundis$elm_bootstrap$Bootstrap$Form$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for('password')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Lozinka')
-							])),
-						$rundis$elm_bootstrap$Bootstrap$Form$Input$password(
-						_List_fromArray(
-							[
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$id('password'),
-								$rundis$elm_bootstrap$Bootstrap$Form$Input$onInput($author$project$User$Login$Password)
-							]))
-					])),
-				errorAlert,
-				loginButton
+						A3(
+						viewInput,
+						'email',
+						$elm$core$Maybe$Just('Email'),
+						$author$project$User$Login$Email),
+						A3(
+						viewInput,
+						'password',
+						$elm$core$Maybe$Just('Lozinka'),
+						$author$project$User$Login$Password),
+						submitBtn,
+						$author$project$Util$progressLine(model.processing)
+					]))
 			]));
+};
+var $author$project$User$SetPassword$ConfirmPassword = function (a) {
+	return {$: 'ConfirmPassword', a: a};
+};
+var $author$project$User$SetPassword$Email = function (a) {
+	return {$: 'Email', a: a};
+};
+var $author$project$User$SetPassword$Password = function (a) {
+	return {$: 'Password', a: a};
+};
+var $author$project$User$SetPassword$SubmittedForm = {$: 'SubmittedForm'};
+var $author$project$User$SetPassword$formView = function (model) {
+	var viewInput = F3(
+		function (inputType, label, msg) {
+			return $author$project$Util$formInput(
+				{class_: 'login-input', inputType: inputType, label: label, msg: msg});
+		});
+	var notValid = $elm$core$String$isEmpty(model.email) || ($elm$core$String$isEmpty(model.password) || ($elm$core$String$isEmpty(model.confirmPassword) || (!_Utils_eq(model.password, model.confirmPassword))));
+	var submitBtn = $author$project$Util$submitButton(
+		{
+			disabled: model.processing || notValid,
+			icon: $elm$core$Maybe$Just(
+				$aforemny$material_components_web_elm$Material$Button$icon('vpn_key')),
+			text: 'Potvrdi'
+		});
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('center')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$form,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onSubmit($author$project$User$SetPassword$SubmittedForm),
+						$elm$html$Html$Attributes$disabled(model.processing)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h4,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Podesite lozinku')
+							])),
+						A3(
+						viewInput,
+						'email',
+						$elm$core$Maybe$Just('Email'),
+						$author$project$User$SetPassword$Email),
+						A3(
+						viewInput,
+						'password',
+						$elm$core$Maybe$Just('Lozinka'),
+						$author$project$User$SetPassword$Password),
+						A3(
+						viewInput,
+						'password',
+						$elm$core$Maybe$Just('Potvrda lozinke'),
+						$author$project$User$SetPassword$ConfirmPassword),
+						submitBtn
+					]))
+			]));
+};
+var $author$project$User$SetPassword$view = function (model) {
+	var _v0 = model.userId;
+	if (_v0.$ === 'Just') {
+		var reg = _v0.a;
+		return $author$project$User$SetPassword$formView(model);
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('center')
+				]),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$CircularProgress$indeterminate($aforemny$material_components_web_elm$Material$CircularProgress$config)
+				]));
+	}
 };
 var $author$project$Main$Logout = {$: 'Logout'};
-var $elm$html$Html$a = _VirtualDom_node('a');
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$DropdownItem = function (a) {
-	return {$: 'DropdownItem', a: a};
+var $author$project$Main$MenuClosed = {$: 'MenuClosed'};
+var $author$project$Main$MenuOpened = {$: 'MenuOpened'};
+var $aforemny$material_components_web_elm$Material$Menu$Config = function (a) {
+	return {$: 'Config', a: a};
 };
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$anchorItem = F2(
-	function (attributes, children) {
-		return $rundis$elm_bootstrap$Bootstrap$Dropdown$DropdownItem(
-			A2(
-				$elm$html$Html$a,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('dropdown-item')
-						]),
-					attributes),
-				children));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$buttonItem = F2(
-	function (attributes, children) {
-		return $rundis$elm_bootstrap$Bootstrap$Dropdown$DropdownItem(
-			A2(
-				$elm$html$Html$button,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$type_('button'),
-							$elm$html$Html$Attributes$class('dropdown-item')
-						]),
-					attributes),
-				children));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$Dropup = {$: 'Dropup'};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$dropUp = $rundis$elm_bootstrap$Bootstrap$Dropdown$Dropup;
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$dropDir = function (maybeDir) {
-	var toAttrs = function (dir) {
-		return _List_fromArray(
-			[
-				$elm$html$Html$Attributes$class(
-				'drop' + function () {
-					if (dir.$ === 'Dropleft') {
-						return 'left';
-					} else {
-						return 'right';
-					}
-				}())
-			]);
-	};
-	return A2(
-		$elm$core$Maybe$withDefault,
-		_List_Nil,
-		A2($elm$core$Maybe$map, toAttrs, maybeDir));
-};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$dropdownAttributes = F2(
-	function (status, config) {
-		return _Utils_ap(
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$classList(
-					_List_fromArray(
-						[
-							_Utils_Tuple2('btn-group', true),
-							_Utils_Tuple2(
-							'show',
-							!_Utils_eq(status, $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed)),
-							_Utils_Tuple2('dropup', config.isDropUp)
-						]))
-				]),
-			_Utils_ap(
-				$rundis$elm_bootstrap$Bootstrap$Dropdown$dropDir(config.dropDirection),
-				config.attributes));
-	});
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$menuStyles = F2(
-	function (_v0, config) {
-		var status = _v0.a.status;
-		var toggleSize = _v0.a.toggleSize;
-		var menuSize = _v0.a.menuSize;
-		var px = function (n) {
-			return $elm$core$String$fromFloat(n) + 'px';
-		};
-		var translate = F3(
-			function (x, y, z) {
-				return 'translate3d(' + (px(x) + (',' + (px(y) + (',' + (px(z) + ')')))));
-			});
-		var _default = _List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'top', '0'),
-				A2($elm$html$Html$Attributes$style, 'left', '0')
-			]);
-		var _v1 = _Utils_Tuple2(config.isDropUp, config.dropDirection);
-		_v1$0:
-		while (true) {
-			if (_v1.b.$ === 'Just') {
-				if (_v1.b.a.$ === 'Dropright') {
-					if (_v1.a) {
-						break _v1$0;
-					} else {
-						var _v2 = _v1.b.a;
-						return _default;
-					}
-				} else {
-					if (_v1.a) {
-						break _v1$0;
-					} else {
-						var _v3 = _v1.b.a;
-						return _Utils_ap(
-							_default,
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$Attributes$style,
-									'transform',
-									A3(translate, (-toggleSize.width) - menuSize.width, 0, 0))
-								]));
-					}
-				}
-			} else {
-				if (_v1.a) {
-					break _v1$0;
-				} else {
-					return _Utils_ap(
-						_default,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$Attributes$style,
-								'transform',
-								A3(translate, -toggleSize.width, toggleSize.height, 0))
-							]));
-				}
-			}
-		}
-		return _Utils_ap(
-			_default,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$Attributes$style,
-					'transform',
-					A3(translate, -toggleSize.width, -menuSize.height, 0))
-				]));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$dropdownMenu = F3(
-	function (state, config, items) {
-		var status = state.a.status;
-		var menuSize = state.a.menuSize;
-		var wrapperStyles = _Utils_eq(status, $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed) ? _List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'height', '0'),
-				A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
-				A2($elm$html$Html$Attributes$style, 'position', 'relative')
-			]) : _List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'position', 'relative')
-			]);
-		return A2(
-			$elm$html$Html$div,
-			wrapperStyles,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$div,
-					_Utils_ap(
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$classList(
-								_List_fromArray(
-									[
-										_Utils_Tuple2('dropdown-menu', true),
-										_Utils_Tuple2('dropdown-menu-right', config.hasMenuRight),
-										_Utils_Tuple2(
-										'show',
-										!_Utils_eq(status, $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed))
-									]))
-							]),
-						_Utils_ap(
-							A2($rundis$elm_bootstrap$Bootstrap$Dropdown$menuStyles, state, config),
-							config.menuAttrs)),
-					A2(
-						$elm$core$List$map,
-						function (_v0) {
-							var x = _v0.a;
-							return x;
-						},
-						items))
-				]));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$applyModifier = F2(
-	function (option, options) {
-		switch (option.$) {
-			case 'AlignMenuRight':
-				return _Utils_update(
-					options,
-					{hasMenuRight: true});
-			case 'Dropup':
-				return _Utils_update(
-					options,
-					{isDropUp: true});
-			case 'Attrs':
-				var attrs_ = option.a;
-				return _Utils_update(
-					options,
-					{attributes: attrs_});
-			case 'DropToDir':
-				var dir = option.a;
-				return _Utils_update(
-					options,
-					{
-						dropDirection: $elm$core$Maybe$Just(dir)
-					});
-			default:
-				var attrs_ = option.a;
-				return _Utils_update(
-					options,
-					{menuAttrs: attrs_});
-		}
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$defaultOptions = {attributes: _List_Nil, dropDirection: $elm$core$Maybe$Nothing, hasMenuRight: false, isDropUp: false, menuAttrs: _List_Nil};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$toConfig = function (options) {
-	return A3($elm$core$List$foldl, $rundis$elm_bootstrap$Bootstrap$Dropdown$applyModifier, $rundis$elm_bootstrap$Bootstrap$Dropdown$defaultOptions, options);
-};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$dropdown = F2(
-	function (state, _v0) {
-		var status = state.a.status;
-		var toggleMsg = _v0.toggleMsg;
-		var toggleButton = _v0.toggleButton;
-		var items = _v0.items;
-		var options = _v0.options;
-		var config = $rundis$elm_bootstrap$Bootstrap$Dropdown$toConfig(options);
-		var _v1 = toggleButton;
-		var buttonFn = _v1.a;
-		return A2(
-			$elm$html$Html$div,
-			A2($rundis$elm_bootstrap$Bootstrap$Dropdown$dropdownAttributes, status, config),
-			_List_fromArray(
-				[
-					A2(buttonFn, toggleMsg, state),
-					A3($rundis$elm_bootstrap$Bootstrap$Dropdown$dropdownMenu, state, config, items)
-				]));
-	});
-var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
-var $elm$svg$Svg$Attributes$fillRule = _VirtualDom_attribute('fill-rule');
-var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
-var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
-var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
-var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
-var $author$project$Icons$navBarIcon = F2(
-	function (viewBox_, path_) {
-		return A2(
-			$elm$svg$Svg$svg,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$width('28'),
-					$elm$svg$Svg$Attributes$height('28'),
-					$elm$svg$Svg$Attributes$viewBox(viewBox_)
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$svg$Svg$path,
-					_List_fromArray(
-						[
-							$elm$svg$Svg$Attributes$d(path_),
-							$elm$svg$Svg$Attributes$fillRule('evenodd')
-						]),
-					_List_Nil)
-				]));
-	});
-var $author$project$Icons$homeFilledIcon = A2($author$project$Icons$navBarIcon, '0 0 28 28', 'M25.825 12.29C25.824 12.289 25.823 12.288 25.821 12.286L15.027 2.937C14.752 2.675 14.392 2.527 13.989 2.521 13.608 2.527 13.248 2.675 13.001 2.912L2.175 12.29C1.756 12.658 1.629 13.245 1.868 13.759 2.079 14.215 2.567 14.479 3.069 14.479L5 14.479 5 23.729C5 24.695 5.784 25.479 6.75 25.479L11 25.479C11.552 25.479 12 25.031 12 24.479L12 18.309C12 18.126 12.148 17.979 12.33 17.979L15.67 17.979C15.852 17.979 16 18.126 16 18.309L16 24.479C16 25.031 16.448 25.479 17 25.479L21.25 25.479C22.217 25.479 23 24.695 23 23.729L23 14.479 24.931 14.479C25.433 14.479 25.921 14.215 26.132 13.759 26.371 13.245 26.244 12.658 25.825 12.29');
-var $author$project$Icons$homeIcon = A2($author$project$Icons$navBarIcon, '0 0 28 28', 'M17.5 23.979 21.25 23.979C21.386 23.979 21.5 23.864 21.5 23.729L21.5 13.979C21.5 13.427 21.949 12.979 22.5 12.979L24.33 12.979 14.017 4.046 3.672 12.979 5.5 12.979C6.052 12.979 6.5 13.427 6.5 13.979L6.5 23.729C6.5 23.864 6.615 23.979 6.75 23.979L10.5 23.979 10.5 17.729C10.5 17.04 11.061 16.479 11.75 16.479L16.25 16.479C16.939 16.479 17.5 17.04 17.5 17.729L17.5 23.979ZM21.25 25.479 17 25.479C16.448 25.479 16 25.031 16 24.479L16 18.327C16 18.135 15.844 17.979 15.652 17.979L12.348 17.979C12.156 17.979 12 18.135 12 18.327L12 24.479C12 25.031 11.552 25.479 11 25.479L6.75 25.479C5.784 25.479 5 24.695 5 23.729L5 14.479 3.069 14.479C2.567 14.479 2.079 14.215 1.868 13.759 1.63 13.245 1.757 12.658 2.175 12.29L13.001 2.912C13.248 2.675 13.608 2.527 13.989 2.521 14.392 2.527 14.753 2.675 15.027 2.937L25.821 12.286C25.823 12.288 25.824 12.289 25.825 12.29 26.244 12.658 26.371 13.245 26.133 13.759 25.921 14.215 25.434 14.479 24.931 14.479L23 14.479 23 23.729C23 24.695 22.217 25.479 21.25 25.479Z');
-var $author$project$Icons$personFilledIcon = A2($author$project$Icons$navBarIcon, '0 0 16 16', 'M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z');
-var $author$project$Icons$personIcon = A2($author$project$Icons$navBarIcon, '0 0 16 16', 'M10 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm6 5c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z');
-var $author$project$Icons$getNavIcon = F2(
-	function (name, active) {
-		var _v0 = _Utils_Tuple2(name, active);
-		if (!_v0.b) {
-			if (_v0.a === 'home') {
-				return $author$project$Icons$homeIcon;
-			} else {
-				return $author$project$Icons$personIcon;
-			}
-		} else {
-			if (_v0.a === 'home') {
-				return $author$project$Icons$homeFilledIcon;
-			} else {
-				return $author$project$Icons$personFilledIcon;
-			}
-		}
-	});
-var $elm$html$Html$h5 = _VirtualDom_node('h5');
+var $aforemny$material_components_web_elm$Material$Menu$config = $aforemny$material_components_web_elm$Material$Menu$Config(
+	{additionalAttributes: _List_Nil, onClose: $elm$core$Maybe$Nothing, open: false, quickOpen: false});
 var $elm$html$Html$header = _VirtualDom_node('header');
-var $elm$html$Html$Attributes$href = function (url) {
+var $aforemny$material_components_web_elm$Material$Typography$headline6 = $elm$html$Html$Attributes$class('mdc-typography--headline6');
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $aforemny$material_components_web_elm$Material$Menu$closeHandler = function (_v0) {
+	var onClose = _v0.a.onClose;
 	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Events$on('MDCMenuSurface:close'),
+			$elm$json$Json$Decode$succeed),
+		onClose);
 };
-var $author$project$Main$isActive = function (_v0) {
-	var link = _v0.link;
-	var page = _v0.page;
-	var _v1 = _Utils_Tuple2(link, page);
-	_v1$4:
-	while (true) {
-		switch (_v1.a.$) {
-			case 'HomeRoute':
-				if (_v1.b.$ === 'HomePage') {
-					var _v2 = _v1.a;
-					var _v3 = _v1.b;
-					return true;
-				} else {
-					break _v1$4;
-				}
-			case 'StudentRoute':
-				if (_v1.b.$ === 'StudentPage') {
-					var _v4 = _v1.a;
-					var _v5 = _v1.b;
-					return true;
-				} else {
-					break _v1$4;
-				}
-			case 'ProfessorRoute':
-				if (_v1.b.$ === 'ProfessorPage') {
-					var _v6 = _v1.a;
-					return true;
-				} else {
-					break _v1$4;
-				}
-			case 'AdminRoute':
-				if (_v1.b.$ === 'AdminPage') {
-					var _v7 = _v1.a;
-					var _v8 = _v1.b;
-					return true;
-				} else {
-					break _v1$4;
-				}
-			default:
-				break _v1$4;
-		}
-	}
-	return false;
+var $aforemny$material_components_web_elm$Material$Menu$openProp = function (_v0) {
+	var open = _v0.a.open;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'open',
+			$elm$json$Json$Encode$bool(open)));
 };
-var $elm$html$Html$nav = _VirtualDom_node('nav');
-var $author$project$Icons$profileIcon = A2(
-	$elm$svg$Svg$svg,
-	_List_fromArray(
-		[
-			$elm$svg$Svg$Attributes$width('28'),
-			$elm$svg$Svg$Attributes$height('28'),
-			$elm$svg$Svg$Attributes$viewBox('0 0 16 16')
-		]),
-	_List_fromArray(
-		[
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'),
-					$elm$svg$Svg$Attributes$fillRule('evenodd')
-				]),
-			_List_Nil),
-			A2(
-			$elm$svg$Svg$path,
-			_List_fromArray(
-				[
-					$elm$svg$Svg$Attributes$d('M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z'),
-					$elm$svg$Svg$Attributes$fillRule('evenodd')
-				]),
-			_List_Nil)
-		]));
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$DropdownToggle = function (a) {
-	return {$: 'DropdownToggle', a: a};
+var $aforemny$material_components_web_elm$Material$Menu$quickOpenProp = function (_v0) {
+	var quickOpen = _v0.a.quickOpen;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'quickOpen',
+			$elm$json$Json$Encode$bool(quickOpen)));
 };
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$Open = {$: 'Open'};
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$nextStatus = function (status) {
-	switch (status.$) {
-		case 'Open':
-			return $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed;
-		case 'ListenClicks':
-			return $rundis$elm_bootstrap$Bootstrap$Dropdown$Closed;
-		default:
-			return $rundis$elm_bootstrap$Bootstrap$Dropdown$Open;
-	}
-};
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetHeight = A2($elm$json$Json$Decode$field, 'offsetHeight', $elm$json$Json$Decode$float);
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetWidth = A2($elm$json$Json$Decode$field, 'offsetWidth', $elm$json$Json$Decode$float);
-var $elm$json$Json$Decode$map4 = _Json_map4;
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetLeft = A2($elm$json$Json$Decode$field, 'offsetLeft', $elm$json$Json$Decode$float);
-var $elm$json$Json$Decode$null = _Json_decodeNull;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetParent = F2(
-	function (x, decoder) {
-		return $elm$json$Json$Decode$oneOf(
-			_List_fromArray(
-				[
-					A2(
-					$elm$json$Json$Decode$field,
-					'offsetParent',
-					$elm$json$Json$Decode$null(x)),
-					A2($elm$json$Json$Decode$field, 'offsetParent', decoder)
-				]));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetTop = A2($elm$json$Json$Decode$field, 'offsetTop', $elm$json$Json$Decode$float);
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$scrollLeft = A2($elm$json$Json$Decode$field, 'scrollLeft', $elm$json$Json$Decode$float);
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$scrollTop = A2($elm$json$Json$Decode$field, 'scrollTop', $elm$json$Json$Decode$float);
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$position = F2(
-	function (x, y) {
-		return A2(
-			$elm$json$Json$Decode$andThen,
-			function (_v0) {
-				var x_ = _v0.a;
-				var y_ = _v0.b;
-				return A2(
-					$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetParent,
-					_Utils_Tuple2(x_, y_),
-					A2($rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$position, x_, y_));
-			},
-			A5(
-				$elm$json$Json$Decode$map4,
-				F4(
-					function (scrollLeft_, scrollTop_, offsetLeft_, offsetTop_) {
-						return _Utils_Tuple2((x + offsetLeft_) - scrollLeft_, (y + offsetTop_) - scrollTop_);
-					}),
-				$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$scrollLeft,
-				$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$scrollTop,
-				$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetLeft,
-				$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetTop));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$boundingArea = A4(
-	$elm$json$Json$Decode$map3,
-	F3(
-		function (_v0, width, height) {
-			var x = _v0.a;
-			var y = _v0.b;
-			return {height: height, left: x, top: y, width: width};
-		}),
-	A2($rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$position, 0, 0),
-	$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetWidth,
-	$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$offsetHeight);
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$childNode = function (idx) {
-	return $elm$json$Json$Decode$at(
-		_List_fromArray(
-			[
-				'childNodes',
-				$elm$core$String$fromInt(idx)
-			]));
-};
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$nextSibling = function (decoder) {
-	return A2($elm$json$Json$Decode$field, 'nextSibling', decoder);
-};
-var $elm$core$Tuple$pair = F2(
-	function (a, b) {
-		return _Utils_Tuple2(a, b);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$className = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['className']),
-	$elm$json$Json$Decode$string);
-var $elm$json$Json$Decode$fail = _Json_fail;
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$isToggle = A2(
-	$elm$json$Json$Decode$andThen,
-	function (_class) {
-		return A2($elm$core$String$contains, 'dropdown-toggle', _class) ? $elm$json$Json$Decode$succeed(true) : $elm$json$Json$Decode$succeed(false);
-	},
-	$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$className);
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$toggler = F2(
-	function (path, decoder) {
-		return $elm$json$Json$Decode$oneOf(
-			_List_fromArray(
-				[
-					A2(
-					$elm$json$Json$Decode$andThen,
-					function (res) {
-						return res ? A2($elm$json$Json$Decode$at, path, decoder) : $elm$json$Json$Decode$fail('');
-					},
-					A2($elm$json$Json$Decode$at, path, $rundis$elm_bootstrap$Bootstrap$Dropdown$isToggle)),
-					A2(
-					$elm$json$Json$Decode$andThen,
-					function (_v0) {
-						return A2(
-							$rundis$elm_bootstrap$Bootstrap$Dropdown$toggler,
-							_Utils_ap(
-								path,
-								_List_fromArray(
-									['parentElement'])),
-							decoder);
-					},
-					A2(
-						$elm$json$Json$Decode$at,
-						_Utils_ap(
-							path,
-							_List_fromArray(
-								['parentElement'])),
-						$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$className)),
-					$elm$json$Json$Decode$fail('No toggler found')
-				]));
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$sizeDecoder = A3(
-	$elm$json$Json$Decode$map2,
-	$elm$core$Tuple$pair,
-	A2(
-		$rundis$elm_bootstrap$Bootstrap$Dropdown$toggler,
-		_List_fromArray(
-			['target']),
-		$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$boundingArea),
-	A2(
-		$rundis$elm_bootstrap$Bootstrap$Dropdown$toggler,
-		_List_fromArray(
-			['target']),
-		$rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$nextSibling(
-			A2($rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$childNode, 0, $rundis$elm_bootstrap$Bootstrap$Utilities$DomHelper$boundingArea))));
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$clickHandler = F2(
-	function (toMsg, state) {
-		var status = state.a.status;
-		return A2(
-			$elm$json$Json$Decode$andThen,
-			function (_v0) {
-				var b = _v0.a;
-				var m = _v0.b;
-				return $elm$json$Json$Decode$succeed(
-					toMsg(
-						$rundis$elm_bootstrap$Bootstrap$Dropdown$State(
-							{
-								menuSize: m,
-								status: $rundis$elm_bootstrap$Bootstrap$Dropdown$nextStatus(status),
-								toggleSize: b
-							})));
-			},
-			$rundis$elm_bootstrap$Bootstrap$Dropdown$sizeDecoder);
-	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$togglePrivate = F4(
-	function (buttonOptions, children, toggleMsg, state) {
-		return A2(
-			$elm$html$Html$button,
+var $aforemny$material_components_web_elm$Material$Menu$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-menu mdc-menu-surface'));
+var $aforemny$material_components_web_elm$Material$Menu$menu = F2(
+	function (config_, nodes) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-menu',
 			_Utils_ap(
-				$rundis$elm_bootstrap$Bootstrap$Internal$Button$buttonAttributes(buttonOptions),
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('dropdown-toggle'),
-						$elm$html$Html$Attributes$type_('button'),
-						A2(
-						$elm$html$Html$Events$on,
-						'click',
-						A2($rundis$elm_bootstrap$Bootstrap$Dropdown$clickHandler, toggleMsg, state))
-					])),
-			children);
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Menu$rootCs,
+							$aforemny$material_components_web_elm$Material$Menu$openProp(config_),
+							$aforemny$material_components_web_elm$Material$Menu$quickOpenProp(config_),
+							$aforemny$material_components_web_elm$Material$Menu$closeHandler(config_)
+						])),
+				additionalAttributes),
+			nodes);
 	});
-var $rundis$elm_bootstrap$Bootstrap$Dropdown$toggle = F2(
-	function (buttonOptions, children) {
-		return $rundis$elm_bootstrap$Bootstrap$Dropdown$DropdownToggle(
-			A2($rundis$elm_bootstrap$Bootstrap$Dropdown$togglePrivate, buttonOptions, children));
+var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $author$project$Professor$navIcons = _List_fromArray(
+	[
+		{icon: 'group_add', route: $author$project$Professor$RegistrationRequestsRoute},
+		{icon: 'settings', route: $author$project$Professor$SettingsRoute}
+	]);
+var $aforemny$material_components_web_elm$Material$IconButton$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$IconButton$Internal$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
 	});
+var $aforemny$material_components_web_elm$Material$Menu$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Menu$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
+	});
+var $aforemny$material_components_web_elm$Material$List$Item$setHref = F2(
+	function (href, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
+			_Utils_update(
+				config_,
+				{href: href}));
+	});
+var $aforemny$material_components_web_elm$Material$List$Item$setOnClick = F2(
+	function (onClick, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onClick: $elm$core$Maybe$Just(onClick)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$Menu$setOnClose = F2(
+	function (onClose, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Menu$Config(
+			_Utils_update(
+				config_,
+				{
+					onClose: $elm$core$Maybe$Just(onClose)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$Menu$setOpen = F2(
+	function (open, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Menu$Config(
+			_Utils_update(
+				config_,
+				{open: open}));
+	});
+var $aforemny$material_components_web_elm$Material$List$setWrapFocus = F2(
+	function (wrapFocus, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$List$Config(
+			_Utils_update(
+				config_,
+				{wrapFocus: wrapFocus}));
+	});
+var $aforemny$material_components_web_elm$Material$Menu$surfaceAnchor = $elm$html$Html$Attributes$class('mdc-menu-surface--anchor');
 var $author$project$Main$viewHeader = function (model) {
-	var userIcon = function (role) {
-		switch (role) {
-			case 'student':
-				return {name: 'student', route: $author$project$Route$StudentRoute, url: '/student'};
-			case 'admin':
-				return {name: 'admin', route: $author$project$Route$AdminRoute, url: '/admin'};
-			case 'professor':
-				return {name: 'professor', route: $author$project$Route$ProfessorRoute, url: '/professor'};
-			default:
-				return {name: 'home', route: $author$project$Route$HomeRoute, url: '/'};
-		}
-	};
 	var _v0 = model;
 	var page = _v0.page;
-	var session = _v0.session;
-	var navIcon = function (_v3) {
-		var route = _v3.route;
-		var url = _v3.url;
-		var name = _v3.name;
-		var active = $author$project$Main$isActive(
-			{link: route, page: page});
+	var currentUser = _v0.currentUser;
+	var currentRoute = _v0.currentRoute;
+	var navIcon = function (_v4) {
+		var route = _v4.route;
+		var icon = _v4.icon;
+		var iconClass = _Utils_eq(route, currentRoute) ? 'active' : 'unactive';
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -11158,105 +11338,175 @@ var $author$project$Main$viewHeader = function (model) {
 					$elm$html$Html$a,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$href(url),
-							$elm$html$Html$Attributes$classList(
-							_List_fromArray(
-								[
-									_Utils_Tuple2('active', active)
-								]))
+							$elm$html$Html$Attributes$href(
+							$author$project$Route$toString(route)),
+							$elm$html$Html$Attributes$class('center')
 						]),
 					_List_fromArray(
 						[
-							A2($author$project$Icons$getNavIcon, name, active)
+							A2(
+							$aforemny$material_components_web_elm$Material$Icon$icon,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class(iconClass)
+								]),
+							icon)
 						]))
 				]));
 	};
-	var navItems = function (role) {
-		return A4(
-			$elm$core$Debug$log,
-			role,
-			$elm$html$Html$nav,
-			_List_Nil,
-			_List_fromArray(
-				[
-					navIcon(
-					{name: 'home', route: $author$project$Route$HomeRoute, url: '/'}),
-					navIcon(
-					userIcon(role))
-				]));
-	};
 	var navbar = function () {
-		if (session.$ === 'Nothing') {
-			return $author$project$Util$emptyHtmlNode;
-		} else {
-			var user = session.a.user;
-			return navItems(user.role);
+		var navItems = A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$nav(_List_Nil),
+			$elm$core$List$cons(
+				navIcon(
+					{icon: 'home', route: $author$project$Route$HomeRoute})));
+		switch (currentUser.$) {
+			case 'Student':
+				return navItems(
+					_List_fromArray(
+						[
+							navIcon(
+							{icon: 'school', route: $author$project$Route$StudentRoute})
+						]));
+			case 'Professor':
+				return navItems(
+					A2(
+						$elm$core$List$map,
+						function (_v3) {
+							var icon = _v3.icon;
+							var route = _v3.route;
+							return navIcon(
+								{
+									icon: icon,
+									route: $author$project$Route$ProfessorRoute(route)
+								});
+						},
+						$author$project$Professor$navIcons));
+			default:
+				return $author$project$Util$emptyHtmlNode;
 		}
 	}();
-	var profileDropUp = A2(
-		$rundis$elm_bootstrap$Bootstrap$Dropdown$dropdown,
-		model.profileDropdownState,
-		{
-			items: function () {
-				if (session.$ === 'Nothing') {
-					return _List_fromArray(
+	var profileDropUp = function () {
+		var menuContent = function () {
+			if (currentUser.$ === 'Guest') {
+				return A3(
+					$aforemny$material_components_web_elm$Material$List$list,
+					A2($aforemny$material_components_web_elm$Material$List$setWrapFocus, true, $aforemny$material_components_web_elm$Material$List$config),
+					A2(
+						$aforemny$material_components_web_elm$Material$List$Item$listItem,
+						A2(
+							$aforemny$material_components_web_elm$Material$List$Item$setHref,
+							$elm$core$Maybe$Just('/login'),
+							$aforemny$material_components_web_elm$Material$List$Item$config),
+						_List_fromArray(
+							[
+								A2(
+								$aforemny$material_components_web_elm$Material$List$Item$graphic,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, 'login')
+									])),
+								$elm$html$Html$text('Prijava')
+							])),
+					_List_fromArray(
 						[
 							A2(
-							$rundis$elm_bootstrap$Bootstrap$Dropdown$anchorItem,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$href('/login')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Prijavi se')
-								]))
-						]);
-				} else {
-					return _List_fromArray(
-						[
+							$aforemny$material_components_web_elm$Material$List$Item$listItem,
 							A2(
-							$rundis$elm_bootstrap$Bootstrap$Dropdown$anchorItem,
+								$aforemny$material_components_web_elm$Material$List$Item$setHref,
+								$elm$core$Maybe$Just('/register'),
+								$aforemny$material_components_web_elm$Material$List$Item$config),
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$href('#')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Promeni lozinku')
-								])),
-							A2(
-							$rundis$elm_bootstrap$Bootstrap$Dropdown$buttonItem,
-							_List_fromArray(
-								[
-									$elm$html$Html$Events$onClick($author$project$Main$Logout)
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('Odjavi se')
+									A2(
+									$aforemny$material_components_web_elm$Material$List$Item$graphic,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, 'person_add')
+										])),
+									$elm$html$Html$text('Registracija')
 								]))
-						]);
-				}
-			}(),
-			options: _List_fromArray(
-				[$rundis$elm_bootstrap$Bootstrap$Dropdown$dropUp]),
-			toggleButton: A2(
-				$rundis$elm_bootstrap$Bootstrap$Dropdown$toggle,
-				_List_Nil,
-				_List_fromArray(
-					[$author$project$Icons$profileIcon])),
-			toggleMsg: $author$project$Main$ProfileDropdownMsg
-		});
+						]));
+			} else {
+				return A3(
+					$aforemny$material_components_web_elm$Material$List$list,
+					A2($aforemny$material_components_web_elm$Material$List$setWrapFocus, true, $aforemny$material_components_web_elm$Material$List$config),
+					A2(
+						$aforemny$material_components_web_elm$Material$List$Item$listItem,
+						A2($aforemny$material_components_web_elm$Material$List$Item$setOnClick, $author$project$Main$Logout, $aforemny$material_components_web_elm$Material$List$Item$config),
+						_List_fromArray(
+							[
+								A2(
+								$aforemny$material_components_web_elm$Material$List$Item$graphic,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, 'logout')
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'display', 'inline-block'),
+										A2($elm$html$Html$Attributes$style, 'width', '100px')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Odjavi se')
+									]))
+							])),
+					_List_Nil);
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Menu$surfaceAnchor,
+					$elm$html$Html$Attributes$class('account-dropup')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$IconButton$iconButton,
+					A2(
+						$aforemny$material_components_web_elm$Material$IconButton$setAttributes,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('account-button')
+							]),
+						A2($aforemny$material_components_web_elm$Material$IconButton$setOnClick, $author$project$Main$MenuOpened, $aforemny$material_components_web_elm$Material$IconButton$config)),
+					$aforemny$material_components_web_elm$Material$IconButton$icon('account_circle')),
+					A2(
+					$aforemny$material_components_web_elm$Material$Menu$menu,
+					A2(
+						$aforemny$material_components_web_elm$Material$Menu$setAttributes,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('account-menu')
+							]),
+						A2(
+							$aforemny$material_components_web_elm$Material$Menu$setOnClose,
+							$author$project$Main$MenuClosed,
+							A2($aforemny$material_components_web_elm$Material$Menu$setOpen, model.isMenuOpened, $aforemny$material_components_web_elm$Material$Menu$config))),
+					_List_fromArray(
+						[menuContent]))
+				]));
+	}();
 	return A2(
 		$elm$html$Html$header,
 		_List_Nil,
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$h5,
+				$elm$html$Html$span,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$id('logo')
+						$elm$html$Html$Attributes$id('logo'),
+						$aforemny$material_components_web_elm$Material$Typography$headline6
 					]),
 				_List_fromArray(
 					[
@@ -11268,40 +11518,55 @@ var $author$project$Main$viewHeader = function (model) {
 };
 var $author$project$Main$view = function (model) {
 	var content = function () {
-		var _v0 = model.page;
-		switch (_v0.$) {
-			case 'HomePage':
-				return $elm$html$Html$text('Home');
-			case 'StudentPage':
-				return $elm$html$Html$text('Student');
-			case 'AdminPage':
-				return $elm$html$Html$text('Admin');
-			case 'ProfessorPage':
-				var profModel = _v0.a;
-				return A2(
-					$elm$html$Html$map,
-					$author$project$Main$GotProfessorMsg,
-					$author$project$Professor$view(profModel));
-			case 'LoginPage':
-				var loginModel = _v0.a;
-				return A2(
-					$elm$html$Html$map,
-					$author$project$Main$GotLoginMsg,
-					$author$project$User$Login$view(loginModel));
-			case 'RegistrationPage':
-				var regModel = _v0.a;
-				return A2(
-					$elm$html$Html$map,
-					$author$project$Main$GotRegistrationMsg,
-					$author$project$Registration$view(regModel));
-			case 'SetPasswordPage':
-				var setPwsModel = _v0.a;
-				return A2(
-					$elm$html$Html$map,
-					$author$project$Main$GotPasswordMsg,
-					$author$project$SetPassword$view(setPwsModel));
-			default:
-				return $elm$html$Html$text('Not Found');
+		if (model.loading) {
+			return $elm$html$Html$text('laoding...');
+		} else {
+			var _v0 = _Utils_Tuple2(model.page, model.mainContent);
+			_v0$7:
+			while (true) {
+				switch (_v0.a.$) {
+					case 'HomePage':
+						var _v1 = _v0.a;
+						return $elm$html$Html$text('Home');
+					case 'StudentPage':
+						var _v2 = _v0.a;
+						return $elm$html$Html$text('Student');
+					case 'AdminPage':
+						var _v3 = _v0.a;
+						return $elm$html$Html$text('Admin');
+					case 'ProfessorPage':
+						if (_v0.b.$ === 'ProfessorModel') {
+							var profModel = _v0.b.a;
+							return A2(
+								$elm$html$Html$map,
+								$author$project$Main$GotProfessorMsg,
+								$author$project$Professor$view(profModel));
+						} else {
+							break _v0$7;
+						}
+					case 'LoginPage':
+						var loginModel = _v0.a.a;
+						return A2(
+							$elm$html$Html$map,
+							$author$project$Main$GotLoginMsg,
+							$author$project$User$Login$view(loginModel));
+					case 'RegistrationPage':
+						var regModel = _v0.a.a;
+						return A2(
+							$elm$html$Html$map,
+							$author$project$Main$GotRegistrationMsg,
+							$author$project$Registration$view(regModel));
+					case 'SetPasswordPage':
+						var setPwsModel = _v0.a.a;
+						return A2(
+							$elm$html$Html$map,
+							$author$project$Main$GotPasswordMsg,
+							$author$project$User$SetPassword$view(setPwsModel));
+					default:
+						break _v0$7;
+				}
+			}
+			return $elm$html$Html$text('Not Found');
 		}
 	}();
 	return {

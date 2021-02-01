@@ -1,5 +1,6 @@
 defmodule MsnrApiWeb.RegistrationController do
   use MsnrApiWeb, :controller
+  import MsnrApiWeb.Plugs.Authorize
 
   alias MsnrApi.Accounts
   alias MsnrApi.Accounts.Registration
@@ -7,6 +8,8 @@ defmodule MsnrApiWeb.RegistrationController do
   alias MsnrApiWeb.Notifier
 
   action_fallback MsnrApiWeb.FallbackController
+
+  plug :has_role, [role: "professor"]  when action in [:index, :update]
 
   def index(conn, _params) do
     registrations = Accounts.list_registrations()
@@ -39,6 +42,8 @@ defmodule MsnrApiWeb.RegistrationController do
     end
   end
 
+
+  # TO DO: premestit slanje maila u msnr_api
   defp accept_registration(conn, registration) do
     multi_struct =
       Accounts.accept_registration(registration)

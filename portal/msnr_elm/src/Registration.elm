@@ -1,17 +1,18 @@
 module Registration exposing (..)
 
 import Http
-import Html exposing (Html, text, h4)
-import Html.Attributes exposing (class, for, disabled, type_)
+import Html exposing (Html, form, div, text, h4)
+import Html.Attributes exposing (class, for, disabled, type_, required)
 import Html.Events exposing (onSubmit)
 import Json.Encode as Encode
-import Bootstrap.Form as Form
-import Bootstrap.Form.Input as Input
-import Bootstrap.Button as Button
-import Bootstrap.Alert as Alert
-import Bootstrap.Spinner as Spinner
-import Bootstrap.Utilities.Spacing as Spacing
-import Util exposing (emptyHtmlNode)
+
+import Material.Button as Button
+import Material.TextField as TextField
+import Material.Snackbar as Snackbar
+import Material.Typography as Typography
+
+import Util exposing (emptyHtmlNode, submitButton, progressLine)
+
 
 type alias Model =
   { firstName: String
@@ -20,6 +21,7 @@ type alias Model =
   , index: String
   , status: Maybe (Result Http.Error ())
   , processing: Bool
+  , queue: Snackbar.Queue Msg 
   }
 
 type Msg
@@ -29,6 +31,7 @@ type Msg
   | LastName String
   | SubmittedForm
   | GotRegistrationResult (Result Http.Error ())
+  | SnackbarClosed Snackbar.MessageId 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -37,79 +40,77 @@ update msg model =
     LastName lastName -> ({model | lastName = lastName}, Cmd.none)
     Email email -> ({model | email = email}, Cmd.none)
     Index index -> ({model | index = index}, Cmd.none)
-    SubmittedForm -> ( { model | status = Nothing, processing = True}, sendRequest model)
+    SubmittedForm ->
+      ( { model | status = Nothing, processing = True}, sendRequest model)
+
     GotRegistrationResult result -> 
       let 
+        snackbarMessage text =
+          Snackbar.message text
+          |> Snackbar.setActionIcon (Just (Snackbar.icon "close"))
+          |> Snackbar.setOnActionIconClick SnackbarClosed 
+
+        setQueueMessage message =
+          Snackbar.addMessage (snackbarMessage message) model.queue
+
         newModel = 
           case result of
-            Ok _ -> init
-            Err _ -> model
+            Ok _ -> { init | queue = setQueueMessage "Uspešno ste podneli prijavu!"}
+            Err _ -> {model |  queue = setQueueMessage "Došlo je do neočekivane greške 😞"} 
+
       in ( { newModel | status = Just result, processing = False}, Cmd.none)
+
+    SnackbarClosed messageId ->
+      ({ model | queue = Snackbar.close messageId model.queue }, Cmd.none)
     
+
 view : Model -> Html Msg
 view model = 
   let
-    alert = 
-      case model.status of
-        Just (Err _) -> Alert.simpleDanger [] [text "Došlo je do neočekivane greške 😞"]
-        Just (Ok _)  -> Alert.simpleInfo [] [text "Uspešno ste podneli prijavu!"]
-        Nothing -> emptyHtmlNode
+    formInput value label msg = 
+      div [class "form-item"] 
+        [TextField.outlined
+          (TextField.config
+              |> TextField.setLabel (Just label)
+              |> TextField.setOnInput msg
+              |> TextField.setAttributes [required True]
+              |> TextField.setValue (Just value)
+          )
+        ]
+
     registerButton = 
-      if model.processing then
-        Button.button
-          [ Button.primary, Button.disabled True, Button.attrs [ Spacing.mr3 ] ]
-          [ Spinner.spinner
-              [ Spinner.small, Spinner.attrs [ Spacing.mr1 ] ] []
-          , text "Slanje prijave..."
-          ]
-      else
-        Button.submitButton [ Button.primary] [text "Podnesi prijavu"]
+      submitButton 
+        { text = "Podnesi prijavu"
+        , disabled = model.processing
+        , icon = Just (Button.icon "person_add")
+        }
   in
-  Form.form 
-    [ class "mt-3 mx-auto loginForm"
-    , onSubmit SubmittedForm
-    , disabled model.processing
-    ]
-    [ h4 [] [text "Pošaljite zahtev za registraciju"]
-    , alert
-    , Form.group []
-      [ Form.label [for "firstName" ] [text "Ime"]
-      , Input.text 
-        [ Input.id "firstName"
-        , Input.onInput FirstName
-        , Input.value model.firstName
-        ]
+  div []
+  [
+    div [class "center"]
+      [ form 
+          [ onSubmit SubmittedForm
+          , disabled model.processing
+          ]
+          [ h4 [Typography.headline5, class "heading"] [text "Podnesite zahtev za registraciju"]
+          , formInput model.firstName "Ime" FirstName
+          , formInput model.lastName "Prezime" LastName
+          , formInput model.email "Email" Email
+          , formInput model.index "Broj indeksa" Index
+          , registerButton
+          , progressLine model.processing  
+          ]
       ]
-    , Form.group []
-      [ Form.label [for "lastName" ] [text "Prezime"]
-      , Input.text 
-        [ Input.id "lastName"
-        , Input.onInput LastName
-        , Input.value model.lastName
-        ]
-      ]
-    , Form.group []
-      [ Form.label [for "email" ] [text "Email"]
-      , Input.email 
-        [ Input.id "email"
-        , Input.onInput Email
-        , Input.value model.email
-        ]
-      ]  
-    , Form.group []
-      [ Form.label [for "index" ] [text "Broj indeksa"]
-      , Input.text 
-        [ Input.id "index"
-        , Input.onInput Index
-        , Input.value model.index
-        ]
-      ]
-    , registerButton  
-    ]
+      , Snackbar.snackbar
+              (Snackbar.config { onClosed = SnackbarClosed })
+              model.queue
+  ]
+  
+  
 
 init : Model
 init =
-  Model "" "" "" "" Nothing False
+  Model "" "" "" "" Nothing False Snackbar.initialQueue 
 
 sendRequest : Model -> Cmd Msg
 sendRequest model=

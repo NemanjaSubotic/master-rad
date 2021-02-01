@@ -1,6 +1,5 @@
 defmodule MsnrApiWeb.Router do
   use MsnrApiWeb, :router
-  import MsnrApiWeb.Plugs
 
   if Mix.env == :dev do
     forward "/sent_emails", Bamboo.SentEmailViewerPlug
@@ -9,7 +8,7 @@ defmodule MsnrApiWeb.Router do
   pipeline :api do
     plug CORSPlug, origin: ["http://localhost:8080"]
     plug :accepts, ["json"]
-    plug :set_user_info
+    plug MsnrApiWeb.Plugs.UserInfo
   end
 
   scope "/api", MsnrApiWeb do

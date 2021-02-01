@@ -8,6 +8,7 @@ defmodule MsnrApi.Accounts do
   alias MsnrApi.Accounts.User
   alias MsnrApi.Accounts.Password
   alias MsnrApi.Accounts.Role
+  alias MsnrApi.Students.Student
 
   def authenticate(email, password) do
     user = Repo.get_by(User, email: email) |> Repo.preload(:role)
@@ -128,6 +129,11 @@ defmodule MsnrApi.Accounts do
       Multi.new()
       |> Multi.update(:registration, reg_changeset)
       |> Multi.insert(:user, user_changeset)
+      |> Multi.run(:student, fn _repo, %{user: user} ->
+          %Student{}
+          |> Student.changeset(%{user_id: user.id, index_number: registration.index_number})
+          |> Repo.insert
+      end)
   end
 
   @doc """
