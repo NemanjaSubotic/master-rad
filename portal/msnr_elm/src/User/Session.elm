@@ -1,6 +1,6 @@
 module User.Session exposing (..)
 import Http
-import Json.Decode exposing (Decoder, map2, map3, field, string, float)
+import Json.Decode exposing (Decoder, map3, field, string, float)
 import Json.Encode
 
 type Msg 

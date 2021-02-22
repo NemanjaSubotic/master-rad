@@ -1,16 +1,12 @@
 module User.Login exposing (Model, Msg, update, view, init, updateError)
 
 import Html exposing (Html, text, form, div, h2)
-import Html.Attributes exposing (class, for, disabled, type_)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onSubmit)
 import User.Session as Session exposing (getSession)
-import Util exposing (emptyHtmlNode)
 import Http
 
 import Material.Button as Button
-import Material.Card as Card
-import Material.FormField as FormField
-import Material.TextField as TextField
 import Material.Typography as Typography
 
 import Util exposing (..)
@@ -66,7 +62,6 @@ view model =
         , progressLine model.processing
         ]
     ]
-
 
 updateError : Model -> Http.Error -> Model
 updateError model httpError =

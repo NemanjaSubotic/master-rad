@@ -1,22 +1,20 @@
 module Professor.RegistrationRequests exposing (Model, Msg, init, update, view, loadRequests)
 
 import Http
-import Html exposing (Html, text, ul, li, div, h6, span, strong)
-import Html.Attributes exposing (class, for, disabled, type_)
-import Html.Events exposing (onClick)
+import Html exposing (Html, text, div, h2, a)
+import Html.Attributes exposing (class)
 import Json.Encode as Encode
-import Json.Decode exposing (Decoder, map, map6, field, int, string, list )
-import Util exposing (emptyHtmlNode)
-import Html.Attributes exposing (style)
-import Json.Decode.Pipeline exposing (custom)
+import Json.Decode exposing (Decoder, map6, field, int, string, list )
+import Html.Attributes exposing (href, style)
 
 import Material.Tab as MTab
 import Material.TabBar as MTabBar
 import Material.List as MList
 import Material.List.Item as MListItem
 import Material.IconButton as IconButton
-import Material.Icon as MIcon
+import Material.Icon as Icon
 import Material.CircularProgress as CircularProgress
+import Material.Typography as Typography
 
 import Api
 
@@ -143,8 +141,9 @@ changeStatus model request =
 tabBar : Model -> Html Msg
 tabBar model =
   let
-    isActive tab =
-      tab == model.tab
+    isActive  =
+      (==) model.tab
+
     tabLabel tab = 
       case tab of
         Pending -> "Na čekanju"
@@ -183,7 +182,7 @@ view model =
       spinnerWithIcon icon  = 
         div [class "spinnerWithIcon"]
         [ div [class "center"] [CircularProgress.indeterminate CircularProgress.config]
-        , MListItem.graphic [class "center"] [ MIcon.icon [] icon ]
+        , MListItem.graphic [class "center"] [ Icon.icon [] icon ]
         ]
 
       listItemMetaContent : Int -> List (Html Msg)
@@ -201,7 +200,7 @@ view model =
       listItemView : RegistrationRequest -> MListItem.ListItem Msg
       listItemView {id, firstName, lastName, index} =
         MListItem.listItem MListItem.config
-          [ MListItem.graphic [] [ MIcon.icon [] "account_box" ]
+          [ MListItem.graphic [] [ Icon.icon [] "account_box" ]
           , text  <| firstName ++ " " ++ lastName ++ " " ++ index
           , MListItem.meta [] (listItemMetaContent id)
           ]
@@ -212,9 +211,16 @@ view model =
             MList.list MList.config (listItemView head) (List.map listItemView tail)
           _ -> 
             text noDataMsg
+
+      heading = 
+        div [style "display" "flex", style "justify-content" "space-between"]
+        [ h2 [Typography.headline5] [text "Zahrevi za registraciju"] 
+        , a [href "settings", style "align-self" "center"] [Icon.icon []  "settings"]
+        ]
   in
   div []
-  [ tabBar model
+  [ heading
+  , tabBar model
   , content    
   ]
  

@@ -1,17 +1,17 @@
 module User.SetPassword exposing (..)
 
 import Html exposing (Html, text, h4, form, div)
-import Html.Attributes exposing (class, for, disabled, classList, required)
+import Html.Attributes exposing (class, disabled)
 import Html.Events exposing (onSubmit)
 import Json.Decode exposing (field, int)
 import Json.Encode as Encode
-import Http exposing (emptyBody)
 
 import Material.Button as Button
 import Material.CircularProgress as CircularProgress
 
 import User.Session as Session
 import Util exposing (..)
+import Http
 
 type alias Model =
   { userId: Maybe Int
@@ -60,7 +60,7 @@ update msg model =
 view : Model -> Html Msg
 view model = 
   case model.userId of
-    Just reg -> 
+    Just _ -> 
       formView model
     Nothing -> 
       div [class "center"] 
@@ -115,6 +115,7 @@ loadRequest uuid =
     , expect = Http.expectJson GotLoadingResult ( field "id" int ) 
     } 
 
+setPassword : Model -> Cmd Msg
 setPassword {email, password, userId} =
   let
     id = Maybe.withDefault "" ( Maybe.map String.fromInt userId )

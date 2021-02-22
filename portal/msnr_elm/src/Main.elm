@@ -4,13 +4,10 @@ import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
 import Url exposing (Url)
-import Url.Parser as Parser exposing ((</>), Parser, s, string)
-import Http
+import Url.Parser exposing ((</>), s )
 import Time
 
-import Material.Button as Button  
 import Material.IconButton as IconButton
 import Material.Icon as Icon
 import Material.List as MList
@@ -20,7 +17,7 @@ import Material.Typography as Typography
 
 import User.Login as Login
 import User.SetPassword as SetPassword
-import User.Session as Session exposing (Session, silentTokenRefresh, logout)
+import User.Session as Session exposing (silentTokenRefresh, logout)
 import Registration
 import Professor
 
@@ -141,7 +138,7 @@ update msg model =
       Registration.update regMsg regModel
         |> toPageWithModel RegistrationPage GotRegistrationMsg model
 
-    ( GotProfessorMsg profMsg, professorPage, ProfessorModel model_ ) -> 
+    ( GotProfessorMsg profMsg, _ , ProfessorModel model_ ) -> 
       let
         (profModel, cmd)  = Professor.update profMsg model_ (tokenFrom model.session)
       in  
@@ -204,7 +201,7 @@ initCommand route model =
     _ -> Cmd.none
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init _ url key =
   let
     route = Route.fromUrl url
     sessionCheck = silentTokenRefresh |> Cmd.map GotInitSessionMsg 
@@ -222,7 +219,7 @@ init flags url key =
   , sessionCheck
   ) 
 
-
+view : Model -> Document Msg
 view model =
   let
     content = 
@@ -258,7 +255,7 @@ view model =
 viewHeader: Model -> Html Msg
 viewHeader model =
   let
-    { page, currentUser, currentRoute } = model
+    { currentUser, currentRoute } = model
     
     navIcon: { route : Route, icon : String } -> Html Msg
     navIcon { route, icon } = 

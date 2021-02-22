@@ -2,7 +2,7 @@ module Registration exposing (..)
 
 import Http
 import Html exposing (Html, form, div, text, h4)
-import Html.Attributes exposing (class, for, disabled, type_, required)
+import Html.Attributes exposing (class, disabled, required)
 import Html.Events exposing (onSubmit)
 import Json.Encode as Encode
 
@@ -11,7 +11,7 @@ import Material.TextField as TextField
 import Material.Snackbar as Snackbar
 import Material.Typography as Typography
 
-import Util exposing (emptyHtmlNode, submitButton, progressLine)
+import Util exposing (submitButton, progressLine)
 
 
 type alias Model =

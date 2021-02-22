@@ -8188,6 +8188,7 @@ var $author$project$Professor$RegistrationRequests$AcceptRequest = function (a) 
 var $author$project$Professor$RegistrationRequests$RejecteRequest = function (a) {
 	return {$: 'RejecteRequest', a: a};
 };
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $aforemny$material_components_web_elm$Material$CircularProgress$Config = function (a) {
 	return {$: 'Config', a: a};
 };
@@ -8228,6 +8229,14 @@ var $aforemny$material_components_web_elm$Material$List$Item$graphic = F2(
 				additionalAttributes),
 			nodes);
 	});
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $aforemny$material_components_web_elm$Material$Typography$headline5 = $elm$html$Html$Attributes$class('mdc-typography--headline5');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
 var $aforemny$material_components_web_elm$Material$Icon$icon = F2(
 	function (additionalAttributes, iconName) {
 		return A2(
@@ -8908,7 +8917,6 @@ var $aforemny$material_components_web_elm$Material$List$list = F3(
 var $aforemny$material_components_web_elm$Material$List$Item$Internal$ListItem = function (a) {
 	return {$: 'ListItem', a: a};
 };
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $aforemny$material_components_web_elm$Material$List$Item$Internal$Activated = {$: 'Activated'};
 var $aforemny$material_components_web_elm$Material$List$Item$activatedCs = function (_v0) {
 	var selection = _v0.a.selection;
@@ -8926,12 +8934,6 @@ var $aforemny$material_components_web_elm$Material$List$Item$disabledCs = functi
 	var disabled = _v0.a.disabled;
 	return disabled ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-list-item--disabled')) : $elm$core$Maybe$Nothing;
-};
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
 };
 var $aforemny$material_components_web_elm$Material$List$Item$hrefAttr = function (_v0) {
 	var href = _v0.a.href;
@@ -9019,6 +9021,8 @@ var $aforemny$material_components_web_elm$Material$IconButton$setOnClick = F2(
 					onClick: $elm$core$Maybe$Just(onClick)
 				}));
 	});
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Professor$RegistrationRequests$Accepted = {$: 'Accepted'};
 var $author$project$Professor$RegistrationRequests$Rejected = {$: 'Rejected'};
 var $author$project$Professor$RegistrationRequests$TabClicked = function (a) {
@@ -9362,9 +9366,7 @@ var $author$project$Professor$RegistrationRequests$tabBar = function (model) {
 				return 'Odbijeni';
 		}
 	};
-	var isActive = function (tab) {
-		return _Utils_eq(tab, model.tab);
-	};
+	var isActive = $elm$core$Basics$eq(model.tab);
 	var createTab = function (tab) {
 		return A2(
 			$aforemny$material_components_web_elm$Material$Tab$tab,
@@ -9499,6 +9501,35 @@ var $author$project$Professor$RegistrationRequests$view = function (model) {
 					listItemMetaContent(id))
 				]));
 	};
+	var heading = A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'justify-content', 'space-between')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h2,
+				_List_fromArray(
+					[$aforemny$material_components_web_elm$Material$Typography$headline5]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Zahrevi za registraciju')
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$href('settings'),
+						A2($elm$html$Html$Attributes$style, 'align-self', 'center')
+					]),
+				_List_fromArray(
+					[
+						A2($aforemny$material_components_web_elm$Material$Icon$icon, _List_Nil, 'settings')
+					]))
+			]));
 	var _v0 = function () {
 		var _v1 = model.tab;
 		switch (_v1.$) {
@@ -9530,6 +9561,7 @@ var $author$project$Professor$RegistrationRequests$view = function (model) {
 		_List_Nil,
 		_List_fromArray(
 			[
+				heading,
 				$author$project$Professor$RegistrationRequests$tabBar(model),
 				content
 			]));
@@ -9581,7 +9613,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h4 = _VirtualDom_node('h4');
-var $aforemny$material_components_web_elm$Material$Typography$headline5 = $elm$html$Html$Attributes$class('mdc-typography--headline5');
 var $aforemny$material_components_web_elm$Material$Button$Internal$Icon = function (a) {
 	return {$: 'Icon', a: a};
 };
@@ -10242,8 +10273,6 @@ var $aforemny$material_components_web_elm$Material$LinearProgress$determinatePro
 			$elm$json$Json$Encode$bool(
 				!_Utils_eq(variant, $aforemny$material_components_web_elm$Material$LinearProgress$Indeterminate))));
 };
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $aforemny$material_components_web_elm$Material$LinearProgress$displayCss = $elm$core$Maybe$Just(
 	A2($elm$html$Html$Attributes$style, 'display', 'block'));
 var $aforemny$material_components_web_elm$Material$LinearProgress$barInnerElt = A2(
@@ -11050,7 +11079,6 @@ var $author$project$Util$formInput = function (_v0) {
 							A2($aforemny$material_components_web_elm$Material$TextField$setLabel, label, $aforemny$material_components_web_elm$Material$TextField$config)))))
 			]));
 };
-var $elm$html$Html$h2 = _VirtualDom_node('h2');
 var $author$project$User$Login$view = function (model) {
 	var viewInput = F3(
 		function (inputType, label, msg) {
