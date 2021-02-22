@@ -1,0 +1,122 @@
+body{
+  display: flex;
+  height: 100vh;
+  align-items: stretch;
+  margin: 0px;
+  padding: 0px;
+}
+
+header{
+  display: flex !important;
+  flex-direction: column;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10px;
+  background-color: #f0f0f0;
+}
+
+main{
+  flex: 1;
+}
+
+.active-link {
+  background-color: rgb(121, 75, 196);
+}
+
+.active-link a {
+  color:white;
+}
+
+.nav-icon{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.nav-icon a {
+  color:#ab9cad;
+  text-decoration: none !important;
+  font-size: 28px !important;
+}
+
+.nav-icon i:hover{
+  color:rgb(121, 75, 196);
+}
+
+.active {
+  font-size: 30px !important;
+  color:rgb(121, 75, 196);
+}
+
+.unactive{
+  font-size: 28px !important;
+}
+
+.nav-icon:hover{
+  background-color: rgb(121, 75, 196, 0.1);
+}
+
+button > * {
+  pointer-events: none;
+}
+
+
+#logo{
+  color: rgb(121, 75, 196);
+  margin-bottom: auto;
+}
+
+.spinnerWithIcon{
+  display: inline;
+  height: 54px;
+  position: relative;
+  padding-right: 48px;
+}
+
+.center{
+  position: absolute;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.account-dropup{
+  margin-top: auto;
+}
+
+.account-menu{
+  bottom: 50px !important;
+}
+
+header mdc-icon-button .material-icons {
+  font-size: 32px !important;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+mdc-list-item a:hover {
+  text-decoration: none !important;
+  color: black;
+}
+
+.login-card{
+  width: 640px;
+}
+
+.form-input{
+  width: 300px;
+}
+
+.form-item {
+  margin: 20px;
+}
+
+.heading {
+  margin-top: 20px;
+}
