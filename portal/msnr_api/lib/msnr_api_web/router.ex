@@ -21,6 +21,7 @@ defmodule MsnrApiWeb.Router do
     resources "/registrations", RegistrationController, only: [:index, :create, :update]
     resources "/students", StudentController, only: [:index, :create, :update, :show]
     resources "/users", UserController, only: [:update, :show]
+    resources "/semesters", SemesterController
   end
 
   # Enables LiveDashboard only for development
