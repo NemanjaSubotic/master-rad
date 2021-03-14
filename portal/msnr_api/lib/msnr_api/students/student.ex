@@ -8,6 +8,7 @@ defmodule MsnrApi.Students.Student do
     field :index_number, :string
     belongs_to :user, Accounts.User
     belongs_to :semester, Semesters.Semester
+    belongs_to :group, MsnrApi.Groups.Group
 
     timestamps()
   end
@@ -32,5 +33,4 @@ defmodule MsnrApi.Students.Student do
     changeset
     |> put_assoc(:semester, semester)
   end
-
 end

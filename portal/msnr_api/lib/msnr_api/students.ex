@@ -4,11 +4,11 @@ defmodule MsnrApi.Students do
   """
 
   import Ecto.Query, warn: false
-  # alias Ecto.Multi
 
   alias MsnrApi.Repo
   alias MsnrApi.Students.Student
-  # alias MsnrApi.Accounts
+  alias MsnrApi.Semesters.Semester
+
   @doc """
   Returns the list of students.
 
@@ -18,8 +18,19 @@ defmodule MsnrApi.Students do
       [%Student{}, ...]
 
   """
-  def list_students do
-    Repo.all(Student)
+  def list_students(params) do
+    query =
+      from s in Student,
+      join: sem in Semester,
+      on: sem.is_active == true and s.semester_id == sem.id
+
+    query =
+      case params do
+        %{"noGroup" => _} -> where(query, [s], is_nil(s.group_id))
+        _ -> query
+      end
+
+    Repo.all(query)
   end
 
   @doc """
