@@ -29,4 +29,11 @@ defmodule MsnrApiWeb.FallbackController do
     |> render(:"401")
   end
 
+  def call(conn, {:error, :bad_request}) do
+    conn
+    |> put_status(:bad_request)
+    |> put_view(MsnrApiWeb.ErrorView)
+    |> render(:"400")
+  end
+
 end
