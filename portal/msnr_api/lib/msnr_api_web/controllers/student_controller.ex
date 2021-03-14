@@ -6,8 +6,8 @@ defmodule MsnrApiWeb.StudentController do
 
   action_fallback MsnrApiWeb.FallbackController
 
-  def index(conn, _params) do
-    students = Students.list_students()
+  def index(conn, params) do
+    students = Students.list_students(params)
     render(conn, "index.json", students: students)
   end
 
