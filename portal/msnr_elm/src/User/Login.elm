@@ -1,4 +1,5 @@
 module User.Login exposing (Model, Msg, update, view, init, updateError)
+import Dict exposing (values)
 
 import Html exposing (Html, text, form, div, h2)
 import Html.Attributes exposing (class)
@@ -44,6 +45,7 @@ view model =
       , class_ = "login-input"
       , label = label
       , msg = msg
+      , val = Nothing
       } 
 
     submitBtn = 

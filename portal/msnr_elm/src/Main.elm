@@ -138,9 +138,9 @@ update msg model =
       Registration.update regMsg regModel
         |> toPageWithModel RegistrationPage GotRegistrationMsg model
 
-    ( GotProfessorMsg profMsg, _ , ProfessorModel model_ ) -> 
+    ( GotProfessorMsg profMsg, ProfessorPage profPage , ProfessorModel model_ ) -> 
       let
-        (profModel, cmd)  = Professor.update profMsg model_ (tokenFrom model.session)
+        (profModel, cmd)  = Professor.update profMsg model_ (tokenFrom model.session) profPage
       in  
       ( {model | mainContent = ProfessorModel profModel}
       , cmd |> Cmd.map GotProfessorMsg )
@@ -179,7 +179,7 @@ subscriptions model =
     ]
 
 updateUrl : Url -> Model -> ( Model, Cmd Msg )
-updateUrl url model = Debug.log (Url.toString url) <|
+updateUrl url model =
   let
     route = Route.fromUrl url
     page = Page.forRoute route
@@ -197,7 +197,7 @@ initCommand route model =
   in
   case (route, mainContent) of
     (SetPasswordRoute uuid, _) -> SetPassword.loadRequest uuid |> Cmd.map GotPasswordMsg
-    (ProfessorRoute  _ , ProfessorModel model_ ) -> Professor.initCmd token model_  |> Cmd.map GotProfessorMsg
+    (ProfessorRoute profRoute , ProfessorModel profModel ) -> Professor.initCmd token profModel profRoute  |> Cmd.map GotProfessorMsg
     _ -> Cmd.none
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -232,8 +232,8 @@ view model =
         
         (AdminPage, _) -> text "Admin"
         
-        (ProfessorPage _, ProfessorModel profModel ) ->
-          Professor.view profModel |> Html.map GotProfessorMsg
+        (ProfessorPage profPage, ProfessorModel profModel ) ->
+          Professor.view profModel profPage |> Html.map GotProfessorMsg
 
         (LoginPage loginModel, _ ) ->
           Login.view loginModel |> Html.map GotLoginMsg

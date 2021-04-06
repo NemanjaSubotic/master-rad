@@ -1,12 +1,13 @@
 module Professor exposing (..)
 
 import Professor.RegistrationRequests as Requests
+import Professor.Settings as Settings 
 import Url.Parser as Parser exposing ((</>), Parser, s)
-import Html exposing (Html, text)
+import Html exposing (Html)
 
 type alias Model =
-  { currentPage: Page
-  , requstesModel: Requests.Model
+  { requstesModel: Requests.Model
+  , settingModel: Settings.Model
   }
 
 type Page
@@ -38,39 +39,48 @@ routeParser =
 
 type Msg
   = GotRequestsMsg Requests.Msg
-  | GotSettingsMsg
+  | GotSettingsMsg Settings.Msg
 
-view : Model -> Html Msg
-view model =
-  case model.currentPage of
+view : Model -> Page -> Html Msg
+view model page =
+  case page of
     RegistrationRequestsPage -> 
       Requests.view model.requstesModel |> Html.map GotRequestsMsg
     
-    SettingsPage -> text "Settings"
+    SettingsPage -> 
+      Settings.view model.settingModel |> Html.map GotSettingsMsg
 
-update : Msg -> Model -> String -> ( Model, Cmd Msg )
-update msg model token =
-  case (msg, model.currentPage) of 
-    (GotRequestsMsg reqMsg, RegistrationRequestsPage)  -> 
+update : Msg -> Model -> String -> Page -> ( Model, Cmd Msg )
+update msg model token _ =
+  case msg of 
+    GotRequestsMsg reqMsg  -> 
       let
-        (reqModel, cmd) = Requests.update reqMsg model.requstesModel token
+        (model_, cmd) = Requests.update reqMsg model.requstesModel token
       in
-        ( {model | requstesModel = reqModel}
-        , Cmd.map GotRequestsMsg cmd)
-    _ -> ( model, Cmd.none)
+        ( {model | requstesModel = model_}, Cmd.map GotRequestsMsg cmd)
+   
+    GotSettingsMsg settingsMsg ->
+        let
+          (model_, cmd) = Settings.update settingsMsg model.settingModel token
+        in
+          ( {model | settingModel = model_}, Cmd.map GotSettingsMsg cmd)
 
 
 init : Model
 init =
-  Model RegistrationRequestsPage Requests.init
+  Model Requests.init Settings.init
 
-initCmd : String -> Model -> Cmd Msg
-initCmd token model = Debug.log (Debug.toString model) <|
-  if model.requstesModel.isInitialized then 
-    Cmd.none
-  else
-    Requests.loadRequests token |>  Cmd.map GotRequestsMsg
+initCmd : String -> Model -> Route -> Cmd Msg
+initCmd token model route =
+  case route of
+    RegistrationRequestsRoute -> 
+      if model.requstesModel.isInitialized then 
+        Cmd.none
+      else
+        Requests.loadRequests token |>  Cmd.map GotRequestsMsg
 
+    SettingsRoute -> 
+      Settings.initCmd model.settingModel token  |> Cmd.map GotSettingsMsg
 navIcons : List {icon : String, route: Route}
 navIcons = 
   [ {icon = "group_add", route = RegistrationRequestsRoute}

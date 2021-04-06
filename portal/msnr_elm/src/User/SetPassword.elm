@@ -81,6 +81,7 @@ formView model =
       , class_ = "login-input"
       , label = label
       , msg = msg
+      , val = Nothing
       } 
 
     submitBtn = 

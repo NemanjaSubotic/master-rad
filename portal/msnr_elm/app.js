@@ -4593,6 +4593,43 @@ function _Time_getZoneName()
 		callback(_Scheduler_succeed(name));
 	});
 }
+
+
+
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
 var $author$project$Main$ChangedUrl = function (a) {
 	return {$: 'ChangedUrl', a: a};
 };
@@ -6630,7 +6667,7 @@ var $author$project$User$Session$silentTokenRefresh = $elm$http$Http$riskyReques
 		url: 'http://localhost:4000/api/auth/refresh'
 	});
 var $author$project$Main$init = F3(
-	function (flags, url, key) {
+	function (_v0, url, key) {
 		var sessionCheck = A2($elm$core$Platform$Cmd$map, $author$project$Main$GotInitSessionMsg, $author$project$User$Session$silentTokenRefresh);
 		var route = $author$project$Route$fromUrl(url);
 		return _Utils_Tuple2(
@@ -7082,9 +7119,36 @@ var $author$project$Route$guard = F3(
 var $author$project$Professor$GotRequestsMsg = function (a) {
 	return {$: 'GotRequestsMsg', a: a};
 };
-var $author$project$Professor$RegistrationRequests$GotLoadingResult = function (a) {
-	return {$: 'GotLoadingResult', a: a};
+var $author$project$Professor$GotSettingsMsg = function (a) {
+	return {$: 'GotSettingsMsg', a: a};
 };
+var $author$project$Professor$Settings$AdjustTimeZone = function (a) {
+	return {$: 'AdjustTimeZone', a: a};
+};
+var $author$project$Professor$Settings$LoadedActivities = function (a) {
+	return {$: 'LoadedActivities', a: a};
+};
+var $author$project$Api$baseUrl = 'http://localhost:4000/api/';
+var $author$project$Api$activitiesUrl = $author$project$Api$baseUrl + 'activities';
+var $elm$json$Json$Decode$array = _Json_decodeArray;
+var $author$project$StudentsActivity$StudentsActivity = F8(
+	function (id, activityType, starts, ends, points, name, description, isGroup) {
+		return {activityType: activityType, description: description, ends: ends, id: id, isGroup: isGroup, name: name, points: points, starts: starts};
+	});
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$map8 = _Json_map8;
+var $author$project$StudentsActivity$decodeActivity = A9(
+	$elm$json$Json$Decode$map8,
+	$author$project$StudentsActivity$StudentsActivity,
+	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'type', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'starts_sec', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'ends_sec', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'points', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'is_group', $elm$json$Json$Decode$bool));
 var $elm$http$Http$Header = F2(
 	function (a, b) {
 		return {$: 'Header', a: a, b: b};
@@ -7098,12 +7162,57 @@ var $elm$http$Http$request = function (r) {
 		$elm$http$Http$Request(
 			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
+var $author$project$Api$get = function (_v0) {
+	var url = _v0.url;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	var headers = _List_fromArray(
+		[
+			$author$project$Api$authHeader(token)
+		]);
+	return $elm$http$Http$request(
+		{body: $elm$http$Http$emptyBody, expect: expect, headers: headers, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
+};
+var $author$project$Professor$Settings$getActivities = function (token) {
+	return $author$project$Api$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				$author$project$Professor$Settings$LoadedActivities,
+				A2(
+					$elm$json$Json$Decode$field,
+					'data',
+					$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
+			token: token,
+			url: $author$project$Api$activitiesUrl
+		});
+};
+var $elm$core$Array$isEmpty = function (_v0) {
+	var len = _v0.a;
+	return !len;
+};
+var $author$project$Professor$Settings$activitiesCmd = F2(
+	function (model, token) {
+		return $elm$core$Array$isEmpty(model.activities) ? $author$project$Professor$Settings$getActivities(token) : $elm$core$Platform$Cmd$none;
+	});
+var $elm$time$Time$here = _Time_here(_Utils_Tuple0);
+var $author$project$Professor$Settings$initCmd = F2(
+	function (model, token) {
+		return $elm$core$Platform$Cmd$batch(
+			_List_fromArray(
+				[
+					A2($elm$core$Task$perform, $author$project$Professor$Settings$AdjustTimeZone, $elm$time$Time$here),
+					A2($author$project$Professor$Settings$activitiesCmd, model, token)
+				]));
+	});
+var $author$project$Professor$RegistrationRequests$GotLoadingResult = function (a) {
+	return {$: 'GotLoadingResult', a: a};
+};
 var $elm$json$Json$Decode$list = _Json_decodeList;
 var $author$project$Professor$RegistrationRequests$RegistrationRequest = F6(
 	function (id, firstName, lastName, email, index, status) {
 		return {email: email, firstName: firstName, id: id, index: index, lastName: lastName, status: status};
 	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$map6 = _Json_map6;
 var $author$project$Professor$RegistrationRequests$requestDecoder = A7(
 	$elm$json$Json$Decode$map6,
@@ -7133,17 +7242,19 @@ var $author$project$Professor$RegistrationRequests$loadRequests = function (toke
 			url: 'http://localhost:4000/api/registrations'
 		});
 };
-var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$Professor$initCmd = F2(
-	function (token, model) {
-		return A2(
-			$elm$core$Debug$log,
-			$elm$core$Debug$toString(model),
-			model.requstesModel.isInitialized ? $elm$core$Platform$Cmd$none : A2(
+var $author$project$Professor$initCmd = F3(
+	function (token, model, route) {
+		if (route.$ === 'RegistrationRequestsRoute') {
+			return model.requstesModel.isInitialized ? $elm$core$Platform$Cmd$none : A2(
 				$elm$core$Platform$Cmd$map,
 				$author$project$Professor$GotRequestsMsg,
-				$author$project$Professor$RegistrationRequests$loadRequests(token)));
+				$author$project$Professor$RegistrationRequests$loadRequests(token));
+		} else {
+			return A2(
+				$elm$core$Platform$Cmd$map,
+				$author$project$Professor$GotSettingsMsg,
+				A2($author$project$Professor$Settings$initCmd, model.settingModel, token));
+		}
 	});
 var $author$project$User$SetPassword$GotLoadingResult = function (a) {
 	return {$: 'GotLoadingResult', a: a};
@@ -7201,11 +7312,12 @@ var $author$project$Main$initCommand = F2(
 						$author$project$User$SetPassword$loadRequest(uuid));
 				case 'ProfessorRoute':
 					if (_v1.b.$ === 'ProfessorModel') {
-						var model_ = _v1.b.a;
+						var profRoute = _v1.a.a;
+						var profModel = _v1.b.a;
 						return A2(
 							$elm$core$Platform$Cmd$map,
 							$author$project$Main$GotProfessorMsg,
-							A2($author$project$Professor$initCmd, token, model_));
+							A3($author$project$Professor$initCmd, token, profModel, profRoute));
 					} else {
 						break _v1$2;
 					}
@@ -7249,8 +7361,8 @@ var $author$project$User$Session$logout = $elm$http$Http$riskyRequest(
 var $author$project$Main$AdminModel = {$: 'AdminModel'};
 var $author$project$Main$StudentModel = {$: 'StudentModel'};
 var $author$project$Professor$Model = F2(
-	function (currentPage, requstesModel) {
-		return {currentPage: currentPage, requstesModel: requstesModel};
+	function (requstesModel, settingModel) {
+		return {requstesModel: requstesModel, settingModel: settingModel};
 	});
 var $author$project$Professor$RegistrationRequests$Model = F6(
 	function (acceptedRequests, rejectedRequests, pendingRequests, processingRequests, tab, isInitialized) {
@@ -7258,7 +7370,56 @@ var $author$project$Professor$RegistrationRequests$Model = F6(
 	});
 var $author$project$Professor$RegistrationRequests$Pending = {$: 'Pending'};
 var $author$project$Professor$RegistrationRequests$init = A6($author$project$Professor$RegistrationRequests$Model, _List_Nil, _List_Nil, _List_Nil, _List_Nil, $author$project$Professor$RegistrationRequests$Pending, false);
-var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequestsPage, $author$project$Professor$RegistrationRequests$init);
+var $author$project$Professor$Settings$Model = F7(
+	function (zone, activities, dialogOpened, selectedActivity, formStarts, formEnds, formProcessing) {
+		return {activities: activities, dialogOpened: dialogOpened, formEnds: formEnds, formProcessing: formProcessing, formStarts: formStarts, selectedActivity: selectedActivity, zone: zone};
+	});
+var $elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
+			var jsArray = _v0.a;
+			var remainingItems = _v0.b;
+			if (_Utils_cmp(
+				$elm$core$Elm$JsArray$length(jsArray),
+				$elm$core$Array$branchFactor) < 0) {
+				return A2(
+					$elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					$elm$core$List$cons,
+					$elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var $elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return $elm$core$Array$empty;
+	} else {
+		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
+};
+var $elm$time$Time$utc = A2($elm$time$Time$Zone, 0, _List_Nil);
+var $author$project$Professor$Settings$init = A7(
+	$author$project$Professor$Settings$Model,
+	$elm$time$Time$utc,
+	$elm$core$Array$fromList(_List_Nil),
+	false,
+	$elm$core$Maybe$Nothing,
+	'',
+	'',
+	false);
+var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequests$init, $author$project$Professor$Settings$init);
 var $author$project$Main$setContentModel = F2(
 	function (user, model) {
 		switch (user.$) {
@@ -7519,22 +7680,918 @@ var $author$project$Professor$RegistrationRequests$update = F3(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Professor$update = F3(
+var $author$project$Professor$Settings$Edit = {$: 'Edit'};
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var $elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			$elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var $elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3($elm$core$String$repeatHelp, n, chunk, '');
+	});
+var $elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)),
+			string);
+	});
+var $elm$time$Time$flooredDiv = F2(
+	function (numerator, denominator) {
+		return $elm$core$Basics$floor(numerator / denominator);
+	});
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$time$Time$toAdjustedMinutesHelp = F3(
+	function (defaultOffset, posixMinutes, eras) {
+		toAdjustedMinutesHelp:
+		while (true) {
+			if (!eras.b) {
+				return posixMinutes + defaultOffset;
+			} else {
+				var era = eras.a;
+				var olderEras = eras.b;
+				if (_Utils_cmp(era.start, posixMinutes) < 0) {
+					return posixMinutes + era.offset;
+				} else {
+					var $temp$defaultOffset = defaultOffset,
+						$temp$posixMinutes = posixMinutes,
+						$temp$eras = olderEras;
+					defaultOffset = $temp$defaultOffset;
+					posixMinutes = $temp$posixMinutes;
+					eras = $temp$eras;
+					continue toAdjustedMinutesHelp;
+				}
+			}
+		}
+	});
+var $elm$time$Time$toAdjustedMinutes = F2(
+	function (_v0, time) {
+		var defaultOffset = _v0.a;
+		var eras = _v0.b;
+		return A3(
+			$elm$time$Time$toAdjustedMinutesHelp,
+			defaultOffset,
+			A2(
+				$elm$time$Time$flooredDiv,
+				$elm$time$Time$posixToMillis(time),
+				60000),
+			eras);
+	});
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$time$Time$toCivil = function (minutes) {
+	var rawDay = A2($elm$time$Time$flooredDiv, minutes, 60 * 24) + 719468;
+	var era = (((rawDay >= 0) ? rawDay : (rawDay - 146096)) / 146097) | 0;
+	var dayOfEra = rawDay - (era * 146097);
+	var yearOfEra = ((((dayOfEra - ((dayOfEra / 1460) | 0)) + ((dayOfEra / 36524) | 0)) - ((dayOfEra / 146096) | 0)) / 365) | 0;
+	var dayOfYear = dayOfEra - (((365 * yearOfEra) + ((yearOfEra / 4) | 0)) - ((yearOfEra / 100) | 0));
+	var mp = (((5 * dayOfYear) + 2) / 153) | 0;
+	var month = mp + ((mp < 10) ? 3 : (-9));
+	var year = yearOfEra + (era * 400);
+	return {
+		day: (dayOfYear - ((((153 * mp) + 2) / 5) | 0)) + 1,
+		month: month,
+		year: year + ((month <= 2) ? 1 : 0)
+	};
+};
+var $elm$time$Time$toDay = F2(
+	function (zone, time) {
+		return $elm$time$Time$toCivil(
+			A2($elm$time$Time$toAdjustedMinutes, zone, time)).day;
+	});
+var $elm$time$Time$Apr = {$: 'Apr'};
+var $elm$time$Time$Aug = {$: 'Aug'};
+var $elm$time$Time$Dec = {$: 'Dec'};
+var $elm$time$Time$Feb = {$: 'Feb'};
+var $elm$time$Time$Jan = {$: 'Jan'};
+var $elm$time$Time$Jul = {$: 'Jul'};
+var $elm$time$Time$Jun = {$: 'Jun'};
+var $elm$time$Time$Mar = {$: 'Mar'};
+var $elm$time$Time$May = {$: 'May'};
+var $elm$time$Time$Nov = {$: 'Nov'};
+var $elm$time$Time$Oct = {$: 'Oct'};
+var $elm$time$Time$Sep = {$: 'Sep'};
+var $elm$time$Time$toMonth = F2(
+	function (zone, time) {
+		var _v0 = $elm$time$Time$toCivil(
+			A2($elm$time$Time$toAdjustedMinutes, zone, time)).month;
+		switch (_v0) {
+			case 1:
+				return $elm$time$Time$Jan;
+			case 2:
+				return $elm$time$Time$Feb;
+			case 3:
+				return $elm$time$Time$Mar;
+			case 4:
+				return $elm$time$Time$Apr;
+			case 5:
+				return $elm$time$Time$May;
+			case 6:
+				return $elm$time$Time$Jun;
+			case 7:
+				return $elm$time$Time$Jul;
+			case 8:
+				return $elm$time$Time$Aug;
+			case 9:
+				return $elm$time$Time$Sep;
+			case 10:
+				return $elm$time$Time$Oct;
+			case 11:
+				return $elm$time$Time$Nov;
+			default:
+				return $elm$time$Time$Dec;
+		}
+	});
+var $author$project$Professor$Settings$toTwoDigitMonth = function (month) {
+	switch (month.$) {
+		case 'Jan':
+			return '01';
+		case 'Feb':
+			return '02';
+		case 'Mar':
+			return '03';
+		case 'Apr':
+			return '04';
+		case 'May':
+			return '05';
+		case 'Jun':
+			return '06';
+		case 'Jul':
+			return '07';
+		case 'Aug':
+			return '08';
+		case 'Sep':
+			return '09';
+		case 'Oct':
+			return '10';
+		case 'Nov':
+			return '11';
+		default:
+			return '12';
+	}
+};
+var $elm$time$Time$toYear = F2(
+	function (zone, time) {
+		return $elm$time$Time$toCivil(
+			A2($elm$time$Time$toAdjustedMinutes, zone, time)).year;
+	});
+var $author$project$Professor$Settings$dateView = F3(
+	function (mode, zone, timeInMillis) {
+		var time = $elm$time$Time$millisToPosix(timeInMillis);
+		var year = $elm$core$String$fromInt(
+			A2($elm$time$Time$toYear, zone, time));
+		var month = $author$project$Professor$Settings$toTwoDigitMonth(
+			A2($elm$time$Time$toMonth, zone, time));
+		var day = A3(
+			$elm$core$String$padLeft,
+			2,
+			_Utils_chr('0'),
+			$elm$core$String$fromInt(
+				A2($elm$time$Time$toDay, zone, time)));
+		if (mode.$ === 'Display') {
+			return day + ('.' + (month + ('.' + (year + '.'))));
+		} else {
+			return year + ('-' + (month + ('-' + day)));
+		}
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
+var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var $elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = $elm$core$Array$bitMask & (index >>> shift);
+			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_v0.$ === 'SubTree') {
+				var subTree = _v0.a;
+				var $temp$shift = shift - $elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _v0.a;
+				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var $elm$core$Array$get = F2(
+	function (index, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
+			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
+			A3($elm$core$Array$getHelp, startShift, index, tree)));
+	});
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day = function (a) {
+	return {$: 'Day', a: a};
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt = function (_v0) {
+	var day = _v0.a;
+	return day;
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $elm$core$Basics$not = _Basics_not;
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$isLeapYear = function (_v0) {
+	var _int = _v0.a;
+	return (!A2($elm$core$Basics$modBy, 4, _int)) && ((!A2($elm$core$Basics$modBy, 400, _int)) || (!(!A2($elm$core$Basics$modBy, 100, _int))));
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$lastDayOf = F2(
+	function (year, month) {
+		switch (month.$) {
+			case 'Jan':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Feb':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$isLeapYear(year) ? $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(29) : $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(28);
+			case 'Mar':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Apr':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(30);
+			case 'May':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Jun':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(30);
+			case 'Jul':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Aug':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Sep':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(30);
+			case 'Oct':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+			case 'Nov':
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(30);
+			default:
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
+		}
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayFromInt = F3(
+	function (year, month, day) {
+		var maxValidDay = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(
+			A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$lastDayOf, year, month));
+		return ((day > 0) && (!_Utils_eq(
+			A2($elm$core$Basics$compare, day, maxValidDay),
+			$elm$core$Basics$GT))) ? $elm$core$Maybe$Just(
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(day)) : $elm$core$Maybe$Nothing;
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Date = function (a) {
+	return {$: 'Date', a: a};
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$compareDays = F2(
+	function (lhs, rhs) {
+		return A2(
+			$elm$core$Basics$compare,
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(lhs),
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(rhs));
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromYearMonthDay = F3(
+	function (y, m, d) {
+		var maxDay = A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$lastDayOf, y, m);
+		var _v0 = A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$compareDays, d, maxDay);
+		if (_v0.$ === 'GT') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			return $elm$core$Maybe$Just(
+				$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Date(
+					{day: d, month: m, year: y}));
+		}
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawDay = F3(
+	function (year, month, day) {
+		return A2(
+			$elm$core$Maybe$andThen,
+			A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromYearMonthDay, year, month),
+			A3($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayFromInt, year, month, day));
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Year = function (a) {
+	return {$: 'Year', a: a};
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$yearFromInt = function (year) {
+	return (year > 0) ? $elm$core$Maybe$Just(
+		$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Year(year)) : $elm$core$Maybe$Nothing;
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts = function (_v0) {
+	var year = _v0.year;
+	var month = _v0.month;
+	var day = _v0.day;
+	return A2(
+		$elm$core$Maybe$andThen,
+		function (y) {
+			return A3($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawDay, y, month, day);
+		},
+		$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$yearFromInt(year));
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts;
+var $author$project$Professor$Settings$intToMonth = function (month) {
+	switch (month) {
+		case 1:
+			return $elm$core$Maybe$Just($elm$time$Time$Jan);
+		case 2:
+			return $elm$core$Maybe$Just($elm$time$Time$Feb);
+		case 3:
+			return $elm$core$Maybe$Just($elm$time$Time$Mar);
+		case 4:
+			return $elm$core$Maybe$Just($elm$time$Time$Apr);
+		case 5:
+			return $elm$core$Maybe$Just($elm$time$Time$May);
+		case 6:
+			return $elm$core$Maybe$Just($elm$time$Time$Jun);
+		case 7:
+			return $elm$core$Maybe$Just($elm$time$Time$Jul);
+		case 8:
+			return $elm$core$Maybe$Just($elm$time$Time$Aug);
+		case 9:
+			return $elm$core$Maybe$Just($elm$time$Time$Sep);
+		case 10:
+			return $elm$core$Maybe$Just($elm$time$Time$Oct);
+		case 11:
+			return $elm$core$Maybe$Just($elm$time$Time$Nov);
+		case 12:
+			return $elm$core$Maybe$Just($elm$time$Time$Dec);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Professor$Settings$getDateFromString = function (stringTime) {
+	var _v0 = A2(
+		$elm$core$List$map,
+		$elm$core$String$toInt,
+		A2($elm$core$String$split, '-', stringTime));
+	if ((((((_v0.b && (_v0.a.$ === 'Just')) && _v0.b.b) && (_v0.b.a.$ === 'Just')) && _v0.b.b.b) && (_v0.b.b.a.$ === 'Just')) && (!_v0.b.b.b.b)) {
+		var year = _v0.a.a;
+		var _v1 = _v0.b;
+		var month = _v1.a.a;
+		var _v2 = _v1.b;
+		var day = _v2.a.a;
+		return A2(
+			$elm$core$Maybe$andThen,
+			function (m) {
+				return $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts(
+					{day: day, month: m, year: year});
+			},
+			$author$project$Professor$Settings$intToMonth(month));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
+var $elm$core$Array$setHelp = F4(
+	function (shift, index, value, tree) {
+		var pos = $elm$core$Array$bitMask & (index >>> shift);
+		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+		if (_v0.$ === 'SubTree') {
+			var subTree = _v0.a;
+			var newSub = A4($elm$core$Array$setHelp, shift - $elm$core$Array$shiftStep, index, value, subTree);
+			return A3(
+				$elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				$elm$core$Array$SubTree(newSub),
+				tree);
+		} else {
+			var values = _v0.a;
+			var newLeaf = A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, values);
+			return A3(
+				$elm$core$Elm$JsArray$unsafeSet,
+				pos,
+				$elm$core$Array$Leaf(newLeaf),
+				tree);
+		}
+	});
+var $elm$core$Array$set = F3(
+	function (index, value, array) {
+		var len = array.a;
+		var startShift = array.b;
+		var tree = array.c;
+		var tail = array.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? array : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			tree,
+			A3($elm$core$Elm$JsArray$unsafeSet, $elm$core$Array$bitMask & index, value, tail)) : A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A4($elm$core$Array$setHelp, startShift, index, value, tree),
+			tail));
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInADay = ((1000 * 60) * 60) * 24;
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInYear = function (year) {
+	return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$isLeapYear(year) ? ($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInADay * 366) : ($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInADay * 365);
+};
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceEpoch = function (_v0) {
+	var year = _v0.a;
+	var getTotalMillis = A2(
+		$elm$core$Basics$composeL,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$core$List$sum,
+			$elm$core$List$map($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInYear)),
+		$elm$core$List$filterMap($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$yearFromInt));
+	var epochYear = 1970;
+	return (year >= 1970) ? getTotalMillis(
+		A2($elm$core$List$range, epochYear, year - 1)) : (-getTotalMillis(
+		A2($elm$core$List$range, year, epochYear - 1)));
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceStartOfTheMonth = function (day) {
+	return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInADay * ($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(day) - 1);
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$monthToInt = function (month) {
+	switch (month.$) {
+		case 'Jan':
+			return 1;
+		case 'Feb':
+			return 2;
+		case 'Mar':
+			return 3;
+		case 'Apr':
+			return 4;
+		case 'May':
+			return 5;
+		case 'Jun':
+			return 6;
+		case 'Jul':
+			return 7;
+		case 'Aug':
+			return 8;
+		case 'Sep':
+			return 9;
+		case 'Oct':
+			return 10;
+		case 'Nov':
+			return 11;
+		default:
+			return 12;
+	}
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$months = $elm$core$Array$fromList(
+	_List_fromArray(
+		[$elm$time$Time$Jan, $elm$time$Time$Feb, $elm$time$Time$Mar, $elm$time$Time$Apr, $elm$time$Time$May, $elm$time$Time$Jun, $elm$time$Time$Jul, $elm$time$Time$Aug, $elm$time$Time$Sep, $elm$time$Time$Oct, $elm$time$Time$Nov, $elm$time$Time$Dec]));
+var $elm$core$Elm$JsArray$appendN = _JsArray_appendN;
+var $elm$core$Elm$JsArray$slice = _JsArray_slice;
+var $elm$core$Array$appendHelpBuilder = F2(
+	function (tail, builder) {
+		var tailLen = $elm$core$Elm$JsArray$length(tail);
+		var notAppended = ($elm$core$Array$branchFactor - $elm$core$Elm$JsArray$length(builder.tail)) - tailLen;
+		var appended = A3($elm$core$Elm$JsArray$appendN, $elm$core$Array$branchFactor, builder.tail, tail);
+		return (notAppended < 0) ? {
+			nodeList: A2(
+				$elm$core$List$cons,
+				$elm$core$Array$Leaf(appended),
+				builder.nodeList),
+			nodeListSize: builder.nodeListSize + 1,
+			tail: A3($elm$core$Elm$JsArray$slice, notAppended, tailLen, tail)
+		} : ((!notAppended) ? {
+			nodeList: A2(
+				$elm$core$List$cons,
+				$elm$core$Array$Leaf(appended),
+				builder.nodeList),
+			nodeListSize: builder.nodeListSize + 1,
+			tail: $elm$core$Elm$JsArray$empty
+		} : {nodeList: builder.nodeList, nodeListSize: builder.nodeListSize, tail: appended});
+	});
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$core$Array$sliceLeft = F2(
+	function (from, array) {
+		var len = array.a;
+		var tree = array.c;
+		var tail = array.d;
+		if (!from) {
+			return array;
+		} else {
+			if (_Utils_cmp(
+				from,
+				$elm$core$Array$tailIndex(len)) > -1) {
+				return A4(
+					$elm$core$Array$Array_elm_builtin,
+					len - from,
+					$elm$core$Array$shiftStep,
+					$elm$core$Elm$JsArray$empty,
+					A3(
+						$elm$core$Elm$JsArray$slice,
+						from - $elm$core$Array$tailIndex(len),
+						$elm$core$Elm$JsArray$length(tail),
+						tail));
+			} else {
+				var skipNodes = (from / $elm$core$Array$branchFactor) | 0;
+				var helper = F2(
+					function (node, acc) {
+						if (node.$ === 'SubTree') {
+							var subTree = node.a;
+							return A3($elm$core$Elm$JsArray$foldr, helper, acc, subTree);
+						} else {
+							var leaf = node.a;
+							return A2($elm$core$List$cons, leaf, acc);
+						}
+					});
+				var leafNodes = A3(
+					$elm$core$Elm$JsArray$foldr,
+					helper,
+					_List_fromArray(
+						[tail]),
+					tree);
+				var nodesToInsert = A2($elm$core$List$drop, skipNodes, leafNodes);
+				if (!nodesToInsert.b) {
+					return $elm$core$Array$empty;
+				} else {
+					var head = nodesToInsert.a;
+					var rest = nodesToInsert.b;
+					var firstSlice = from - (skipNodes * $elm$core$Array$branchFactor);
+					var initialBuilder = {
+						nodeList: _List_Nil,
+						nodeListSize: 0,
+						tail: A3(
+							$elm$core$Elm$JsArray$slice,
+							firstSlice,
+							$elm$core$Elm$JsArray$length(head),
+							head)
+					};
+					return A2(
+						$elm$core$Array$builderToArray,
+						true,
+						A3($elm$core$List$foldl, $elm$core$Array$appendHelpBuilder, initialBuilder, rest));
+				}
+			}
+		}
+	});
+var $elm$core$Array$fetchNewTail = F4(
+	function (shift, end, treeEnd, tree) {
+		fetchNewTail:
+		while (true) {
+			var pos = $elm$core$Array$bitMask & (treeEnd >>> shift);
+			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_v0.$ === 'SubTree') {
+				var sub = _v0.a;
+				var $temp$shift = shift - $elm$core$Array$shiftStep,
+					$temp$end = end,
+					$temp$treeEnd = treeEnd,
+					$temp$tree = sub;
+				shift = $temp$shift;
+				end = $temp$end;
+				treeEnd = $temp$treeEnd;
+				tree = $temp$tree;
+				continue fetchNewTail;
+			} else {
+				var values = _v0.a;
+				return A3($elm$core$Elm$JsArray$slice, 0, $elm$core$Array$bitMask & end, values);
+			}
+		}
+	});
+var $elm$core$Array$hoistTree = F3(
+	function (oldShift, newShift, tree) {
+		hoistTree:
+		while (true) {
+			if ((_Utils_cmp(oldShift, newShift) < 1) || (!$elm$core$Elm$JsArray$length(tree))) {
+				return tree;
+			} else {
+				var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, 0, tree);
+				if (_v0.$ === 'SubTree') {
+					var sub = _v0.a;
+					var $temp$oldShift = oldShift - $elm$core$Array$shiftStep,
+						$temp$newShift = newShift,
+						$temp$tree = sub;
+					oldShift = $temp$oldShift;
+					newShift = $temp$newShift;
+					tree = $temp$tree;
+					continue hoistTree;
+				} else {
+					return tree;
+				}
+			}
+		}
+	});
+var $elm$core$Array$sliceTree = F3(
+	function (shift, endIdx, tree) {
+		var lastPos = $elm$core$Array$bitMask & (endIdx >>> shift);
+		var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, lastPos, tree);
+		if (_v0.$ === 'SubTree') {
+			var sub = _v0.a;
+			var newSub = A3($elm$core$Array$sliceTree, shift - $elm$core$Array$shiftStep, endIdx, sub);
+			return (!$elm$core$Elm$JsArray$length(newSub)) ? A3($elm$core$Elm$JsArray$slice, 0, lastPos, tree) : A3(
+				$elm$core$Elm$JsArray$unsafeSet,
+				lastPos,
+				$elm$core$Array$SubTree(newSub),
+				A3($elm$core$Elm$JsArray$slice, 0, lastPos + 1, tree));
+		} else {
+			return A3($elm$core$Elm$JsArray$slice, 0, lastPos, tree);
+		}
+	});
+var $elm$core$Array$sliceRight = F2(
+	function (end, array) {
+		var len = array.a;
+		var startShift = array.b;
+		var tree = array.c;
+		var tail = array.d;
+		if (_Utils_eq(end, len)) {
+			return array;
+		} else {
+			if (_Utils_cmp(
+				end,
+				$elm$core$Array$tailIndex(len)) > -1) {
+				return A4(
+					$elm$core$Array$Array_elm_builtin,
+					end,
+					startShift,
+					tree,
+					A3($elm$core$Elm$JsArray$slice, 0, $elm$core$Array$bitMask & end, tail));
+			} else {
+				var endIdx = $elm$core$Array$tailIndex(end);
+				var depth = $elm$core$Basics$floor(
+					A2(
+						$elm$core$Basics$logBase,
+						$elm$core$Array$branchFactor,
+						A2($elm$core$Basics$max, 1, endIdx - 1)));
+				var newShift = A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep);
+				return A4(
+					$elm$core$Array$Array_elm_builtin,
+					end,
+					newShift,
+					A3(
+						$elm$core$Array$hoistTree,
+						startShift,
+						newShift,
+						A3($elm$core$Array$sliceTree, startShift, endIdx, tree)),
+					A4($elm$core$Array$fetchNewTail, startShift, end, endIdx, tree));
+			}
+		}
+	});
+var $elm$core$Array$translateIndex = F2(
+	function (index, _v0) {
+		var len = _v0.a;
+		var posIndex = (index < 0) ? (len + index) : index;
+		return (posIndex < 0) ? 0 : ((_Utils_cmp(posIndex, len) > 0) ? len : posIndex);
+	});
+var $elm$core$Array$slice = F3(
+	function (from, to, array) {
+		var correctTo = A2($elm$core$Array$translateIndex, to, array);
+		var correctFrom = A2($elm$core$Array$translateIndex, from, array);
+		return (_Utils_cmp(correctFrom, correctTo) > 0) ? $elm$core$Array$empty : A2(
+			$elm$core$Array$sliceLeft,
+			correctFrom,
+			A2($elm$core$Array$sliceRight, correctTo, array));
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$getPrecedingMonths = function (month) {
+	return $elm$core$Array$toList(
+		A3(
+			$elm$core$Array$slice,
+			0,
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$monthToInt(month) - 1,
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$months));
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceStartOfTheYear = F2(
+	function (year, month) {
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (m, res) {
+					return res + ($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisInADay * $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(
+						A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$lastDayOf, year, m)));
+				}),
+			0,
+			$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$getPrecedingMonths(month));
+	});
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$toMillis = function (_v0) {
+	var year = _v0.a.year;
+	var month = _v0.a.month;
+	var day = _v0.a.day;
+	return ($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceEpoch(year) + A2($PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceStartOfTheYear, year, month)) + $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$millisSinceStartOfTheMonth(day);
+};
+var $PanagiotisGeorgiadis$elm_datetime$Calendar$toMillis = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$toMillis;
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $author$project$StudentsActivity$encodeActivity = function (activity) {
+	return $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'activity',
+				$elm$json$Json$Encode$object(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(
+							'starts_sec',
+							$elm$json$Json$Encode$int(activity.starts)),
+							_Utils_Tuple2(
+							'ends_sec',
+							$elm$json$Json$Encode$int(activity.ends))
+						])))
+			]));
+};
+var $author$project$Api$put = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	var headers = _List_fromArray(
+		[
+			$author$project$Api$authHeader(token)
+		]);
+	return $elm$http$Http$request(
+		{body: body, expect: expect, headers: headers, method: 'PUT', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
+};
+var $author$project$Professor$Settings$updateActivity = F2(
+	function (activity, token) {
+		return $author$project$Api$put(
+			{
+				body: $elm$http$Http$jsonBody(
+					$author$project$StudentsActivity$encodeActivity(activity)),
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$Professor$Settings$LoadedActivities,
+					A2(
+						$elm$json$Json$Decode$field,
+						'data',
+						$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
+				token: token,
+				url: $author$project$Api$activitiesUrl + ('/' + $elm$core$String$fromInt(activity.id))
+			});
+	});
+var $author$project$Professor$Settings$update = F3(
 	function (msg, model, token) {
-		var _v0 = _Utils_Tuple2(msg, model.currentPage);
-		if ((_v0.a.$ === 'GotRequestsMsg') && (_v0.b.$ === 'RegistrationRequestsPage')) {
-			var reqMsg = _v0.a.a;
-			var _v1 = _v0.b;
+		switch (msg.$) {
+			case 'AdjustTimeZone':
+				var zone = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{zone: zone}),
+					$elm$core$Platform$Cmd$none);
+			case 'Closed':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dialogOpened: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'EditTask':
+				var index = msg.a;
+				var dateEdit = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Edit, model.zone);
+				var _v1 = A2($elm$core$Array$get, index, model.activities);
+				if (_v1.$ === 'Nothing') {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				} else {
+					var activity = _v1.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								dialogOpened: true,
+								formEnds: dateEdit(activity.ends * 1000),
+								formProcessing: false,
+								formStarts: dateEdit(activity.starts * 1000),
+								selectedActivity: $elm$core$Maybe$Just(
+									{activity: activity, arrayIndex: index})
+							}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 'Starts':
+				var value = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{formStarts: value}),
+					$elm$core$Platform$Cmd$none);
+			case 'Ends':
+				var value = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{formEnds: value}),
+					$elm$core$Platform$Cmd$none);
+			case 'SaveTask':
+				var millisToSec = function (millis) {
+					return (millis / 1000) | 0;
+				};
+				var mapToSecs = $elm$core$Maybe$map(
+					A2($elm$core$Basics$composeL, millisToSec, $PanagiotisGeorgiadis$elm_datetime$Calendar$toMillis));
+				var maybeEnds = mapToSecs(
+					$author$project$Professor$Settings$getDateFromString(model.formEnds));
+				var maybeStarts = mapToSecs(
+					$author$project$Professor$Settings$getDateFromString(model.formStarts));
+				var _v2 = _Utils_Tuple3(maybeStarts, maybeEnds, model.selectedActivity);
+				if (((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) && (_v2.c.$ === 'Just')) {
+					var starts = _v2.a.a;
+					var ends = _v2.b.a;
+					var arrayIndex = _v2.c.a.arrayIndex;
+					var activity = _v2.c.a.activity;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								activities: A3(
+									$elm$core$Array$set,
+									arrayIndex,
+									_Utils_update(
+										activity,
+										{ends: ends, starts: starts}),
+									model.activities),
+								dialogOpened: false
+							}),
+						A2(
+							$author$project$Professor$Settings$updateActivity,
+							_Utils_update(
+								activity,
+								{ends: ends, starts: starts}),
+							token));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			default:
+				var activitiesResult = msg.a;
+				if (activitiesResult.$ === 'Ok') {
+					var activities = activitiesResult.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{activities: activities}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+		}
+	});
+var $author$project$Professor$update = F4(
+	function (msg, model, token, _v0) {
+		if (msg.$ === 'GotRequestsMsg') {
+			var reqMsg = msg.a;
 			var _v2 = A3($author$project$Professor$RegistrationRequests$update, reqMsg, model.requstesModel, token);
-			var reqModel = _v2.a;
+			var model_ = _v2.a;
 			var cmd = _v2.b;
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
-					{requstesModel: reqModel}),
+					{requstesModel: model_}),
 				A2($elm$core$Platform$Cmd$map, $author$project$Professor$GotRequestsMsg, cmd));
 		} else {
-			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			var settingsMsg = msg.a;
+			var _v3 = A3($author$project$Professor$Settings$update, settingsMsg, model.settingModel, token);
+			var model_ = _v3.a;
+			var cmd = _v3.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{settingModel: model_}),
+				A2($elm$core$Platform$Cmd$map, $author$project$Professor$GotSettingsMsg, cmd));
 		}
 	});
 var $author$project$Registration$SnackbarClosed = function (a) {
@@ -7941,18 +8998,13 @@ var $author$project$User$Login$updateError = F2(
 	});
 var $author$project$Main$updateUrl = F2(
 	function (url, model) {
-		return A2(
-			$elm$core$Debug$log,
-			$elm$url$Url$toString(url),
-			function () {
-				var route = $author$project$Route$fromUrl(url);
-				var page = $author$project$Page$forRoute(route);
-				var model_ = _Utils_update(
-					model,
-					{currentRoute: route, isMenuOpened: false, page: page});
-				var cmd = A2($author$project$Main$initCommand, route, model_);
-				return _Utils_Tuple2(model_, cmd);
-			}());
+		var route = $author$project$Route$fromUrl(url);
+		var page = $author$project$Page$forRoute(route);
+		var model_ = _Utils_update(
+			model,
+			{currentRoute: route, isMenuOpened: false, page: page});
+		var cmd = A2($author$project$Main$initCommand, route, model_);
+		return _Utils_Tuple2(model_, cmd);
 	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
@@ -8121,15 +9173,16 @@ var $author$project$Main$update = F2(
 						break _v0$13;
 					}
 				case 'GotProfessorMsg':
-					if (_v0.c.$ === 'ProfessorModel') {
+					if ((_v0.b.$ === 'ProfessorPage') && (_v0.c.$ === 'ProfessorModel')) {
 						var profMsg = _v0.a.a;
-						var professorPage = _v0.b;
+						var profPage = _v0.b.a;
 						var model_ = _v0.c.a;
-						var _v8 = A3(
+						var _v8 = A4(
 							$author$project$Professor$update,
 							profMsg,
 							model_,
-							$author$project$Main$tokenFrom(model.session));
+							$author$project$Main$tokenFrom(model.session),
+							profPage);
 						var profModel = _v8.a;
 						var cmd = _v8.b;
 						return _Utils_Tuple2(
@@ -8714,39 +9767,9 @@ var $aforemny$material_components_web_elm$Material$List$avatarListCs = function 
 		$elm$html$Html$Attributes$class('mdc-list--avatar-list')) : $elm$core$Maybe$Nothing;
 };
 var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$core$Maybe$andThen = F2(
-	function (callback, maybeValue) {
-		if (maybeValue.$ === 'Just') {
-			var value = maybeValue.a;
-			return callback(value);
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$core$List$drop = F2(
-	function (n, list) {
-		drop:
-		while (true) {
-			if (n <= 0) {
-				return list;
-			} else {
-				if (!list.b) {
-					return list;
-				} else {
-					var x = list.a;
-					var xs = list.b;
-					var $temp$n = n - 1,
-						$temp$list = xs;
-					n = $temp$n;
-					list = $temp$list;
-					continue drop;
-				}
-			}
-		}
 	});
 var $elm$json$Json$Decode$fail = _Json_fail;
 var $elm$core$List$head = function (list) {
@@ -8814,7 +9837,6 @@ var $aforemny$material_components_web_elm$Material$List$nonInteractiveCs = funct
 };
 var $aforemny$material_components_web_elm$Material$List$rootCs = $elm$core$Maybe$Just(
 	$elm$html$Html$Attributes$class('mdc-list'));
-var $elm$json$Json$Encode$int = _Json_wrap;
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
 		return _Json_wrap(
@@ -9566,96 +10588,638 @@ var $author$project$Professor$RegistrationRequests$view = function (model) {
 				content
 			]));
 };
-var $author$project$Professor$view = function (model) {
-	var _v0 = model.currentPage;
-	if (_v0.$ === 'RegistrationRequestsPage') {
+var $author$project$Professor$Settings$Closed = {$: 'Closed'};
+var $author$project$Professor$Settings$Display = {$: 'Display'};
+var $author$project$Professor$Settings$EditTask = function (a) {
+	return {$: 'EditTask', a: a};
+};
+var $aforemny$material_components_web_elm$Material$DataTable$Cell = function (a) {
+	return {$: 'Cell', a: a};
+};
+var $aforemny$material_components_web_elm$Material$DataTable$cell = F2(
+	function (attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$DataTable$Cell(
+			{attributes: attributes, nodes: nodes, numeric: false});
+	});
+var $aforemny$material_components_web_elm$Material$DataTable$Row = function (a) {
+	return {$: 'Row', a: a};
+};
+var $aforemny$material_components_web_elm$Material$DataTable$row = F2(
+	function (attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$DataTable$Row(
+			{attributes: attributes, nodes: nodes});
+	});
+var $author$project$Professor$Settings$activityTabelView = F3(
+	function (zone, id, task) {
+		var points = (!task.points) ? '/' : $elm$core$String$fromInt(task.points);
+		var editBtn = A2(
+			$aforemny$material_components_web_elm$Material$IconButton$iconButton,
+			A2(
+				$aforemny$material_components_web_elm$Material$IconButton$setOnClick,
+				$author$project$Professor$Settings$EditTask(id),
+				$aforemny$material_components_web_elm$Material$IconButton$config),
+			$aforemny$material_components_web_elm$Material$IconButton$icon('edit'));
+		var displayDate = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Display, zone);
+		var ends = displayDate(task.ends * 1000);
+		var starts = displayDate(task.starts * 1000);
 		return A2(
-			$elm$html$Html$map,
-			$author$project$Professor$GotRequestsMsg,
-			$author$project$Professor$RegistrationRequests$view(model.requstesModel));
-	} else {
-		return $elm$html$Html$text('Settings');
-	}
-};
-var $author$project$Registration$Email = function (a) {
-	return {$: 'Email', a: a};
-};
-var $author$project$Registration$FirstName = function (a) {
-	return {$: 'FirstName', a: a};
-};
-var $author$project$Registration$Index = function (a) {
-	return {$: 'Index', a: a};
-};
-var $author$project$Registration$LastName = function (a) {
-	return {$: 'LastName', a: a};
-};
-var $author$project$Registration$SubmittedForm = {$: 'SubmittedForm'};
-var $aforemny$material_components_web_elm$Material$Snackbar$Config = function (a) {
+			$aforemny$material_components_web_elm$Material$DataTable$row,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(task.name)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(task.description)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(starts)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(ends)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(points)
+						])),
+					A2(
+					$aforemny$material_components_web_elm$Material$DataTable$cell,
+					_List_Nil,
+					_List_fromArray(
+						[editBtn]))
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$DataTable$Config = function (a) {
 	return {$: 'Config', a: a};
 };
-var $aforemny$material_components_web_elm$Material$Snackbar$config = function (_v0) {
-	var onClosed = _v0.onClosed;
-	return $aforemny$material_components_web_elm$Material$Snackbar$Config(
-		{additionalAttributes: _List_Nil, closeOnEscape: false, onClosed: onClosed});
+var $aforemny$material_components_web_elm$Material$DataTable$config = $aforemny$material_components_web_elm$Material$DataTable$Config(
+	{additionalAttributes: _List_Nil, label: $elm$core$Maybe$Nothing});
+var $aforemny$material_components_web_elm$Material$Dialog$Config = function (a) {
+	return {$: 'Config', a: a};
 };
+var $aforemny$material_components_web_elm$Material$Dialog$config = $aforemny$material_components_web_elm$Material$Dialog$Config(
+	{additionalAttributes: _List_Nil, onClose: $elm$core$Maybe$Nothing, open: false});
+var $aforemny$material_components_web_elm$Material$DataTable$ariaLabelAttr = function (_v0) {
+	var label = _v0.a.label;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$Attributes$attribute('aria-label'),
+		label);
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
+var $aforemny$material_components_web_elm$Material$Checkbox$backgroundElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-checkbox__background')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$svg$Svg$svg,
+			_List_fromArray(
+				[
+					$elm$svg$Svg$Attributes$class('mdc-checkbox__checkmark'),
+					$elm$svg$Svg$Attributes$viewBox('0 0 24 24')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$svg$Svg$path,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$class('mdc-checkbox__checkmark-path'),
+							$elm$svg$Svg$Attributes$fill('none'),
+							$elm$svg$Svg$Attributes$d('M1.73,12.91 8.1,19.28 22.79,4.59')
+						]),
+					_List_Nil)
+				])),
+			A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-checkbox__mixedmark')
+				]),
+			_List_Nil)
+		]));
+var $aforemny$material_components_web_elm$Material$Checkbox$Internal$Checked = {$: 'Checked'};
+var $aforemny$material_components_web_elm$Material$Checkbox$checkedProp = function (_v0) {
+	var state = _v0.a.state;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'checked',
+			$elm$json$Json$Encode$bool(
+				_Utils_eq(
+					state,
+					$elm$core$Maybe$Just($aforemny$material_components_web_elm$Material$Checkbox$Internal$Checked)))));
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$disabledProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'disabled',
+			$elm$json$Json$Encode$bool(disabled)));
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$Internal$Indeterminate = {$: 'Indeterminate'};
+var $aforemny$material_components_web_elm$Material$Checkbox$indeterminateProp = function (_v0) {
+	var state = _v0.a.state;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'indeterminate',
+			$elm$json$Json$Encode$bool(
+				_Utils_eq(
+					state,
+					$elm$core$Maybe$Just($aforemny$material_components_web_elm$Material$Checkbox$Internal$Indeterminate)))));
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$changeHandler = function (_v0) {
+	var onChange = _v0.a.onChange;
+	return A2(
+		$elm$core$Maybe$map,
+		function (msg) {
+			return A2(
+				$elm$html$Html$Events$on,
+				'change',
+				$elm$json$Json$Decode$succeed(msg));
+		},
+		onChange);
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $aforemny$material_components_web_elm$Material$Checkbox$nativeControlElt = function (config_) {
+	return A2(
+		$elm$html$Html$input,
+		A2(
+			$elm$core$List$filterMap,
+			$elm$core$Basics$identity,
+			_List_fromArray(
+				[
+					$elm$core$Maybe$Just(
+					$elm$html$Html$Attributes$type_('checkbox')),
+					$elm$core$Maybe$Just(
+					$elm$html$Html$Attributes$class('mdc-checkbox__native-control')),
+					$aforemny$material_components_web_elm$Material$Checkbox$checkedProp(config_),
+					$aforemny$material_components_web_elm$Material$Checkbox$indeterminateProp(config_),
+					$aforemny$material_components_web_elm$Material$Checkbox$changeHandler(config_)
+				])),
+		_List_Nil);
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$rippleElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-checkbox__ripple')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$Checkbox$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-checkbox'));
+var $aforemny$material_components_web_elm$Material$Checkbox$touchCs = function (_v0) {
+	var touch = _v0.a.touch;
+	return touch ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-checkbox--touch')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Checkbox$checkbox = function (config_) {
+	var touch = config_.a.touch;
+	var additionalAttributes = config_.a.additionalAttributes;
+	var wrapTouch = function (node) {
+		return touch ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-touch-target-wrapper')
+				]),
+			_List_fromArray(
+				[node])) : node;
+	};
+	return wrapTouch(
+		A3(
+			$elm$html$Html$node,
+			'mdc-checkbox',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Checkbox$rootCs,
+							$aforemny$material_components_web_elm$Material$Checkbox$touchCs(config_),
+							$aforemny$material_components_web_elm$Material$Checkbox$checkedProp(config_),
+							$aforemny$material_components_web_elm$Material$Checkbox$indeterminateProp(config_),
+							$aforemny$material_components_web_elm$Material$Checkbox$disabledProp(config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Checkbox$nativeControlElt(config_),
+					$aforemny$material_components_web_elm$Material$Checkbox$backgroundElt,
+					$aforemny$material_components_web_elm$Material$Checkbox$rippleElt
+				])));
+};
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableCellCheckboxCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-data-table__cell--checkbox'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableCellCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-data-table__cell'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableCellNumericCs = function (numeric) {
+	return numeric ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-data-table__cell--numeric')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $aforemny$material_components_web_elm$Material$DataTable$bodyCell = function (cell_) {
+	if (cell_.$ === 'Cell') {
+		var numeric = cell_.a.numeric;
+		var attributes = cell_.a.attributes;
+		var nodes = cell_.a.nodes;
+		return A2(
+			$elm$html$Html$td,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$DataTable$dataTableCellCs,
+							$aforemny$material_components_web_elm$Material$DataTable$dataTableCellNumericCs(numeric)
+						])),
+				attributes),
+			nodes);
+	} else {
+		var attributes = cell_.a.attributes;
+		var config_ = cell_.a.config_;
+		return A2(
+			$elm$html$Html$td,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[$aforemny$material_components_web_elm$Material$DataTable$dataTableCellCs, $aforemny$material_components_web_elm$Material$DataTable$dataTableCellCheckboxCs])),
+				attributes),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Checkbox$checkbox(
+					function () {
+						var config__ = config_.a;
+						return $aforemny$material_components_web_elm$Material$Checkbox$Internal$Config(
+							_Utils_update(
+								config__,
+								{
+									additionalAttributes: A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$class('mdc-data-table__row-checkbox'),
+										config__.additionalAttributes)
+								}));
+					}())
+				]));
+	}
+};
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableRowCs = $elm$html$Html$Attributes$class('mdc-data-table__row');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $aforemny$material_components_web_elm$Material$DataTable$bodyRow = function (_v0) {
+	var attributes = _v0.a.attributes;
+	var nodes = _v0.a.nodes;
+	return A2(
+		$elm$html$Html$tr,
+		A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$DataTable$dataTableRowCs, attributes),
+		A2($elm$core$List$map, $aforemny$material_components_web_elm$Material$DataTable$bodyCell, nodes));
+};
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableContentCs = $elm$html$Html$Attributes$class('mdc-data-table__content');
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableCs = $elm$html$Html$Attributes$class('mdc-data-table');
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableTableCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-data-table__table'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderRowCs = $elm$html$Html$Attributes$class('mdc-data-table__header-row');
+var $aforemny$material_components_web_elm$Material$DataTable$colScopeAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'scope', 'col'));
+var $aforemny$material_components_web_elm$Material$DataTable$columnHeaderRoleAttr = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'columnheader'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellCheckboxCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-data-table__header-cell--checkbox'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-data-table__header-cell'));
+var $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellNumericCs = function (numeric) {
+	return numeric ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-data-table__header-cell--numeric')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$th = _VirtualDom_node('th');
+var $aforemny$material_components_web_elm$Material$DataTable$headerCell = function (cell_) {
+	if (cell_.$ === 'Cell') {
+		var numeric = cell_.a.numeric;
+		var attributes = cell_.a.attributes;
+		var nodes = cell_.a.nodes;
+		return A2(
+			$elm$html$Html$th,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellCs,
+							$aforemny$material_components_web_elm$Material$DataTable$columnHeaderRoleAttr,
+							$aforemny$material_components_web_elm$Material$DataTable$colScopeAttr,
+							$aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellNumericCs(numeric)
+						])),
+				attributes),
+			nodes);
+	} else {
+		var attributes = cell_.a.attributes;
+		var config_ = cell_.a.config_;
+		return A2(
+			$elm$html$Html$th,
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[$aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellCs, $aforemny$material_components_web_elm$Material$DataTable$columnHeaderRoleAttr, $aforemny$material_components_web_elm$Material$DataTable$colScopeAttr, $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderCellCheckboxCs])),
+				attributes),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Checkbox$checkbox(
+					function () {
+						var config__ = config_.a;
+						return $aforemny$material_components_web_elm$Material$Checkbox$Internal$Config(
+							_Utils_update(
+								config__,
+								{
+									additionalAttributes: A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$class('mdc-data-table__row-checkbox'),
+										config__.additionalAttributes)
+								}));
+					}())
+				]));
+	}
+};
+var $aforemny$material_components_web_elm$Material$DataTable$headerRow = function (_v0) {
+	var attributes = _v0.a.attributes;
+	var nodes = _v0.a.nodes;
+	return A2(
+		$elm$html$Html$tr,
+		A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$DataTable$dataTableHeaderRowCs, attributes),
+		A2($elm$core$List$map, $aforemny$material_components_web_elm$Material$DataTable$headerCell, nodes));
+};
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$html$Html$tbody = _VirtualDom_node('tbody');
+var $elm$html$Html$thead = _VirtualDom_node('thead');
+var $aforemny$material_components_web_elm$Material$DataTable$dataTable = F2(
+	function (config_, _v0) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var thead = _v0.thead;
+		var tbody = _v0.tbody;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-data-table',
+			A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$DataTable$dataTableCs, additionalAttributes),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$table,
+					A2(
+						$elm$core$List$filterMap,
+						$elm$core$Basics$identity,
+						_List_fromArray(
+							[
+								$aforemny$material_components_web_elm$Material$DataTable$dataTableTableCs,
+								$aforemny$material_components_web_elm$Material$DataTable$ariaLabelAttr(config_)
+							])),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$thead,
+							_List_Nil,
+							A2($elm$core$List$map, $aforemny$material_components_web_elm$Material$DataTable$headerRow, thead)),
+							A2(
+							$elm$html$Html$tbody,
+							_List_fromArray(
+								[$aforemny$material_components_web_elm$Material$DataTable$dataTableContentCs]),
+							A2($elm$core$List$map, $aforemny$material_components_web_elm$Material$DataTable$bodyRow, tbody))
+						]))
+				]));
+	});
+var $aforemny$material_components_web_elm$Material$Dialog$closeHandler = function (_v0) {
+	var onClose = _v0.a.onClose;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Events$on('MDCDialog:close'),
+			$elm$json$Json$Decode$succeed),
+		onClose);
+};
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $aforemny$material_components_web_elm$Material$Dialog$actionsElt = function (_v0) {
+	var actions = _v0.actions;
+	return $elm$core$List$isEmpty(actions) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-dialog__actions')
+				]),
+			actions));
+};
+var $aforemny$material_components_web_elm$Material$Dialog$alertDialogRoleAttr = A2($elm$html$Html$Attributes$attribute, 'role', 'alertdialog');
+var $aforemny$material_components_web_elm$Material$Dialog$ariaModalAttr = A2($elm$html$Html$Attributes$attribute, 'aria-modal', 'true');
+var $aforemny$material_components_web_elm$Material$Dialog$contentElt = function (_v0) {
+	var content = _v0.content;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-dialog__content')
+				]),
+			content));
+};
+var $aforemny$material_components_web_elm$Material$Dialog$dialogSurfaceCs = $elm$html$Html$Attributes$class('mdc-dialog__surface');
+var $aforemny$material_components_web_elm$Material$Dialog$titleElt = function (_v0) {
+	var title = _v0.title;
+	if (title.$ === 'Just') {
+		var title_ = title.a;
+		return $elm$core$Maybe$Just(
+			A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-dialog__title')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(title_)
+					])));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $aforemny$material_components_web_elm$Material$Dialog$surfaceElt = function (content) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[$aforemny$material_components_web_elm$Material$Dialog$dialogSurfaceCs, $aforemny$material_components_web_elm$Material$Dialog$alertDialogRoleAttr, $aforemny$material_components_web_elm$Material$Dialog$ariaModalAttr]),
+		A2(
+			$elm$core$List$filterMap,
+			$elm$core$Basics$identity,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Dialog$titleElt(content),
+					$aforemny$material_components_web_elm$Material$Dialog$contentElt(content),
+					$aforemny$material_components_web_elm$Material$Dialog$actionsElt(content)
+				])));
+};
+var $aforemny$material_components_web_elm$Material$Dialog$containerElt = function (content) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-dialog__container')
+			]),
+		_List_fromArray(
+			[
+				$aforemny$material_components_web_elm$Material$Dialog$surfaceElt(content)
+			]));
+};
+var $aforemny$material_components_web_elm$Material$Dialog$openProp = function (_v0) {
+	var open = _v0.a.open;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'open',
+			$elm$json$Json$Encode$bool(open)));
+};
+var $aforemny$material_components_web_elm$Material$Dialog$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-dialog'));
+var $aforemny$material_components_web_elm$Material$Dialog$scrimElt = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('mdc-dialog__scrim')
+		]),
+	_List_Nil);
+var $aforemny$material_components_web_elm$Material$Dialog$dialog = F2(
+	function (config_, content) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		return A3(
+			$elm$html$Html$node,
+			'mdc-dialog',
+			_Utils_ap(
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Dialog$rootCs,
+							$aforemny$material_components_web_elm$Material$Dialog$openProp(config_),
+							$aforemny$material_components_web_elm$Material$Dialog$closeHandler(config_)
+						])),
+				additionalAttributes),
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Dialog$containerElt(content),
+					$aforemny$material_components_web_elm$Material$Dialog$scrimElt
+				]));
+	});
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
+var $elm$core$Array$indexedMap = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var initialBuilder = {
+			nodeList: _List_Nil,
+			nodeListSize: 0,
+			tail: A3(
+				$elm$core$Elm$JsArray$indexedMap,
+				func,
+				$elm$core$Array$tailIndex(len),
+				tail)
+		};
+		var helper = F2(
+			function (node, builder) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, builder, subTree);
+				} else {
+					var leaf = node.a;
+					var offset = builder.nodeListSize * $elm$core$Array$branchFactor;
+					var mappedLeaf = $elm$core$Array$Leaf(
+						A3($elm$core$Elm$JsArray$indexedMap, func, offset, leaf));
+					return {
+						nodeList: A2($elm$core$List$cons, mappedLeaf, builder.nodeList),
+						nodeListSize: builder.nodeListSize + 1,
+						tail: builder.tail
+					};
+				}
+			});
+		return A2(
+			$elm$core$Array$builderToArray,
+			true,
+			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
+	});
+var $aforemny$material_components_web_elm$Material$Dialog$setOnClose = F2(
+	function (onClose, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Dialog$Config(
+			_Utils_update(
+				config_,
+				{
+					onClose: $elm$core$Maybe$Just(onClose)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$Dialog$setOpen = F2(
+	function (open, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Dialog$Config(
+			_Utils_update(
+				config_,
+				{open: open}));
+	});
+var $author$project$Professor$Settings$Ends = function (a) {
+	return {$: 'Ends', a: a};
+};
+var $author$project$Professor$Settings$SaveTask = {$: 'SaveTask'};
+var $author$project$Professor$Settings$Starts = function (a) {
+	return {$: 'Starts', a: a};
+};
+var $elm$html$Html$form = _VirtualDom_node('form');
 var $aforemny$material_components_web_elm$Material$TextField$Config = function (a) {
 	return {$: 'Config', a: a};
 };
 var $aforemny$material_components_web_elm$Material$TextField$config = $aforemny$material_components_web_elm$Material$TextField$Config(
 	{additionalAttributes: _List_Nil, disabled: false, endAligned: false, fullwidth: false, label: $elm$core$Maybe$Nothing, leadingIcon: $elm$core$Maybe$Nothing, max: $elm$core$Maybe$Nothing, maxLength: $elm$core$Maybe$Nothing, min: $elm$core$Maybe$Nothing, minLength: $elm$core$Maybe$Nothing, onChange: $elm$core$Maybe$Nothing, onInput: $elm$core$Maybe$Nothing, pattern: $elm$core$Maybe$Nothing, placeholder: $elm$core$Maybe$Nothing, prefix: $elm$core$Maybe$Nothing, required: false, step: $elm$core$Maybe$Nothing, suffix: $elm$core$Maybe$Nothing, trailingIcon: $elm$core$Maybe$Nothing, type_: $elm$core$Maybe$Nothing, valid: true, value: $elm$core$Maybe$Nothing});
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
-var $elm$html$Html$form = _VirtualDom_node('form');
-var $elm$html$Html$h4 = _VirtualDom_node('h4');
-var $aforemny$material_components_web_elm$Material$Button$Internal$Icon = function (a) {
-	return {$: 'Icon', a: a};
-};
-var $aforemny$material_components_web_elm$Material$Button$customIcon = F3(
-	function (node, attributes, nodes) {
-		return $aforemny$material_components_web_elm$Material$Button$Internal$Icon(
-			{attributes: attributes, node: node, nodes: nodes});
-	});
-var $aforemny$material_components_web_elm$Material$Button$icon = function (iconName) {
-	return A3(
-		$aforemny$material_components_web_elm$Material$Button$customIcon,
-		$elm$html$Html$i,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('material-icons')
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(iconName)
-			]));
-};
-var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
-	return _Utils_Tuple2(msg, true);
-};
-var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
-	return {$: 'MayPreventDefault', a: a};
-};
-var $elm$html$Html$Events$preventDefaultOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
-	});
-var $elm$html$Html$Events$onSubmit = function (msg) {
-	return A2(
-		$elm$html$Html$Events$preventDefaultOn,
-		'submit',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysPreventDefault,
-			$elm$json$Json$Decode$succeed(msg)));
-};
 var $aforemny$material_components_web_elm$Material$TextField$disabledCs = function (_v0) {
 	var disabled = _v0.a.disabled;
 	return disabled ? $elm$core$Maybe$Just(
@@ -9674,7 +11238,6 @@ var $aforemny$material_components_web_elm$Material$TextField$endAlignedCs = func
 	return endAligned ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-text-field--end-aligned')) : $elm$core$Maybe$Nothing;
 };
-var $elm$core$Basics$not = _Basics_not;
 var $aforemny$material_components_web_elm$Material$TextField$filledCs = function (outlined_) {
 	return (!outlined_) ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-text-field--filled')) : $elm$core$Maybe$Nothing;
@@ -9719,7 +11282,6 @@ var $aforemny$material_components_web_elm$Material$TextField$changeHandler = fun
 		},
 		onChange);
 };
-var $elm$html$Html$input = _VirtualDom_node('input');
 var $aforemny$material_components_web_elm$Material$TextField$inputCs = $elm$core$Maybe$Just(
 	$elm$html$Html$Attributes$class('mdc-text-field__input'));
 var $elm$html$Html$Events$alwaysStop = function (x) {
@@ -9773,7 +11335,6 @@ var $aforemny$material_components_web_elm$Material$TextField$placeholderAttr = f
 	var placeholder = _v0.a.placeholder;
 	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$placeholder, placeholder);
 };
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $aforemny$material_components_web_elm$Material$TextField$typeAttr = function (_v0) {
 	var type_ = _v0.a.type_;
 	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$type_, type_);
@@ -9836,9 +11397,6 @@ var $aforemny$material_components_web_elm$Material$TextField$labelFloatingCs = f
 		$elm$html$Html$Attributes$class('mdc-text-field--label-floating')) : $elm$core$Maybe$Nothing;
 };
 var $elm$html$Html$Events$keyCode = A2($elm$json$Json$Decode$field, 'keyCode', $elm$json$Json$Decode$int);
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
 var $aforemny$material_components_web_elm$Material$TextField$iconElt = F2(
 	function (modifierCs, icon_) {
 		if (icon_.$ === 'Nothing') {
@@ -10213,6 +11771,135 @@ var $aforemny$material_components_web_elm$Material$TextField$textField = F2(
 var $aforemny$material_components_web_elm$Material$TextField$outlined = function (config_) {
 	return A2($aforemny$material_components_web_elm$Material$TextField$textField, true, config_);
 };
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
+var $aforemny$material_components_web_elm$Material$TextField$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setLabel = F2(
+	function (label, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{label: label}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setOnInput = F2(
+	function (onInput, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{
+					onInput: $elm$core$Maybe$Just(onInput)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setType = F2(
+	function (type_, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{type_: type_}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setValue = F2(
+	function (value, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{value: value}));
+	});
+var $author$project$Util$formInput = function (_v0) {
+	var inputType = _v0.inputType;
+	var label = _v0.label;
+	var class_ = _v0.class_;
+	var msg = _v0.msg;
+	var val = _v0.val;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('form-item')
+			]),
+		_List_fromArray(
+			[
+				$aforemny$material_components_web_elm$Material$TextField$outlined(
+				A2(
+					$aforemny$material_components_web_elm$Material$TextField$setValue,
+					val,
+					A2(
+						$aforemny$material_components_web_elm$Material$TextField$setAttributes,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class(class_),
+								$elm$html$Html$Attributes$required(true)
+							]),
+						A2(
+							$aforemny$material_components_web_elm$Material$TextField$setType,
+							$elm$core$Maybe$Just(inputType),
+							A2(
+								$aforemny$material_components_web_elm$Material$TextField$setOnInput,
+								msg,
+								A2($aforemny$material_components_web_elm$Material$TextField$setLabel, label, $aforemny$material_components_web_elm$Material$TextField$config))))))
+			]));
+};
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
+var $aforemny$material_components_web_elm$Material$Typography$headline6 = $elm$html$Html$Attributes$class('mdc-typography--headline6');
+var $aforemny$material_components_web_elm$Material$Button$Internal$Icon = function (a) {
+	return {$: 'Icon', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Button$customIcon = F3(
+	function (node, attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Icon(
+			{attributes: attributes, node: node, nodes: nodes});
+	});
+var $aforemny$material_components_web_elm$Material$Button$icon = function (iconName) {
+	return A3(
+		$aforemny$material_components_web_elm$Material$Button$customIcon,
+		$elm$html$Html$i,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('material-icons')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(iconName)
+			]));
+};
+var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
+	return _Utils_Tuple2(msg, true);
+};
+var $elm$virtual_dom$VirtualDom$MayPreventDefault = function (a) {
+	return {$: 'MayPreventDefault', a: a};
+};
+var $elm$html$Html$Events$preventDefaultOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayPreventDefault(decoder));
+	});
+var $elm$html$Html$Events$onSubmit = function (msg) {
+	return A2(
+		$elm$html$Html$Events$preventDefaultOn,
+		'submit',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysPreventDefault,
+			$elm$json$Json$Decode$succeed(msg)));
+};
 var $aforemny$material_components_web_elm$Material$LinearProgress$Config = function (a) {
 	return {$: 'Config', a: a};
 };
@@ -10369,41 +12056,466 @@ var $aforemny$material_components_web_elm$Material$LinearProgress$indeterminate 
 var $author$project$Util$progressLine = function (isLoading) {
 	return isLoading ? $aforemny$material_components_web_elm$Material$LinearProgress$indeterminate($aforemny$material_components_web_elm$Material$LinearProgress$config) : $author$project$Util$emptyHtmlNode;
 };
-var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
-var $aforemny$material_components_web_elm$Material$TextField$setAttributes = F2(
+var $aforemny$material_components_web_elm$Material$Button$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Button$config = $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+	{additionalAttributes: _List_Nil, dense: false, disabled: false, href: $elm$core$Maybe$Nothing, icon: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing, touch: true, trailingIcon: false});
+var $aforemny$material_components_web_elm$Material$Button$Raised = {$: 'Raised'};
+var $aforemny$material_components_web_elm$Material$Button$clickHandler = function (_v0) {
+	var onClick = _v0.a.onClick;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, onClick);
+};
+var $aforemny$material_components_web_elm$Material$Button$denseCs = function (_v0) {
+	var dense = _v0.a.dense;
+	return dense ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-button--dense')) : $elm$core$Maybe$Nothing;
+};
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $aforemny$material_components_web_elm$Material$Button$disabledAttr = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$disabled(disabled));
+};
+var $aforemny$material_components_web_elm$Material$Button$disabledProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'disabled',
+			$elm$json$Json$Encode$bool(disabled)));
+};
+var $aforemny$material_components_web_elm$Material$Button$hrefAttr = function (_v0) {
+	var href = _v0.a.href;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$href, href);
+};
+var $aforemny$material_components_web_elm$Material$Button$labelElt = function (label) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-button__label')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(label)
+				])));
+};
+var $aforemny$material_components_web_elm$Material$Button$iconElt = function (_v0) {
+	var config_ = _v0.a;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$map($elm$core$Basics$never),
+		function () {
+			var _v1 = config_.icon;
+			if (_v1.$ === 'Just') {
+				if (_v1.a.$ === 'Icon') {
+					var node = _v1.a.a.node;
+					var attributes = _v1.a.a.attributes;
+					var nodes = _v1.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$html$Html$Attributes$class('mdc-button__icon'),
+								A2(
+									$elm$core$List$cons,
+									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
+									attributes)),
+							nodes));
+				} else {
+					var node = _v1.a.a.node;
+					var attributes = _v1.a.a.attributes;
+					var nodes = _v1.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$svg$Svg$Attributes$class('mdc-button__icon'),
+								A2(
+									$elm$core$List$cons,
+									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
+									attributes)),
+							nodes));
+				}
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		}());
+};
+var $aforemny$material_components_web_elm$Material$Button$leadingIconElt = function (config_) {
+	var trailingIcon = config_.a.trailingIcon;
+	return (!trailingIcon) ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$rippleElt = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-button__ripple')
+			]),
+		_List_Nil));
+var $aforemny$material_components_web_elm$Material$Button$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-button'));
+var $aforemny$material_components_web_elm$Material$Button$tabIndexProp = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return disabled ? $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'tabIndex',
+			$elm$json$Json$Encode$int(-1))) : $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'tabIndex',
+			$elm$json$Json$Encode$int(0)));
+};
+var $aforemny$material_components_web_elm$Material$Button$targetAttr = function (_v0) {
+	var href = _v0.a.href;
+	var target = _v0.a.target;
+	return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A2($elm$core$Maybe$map, $elm$html$Html$Attributes$target, target) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$touchCs = function (_v0) {
+	var touch = _v0.a.touch;
+	return touch ? $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$class('mdc-button--touch')) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$touchElt = function (_v0) {
+	var touch = _v0.a.touch;
+	return touch ? $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('mdc-button__touch')
+				]),
+			_List_Nil)) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$trailingIconElt = function (config_) {
+	var trailingIcon = config_.a.trailingIcon;
+	return trailingIcon ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$Button$variantCs = function (variant) {
+	switch (variant.$) {
+		case 'Text':
+			return $elm$core$Maybe$Nothing;
+		case 'Raised':
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--raised'));
+		case 'Unelevated':
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--unelevated'));
+		default:
+			return $elm$core$Maybe$Just(
+				$elm$html$Html$Attributes$class('mdc-button--outlined'));
+	}
+};
+var $aforemny$material_components_web_elm$Material$Button$button = F3(
+	function (variant, config_, label) {
+		var additionalAttributes = config_.a.additionalAttributes;
+		var touch = config_.a.touch;
+		var href = config_.a.href;
+		var wrapTouch = function (node) {
+			return touch ? A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mdc-touch-target-wrapper')
+					]),
+				_List_fromArray(
+					[node])) : node;
+		};
+		return wrapTouch(
+			A3(
+				$elm$html$Html$node,
+				'mdc-button',
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Button$disabledProp(config_)
+						])),
+				_List_fromArray(
+					[
+						A2(
+						(!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? $elm$html$Html$a : $elm$html$Html$button,
+						_Utils_ap(
+							A2(
+								$elm$core$List$filterMap,
+								$elm$core$Basics$identity,
+								_List_fromArray(
+									[
+										$aforemny$material_components_web_elm$Material$Button$rootCs,
+										$aforemny$material_components_web_elm$Material$Button$variantCs(variant),
+										$aforemny$material_components_web_elm$Material$Button$denseCs(config_),
+										$aforemny$material_components_web_elm$Material$Button$touchCs(config_),
+										$aforemny$material_components_web_elm$Material$Button$disabledAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$tabIndexProp(config_),
+										$aforemny$material_components_web_elm$Material$Button$hrefAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$targetAttr(config_),
+										$aforemny$material_components_web_elm$Material$Button$clickHandler(config_)
+									])),
+							additionalAttributes),
+						A2(
+							$elm$core$List$filterMap,
+							$elm$core$Basics$identity,
+							_List_fromArray(
+								[
+									$aforemny$material_components_web_elm$Material$Button$rippleElt,
+									$aforemny$material_components_web_elm$Material$Button$leadingIconElt(config_),
+									$aforemny$material_components_web_elm$Material$Button$labelElt(label),
+									$aforemny$material_components_web_elm$Material$Button$trailingIconElt(config_),
+									$aforemny$material_components_web_elm$Material$Button$touchElt(config_)
+								])))
+					])));
+	});
+var $aforemny$material_components_web_elm$Material$Button$raised = F2(
+	function (config_, label) {
+		return A3($aforemny$material_components_web_elm$Material$Button$button, $aforemny$material_components_web_elm$Material$Button$Raised, config_, label);
+	});
+var $aforemny$material_components_web_elm$Material$Button$setAttributes = F2(
 	function (additionalAttributes, _v0) {
 		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$TextField$Config(
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
 			_Utils_update(
 				config_,
 				{additionalAttributes: additionalAttributes}));
 	});
-var $aforemny$material_components_web_elm$Material$TextField$setLabel = F2(
-	function (label, _v0) {
+var $aforemny$material_components_web_elm$Material$Button$setDisabled = F2(
+	function (disabled, _v0) {
 		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$TextField$Config(
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
 			_Utils_update(
 				config_,
-				{label: label}));
+				{disabled: disabled}));
 	});
-var $aforemny$material_components_web_elm$Material$TextField$setOnInput = F2(
-	function (onInput, _v0) {
+var $aforemny$material_components_web_elm$Material$Button$setIcon = F2(
+	function (icon_, _v0) {
 		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$TextField$Config(
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
 			_Utils_update(
 				config_,
+				{icon: icon_}));
+	});
+var $author$project$Util$submitButton = function (_v0) {
+	var text = _v0.text;
+	var icon = _v0.icon;
+	var disabled = _v0.disabled;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('form-item')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$aforemny$material_components_web_elm$Material$Button$raised,
+				A2(
+					$aforemny$material_components_web_elm$Material$Button$setIcon,
+					icon,
+					A2(
+						$aforemny$material_components_web_elm$Material$Button$setDisabled,
+						disabled,
+						A2(
+							$aforemny$material_components_web_elm$Material$Button$setAttributes,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('submit')
+								]),
+							$aforemny$material_components_web_elm$Material$Button$config))),
+				text)
+			]));
+};
+var $author$project$Professor$Settings$taskForm = function (model) {
+	var viewInput = F4(
+		function (inputType, label, msg, val) {
+			return $author$project$Util$formInput(
+				{class_: 'task-input', inputType: inputType, label: label, msg: msg, val: val});
+		});
+	var submitBtn = $author$project$Util$submitButton(
+		{
+			disabled: model.formProcessing,
+			icon: $elm$core$Maybe$Just(
+				$aforemny$material_components_web_elm$Material$Button$icon('save')),
+			text: 'Sačuvaj'
+		});
+	var closeBtn = A2(
+		$aforemny$material_components_web_elm$Material$IconButton$iconButton,
+		A2($aforemny$material_components_web_elm$Material$IconButton$setOnClick, $author$project$Professor$Settings$Closed, $aforemny$material_components_web_elm$Material$IconButton$config),
+		$aforemny$material_components_web_elm$Material$IconButton$icon('close'));
+	var header = A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('dialog-header')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h4,
+				_List_fromArray(
+					[$aforemny$material_components_web_elm$Material$Typography$headline6]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Izmena zadatka')
+					])),
+				closeBtn
+			]));
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				header,
+				A2(
+				$elm$html$Html$form,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onSubmit($author$project$Professor$Settings$SaveTask)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'display', 'flex')
+							]),
+						_List_fromArray(
+							[
+								A4(
+								viewInput,
+								'date',
+								$elm$core$Maybe$Just('Od'),
+								$author$project$Professor$Settings$Starts,
+								$elm$core$Maybe$Just(model.formStarts)),
+								A4(
+								viewInput,
+								'date',
+								$elm$core$Maybe$Just('Do'),
+								$author$project$Professor$Settings$Ends,
+								$elm$core$Maybe$Just(model.formEnds))
+							])),
+						submitBtn,
+						$author$project$Util$progressLine(model.formProcessing)
+					]))
+			]));
+};
+var $author$project$Professor$Settings$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$aforemny$material_components_web_elm$Material$DataTable$dataTable,
+				$aforemny$material_components_web_elm$Material$DataTable$config,
 				{
-					onInput: $elm$core$Maybe$Just(onInput)
-				}));
+					tbody: $elm$core$Array$toList(
+						A2(
+							$elm$core$Array$indexedMap,
+							$author$project$Professor$Settings$activityTabelView(model.zone),
+							model.activities)),
+					thead: _List_fromArray(
+						[
+							A2(
+							$aforemny$material_components_web_elm$Material$DataTable$row,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$aforemny$material_components_web_elm$Material$DataTable$cell,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Naziv')
+										])),
+									A2(
+									$aforemny$material_components_web_elm$Material$DataTable$cell,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Opis')
+										])),
+									A2(
+									$aforemny$material_components_web_elm$Material$DataTable$cell,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Od')
+										])),
+									A2(
+									$aforemny$material_components_web_elm$Material$DataTable$cell,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Do')
+										])),
+									A2(
+									$aforemny$material_components_web_elm$Material$DataTable$cell,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Poeni')
+										]))
+								]))
+						])
+				}),
+				A2(
+				$aforemny$material_components_web_elm$Material$Dialog$dialog,
+				A2(
+					$aforemny$material_components_web_elm$Material$Dialog$setOnClose,
+					$author$project$Professor$Settings$Closed,
+					A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, model.dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config)),
+				{
+					actions: _List_Nil,
+					content: _List_fromArray(
+						[
+							$author$project$Professor$Settings$taskForm(model)
+						]),
+					title: $elm$core$Maybe$Nothing
+				})
+			]));
+};
+var $author$project$Professor$view = F2(
+	function (model, page) {
+		if (page.$ === 'RegistrationRequestsPage') {
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Professor$GotRequestsMsg,
+				$author$project$Professor$RegistrationRequests$view(model.requstesModel));
+		} else {
+			return A2(
+				$elm$html$Html$map,
+				$author$project$Professor$GotSettingsMsg,
+				$author$project$Professor$Settings$view(model.settingModel));
+		}
 	});
-var $aforemny$material_components_web_elm$Material$TextField$setValue = F2(
-	function (value, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$TextField$Config(
-			_Utils_update(
-				config_,
-				{value: value}));
-	});
+var $author$project$Registration$Email = function (a) {
+	return {$: 'Email', a: a};
+};
+var $author$project$Registration$FirstName = function (a) {
+	return {$: 'FirstName', a: a};
+};
+var $author$project$Registration$Index = function (a) {
+	return {$: 'Index', a: a};
+};
+var $author$project$Registration$LastName = function (a) {
+	return {$: 'LastName', a: a};
+};
+var $author$project$Registration$SubmittedForm = {$: 'SubmittedForm'};
+var $aforemny$material_components_web_elm$Material$Snackbar$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Snackbar$config = function (_v0) {
+	var onClosed = _v0.onClosed;
+	return $aforemny$material_components_web_elm$Material$Snackbar$Config(
+		{additionalAttributes: _List_Nil, closeOnEscape: false, onClosed: onClosed});
+};
 var $aforemny$material_components_web_elm$Material$Snackbar$closeOnEscapeProp = function (_v0) {
 	var closeOnEscape = _v0.a.closeOnEscape;
 	return $elm$core$Maybe$Just(
@@ -10676,279 +12788,6 @@ var $aforemny$material_components_web_elm$Material$Snackbar$snackbar = F2(
 						currentMessage))
 				]));
 	});
-var $aforemny$material_components_web_elm$Material$Button$Internal$Config = function (a) {
-	return {$: 'Config', a: a};
-};
-var $aforemny$material_components_web_elm$Material$Button$config = $aforemny$material_components_web_elm$Material$Button$Internal$Config(
-	{additionalAttributes: _List_Nil, dense: false, disabled: false, href: $elm$core$Maybe$Nothing, icon: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing, touch: true, trailingIcon: false});
-var $aforemny$material_components_web_elm$Material$Button$Raised = {$: 'Raised'};
-var $aforemny$material_components_web_elm$Material$Button$clickHandler = function (_v0) {
-	var onClick = _v0.a.onClick;
-	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, onClick);
-};
-var $aforemny$material_components_web_elm$Material$Button$denseCs = function (_v0) {
-	var dense = _v0.a.dense;
-	return dense ? $elm$core$Maybe$Just(
-		$elm$html$Html$Attributes$class('mdc-button--dense')) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$disabledAttr = function (_v0) {
-	var disabled = _v0.a.disabled;
-	return $elm$core$Maybe$Just(
-		$elm$html$Html$Attributes$disabled(disabled));
-};
-var $aforemny$material_components_web_elm$Material$Button$disabledProp = function (_v0) {
-	var disabled = _v0.a.disabled;
-	return $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'disabled',
-			$elm$json$Json$Encode$bool(disabled)));
-};
-var $aforemny$material_components_web_elm$Material$Button$hrefAttr = function (_v0) {
-	var href = _v0.a.href;
-	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$href, href);
-};
-var $aforemny$material_components_web_elm$Material$Button$labelElt = function (label) {
-	return $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$span,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('mdc-button__label')
-				]),
-			_List_fromArray(
-				[
-					$elm$html$Html$text(label)
-				])));
-};
-var $aforemny$material_components_web_elm$Material$Button$iconElt = function (_v0) {
-	var config_ = _v0.a;
-	return A2(
-		$elm$core$Maybe$map,
-		$elm$html$Html$map($elm$core$Basics$never),
-		function () {
-			var _v1 = config_.icon;
-			if (_v1.$ === 'Just') {
-				if (_v1.a.$ === 'Icon') {
-					var node = _v1.a.a.node;
-					var attributes = _v1.a.a.attributes;
-					var nodes = _v1.a.a.nodes;
-					return $elm$core$Maybe$Just(
-						A2(
-							node,
-							A2(
-								$elm$core$List$cons,
-								$elm$html$Html$Attributes$class('mdc-button__icon'),
-								A2(
-									$elm$core$List$cons,
-									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
-									attributes)),
-							nodes));
-				} else {
-					var node = _v1.a.a.node;
-					var attributes = _v1.a.a.attributes;
-					var nodes = _v1.a.a.nodes;
-					return $elm$core$Maybe$Just(
-						A2(
-							node,
-							A2(
-								$elm$core$List$cons,
-								$elm$svg$Svg$Attributes$class('mdc-button__icon'),
-								A2(
-									$elm$core$List$cons,
-									A2($elm$html$Html$Attributes$attribute, 'aria-hidden', 'true'),
-									attributes)),
-							nodes));
-				}
-			} else {
-				return $elm$core$Maybe$Nothing;
-			}
-		}());
-};
-var $aforemny$material_components_web_elm$Material$Button$leadingIconElt = function (config_) {
-	var trailingIcon = config_.a.trailingIcon;
-	return (!trailingIcon) ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$rippleElt = $elm$core$Maybe$Just(
-	A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('mdc-button__ripple')
-			]),
-		_List_Nil));
-var $aforemny$material_components_web_elm$Material$Button$rootCs = $elm$core$Maybe$Just(
-	$elm$html$Html$Attributes$class('mdc-button'));
-var $aforemny$material_components_web_elm$Material$Button$tabIndexProp = function (_v0) {
-	var disabled = _v0.a.disabled;
-	return disabled ? $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'tabIndex',
-			$elm$json$Json$Encode$int(-1))) : $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'tabIndex',
-			$elm$json$Json$Encode$int(0)));
-};
-var $aforemny$material_components_web_elm$Material$Button$targetAttr = function (_v0) {
-	var href = _v0.a.href;
-	var target = _v0.a.target;
-	return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A2($elm$core$Maybe$map, $elm$html$Html$Attributes$target, target) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$touchCs = function (_v0) {
-	var touch = _v0.a.touch;
-	return touch ? $elm$core$Maybe$Just(
-		$elm$html$Html$Attributes$class('mdc-button--touch')) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$touchElt = function (_v0) {
-	var touch = _v0.a.touch;
-	return touch ? $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('mdc-button__touch')
-				]),
-			_List_Nil)) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$trailingIconElt = function (config_) {
-	var trailingIcon = config_.a.trailingIcon;
-	return trailingIcon ? $aforemny$material_components_web_elm$Material$Button$iconElt(config_) : $elm$core$Maybe$Nothing;
-};
-var $aforemny$material_components_web_elm$Material$Button$variantCs = function (variant) {
-	switch (variant.$) {
-		case 'Text':
-			return $elm$core$Maybe$Nothing;
-		case 'Raised':
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class('mdc-button--raised'));
-		case 'Unelevated':
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class('mdc-button--unelevated'));
-		default:
-			return $elm$core$Maybe$Just(
-				$elm$html$Html$Attributes$class('mdc-button--outlined'));
-	}
-};
-var $aforemny$material_components_web_elm$Material$Button$button = F3(
-	function (variant, config_, label) {
-		var additionalAttributes = config_.a.additionalAttributes;
-		var touch = config_.a.touch;
-		var href = config_.a.href;
-		var wrapTouch = function (node) {
-			return touch ? A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('mdc-touch-target-wrapper')
-					]),
-				_List_fromArray(
-					[node])) : node;
-		};
-		return wrapTouch(
-			A3(
-				$elm$html$Html$node,
-				'mdc-button',
-				A2(
-					$elm$core$List$filterMap,
-					$elm$core$Basics$identity,
-					_List_fromArray(
-						[
-							$aforemny$material_components_web_elm$Material$Button$disabledProp(config_)
-						])),
-				_List_fromArray(
-					[
-						A2(
-						(!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? $elm$html$Html$a : $elm$html$Html$button,
-						_Utils_ap(
-							A2(
-								$elm$core$List$filterMap,
-								$elm$core$Basics$identity,
-								_List_fromArray(
-									[
-										$aforemny$material_components_web_elm$Material$Button$rootCs,
-										$aforemny$material_components_web_elm$Material$Button$variantCs(variant),
-										$aforemny$material_components_web_elm$Material$Button$denseCs(config_),
-										$aforemny$material_components_web_elm$Material$Button$touchCs(config_),
-										$aforemny$material_components_web_elm$Material$Button$disabledAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$tabIndexProp(config_),
-										$aforemny$material_components_web_elm$Material$Button$hrefAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$targetAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$clickHandler(config_)
-									])),
-							additionalAttributes),
-						A2(
-							$elm$core$List$filterMap,
-							$elm$core$Basics$identity,
-							_List_fromArray(
-								[
-									$aforemny$material_components_web_elm$Material$Button$rippleElt,
-									$aforemny$material_components_web_elm$Material$Button$leadingIconElt(config_),
-									$aforemny$material_components_web_elm$Material$Button$labelElt(label),
-									$aforemny$material_components_web_elm$Material$Button$trailingIconElt(config_),
-									$aforemny$material_components_web_elm$Material$Button$touchElt(config_)
-								])))
-					])));
-	});
-var $aforemny$material_components_web_elm$Material$Button$raised = F2(
-	function (config_, label) {
-		return A3($aforemny$material_components_web_elm$Material$Button$button, $aforemny$material_components_web_elm$Material$Button$Raised, config_, label);
-	});
-var $aforemny$material_components_web_elm$Material$Button$setAttributes = F2(
-	function (additionalAttributes, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
-			_Utils_update(
-				config_,
-				{additionalAttributes: additionalAttributes}));
-	});
-var $aforemny$material_components_web_elm$Material$Button$setDisabled = F2(
-	function (disabled, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
-			_Utils_update(
-				config_,
-				{disabled: disabled}));
-	});
-var $aforemny$material_components_web_elm$Material$Button$setIcon = F2(
-	function (icon_, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
-			_Utils_update(
-				config_,
-				{icon: icon_}));
-	});
-var $author$project$Util$submitButton = function (_v0) {
-	var text = _v0.text;
-	var icon = _v0.icon;
-	var disabled = _v0.disabled;
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('form-item')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$aforemny$material_components_web_elm$Material$Button$raised,
-				A2(
-					$aforemny$material_components_web_elm$Material$Button$setIcon,
-					icon,
-					A2(
-						$aforemny$material_components_web_elm$Material$Button$setDisabled,
-						disabled,
-						A2(
-							$aforemny$material_components_web_elm$Material$Button$setAttributes,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$type_('submit')
-								]),
-							$aforemny$material_components_web_elm$Material$Button$config))),
-				text)
-			]));
-};
 var $author$project$Registration$view = function (model) {
 	var registerButton = $author$project$Util$submitButton(
 		{
@@ -11041,49 +12880,11 @@ var $author$project$User$Login$Password = function (a) {
 	return {$: 'Password', a: a};
 };
 var $author$project$User$Login$SubmittedForm = {$: 'SubmittedForm'};
-var $aforemny$material_components_web_elm$Material$TextField$setType = F2(
-	function (type_, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$TextField$Config(
-			_Utils_update(
-				config_,
-				{type_: type_}));
-	});
-var $author$project$Util$formInput = function (_v0) {
-	var inputType = _v0.inputType;
-	var label = _v0.label;
-	var class_ = _v0.class_;
-	var msg = _v0.msg;
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('form-item')
-			]),
-		_List_fromArray(
-			[
-				$aforemny$material_components_web_elm$Material$TextField$outlined(
-				A2(
-					$aforemny$material_components_web_elm$Material$TextField$setAttributes,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class(class_),
-							$elm$html$Html$Attributes$required(true)
-						]),
-					A2(
-						$aforemny$material_components_web_elm$Material$TextField$setType,
-						$elm$core$Maybe$Just(inputType),
-						A2(
-							$aforemny$material_components_web_elm$Material$TextField$setOnInput,
-							msg,
-							A2($aforemny$material_components_web_elm$Material$TextField$setLabel, label, $aforemny$material_components_web_elm$Material$TextField$config)))))
-			]));
-};
 var $author$project$User$Login$view = function (model) {
 	var viewInput = F3(
 		function (inputType, label, msg) {
 			return $author$project$Util$formInput(
-				{class_: 'login-input', inputType: inputType, label: label, msg: msg});
+				{class_: 'login-input', inputType: inputType, label: label, msg: msg, val: $elm$core$Maybe$Nothing});
 		});
 	var submitBtn = $author$project$Util$submitButton(
 		{
@@ -11148,7 +12949,7 @@ var $author$project$User$SetPassword$formView = function (model) {
 	var viewInput = F3(
 		function (inputType, label, msg) {
 			return $author$project$Util$formInput(
-				{class_: 'login-input', inputType: inputType, label: label, msg: msg});
+				{class_: 'login-input', inputType: inputType, label: label, msg: msg, val: $elm$core$Maybe$Nothing});
 		});
 	var notValid = $elm$core$String$isEmpty(model.email) || ($elm$core$String$isEmpty(model.password) || ($elm$core$String$isEmpty(model.confirmPassword) || (!_Utils_eq(model.password, model.confirmPassword))));
 	var submitBtn = $author$project$Util$submitButton(
@@ -11204,7 +13005,6 @@ var $author$project$User$SetPassword$formView = function (model) {
 var $author$project$User$SetPassword$view = function (model) {
 	var _v0 = model.userId;
 	if (_v0.$ === 'Just') {
-		var reg = _v0.a;
 		return $author$project$User$SetPassword$formView(model);
 	} else {
 		return A2(
@@ -11228,7 +13028,6 @@ var $aforemny$material_components_web_elm$Material$Menu$Config = function (a) {
 var $aforemny$material_components_web_elm$Material$Menu$config = $aforemny$material_components_web_elm$Material$Menu$Config(
 	{additionalAttributes: _List_Nil, onClose: $elm$core$Maybe$Nothing, open: false, quickOpen: false});
 var $elm$html$Html$header = _VirtualDom_node('header');
-var $aforemny$material_components_web_elm$Material$Typography$headline6 = $elm$html$Html$Attributes$class('mdc-typography--headline6');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $aforemny$material_components_web_elm$Material$Menu$closeHandler = function (_v0) {
 	var onClose = _v0.a.onClose;
@@ -11347,7 +13146,6 @@ var $aforemny$material_components_web_elm$Material$List$setWrapFocus = F2(
 var $aforemny$material_components_web_elm$Material$Menu$surfaceAnchor = $elm$html$Html$Attributes$class('mdc-menu-surface--anchor');
 var $author$project$Main$viewHeader = function (model) {
 	var _v0 = model;
-	var page = _v0.page;
 	var currentUser = _v0.currentUser;
 	var currentRoute = _v0.currentRoute;
 	var navIcon = function (_v4) {
@@ -11564,11 +13362,12 @@ var $author$project$Main$view = function (model) {
 						return $elm$html$Html$text('Admin');
 					case 'ProfessorPage':
 						if (_v0.b.$ === 'ProfessorModel') {
+							var profPage = _v0.a.a;
 							var profModel = _v0.b.a;
 							return A2(
 								$elm$html$Html$map,
 								$author$project$Main$GotProfessorMsg,
-								$author$project$Professor$view(profModel));
+								A2($author$project$Professor$view, profModel, profPage));
 						} else {
 							break _v0$7;
 						}
