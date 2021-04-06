@@ -4,7 +4,6 @@ import Url.Parser as Parser exposing ((</>), Parser, s, string, top, parse)
 import Url exposing (Url)
 import Professor
 import User.Type exposing (UserType(..))
-import Professor
 import Browser.Navigation as Nav
 
 type Route

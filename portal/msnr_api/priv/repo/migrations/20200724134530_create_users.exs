@@ -2,8 +2,6 @@ defmodule MsnrApi.Repo.Migrations.CreateUsers do
   use Ecto.Migration
   use Ecto.Schema
 
-  alias MsnrApi.Accounts.Role
-
   def change do
     create table(:roles) do
       add :name, :string, null: false

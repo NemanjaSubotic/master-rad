@@ -26,6 +26,8 @@ defmodule MsnrApiWeb.Router do
     resources "/topics", TopicController
     resources "/files", FileController, except: [:new, :edit]
     resources "/seminar_papers", SeminarPaperController, except: [:new, :edit]
+    resources "/tasks", TaskController, except: [:new, :edit]
+    resources "/activities", ActivityController, except: [:new, :edit]
   end
 
   # Enables LiveDashboard only for development

@@ -120,3 +120,13 @@ mdc-list-item a:hover {
 .heading {
   margin-top: 20px;
 }
+
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.task-input {
+  width: 100%;
+}

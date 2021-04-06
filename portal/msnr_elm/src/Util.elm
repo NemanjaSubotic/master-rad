@@ -10,8 +10,8 @@ import Material.LinearProgress as LinearProgress
 emptyHtmlNode : Html msg
 emptyHtmlNode = text ""
 
-formInput : { inputType : String,  label: Maybe String, class_ : String, msg : String -> msg } -> Html msg
-formInput {inputType, label, class_, msg}  = 
+formInput : { inputType : String,  label: Maybe String, class_ : String, msg : String -> msg, val : Maybe String } -> Html msg
+formInput {inputType, label, class_, msg, val}  = 
       div [class "form-item"] 
         [TextField.outlined
           (TextField.config
@@ -19,6 +19,7 @@ formInput {inputType, label, class_, msg}  =
               |> TextField.setOnInput msg
               |> TextField.setType (Just inputType)
               |> TextField.setAttributes [class class_, required True]
+              |> TextField.setValue val
           )
         ]
 
