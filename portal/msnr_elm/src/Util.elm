@@ -7,6 +7,8 @@ import Material.TextField as TextField
 import Material.Button as Button exposing (Icon)
 import Material.LinearProgress as LinearProgress
 
+type ViewMode = Display | Edit
+
 emptyHtmlNode : Html msg
 emptyHtmlNode = text ""
 

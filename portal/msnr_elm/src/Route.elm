@@ -43,8 +43,8 @@ guard user route key  =
     (Guest, LoginRoute ) -> { route = LoginRoute, redirection = Cmd.none}
     (Guest, RegistrationRoute) -> { route = RegistrationRoute, redirection = Cmd.none}
     (Guest, SetPasswordRoute uuid ) -> { route = SetPasswordRoute uuid, redirection = Cmd.none} 
-    (Student, StudentRoute) -> { route = StudentRoute, redirection = Cmd.none}
-    (Student, _ ) ->  { route = HomeRoute, redirection = redirectWithKey HomeRoute }
+    (Student _, StudentRoute) -> { route = StudentRoute, redirection = Cmd.none}
+    (Student _, _ ) ->  { route = HomeRoute, redirection = redirectWithKey HomeRoute }
     (Professor, ProfessorRoute subRoute) -> { route = ProfessorRoute subRoute, redirection = Cmd.none}
     (Professor, _ ) ->  { route = HomeRoute, redirection = redirectWithKey HomeRoute} 
     (Admin, AdminRoute) -> { route = AdminRoute, redirection = Cmd.none}

@@ -1,32 +1,53 @@
 
 module StudentsActivity exposing (..)
 
-import Json.Decode as Decode exposing (field)
+import Json.Decode as Decode
 import Json.Encode as Encode
 
 type alias StudentsActivity = 
   { id : Int
-  , activityType : String
+  , activityType : ActivityType
   , starts : Int
   , ends : Int
   , points : Int
   , name : String
   , description : String
-  , isGroup: Bool
   }
+
+
+-- type ActivityType 
+--   = IndividualActivity IndividualActivityType
+--   | GroupActivity GroupActivityType
+--   | Unknown
+
+-- type IndividualActivityType 
+--   = CV
+--   | Review
+
+-- type GroupActivityType 
+--   = CreateGroup
+--   | SelectTopic
+--   | V1
+--   | FinalV
+
+
+type ActivityType 
+  = CV
+  | CreateGroup
+  | SelectTopic
+  | Unknown
 
 
 decodeActivity : Decode.Decoder StudentsActivity
 decodeActivity = 
-  Decode.map8 StudentsActivity
-  ( field "id" Decode.int)
-  ( field "type" Decode.string)
-  ( field "starts_sec" Decode.int)
-  ( field "ends_sec" Decode.int)
-  ( field "points" Decode.int)
-  ( field "name" Decode.string)
-  ( field "description" Decode.string)
-  ( field "is_group" Decode.bool)
+  Decode.map7 StudentsActivity
+  ( Decode.field "id" Decode.int)
+  ( Decode.field "type" activityTypeDecoder)
+  ( Decode.field "starts_sec" Decode.int)
+  ( Decode.field "ends_sec" Decode.int)
+  ( Decode.field "points" Decode.int)
+  ( Decode.field "name" Decode.string)
+  ( Decode.field "description" Decode.string)
 
 
 encodeActivity : StudentsActivity -> Encode.Value
@@ -39,3 +60,27 @@ encodeActivity activity =
           ]
       ) 
     ] 
+
+-- activityTypeDecoder : Decode.Decoder ActivityType
+-- activityTypeDecoder =
+--   Decode.string |>
+--     Decode.andThen 
+--       (\val -> 
+--         case val of 
+--           "group" -> Decode.succeed (GroupActivity CreateGroup)
+--           "topic" -> Decode.succeed (GroupActivity SelectTopic)
+--           "cv" -> Decode.succeed (IndividualActivity CV)
+--           _ -> Decode.succeed Unknown
+--       )
+
+activityTypeDecoder : Decode.Decoder ActivityType
+activityTypeDecoder =
+  Decode.string |>
+    Decode.andThen 
+      (\val -> 
+        case val of 
+          "group" -> Decode.succeed CreateGroup
+          "topic" -> Decode.succeed SelectTopic
+          "cv" -> Decode.succeed CV
+          _ -> Decode.succeed Unknown
+      )

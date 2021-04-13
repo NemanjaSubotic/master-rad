@@ -72,16 +72,11 @@ requestDecoder =
 
 loadRequests : String -> Cmd Msg
 loadRequests token =
-  Http.request
-    { method = "GET"
-    , headers = [Api.authHeader token]
-    , url = "http://localhost:4000/api/registrations"
-    , body = Http.emptyBody
+  Api.get 
+    { url = Api.endpoints.studentsRegistrations
+    , token = token
     , expect = Http.expectJson GotLoadingResult requestsListDecoder 
-    , timeout = Nothing
-    , tracker = Nothing
     }
-
 update : Msg -> Model -> String -> ( Model, Cmd Msg )
 update msg model token =
   case msg of
@@ -232,22 +227,12 @@ init =
 updateRequestStatus : Int -> String -> String -> Cmd Msg
 updateRequestStatus id status token =
   let
-      body = 
-        Encode.object
-          [ ("registration"
-            , Encode.object 
-                [("status", Encode.string status)]) 
-          ]
-
-      headers = [Api.authHeader token]
-        
+    body = Encode.object
+      [ ( "registration", Encode.object [("status", Encode.string status)]) ]
   in
-  Http.request
-    { method = "PATCH"
-    , headers = headers
-    , url = "http://localhost:4000/api/registrations/" ++ String.fromInt id
+  Api.put 
+    { url = Api.endpoints.studentsRegistrations ++ "/" ++ String.fromInt id
     , body = Http.jsonBody body
     , expect = Http.expectJson StatusChanged (field "data" requestDecoder)
-    , timeout = Nothing
-    , tracker = Nothing
+    , token = token
     }

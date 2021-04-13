@@ -19,6 +19,7 @@ import Html.Events exposing (onSubmit)
 import Http
 import Api
 import Json.Decode exposing (array, field)
+import Util exposing (ViewMode(..))
 
 type alias Model =
     { zone : Zone
@@ -191,9 +192,7 @@ taskForm model =
         ]
     ]
 
-type DateViewMode = Display | Edit
-
-dateView : DateViewMode -> Zone -> Int -> String
+dateView : ViewMode -> Zone -> Int -> String
 dateView mode zone timeInMillis = 
   let
     time = Time.millisToPosix timeInMillis
@@ -260,7 +259,7 @@ activitiesCmd model token =
 getActivities : String -> Cmd Msg
 getActivities token = 
   Api.get 
-    { url = Api.activitiesUrl
+    { url = Api.endpoints.activities
     , token = token
     , expect = Http.expectJson LoadedActivities (field "data" (array StudentsActivity.decodeActivity))
     }
@@ -268,7 +267,7 @@ getActivities token =
 updateActivity :  StudentsActivity -> String -> Cmd Msg
 updateActivity activity token = 
     Api.put
-      { url =  Api.activitiesUrl ++ "/" ++ (String.fromInt activity.id)
+      { url =  Api.endpoints.activities ++ "/" ++ (String.fromInt activity.id)
       , token = token
       , body = Http.jsonBody (StudentsActivity.encodeActivity activity)
       , expect = Http.expectJson LoadedActivities (field "data" (array StudentsActivity.decodeActivity))

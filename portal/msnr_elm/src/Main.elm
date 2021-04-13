@@ -18,22 +18,19 @@ import Material.Typography as Typography
 import User.Login as Login
 import User.SetPassword as SetPassword
 import User.Session as Session exposing (silentTokenRefresh, logout)
+import User.Type exposing (UserType(..), getUserType)
 import Registration
 import Professor
+import Student
 
 import Util exposing (emptyHtmlNode)
-import Route exposing (..)
-import Page exposing (..)
-import Professor
-import User.Type exposing (UserType(..), getUserType)
-import Route
-import Page
 import Route exposing (Route(..))
-import Fuzz exposing (result)
+import Page exposing (..)
+
 
 type ContentModel
   = ProfessorModel Professor.Model
-  | StudentModel
+  | StudentModel Student.Model
   | AdminModel
   | NoContent
 
@@ -45,13 +42,14 @@ type alias Model =
   , key: Nav.Key
   , isMenuOpened: Bool
   , mainContent: ContentModel
-  , loading: Bool
+  , loading: Bool 
   }
 
 type Msg
   = ClickedLink Browser.UrlRequest
   | ChangedUrl Url
   | GotProfessorMsg Professor.Msg
+  | GotStudentMsg Student.Msg
   | GotLoginMsg Login.Msg
   | GotRegistrationMsg Registration.Msg
   | GotPasswordMsg SetPassword.Msg
@@ -67,26 +65,18 @@ update msg model =
   case ( msg, model.page, model.mainContent) of
     ( ClickedLink urlRequest, _, _ ) ->
       case urlRequest of
-        Browser.External href ->
-          ( model, Nav.load href )
+        Browser.External href -> ( model, Nav.load href )
+        Browser.Internal url -> ( model, Nav.pushUrl model.key (Url.toString url) )
 
-        Browser.Internal url ->
-           ( model, Nav.pushUrl model.key (Url.toString url) )
-
-    ( ChangedUrl url, _, _ ) ->
-      updateUrl url model
+    ( ChangedUrl url, _, _ ) ->  updateUrl url model
     
     ( GotInitSessionMsg (Session.GotTokenResult result), _ , _) ->
       let 
         {currentRoute, key} = model
         user = getUserType result
         {route, redirection} = Route.guard user currentRoute key
-  
-        session = 
-          case result of
-            Ok sess -> Just sess
-            Err _ -> Nothing
 
+        session = Result.toMaybe result
         model_ = setContentModel user {model | loading = False, session = session}
         
         cmd = Cmd.batch 
@@ -108,17 +98,17 @@ update msg model =
     
     ( GotSessionMsg (Session.GotSessionResult result), _, _ ) -> 
       case (result, model.page) of
-        (Ok session, _ ) -> 
+        (Err error, LoginPage loginModel) -> 
+          ( {model | page = LoginPage (Login.updateError loginModel error)} 
+          , Cmd.none)
+
+        _ -> 
           let 
             user = getUserType result
-            model_ = setContentModel user {model | session = Just session}
+            model_ = setContentModel user model
           in
           ( model_ , Route.redirectTo model.key HomeRoute )
 
-        (Err httpError, LoginPage loginModel) -> 
-          ( {model | page = LoginPage (Login.updateError loginModel httpError)} , Cmd.none)
-        
-        _ -> (model, Cmd.none)
 
     ( GotLoginMsg loginMsg, LoginPage loginModel, _ ) ->
       Login.update loginMsg loginModel
@@ -127,8 +117,9 @@ update msg model =
     ( GotPasswordMsg setPwdMsg, SetPasswordPage setPwdModel, _ ) ->
       case setPwdMsg of
         SetPassword.SessionMsg (Session.GotSessionResult (Ok session)) -> 
-         ( { model | session = Just session, currentUser = getUserType (Ok session)}
-         , Route.redirectTo model.key HomeRoute )
+          ( { model | session = Just session, currentUser = getUserType (Ok session)}
+            , Route.redirectTo model.key HomeRoute 
+          )
 
         _ ->
           SetPassword.update setPwdMsg setPwdModel
@@ -143,7 +134,16 @@ update msg model =
         (profModel, cmd)  = Professor.update profMsg model_ (tokenFrom model.session) profPage
       in  
       ( {model | mainContent = ProfessorModel profModel}
-      , cmd |> Cmd.map GotProfessorMsg )
+      , cmd |> Cmd.map GotProfessorMsg 
+      )
+
+    ( GotStudentMsg studentMsg, _ , StudentModel model_ ) -> 
+      let
+        (studentModel, cmd)  = Student.update studentMsg model_
+      in  
+      ( {model | mainContent = StudentModel studentModel}
+      , cmd |> Cmd.map GotStudentMsg 
+      )
 
     ( RefreshTick _, _, _ ) -> 
       (model, silentTokenRefresh |>  Cmd.map GotSessionMsg)
@@ -198,6 +198,11 @@ initCommand route model =
   case (route, mainContent) of
     (SetPasswordRoute uuid, _) -> SetPassword.loadRequest uuid |> Cmd.map GotPasswordMsg
     (ProfessorRoute profRoute , ProfessorModel profModel ) -> Professor.initCmd token profModel profRoute  |> Cmd.map GotProfessorMsg
+
+    (StudentRoute, StudentModel studentModel ) -> 
+      Student.initCmd studentModel token 
+        |> Cmd.map GotStudentMsg
+    
     _ -> Cmd.none
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -228,7 +233,9 @@ view model =
       else 
       case (model.page, model.mainContent) of
         (HomePage, _) -> text "Home"
-        (StudentPage, _) -> text "Student"
+        
+        (StudentPage, StudentModel studentModel) -> 
+          Student.view studentModel |> Html.map GotStudentMsg
         
         (AdminPage, _) -> text "Admin"
         
@@ -278,8 +285,8 @@ viewHeader model =
         navItems = nav [] << (::) (navIcon {route = HomeRoute, icon = "home"})
       in
       case currentUser of
-        Student -> navItems [ navIcon {route = StudentRoute, icon = "school"} ]
-        Professor -> navItems ( List.map (\{icon, route} -> navIcon {icon = icon, route = ProfessorRoute route}) Professor.navIcons)
+        Student _ -> navItems [ navIcon {route = StudentRoute, icon = "school"} ]
+        Professor  -> navItems ( List.map (\{icon, route} -> navIcon {icon = icon, route = ProfessorRoute route}) Professor.navIcons)
         _ -> emptyHtmlNode
 
     profileDropUp = 
@@ -336,7 +343,7 @@ setContentModel : UserType -> Model -> Model
 setContentModel user model =
   case user of
     Professor -> {model | mainContent = ProfessorModel Professor.init, currentUser = user } 
-    Student -> {model | mainContent = StudentModel, currentUser = user } 
+    Student info-> {model | mainContent = StudentModel (Student.init info), currentUser = user } 
     Admin -> {model | mainContent = AdminModel, currentUser = user } 
     Guest -> {model | mainContent = NoContent, currentUser = user } 
 

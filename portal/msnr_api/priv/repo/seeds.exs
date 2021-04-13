@@ -16,21 +16,24 @@ alias MsnrApi.Tasks
 alias MsnrApi.Tasks.Task
 alias MsnrApi.Tasks.TaskType
 alias MsnrApi.Activities.Activity
+alias MsnrApi.Students.Student
 
 student = %Role{} |> Role.changeset(%{name: Role.student, description: "Student"}) |> MsnrApi.Repo.insert!
 professor = %Role{} |> Role.changeset(%{name: Role.professor, description: "Profesor"}) |> MsnrApi.Repo.insert!
 admin = %Role{} |> Role.changeset(%{name: Role.admin, description: "Administrator"}) |> MsnrApi.Repo.insert!
 
-%User{} |> User.changeset_password(%{ email: "test@student", password: "test", first_name: "Test", last_name: "Student"}) |> User.changeset_role(student) |> MsnrApi.Repo.insert!
+st_user = %User{} |> User.changeset_password(%{ email: "test@student", password: "test", first_name: "Test", last_name: "Student"}) |> User.changeset_role(student) |> MsnrApi.Repo.insert!
 %User{} |> User.changeset_password(%{ email: "test@professor", password: "test", first_name: "Test", last_name: "Profesor"}) |> User.changeset_role(professor) |> MsnrApi.Repo.insert!
 %User{} |> User.changeset_password(%{ email: "test@admin", password: "test", first_name: "Test", last_name: "Admin"}) |> User.changeset_role(admin) |> MsnrApi.Repo.insert!
 
 #semester
 semester =  %Semester{} |> Semester.changeset(%{year: 2021 , ordinal_number: 2 , module: "I" , is_active: true}) |> MsnrApi.Repo.insert!
 
+%Student{} |> Student.changeset(%{user_id: st_user.id, index_number: "1056/2015"}) |> MsnrApi.Repo.insert!
+
 #task types
-group_type = %TaskType{} |> TaskType.changeset(%{type: "group"}) |> MsnrApi.Repo.insert!
-topic_type = %TaskType{} |> TaskType.changeset(%{type: "topic"}) |> MsnrApi.Repo.insert!
+group_type = %TaskType{} |> TaskType.changeset(%{type: "create_group"}) |> MsnrApi.Repo.insert!
+topic_type = %TaskType{} |> TaskType.changeset(%{type: "select_topic"}) |> MsnrApi.Repo.insert!
 cv_type = %TaskType{} |> TaskType.changeset(%{type: "cv"}) |> MsnrApi.Repo.insert!
 
 #task

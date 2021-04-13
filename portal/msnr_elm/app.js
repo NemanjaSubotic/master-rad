@@ -6364,16 +6364,40 @@ var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$User$Session$GotTokenResult = function (a) {
 	return {$: 'GotTokenResult', a: a};
 };
-var $author$project$User$Session$Session = F3(
-	function (accessToken, expiresIn, user) {
-		return {accessToken: accessToken, expiresIn: expiresIn, user: user};
+var $author$project$User$Session$Session = F4(
+	function (accessToken, expiresIn, user, studentInfo) {
+		return {accessToken: accessToken, expiresIn: expiresIn, studentInfo: studentInfo, user: user};
 	});
+var $author$project$User$Session$StudentInfo = F3(
+	function (id, groupId, semesterId) {
+		return {groupId: groupId, id: id, semesterId: semesterId};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
+var $author$project$User$Session$decodeStudentInfo = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$User$Session$StudentInfo,
+	A2($elm$json$Json$Decode$field, 'student_id', $elm$json$Json$Decode$int),
+	A2(
+		$elm$json$Json$Decode$field,
+		'group_id',
+		$elm$json$Json$Decode$nullable($elm$json$Json$Decode$int)),
+	A2($elm$json$Json$Decode$field, 'semester_id', $elm$json$Json$Decode$int));
 var $author$project$User$Session$User = F3(
 	function (email, name, role) {
 		return {email: email, name: name, role: role};
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$map3 = _Json_map3;
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$User$Session$decodeUser = A4(
 	$elm$json$Json$Decode$map3,
@@ -6382,12 +6406,20 @@ var $author$project$User$Session$decodeUser = A4(
 	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'role', $elm$json$Json$Decode$string));
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $author$project$User$Session$decodeSession = A4(
-	$elm$json$Json$Decode$map3,
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$User$Session$decodeSession = A5(
+	$elm$json$Json$Decode$map4,
 	$author$project$User$Session$Session,
 	A2($elm$json$Json$Decode$field, 'access_token', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'expires_in', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser));
+	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser),
+	A2(
+		$elm$json$Json$Decode$field,
+		'student_info',
+		$elm$json$Json$Decode$nullable($author$project$User$Session$decodeStudentInfo)));
+var $author$project$Api$baseUrl = 'http://localhost:4000/api/';
+var $author$project$Api$endpoints = {activities: $author$project$Api$baseUrl + 'activities', login: $author$project$Api$baseUrl + 'auth/login', logout: $author$project$Api$baseUrl + 'auth/logout', refreshToken: $author$project$Api$baseUrl + 'auth/refresh', studentsRegistrations: $author$project$Api$baseUrl + 'registrations'};
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -6415,8 +6447,6 @@ var $elm$core$Maybe$isJust = function (maybe) {
 	}
 };
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
-var $elm$http$Http$emptyBody = _Http_emptyBody;
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -6487,6 +6517,11 @@ var $elm$http$Http$expectJson = F2(
 						$elm$json$Json$Decode$errorToString,
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
+	});
+var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $author$project$Api$requestParams = F5(
+	function (method, headers, url, body, expect) {
+		return {body: body, expect: expect, headers: headers, method: method, timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url};
 	});
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
@@ -6656,15 +6691,16 @@ var $elm$http$Http$riskyRequest = function (r) {
 		$elm$http$Http$Request(
 			{allowCookiesFromOtherDomains: true, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
-var $author$project$User$Session$silentTokenRefresh = $elm$http$Http$riskyRequest(
+var $author$project$Api$getWithCredentials = function (_v0) {
+	var url = _v0.url;
+	var expect = _v0.expect;
+	return $elm$http$Http$riskyRequest(
+		A5($author$project$Api$requestParams, 'GET', _List_Nil, url, $elm$http$Http$emptyBody, expect));
+};
+var $author$project$User$Session$silentTokenRefresh = $author$project$Api$getWithCredentials(
 	{
-		body: $elm$http$Http$emptyBody,
 		expect: A2($elm$http$Http$expectJson, $author$project$User$Session$GotTokenResult, $author$project$User$Session$decodeSession),
-		headers: _List_Nil,
-		method: 'GET',
-		timeout: $elm$core$Maybe$Nothing,
-		tracker: $elm$core$Maybe$Nothing,
-		url: 'http://localhost:4000/api/auth/refresh'
+		url: $author$project$Api$endpoints.refreshToken
 	});
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
@@ -6980,27 +7016,45 @@ var $author$project$Main$GotRegistrationMsg = function (a) {
 var $author$project$Main$GotSessionMsg = function (a) {
 	return {$: 'GotSessionMsg', a: a};
 };
+var $author$project$Main$GotStudentMsg = function (a) {
+	return {$: 'GotStudentMsg', a: a};
+};
 var $author$project$Main$ProfessorModel = function (a) {
 	return {$: 'ProfessorModel', a: a};
+};
+var $author$project$Main$StudentModel = function (a) {
+	return {$: 'StudentModel', a: a};
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$User$Type$Admin = {$: 'Admin'};
 var $author$project$User$Type$Professor = {$: 'Professor'};
-var $author$project$User$Type$Student = {$: 'Student'};
+var $author$project$User$Type$Student = function (a) {
+	return {$: 'Student', a: a};
+};
 var $author$project$User$Type$getUserType = function (result) {
 	if (result.$ === 'Ok') {
 		var user = result.a.user;
-		var _v1 = user.role;
-		switch (_v1) {
-			case 'student':
-				return $author$project$User$Type$Student;
-			case 'admin':
-				return $author$project$User$Type$Admin;
-			case 'professor':
-				return $author$project$User$Type$Professor;
-			default:
-				return $author$project$User$Type$Guest;
+		var studentInfo = result.a.studentInfo;
+		var _v1 = _Utils_Tuple2(user.role, studentInfo);
+		_v1$3:
+		while (true) {
+			switch (_v1.a) {
+				case 'student':
+					if (_v1.b.$ === 'Just') {
+						var info = _v1.b.a;
+						return $author$project$User$Type$Student(info);
+					} else {
+						break _v1$3;
+					}
+				case 'admin':
+					return $author$project$User$Type$Admin;
+				case 'professor':
+					return $author$project$User$Type$Professor;
+				default:
+					break _v1$3;
+			}
 		}
+		return $author$project$User$Type$Guest;
 	} else {
 		return $author$project$User$Type$Guest;
 	}
@@ -7077,11 +7131,9 @@ var $author$project$Route$guard = F3(
 				}
 			case 'Student':
 				if (_v0.b.$ === 'StudentRoute') {
-					var _v8 = _v0.a;
-					var _v9 = _v0.b;
+					var _v8 = _v0.b;
 					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$StudentRoute};
 				} else {
-					var _v10 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7089,14 +7141,14 @@ var $author$project$Route$guard = F3(
 				}
 			case 'Professor':
 				if (_v0.b.$ === 'ProfessorRoute') {
-					var _v11 = _v0.a;
+					var _v9 = _v0.a;
 					var subRoute = _v0.b.a;
 					return {
 						redirection: $elm$core$Platform$Cmd$none,
 						route: $author$project$Route$ProfessorRoute(subRoute)
 					};
 				} else {
-					var _v12 = _v0.a;
+					var _v10 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7104,11 +7156,11 @@ var $author$project$Route$guard = F3(
 				}
 			default:
 				if (_v0.b.$ === 'AdminRoute') {
-					var _v13 = _v0.a;
-					var _v14 = _v0.b;
+					var _v11 = _v0.a;
+					var _v12 = _v0.b;
 					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$AdminRoute};
 				} else {
-					var _v15 = _v0.a;
+					var _v13 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7128,27 +7180,42 @@ var $author$project$Professor$Settings$AdjustTimeZone = function (a) {
 var $author$project$Professor$Settings$LoadedActivities = function (a) {
 	return {$: 'LoadedActivities', a: a};
 };
-var $author$project$Api$baseUrl = 'http://localhost:4000/api/';
-var $author$project$Api$activitiesUrl = $author$project$Api$baseUrl + 'activities';
 var $elm$json$Json$Decode$array = _Json_decodeArray;
-var $author$project$StudentsActivity$StudentsActivity = F8(
-	function (id, activityType, starts, ends, points, name, description, isGroup) {
-		return {activityType: activityType, description: description, ends: ends, id: id, isGroup: isGroup, name: name, points: points, starts: starts};
+var $author$project$StudentsActivity$StudentsActivity = F7(
+	function (id, activityType, starts, ends, points, name, description) {
+		return {activityType: activityType, description: description, ends: ends, id: id, name: name, points: points, starts: starts};
 	});
-var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$map8 = _Json_map8;
-var $author$project$StudentsActivity$decodeActivity = A9(
-	$elm$json$Json$Decode$map8,
+var $author$project$StudentsActivity$CV = {$: 'CV'};
+var $author$project$StudentsActivity$CreateGroup = {$: 'CreateGroup'};
+var $author$project$StudentsActivity$SelectTopic = {$: 'SelectTopic'};
+var $author$project$StudentsActivity$Unknown = {$: 'Unknown'};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $author$project$StudentsActivity$activityTypeDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	function (val) {
+		switch (val) {
+			case 'group':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$CreateGroup);
+			case 'topic':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$SelectTopic);
+			case 'cv':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$CV);
+			default:
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$Unknown);
+		}
+	},
+	$elm$json$Json$Decode$string);
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$StudentsActivity$decodeActivity = A8(
+	$elm$json$Json$Decode$map7,
 	$author$project$StudentsActivity$StudentsActivity,
 	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
-	A2($elm$json$Json$Decode$field, 'type', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'type', $author$project$StudentsActivity$activityTypeDecoder),
 	A2($elm$json$Json$Decode$field, 'starts_sec', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'ends_sec', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'points', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'is_group', $elm$json$Json$Decode$bool));
+	A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string));
 var $elm$http$Http$Header = F2(
 	function (a, b) {
 		return {$: 'Header', a: a, b: b};
@@ -7166,12 +7233,17 @@ var $author$project$Api$get = function (_v0) {
 	var url = _v0.url;
 	var token = _v0.token;
 	var expect = _v0.expect;
-	var headers = _List_fromArray(
-		[
-			$author$project$Api$authHeader(token)
-		]);
 	return $elm$http$Http$request(
-		{body: $elm$http$Http$emptyBody, expect: expect, headers: headers, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
+		A5(
+			$author$project$Api$requestParams,
+			'GET',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			$elm$http$Http$emptyBody,
+			expect));
 };
 var $author$project$Professor$Settings$getActivities = function (token) {
 	return $author$project$Api$get(
@@ -7184,7 +7256,7 @@ var $author$project$Professor$Settings$getActivities = function (token) {
 					'data',
 					$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
 			token: token,
-			url: $author$project$Api$activitiesUrl
+			url: $author$project$Api$endpoints.activities
 		});
 };
 var $elm$core$Array$isEmpty = function (_v0) {
@@ -7228,18 +7300,11 @@ var $author$project$Professor$RegistrationRequests$requestsListDecoder = A2(
 	'data',
 	$elm$json$Json$Decode$list($author$project$Professor$RegistrationRequests$requestDecoder));
 var $author$project$Professor$RegistrationRequests$loadRequests = function (token) {
-	return $elm$http$Http$request(
+	return $author$project$Api$get(
 		{
-			body: $elm$http$Http$emptyBody,
 			expect: A2($elm$http$Http$expectJson, $author$project$Professor$RegistrationRequests$GotLoadingResult, $author$project$Professor$RegistrationRequests$requestsListDecoder),
-			headers: _List_fromArray(
-				[
-					$author$project$Api$authHeader(token)
-				]),
-			method: 'GET',
-			timeout: $elm$core$Maybe$Nothing,
-			tracker: $elm$core$Maybe$Nothing,
-			url: 'http://localhost:4000/api/registrations'
+			token: token,
+			url: $author$project$Api$endpoints.studentsRegistrations
 		});
 };
 var $author$project$Professor$initCmd = F3(
@@ -7255,6 +7320,38 @@ var $author$project$Professor$initCmd = F3(
 				$author$project$Professor$GotSettingsMsg,
 				A2($author$project$Professor$Settings$initCmd, model.settingModel, token));
 		}
+	});
+var $author$project$Student$LoadedActivities = function (a) {
+	return {$: 'LoadedActivities', a: a};
+};
+var $author$project$Student$getActivities = function (token) {
+	return $author$project$Api$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				$author$project$Student$LoadedActivities,
+				A2(
+					$elm$json$Json$Decode$field,
+					'data',
+					$elm$json$Json$Decode$list($author$project$StudentsActivity$decodeActivity))),
+			token: token,
+			url: $author$project$Api$endpoints.activities
+		});
+};
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $author$project$Student$activitiesCmd = F2(
+	function (model, token) {
+		return $elm$core$List$isEmpty(model.fragments) ? $author$project$Student$getActivities(token) : $elm$core$Platform$Cmd$none;
+	});
+var $author$project$Student$initCmd = F2(
+	function (model, token) {
+		return A2($author$project$Student$activitiesCmd, model, token);
 	});
 var $author$project$User$SetPassword$GotLoadingResult = function (a) {
 	return {$: 'GotLoadingResult', a: a};
@@ -7301,7 +7398,7 @@ var $author$project$Main$initCommand = F2(
 		var mainContent = _v0.mainContent;
 		var token = $author$project$Main$tokenFrom(session);
 		var _v1 = _Utils_Tuple2(route, mainContent);
-		_v1$2:
+		_v1$3:
 		while (true) {
 			switch (_v1.a.$) {
 				case 'SetPasswordRoute':
@@ -7319,10 +7416,21 @@ var $author$project$Main$initCommand = F2(
 							$author$project$Main$GotProfessorMsg,
 							A3($author$project$Professor$initCmd, token, profModel, profRoute));
 					} else {
-						break _v1$2;
+						break _v1$3;
+					}
+				case 'StudentRoute':
+					if (_v1.b.$ === 'StudentModel') {
+						var _v2 = _v1.a;
+						var studentModel = _v1.b.a;
+						return A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$Main$GotStudentMsg,
+							A2($author$project$Student$initCmd, studentModel, token));
+					} else {
+						break _v1$3;
 					}
 				default:
-					break _v1$2;
+					break _v1$3;
 			}
 		}
 		return $elm$core$Platform$Cmd$none;
@@ -7348,18 +7456,12 @@ var $elm$http$Http$expectWhatever = function (toMsg) {
 				return $elm$core$Result$Ok(_Utils_Tuple0);
 			}));
 };
-var $author$project$User$Session$logout = $elm$http$Http$riskyRequest(
+var $author$project$User$Session$logout = $author$project$Api$getWithCredentials(
 	{
-		body: $elm$http$Http$emptyBody,
 		expect: $elm$http$Http$expectWhatever($author$project$User$Session$DeleteSessionResult),
-		headers: _List_Nil,
-		method: 'GET',
-		timeout: $elm$core$Maybe$Nothing,
-		tracker: $elm$core$Maybe$Nothing,
-		url: 'http://localhost:4000/api/auth/logout'
+		url: $author$project$Api$endpoints.logout
 	});
 var $author$project$Main$AdminModel = {$: 'AdminModel'};
-var $author$project$Main$StudentModel = {$: 'StudentModel'};
 var $author$project$Professor$Model = F2(
 	function (requstesModel, settingModel) {
 		return {requstesModel: requstesModel, settingModel: settingModel};
@@ -7420,6 +7522,13 @@ var $author$project$Professor$Settings$init = A7(
 	'',
 	false);
 var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequests$init, $author$project$Professor$Settings$init);
+var $author$project$Student$Model = F3(
+	function (fragments, loading, studentInfo) {
+		return {fragments: fragments, loading: loading, studentInfo: studentInfo};
+	});
+var $author$project$Student$init = function (info) {
+	return A3($author$project$Student$Model, _List_Nil, true, info);
+};
 var $author$project$Main$setContentModel = F2(
 	function (user, model) {
 		switch (user.$) {
@@ -7431,9 +7540,14 @@ var $author$project$Main$setContentModel = F2(
 						mainContent: $author$project$Main$ProfessorModel($author$project$Professor$init)
 					});
 			case 'Student':
+				var info = user.a;
 				return _Utils_update(
 					model,
-					{currentUser: user, mainContent: $author$project$Main$StudentModel});
+					{
+						currentUser: user,
+						mainContent: $author$project$Main$StudentModel(
+							$author$project$Student$init(info))
+					});
 			case 'Admin':
 				return _Utils_update(
 					model,
@@ -7444,6 +7558,14 @@ var $author$project$Main$setContentModel = F2(
 					{currentUser: user, mainContent: $author$project$Main$NoContent});
 		}
 	});
+var $elm$core$Result$toMaybe = function (result) {
+	if (result.$ === 'Ok') {
+		var v = result.a;
+		return $elm$core$Maybe$Just(v);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $author$project$Main$toPageWithModel = F4(
 	function (page, toMsg, model, _v0) {
 		var pageModel = _v0.a;
@@ -7590,13 +7712,26 @@ var $elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
+var $author$project$Api$put = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	return $elm$http$Http$request(
+		A5(
+			$author$project$Api$requestParams,
+			'PUT',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			body,
+			expect));
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Professor$RegistrationRequests$updateRequestStatus = F3(
 	function (id, status, token) {
-		var headers = _List_fromArray(
-			[
-				$author$project$Api$authHeader(token)
-			]);
 		var body = $elm$json$Json$Encode$object(
 			_List_fromArray(
 				[
@@ -7610,18 +7745,15 @@ var $author$project$Professor$RegistrationRequests$updateRequestStatus = F3(
 								$elm$json$Json$Encode$string(status))
 							])))
 				]));
-		return $elm$http$Http$request(
+		return $author$project$Api$put(
 			{
 				body: $elm$http$Http$jsonBody(body),
 				expect: A2(
 					$elm$http$Http$expectJson,
 					$author$project$Professor$RegistrationRequests$StatusChanged,
 					A2($elm$json$Json$Decode$field, 'data', $author$project$Professor$RegistrationRequests$requestDecoder)),
-				headers: headers,
-				method: 'PATCH',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: 'http://localhost:4000/api/registrations/' + $elm$core$String$fromInt(id)
+				token: token,
+				url: $author$project$Api$endpoints.studentsRegistrations + ('/' + $elm$core$String$fromInt(id))
 			});
 	});
 var $author$project$Professor$RegistrationRequests$update = F3(
@@ -7680,7 +7812,7 @@ var $author$project$Professor$RegistrationRequests$update = F3(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Professor$Settings$Edit = {$: 'Edit'};
+var $author$project$Util$Edit = {$: 'Edit'};
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
 	return A2($elm$core$String$cons, _char, '');
@@ -8438,18 +8570,6 @@ var $author$project$StudentsActivity$encodeActivity = function (activity) {
 						])))
 			]));
 };
-var $author$project$Api$put = function (_v0) {
-	var url = _v0.url;
-	var body = _v0.body;
-	var token = _v0.token;
-	var expect = _v0.expect;
-	var headers = _List_fromArray(
-		[
-			$author$project$Api$authHeader(token)
-		]);
-	return $elm$http$Http$request(
-		{body: body, expect: expect, headers: headers, method: 'PUT', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
-};
 var $author$project$Professor$Settings$updateActivity = F2(
 	function (activity, token) {
 		return $author$project$Api$put(
@@ -8464,7 +8584,7 @@ var $author$project$Professor$Settings$updateActivity = F2(
 						'data',
 						$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
 				token: token,
-				url: $author$project$Api$activitiesUrl + ('/' + $elm$core$String$fromInt(activity.id))
+				url: $author$project$Api$endpoints.activities + ('/' + $elm$core$String$fromInt(activity.id))
 			});
 	});
 var $author$project$Professor$Settings$update = F3(
@@ -8485,7 +8605,7 @@ var $author$project$Professor$Settings$update = F3(
 					$elm$core$Platform$Cmd$none);
 			case 'EditTask':
 				var index = msg.a;
-				var dateEdit = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Edit, model.zone);
+				var dateEdit = A2($author$project$Professor$Settings$dateView, $author$project$Util$Edit, model.zone);
 				var _v1 = A2($elm$core$Array$get, index, model.activities);
 				if (_v1.$ === 'Nothing') {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8829,8 +8949,46 @@ var $author$project$Registration$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Student$CV = {$: 'CV'};
+var $author$project$Student$Group = {$: 'Group'};
+var $author$project$Student$Topic = {$: 'Topic'};
+var $author$project$Student$mapToFragments = function (activity) {
+	var _v0 = activity.activityType;
+	switch (_v0.$) {
+		case 'CreateGroup':
+			return $author$project$Student$Group;
+		case 'SelectTopic':
+			return $author$project$Student$Topic;
+		default:
+			return $author$project$Student$CV;
+	}
+};
+var $author$project$Student$update = F2(
+	function (msg, model) {
+		var activitiesResult = msg.a;
+		if (activitiesResult.$ === 'Ok') {
+			var activities = activitiesResult.a;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{
+						fragments: A2($elm$core$List$map, $author$project$Student$mapToFragments, activities),
+						loading: false
+					}),
+				$elm$core$Platform$Cmd$none);
+		} else {
+			return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
 var $author$project$User$Session$GotSessionResult = function (a) {
 	return {$: 'GotSessionResult', a: a};
+};
+var $author$project$Api$postWithCredentials = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var expect = _v0.expect;
+	return $elm$http$Http$request(
+		A5($author$project$Api$requestParams, 'POST', _List_Nil, url, body, expect));
 };
 var $author$project$User$Session$getSession = F2(
 	function (email, password) {
@@ -8844,15 +9002,11 @@ var $author$project$User$Session$getSession = F2(
 					'password',
 					$elm$json$Json$Encode$string(password))
 				]));
-		return $elm$http$Http$riskyRequest(
+		return $author$project$Api$postWithCredentials(
 			{
 				body: $elm$http$Http$jsonBody(body),
 				expect: A2($elm$http$Http$expectJson, $author$project$User$Session$GotSessionResult, $author$project$User$Session$decodeSession),
-				headers: _List_Nil,
-				method: 'POST',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: 'http://localhost:4000/api/auth/login'
+				url: $author$project$Api$endpoints.login
 			});
 	});
 var $author$project$User$Login$update = F2(
@@ -9009,7 +9163,7 @@ var $author$project$Main$updateUrl = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple3(msg, model.page, model.mainContent);
-		_v0$13:
+		_v0$14:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'ClickedLink':
@@ -9035,14 +9189,7 @@ var $author$project$Main$update = F2(
 					if (_v0.a.a.$ === 'GotTokenResult') {
 						var result = _v0.a.a.a;
 						var user = $author$project$User$Type$getUserType(result);
-						var session = function () {
-							if (result.$ === 'Ok') {
-								var sess = result.a;
-								return $elm$core$Maybe$Just(sess);
-							} else {
-								return $elm$core$Maybe$Nothing;
-							}
-						}();
+						var session = $elm$core$Result$toMaybe(result);
 						var model_ = A2(
 							$author$project$Main$setContentModel,
 							user,
@@ -9063,7 +9210,7 @@ var $author$project$Main$update = F2(
 								]));
 						return _Utils_Tuple2(model_, cmd);
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotSessionMsg':
 					switch (_v0.a.a.$) {
@@ -9086,39 +9233,27 @@ var $author$project$Main$update = F2(
 							}
 						case 'GotSessionResult':
 							var result = _v0.a.a.a;
-							var _v6 = _Utils_Tuple2(result, model.page);
-							if (_v6.a.$ === 'Ok') {
-								var session = _v6.a.a;
-								var user = $author$project$User$Type$getUserType(result);
-								var model_ = A2(
-									$author$project$Main$setContentModel,
-									user,
+							var _v5 = _Utils_Tuple2(result, model.page);
+							if ((_v5.a.$ === 'Err') && (_v5.b.$ === 'LoginPage')) {
+								var error = _v5.a.a;
+								var loginModel = _v5.b.a;
+								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{
-											session: $elm$core$Maybe$Just(session)
-										}));
+											page: $author$project$Page$LoginPage(
+												A2($author$project$User$Login$updateError, loginModel, error))
+										}),
+									$elm$core$Platform$Cmd$none);
+							} else {
+								var user = $author$project$User$Type$getUserType(result);
+								var model_ = A2($author$project$Main$setContentModel, user, model);
 								return _Utils_Tuple2(
 									model_,
 									A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute));
-							} else {
-								if (_v6.b.$ === 'LoginPage') {
-									var httpError = _v6.a.a;
-									var loginModel = _v6.b.a;
-									return _Utils_Tuple2(
-										_Utils_update(
-											model,
-											{
-												page: $author$project$Page$LoginPage(
-													A2($author$project$User$Login$updateError, loginModel, httpError))
-											}),
-										$elm$core$Platform$Cmd$none);
-								} else {
-									return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-								}
 							}
 						default:
-							break _v0$13;
+							break _v0$14;
 					}
 				case 'GotLoginMsg':
 					if (_v0.b.$ === 'LoginPage') {
@@ -9131,7 +9266,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$User$Login$update, loginMsg, loginModel));
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotPasswordMsg':
 					if (_v0.b.$ === 'SetPasswordPage') {
@@ -9157,7 +9292,7 @@ var $author$project$Main$update = F2(
 								A2($author$project$User$SetPassword$update, setPwdMsg, setPwdModel));
 						}
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotRegistrationMsg':
 					if (_v0.b.$ === 'RegistrationPage') {
@@ -9170,21 +9305,21 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Registration$update, regMsg, regModel));
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotProfessorMsg':
 					if ((_v0.b.$ === 'ProfessorPage') && (_v0.c.$ === 'ProfessorModel')) {
 						var profMsg = _v0.a.a;
 						var profPage = _v0.b.a;
 						var model_ = _v0.c.a;
-						var _v8 = A4(
+						var _v7 = A4(
 							$author$project$Professor$update,
 							profMsg,
 							model_,
 							$author$project$Main$tokenFrom(model.session),
 							profPage);
-						var profModel = _v8.a;
-						var cmd = _v8.b;
+						var profModel = _v7.a;
+						var cmd = _v7.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -9193,7 +9328,24 @@ var $author$project$Main$update = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$GotProfessorMsg, cmd));
 					} else {
-						break _v0$13;
+						break _v0$14;
+					}
+				case 'GotStudentMsg':
+					if (_v0.c.$ === 'StudentModel') {
+						var studentMsg = _v0.a.a;
+						var model_ = _v0.c.a;
+						var _v8 = A2($author$project$Student$update, studentMsg, model_);
+						var studentModel = _v8.a;
+						var cmd = _v8.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									mainContent: $author$project$Main$StudentModel(studentModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$GotStudentMsg, cmd));
+					} else {
+						break _v0$14;
 					}
 				case 'RefreshTick':
 					return _Utils_Tuple2(
@@ -9766,7 +9918,6 @@ var $aforemny$material_components_web_elm$Material$List$avatarListCs = function 
 	return avatarList ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-list--avatar-list')) : $elm$core$Maybe$Nothing;
 };
-var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
@@ -10589,7 +10740,7 @@ var $author$project$Professor$RegistrationRequests$view = function (model) {
 			]));
 };
 var $author$project$Professor$Settings$Closed = {$: 'Closed'};
-var $author$project$Professor$Settings$Display = {$: 'Display'};
+var $author$project$Util$Display = {$: 'Display'};
 var $author$project$Professor$Settings$EditTask = function (a) {
 	return {$: 'EditTask', a: a};
 };
@@ -10619,7 +10770,7 @@ var $author$project$Professor$Settings$activityTabelView = F3(
 				$author$project$Professor$Settings$EditTask(id),
 				$aforemny$material_components_web_elm$Material$IconButton$config),
 			$aforemny$material_components_web_elm$Material$IconButton$icon('edit'));
-		var displayDate = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Display, zone);
+		var displayDate = A2($author$project$Professor$Settings$dateView, $author$project$Util$Display, zone);
 		var ends = displayDate(task.ends * 1000);
 		var starts = displayDate(task.starts * 1000);
 		return A2(
@@ -11032,13 +11183,6 @@ var $aforemny$material_components_web_elm$Material$Dialog$closeHandler = functio
 			$elm$html$Html$Events$on('MDCDialog:close'),
 			$elm$json$Json$Decode$succeed),
 		onClose);
-};
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
 };
 var $aforemny$material_components_web_elm$Material$Dialog$actionsElt = function (_v0) {
 	var actions = _v0.actions;
@@ -12873,6 +13017,48 @@ var $author$project$Registration$view = function (model) {
 				model.queue)
 			]));
 };
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$Student$viewFragment = function (fragment) {
+	switch (fragment.$) {
+		case 'Group':
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Group')
+					]));
+		case 'CV':
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('CV')
+					]));
+		default:
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Topic')
+					]));
+	}
+};
+var $author$project$Student$view = function (_v0) {
+	var fragments = _v0.fragments;
+	var loading = _v0.loading;
+	var studentInfo = _v0.studentInfo;
+	return A2(
+		$elm$core$Debug$log,
+		$elm$core$Debug$toString(studentInfo),
+		loading ? $aforemny$material_components_web_elm$Material$CircularProgress$indeterminate($aforemny$material_components_web_elm$Material$CircularProgress$config) : A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			A2($elm$core$List$map, $author$project$Student$viewFragment, fragments)));
+};
 var $author$project$User$Login$Email = function (a) {
 	return {$: 'Email', a: a};
 };
@@ -13355,8 +13541,16 @@ var $author$project$Main$view = function (model) {
 						var _v1 = _v0.a;
 						return $elm$html$Html$text('Home');
 					case 'StudentPage':
-						var _v2 = _v0.a;
-						return $elm$html$Html$text('Student');
+						if (_v0.b.$ === 'StudentModel') {
+							var _v2 = _v0.a;
+							var studentModel = _v0.b.a;
+							return A2(
+								$elm$html$Html$map,
+								$author$project$Main$GotStudentMsg,
+								$author$project$Student$view(studentModel));
+						} else {
+							break _v0$7;
+						}
 					case 'AdminPage':
 						var _v3 = _v0.a;
 						return $elm$html$Html$text('Admin');
