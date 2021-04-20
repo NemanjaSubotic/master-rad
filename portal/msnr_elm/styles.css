@@ -40,6 +40,16 @@ main{
   font-size: 28px !important;
 }
 
+.nav-icon a:focus{
+  outline: none !important;
+  outline-style: none !important;
+}
+
+mdc-icon-button:focus {
+  outline: none !important;
+  outline-style: none !important;
+}
+
 .nav-icon i:hover{
   color:rgb(121, 75, 196);
 }

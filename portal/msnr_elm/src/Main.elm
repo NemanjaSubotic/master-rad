@@ -83,7 +83,7 @@ update msg model =
           [ initCommand route model_
           , redirection
           ]
-      in
+      in  
         (model_, cmd)
         
     ( GotSessionMsg (Session.GotTokenResult result), _, _ ) ->
@@ -91,8 +91,10 @@ update msg model =
         Ok session -> 
           let 
             user = getUserType result
+
+            -- DOTO: UPDATE CONTENT MODEL not SET !!!!
             model_ = setContentModel user {model | session = Just session}
-          in
+          in 
           ( model_ , Cmd.none )
         Err _  -> (model, Cmd.none)
     
@@ -139,7 +141,7 @@ update msg model =
 
     ( GotStudentMsg studentMsg, _ , StudentModel model_ ) -> 
       let
-        (studentModel, cmd)  = Student.update studentMsg model_
+        (studentModel, cmd)  = Student.update studentMsg model_ (tokenFrom model.session)
       in  
       ( {model | mainContent = StudentModel studentModel}
       , cmd |> Cmd.map GotStudentMsg 

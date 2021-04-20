@@ -54,7 +54,7 @@ defmodule MsnrApi.Groups do
 
   """
 
-  def create_group(activity_id, creator_id, creator_role, student_ids) do
+  def create_group(_activity_id, creator_id, creator_role, student_ids) do
     student_ids =
       if creator_role == MsnrApi.Accounts.Role.student do
         add_student_id(creator_id, student_ids)
@@ -64,7 +64,6 @@ defmodule MsnrApi.Groups do
 
     multi_struct = Multi.new
     |> Multi.insert(:group, Group.changeset(%Group{}, %{creator_id: creator_id}))
-    |> Multi.insert_all(:activities, )
     |> Multi.run(:students, fn _repo, %{group: group} ->
         students = from s in "students",
                     where: s.id in ^student_ids and is_nil(s.group_id)

@@ -22,7 +22,14 @@ defmodule MsnrApi.Students do
     query =
       from s in Student,
       join: sem in Semester,
-      on: sem.is_active == true and s.semester_id == sem.id
+      on: sem.is_active == true and s.semester_id == sem.id,
+      join: u in assoc(s, :user),
+      select: %{
+        id: s.id,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        email: u.email,
+        index_number: s.index_number}
 
     query =
       case params do

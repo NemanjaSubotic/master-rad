@@ -79,8 +79,8 @@ activityTypeDecoder =
     Decode.andThen 
       (\val -> 
         case val of 
-          "group" -> Decode.succeed CreateGroup
-          "topic" -> Decode.succeed SelectTopic
+          "create_group" -> Decode.succeed CreateGroup
+          "select_topic" -> Decode.succeed SelectTopic
           "cv" -> Decode.succeed CV
           _ -> Decode.succeed Unknown
       )

@@ -15,7 +15,7 @@ emptyHtmlNode = text ""
 formInput : { inputType : String,  label: Maybe String, class_ : String, msg : String -> msg, val : Maybe String } -> Html msg
 formInput {inputType, label, class_, msg, val}  = 
       div [class "form-item"] 
-        [TextField.outlined
+        [TextField.filled
           (TextField.config
               |> TextField.setLabel label
               |> TextField.setOnInput msg

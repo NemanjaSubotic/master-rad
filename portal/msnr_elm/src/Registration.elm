@@ -69,7 +69,7 @@ view model =
   let
     formInput value label msg = 
       div [class "form-item"] 
-        [TextField.outlined
+        [TextField.filled
           (TextField.config
               |> TextField.setLabel (Just label)
               |> TextField.setOnInput msg

@@ -119,7 +119,6 @@ view model =
   , Dialog.dialog
         (Dialog.config
             |> Dialog.setOpen model.dialogOpened
-            |> Dialog.setOnClose Closed
         )
         { title = Nothing
         , content = [taskForm model]

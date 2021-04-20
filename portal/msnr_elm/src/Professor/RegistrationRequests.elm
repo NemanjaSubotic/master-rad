@@ -154,10 +154,10 @@ tabBar model =
       { label = (tabLabel tab), icon = Nothing }
   in
     MTabBar.tabBar MTabBar.config
-        [ createTab Pending
-        , createTab Accepted
-        , createTab Rejected
-        ]
+      (createTab Pending)
+      [ createTab Accepted
+      , createTab Rejected
+      ]
 
 view : Model -> Html Msg
 view model =
