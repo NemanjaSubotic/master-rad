@@ -9,24 +9,50 @@ defmodule MsnrApi.Accounts do
   alias MsnrApi.Accounts.Password
   alias MsnrApi.Accounts.Role
   alias MsnrApi.Students.Student
+  alias MsnrApi.Semesters.Semester
 
   def authenticate(email, password) do
-    user = Repo.get_by(User, email: email) |> Repo.preload(:role)
-    IO.inspect(user)
-    with %{hashed_password: hash} <- user,
+    user_info = get_user_info [email: email]
+
+    with %{hashed_password: hash} <- user_info.user,
         true <- Password.verify_with_hash(password, hash) do
-          {:ok, user}
+          {:ok, user_info}
     else
       _ -> {:error, :unauthorized}
     end
   end
 
+  defp get_user_info(where_clause) do
+    student_info = from st in Student,
+      inner_join: sem in Semester, on: sem.is_active and sem.id == st.semester_id,
+      left_join: g in assoc(st, :group),
+      select: %{
+        id: st.id,
+        user_id: st.user_id,
+        group_id: g.id,
+        semester_id: sem.id}
+
+    Repo.one from u in User,
+      inner_join: r in Role, on: u.role_id == r.id,
+      left_join: s in subquery(student_info), on: s.user_id == u.id,
+      preload: [:role],
+      where: ^where_clause,
+      select: %{
+        user: u,
+        student_info: %{
+          student_id: s.id,
+          group_id: s.group_id,
+          semester_id: s.semester_id}
+      }
+  end
+
   def verify_user_by_token(id, token) do
-    case Repo.get_by(User, [id: id, refresh_token: token]) |> Repo.preload(:role) do
+    case get_user_info [id: id, refresh_token: token] do
       nil  -> {:error, :unauthorized}
       user -> {:ok, user}
     end
   end
+
 
   def verify_user_by_email(id, email) do
     case Repo.get_by(User, [id: id, email: email]) do

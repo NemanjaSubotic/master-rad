@@ -11,8 +11,8 @@ defmodule MsnrApiWeb.AuthController do
   @refresh_token "refresh_token"
 
   def login(conn, %{"email" => email, "password" => password}) do
-    with {:ok, user} <- authenticate(email, password) do
-      return_tokens conn, user
+    with {:ok, user_info} <- authenticate(email, password) do
+      return_tokens conn, user_info
     end
   end
 
@@ -23,17 +23,26 @@ defmodule MsnrApiWeb.AuthController do
   end
 
   def refresh(conn, _params) do
-    with {:ok, user}  <- get_user_by_token conn.req_cookies[@refresh_token] do
-      return_tokens conn, user
+    with {:ok, user_info}  <- get_user_by_token conn.req_cookies[@refresh_token] do
+      return_tokens conn, user_info
     end
   end
 
-  defp return_tokens(conn, user) do
-    access_token = MsnrApiWeb.Authentication.sign(%{id: user.id, role: user.role.name})
+  defp return_tokens(conn, %{user: user, student_info: student_info}) do
+    role = user.role.name
+    student_role = MsnrApi.Accounts.Role.student
+
+    { palyoad, info } =
+      case role do
+        ^student_role -> { %{id: user.id, role: role, student_info: student_info}, student_info}
+        _ -> { %{id: user.id, role: role}, nil }
+      end
+
+    access_token = MsnrApiWeb.Authentication.sign(palyoad)
     with  {:ok, refresh_token } <- create_refresh_token user do
       conn
       |> set_refresh_cookie(refresh_token)
-      |> render("login.json", %{token: access_token, user: user})
+      |> render("login.json", %{token: access_token, user: user, student_info: info})
     end
   end
 

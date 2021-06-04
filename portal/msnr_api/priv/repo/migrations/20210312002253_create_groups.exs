@@ -8,10 +8,5 @@ defmodule MsnrApi.Repo.Migrations.CreateGroups do
 
       timestamps()
     end
-
-    alter table(:students) do
-      add :group_id, references(:groups)
-    end
-
   end
 end

@@ -12,7 +12,9 @@ defmodule MsnrApiWeb.StudentView do
 
   def render("student.json", %{student: student}) do
     %{id: student.id,
-      user_id: student.user_id,
+      first_name: student.first_name,
+      last_name: student.last_name,
+      email: student.email,
       index_number: student.index_number}
   end
 end

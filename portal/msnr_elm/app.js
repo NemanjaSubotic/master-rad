@@ -4630,6 +4630,184 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
+
+
+
+// DECODER
+
+var _File_decoder = _Json_decodePrim(function(value) {
+	// NOTE: checks if `File` exists in case this is run on node
+	return (typeof File !== 'undefined' && value instanceof File)
+		? $elm$core$Result$Ok(value)
+		: _Json_expecting('a FILE', value);
+});
+
+
+// METADATA
+
+function _File_name(file) { return file.name; }
+function _File_mime(file) { return file.type; }
+function _File_size(file) { return file.size; }
+
+function _File_lastModified(file)
+{
+	return $elm$time$Time$millisToPosix(file.lastModified);
+}
+
+
+// DOWNLOAD
+
+var _File_downloadNode;
+
+function _File_getDownloadNode()
+{
+	return _File_downloadNode || (_File_downloadNode = document.createElement('a'));
+}
+
+var _File_download = F3(function(name, mime, content)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var blob = new Blob([content], {type: mime});
+
+		// for IE10+
+		if (navigator.msSaveOrOpenBlob)
+		{
+			navigator.msSaveOrOpenBlob(blob, name);
+			return;
+		}
+
+		// for HTML5
+		var node = _File_getDownloadNode();
+		var objectUrl = URL.createObjectURL(blob);
+		node.href = objectUrl;
+		node.download = name;
+		_File_click(node);
+		URL.revokeObjectURL(objectUrl);
+	});
+});
+
+function _File_downloadUrl(href)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var node = _File_getDownloadNode();
+		node.href = href;
+		node.download = '';
+		node.origin === location.origin || (node.target = '_blank');
+		_File_click(node);
+	});
+}
+
+
+// IE COMPATIBILITY
+
+function _File_makeBytesSafeForInternetExplorer(bytes)
+{
+	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/10
+	// all other browsers can just run `new Blob([bytes])` directly with no problem
+	//
+	return new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+}
+
+function _File_click(node)
+{
+	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/11
+	// all other browsers have MouseEvent and do not need this conditional stuff
+	//
+	if (typeof MouseEvent === 'function')
+	{
+		node.dispatchEvent(new MouseEvent('click'));
+	}
+	else
+	{
+		var event = document.createEvent('MouseEvents');
+		event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		document.body.appendChild(node);
+		node.dispatchEvent(event);
+		document.body.removeChild(node);
+	}
+}
+
+
+// UPLOAD
+
+var _File_node;
+
+function _File_uploadOne(mimes)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		_File_node = document.createElement('input');
+		_File_node.type = 'file';
+		_File_node.accept = A2($elm$core$String$join, ',', mimes);
+		_File_node.addEventListener('change', function(event)
+		{
+			callback(_Scheduler_succeed(event.target.files[0]));
+		});
+		_File_click(_File_node);
+	});
+}
+
+function _File_uploadOneOrMore(mimes)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		_File_node = document.createElement('input');
+		_File_node.type = 'file';
+		_File_node.multiple = true;
+		_File_node.accept = A2($elm$core$String$join, ',', mimes);
+		_File_node.addEventListener('change', function(event)
+		{
+			var elmFiles = _List_fromArray(event.target.files);
+			callback(_Scheduler_succeed(_Utils_Tuple2(elmFiles.a, elmFiles.b)));
+		});
+		_File_click(_File_node);
+	});
+}
+
+
+// CONTENT
+
+function _File_toString(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(reader.result));
+		});
+		reader.readAsText(blob);
+		return function() { reader.abort(); };
+	});
+}
+
+function _File_toBytes(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(new DataView(reader.result)));
+		});
+		reader.readAsArrayBuffer(blob);
+		return function() { reader.abort(); };
+	});
+}
+
+function _File_toUrl(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(reader.result));
+		});
+		reader.readAsDataURL(blob);
+		return function() { reader.abort(); };
+	});
+}
+
 var $author$project$Main$ChangedUrl = function (a) {
 	return {$: 'ChangedUrl', a: a};
 };
@@ -6364,16 +6542,40 @@ var $elm$core$Platform$Cmd$map = _Platform_map;
 var $author$project$User$Session$GotTokenResult = function (a) {
 	return {$: 'GotTokenResult', a: a};
 };
-var $author$project$User$Session$Session = F3(
-	function (accessToken, expiresIn, user) {
-		return {accessToken: accessToken, expiresIn: expiresIn, user: user};
+var $author$project$User$Session$Session = F4(
+	function (accessToken, expiresIn, user, studentInfo) {
+		return {accessToken: accessToken, expiresIn: expiresIn, studentInfo: studentInfo, user: user};
 	});
+var $author$project$User$Session$StudentInfo = F3(
+	function (id, groupId, semesterId) {
+		return {groupId: groupId, id: id, semesterId: semesterId};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
+var $author$project$User$Session$decodeStudentInfo = A4(
+	$elm$json$Json$Decode$map3,
+	$author$project$User$Session$StudentInfo,
+	A2($elm$json$Json$Decode$field, 'student_id', $elm$json$Json$Decode$int),
+	A2(
+		$elm$json$Json$Decode$field,
+		'group_id',
+		$elm$json$Json$Decode$nullable($elm$json$Json$Decode$int)),
+	A2($elm$json$Json$Decode$field, 'semester_id', $elm$json$Json$Decode$int));
 var $author$project$User$Session$User = F3(
 	function (email, name, role) {
 		return {email: email, name: name, role: role};
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$map3 = _Json_map3;
 var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$User$Session$decodeUser = A4(
 	$elm$json$Json$Decode$map3,
@@ -6382,12 +6584,20 @@ var $author$project$User$Session$decodeUser = A4(
 	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'role', $elm$json$Json$Decode$string));
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
-var $author$project$User$Session$decodeSession = A4(
-	$elm$json$Json$Decode$map3,
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$User$Session$decodeSession = A5(
+	$elm$json$Json$Decode$map4,
 	$author$project$User$Session$Session,
 	A2($elm$json$Json$Decode$field, 'access_token', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'expires_in', $elm$json$Json$Decode$float),
-	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser));
+	A2($elm$json$Json$Decode$field, 'user', $author$project$User$Session$decodeUser),
+	A2(
+		$elm$json$Json$Decode$field,
+		'student_info',
+		$elm$json$Json$Decode$nullable($author$project$User$Session$decodeStudentInfo)));
+var $author$project$Api$baseUrl = 'http://localhost:4000/api/';
+var $author$project$Api$endpoints = {activities: $author$project$Api$baseUrl + 'activities', groups: $author$project$Api$baseUrl + 'groups', login: $author$project$Api$baseUrl + 'auth/login', logout: $author$project$Api$baseUrl + 'auth/logout', refreshToken: $author$project$Api$baseUrl + 'auth/refresh', students: $author$project$Api$baseUrl + 'students', studentsRegistrations: $author$project$Api$baseUrl + 'registrations'};
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -6415,8 +6625,6 @@ var $elm$core$Maybe$isJust = function (maybe) {
 	}
 };
 var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
-var $elm$http$Http$emptyBody = _Http_emptyBody;
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$core$Basics$composeR = F3(
 	function (f, g, x) {
 		return g(
@@ -6487,6 +6695,11 @@ var $elm$http$Http$expectJson = F2(
 						$elm$json$Json$Decode$errorToString,
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
+	});
+var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $author$project$Api$requestParams = F5(
+	function (method, headers, url, body, expect) {
+		return {body: body, expect: expect, headers: headers, method: method, timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url};
 	});
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
@@ -6656,15 +6869,16 @@ var $elm$http$Http$riskyRequest = function (r) {
 		$elm$http$Http$Request(
 			{allowCookiesFromOtherDomains: true, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
-var $author$project$User$Session$silentTokenRefresh = $elm$http$Http$riskyRequest(
+var $author$project$Api$getWithCredentials = function (_v0) {
+	var url = _v0.url;
+	var expect = _v0.expect;
+	return $elm$http$Http$riskyRequest(
+		A5($author$project$Api$requestParams, 'GET', _List_Nil, url, $elm$http$Http$emptyBody, expect));
+};
+var $author$project$User$Session$silentTokenRefresh = $author$project$Api$getWithCredentials(
 	{
-		body: $elm$http$Http$emptyBody,
 		expect: A2($elm$http$Http$expectJson, $author$project$User$Session$GotTokenResult, $author$project$User$Session$decodeSession),
-		headers: _List_Nil,
-		method: 'GET',
-		timeout: $elm$core$Maybe$Nothing,
-		tracker: $elm$core$Maybe$Nothing,
-		url: 'http://localhost:4000/api/auth/refresh'
+		url: $author$project$Api$endpoints.refreshToken
 	});
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
@@ -6980,27 +7194,45 @@ var $author$project$Main$GotRegistrationMsg = function (a) {
 var $author$project$Main$GotSessionMsg = function (a) {
 	return {$: 'GotSessionMsg', a: a};
 };
+var $author$project$Main$GotStudentMsg = function (a) {
+	return {$: 'GotStudentMsg', a: a};
+};
 var $author$project$Main$ProfessorModel = function (a) {
 	return {$: 'ProfessorModel', a: a};
+};
+var $author$project$Main$StudentModel = function (a) {
+	return {$: 'StudentModel', a: a};
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $author$project$User$Type$Admin = {$: 'Admin'};
 var $author$project$User$Type$Professor = {$: 'Professor'};
-var $author$project$User$Type$Student = {$: 'Student'};
+var $author$project$User$Type$Student = function (a) {
+	return {$: 'Student', a: a};
+};
 var $author$project$User$Type$getUserType = function (result) {
 	if (result.$ === 'Ok') {
 		var user = result.a.user;
-		var _v1 = user.role;
-		switch (_v1) {
-			case 'student':
-				return $author$project$User$Type$Student;
-			case 'admin':
-				return $author$project$User$Type$Admin;
-			case 'professor':
-				return $author$project$User$Type$Professor;
-			default:
-				return $author$project$User$Type$Guest;
+		var studentInfo = result.a.studentInfo;
+		var _v1 = _Utils_Tuple2(user.role, studentInfo);
+		_v1$3:
+		while (true) {
+			switch (_v1.a) {
+				case 'student':
+					if (_v1.b.$ === 'Just') {
+						var info = _v1.b.a;
+						return $author$project$User$Type$Student(info);
+					} else {
+						break _v1$3;
+					}
+				case 'admin':
+					return $author$project$User$Type$Admin;
+				case 'professor':
+					return $author$project$User$Type$Professor;
+				default:
+					break _v1$3;
+			}
 		}
+		return $author$project$User$Type$Guest;
 	} else {
 		return $author$project$User$Type$Guest;
 	}
@@ -7077,11 +7309,9 @@ var $author$project$Route$guard = F3(
 				}
 			case 'Student':
 				if (_v0.b.$ === 'StudentRoute') {
-					var _v8 = _v0.a;
-					var _v9 = _v0.b;
+					var _v8 = _v0.b;
 					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$StudentRoute};
 				} else {
-					var _v10 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7089,14 +7319,14 @@ var $author$project$Route$guard = F3(
 				}
 			case 'Professor':
 				if (_v0.b.$ === 'ProfessorRoute') {
-					var _v11 = _v0.a;
+					var _v9 = _v0.a;
 					var subRoute = _v0.b.a;
 					return {
 						redirection: $elm$core$Platform$Cmd$none,
 						route: $author$project$Route$ProfessorRoute(subRoute)
 					};
 				} else {
-					var _v12 = _v0.a;
+					var _v10 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7104,11 +7334,11 @@ var $author$project$Route$guard = F3(
 				}
 			default:
 				if (_v0.b.$ === 'AdminRoute') {
-					var _v13 = _v0.a;
-					var _v14 = _v0.b;
+					var _v11 = _v0.a;
+					var _v12 = _v0.b;
 					return {redirection: $elm$core$Platform$Cmd$none, route: $author$project$Route$AdminRoute};
 				} else {
-					var _v15 = _v0.a;
+					var _v13 = _v0.a;
 					return {
 						redirection: redirectWithKey($author$project$Route$HomeRoute),
 						route: $author$project$Route$HomeRoute
@@ -7128,27 +7358,42 @@ var $author$project$Professor$Settings$AdjustTimeZone = function (a) {
 var $author$project$Professor$Settings$LoadedActivities = function (a) {
 	return {$: 'LoadedActivities', a: a};
 };
-var $author$project$Api$baseUrl = 'http://localhost:4000/api/';
-var $author$project$Api$activitiesUrl = $author$project$Api$baseUrl + 'activities';
 var $elm$json$Json$Decode$array = _Json_decodeArray;
-var $author$project$StudentsActivity$StudentsActivity = F8(
-	function (id, activityType, starts, ends, points, name, description, isGroup) {
-		return {activityType: activityType, description: description, ends: ends, id: id, isGroup: isGroup, name: name, points: points, starts: starts};
+var $author$project$StudentsActivity$StudentsActivity = F7(
+	function (id, activityType, starts, ends, points, name, description) {
+		return {activityType: activityType, description: description, ends: ends, id: id, name: name, points: points, starts: starts};
 	});
-var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$map8 = _Json_map8;
-var $author$project$StudentsActivity$decodeActivity = A9(
-	$elm$json$Json$Decode$map8,
+var $author$project$StudentsActivity$CreateGroup = {$: 'CreateGroup'};
+var $author$project$StudentsActivity$SelectTopic = {$: 'SelectTopic'};
+var $author$project$StudentsActivity$Unknown = {$: 'Unknown'};
+var $author$project$StudentsActivity$UploadCV = {$: 'UploadCV'};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $author$project$StudentsActivity$activityTypeDecoder = A2(
+	$elm$json$Json$Decode$andThen,
+	function (val) {
+		switch (val) {
+			case 'create_group':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$CreateGroup);
+			case 'select_topic':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$SelectTopic);
+			case 'cv':
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$UploadCV);
+			default:
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$Unknown);
+		}
+	},
+	$elm$json$Json$Decode$string);
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$StudentsActivity$decodeActivity = A8(
+	$elm$json$Json$Decode$map7,
 	$author$project$StudentsActivity$StudentsActivity,
 	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
-	A2($elm$json$Json$Decode$field, 'type', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'type', $author$project$StudentsActivity$activityTypeDecoder),
 	A2($elm$json$Json$Decode$field, 'starts_sec', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'ends_sec', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'points', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'name', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'is_group', $elm$json$Json$Decode$bool));
+	A2($elm$json$Json$Decode$field, 'description', $elm$json$Json$Decode$string));
 var $elm$http$Http$Header = F2(
 	function (a, b) {
 		return {$: 'Header', a: a, b: b};
@@ -7166,12 +7411,17 @@ var $author$project$Api$get = function (_v0) {
 	var url = _v0.url;
 	var token = _v0.token;
 	var expect = _v0.expect;
-	var headers = _List_fromArray(
-		[
-			$author$project$Api$authHeader(token)
-		]);
 	return $elm$http$Http$request(
-		{body: $elm$http$Http$emptyBody, expect: expect, headers: headers, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
+		A5(
+			$author$project$Api$requestParams,
+			'GET',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			$elm$http$Http$emptyBody,
+			expect));
 };
 var $author$project$Professor$Settings$getActivities = function (token) {
 	return $author$project$Api$get(
@@ -7184,7 +7434,7 @@ var $author$project$Professor$Settings$getActivities = function (token) {
 					'data',
 					$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
 			token: token,
-			url: $author$project$Api$activitiesUrl
+			url: $author$project$Api$endpoints.activities
 		});
 };
 var $elm$core$Array$isEmpty = function (_v0) {
@@ -7228,18 +7478,11 @@ var $author$project$Professor$RegistrationRequests$requestsListDecoder = A2(
 	'data',
 	$elm$json$Json$Decode$list($author$project$Professor$RegistrationRequests$requestDecoder));
 var $author$project$Professor$RegistrationRequests$loadRequests = function (token) {
-	return $elm$http$Http$request(
+	return $author$project$Api$get(
 		{
-			body: $elm$http$Http$emptyBody,
 			expect: A2($elm$http$Http$expectJson, $author$project$Professor$RegistrationRequests$GotLoadingResult, $author$project$Professor$RegistrationRequests$requestsListDecoder),
-			headers: _List_fromArray(
-				[
-					$author$project$Api$authHeader(token)
-				]),
-			method: 'GET',
-			timeout: $elm$core$Maybe$Nothing,
-			tracker: $elm$core$Maybe$Nothing,
-			url: 'http://localhost:4000/api/registrations'
+			token: token,
+			url: $author$project$Api$endpoints.studentsRegistrations
 		});
 };
 var $author$project$Professor$initCmd = F3(
@@ -7255,6 +7498,43 @@ var $author$project$Professor$initCmd = F3(
 				$author$project$Professor$GotSettingsMsg,
 				A2($author$project$Professor$Settings$initCmd, model.settingModel, token));
 		}
+	});
+var $author$project$Student$AdjustTimeZone = function (a) {
+	return {$: 'AdjustTimeZone', a: a};
+};
+var $author$project$Student$CurrentTime = function (a) {
+	return {$: 'CurrentTime', a: a};
+};
+var $author$project$Student$LoadedActivities = function (a) {
+	return {$: 'LoadedActivities', a: a};
+};
+var $author$project$Student$getActivities = function (token) {
+	return $author$project$Api$get(
+		{
+			expect: A2(
+				$elm$http$Http$expectJson,
+				$author$project$Student$LoadedActivities,
+				A2(
+					$elm$json$Json$Decode$field,
+					'data',
+					$elm$json$Json$Decode$list($author$project$StudentsActivity$decodeActivity))),
+			token: token,
+			url: $author$project$Api$endpoints.activities
+		});
+};
+var $author$project$Student$activitiesCmd = F2(
+	function (model, token) {
+		return $elm$core$Array$isEmpty(model.fragments) ? $author$project$Student$getActivities(token) : $elm$core$Platform$Cmd$none;
+	});
+var $author$project$Student$initCmd = F2(
+	function (model, token) {
+		return $elm$core$Platform$Cmd$batch(
+			_List_fromArray(
+				[
+					A2($elm$core$Task$perform, $author$project$Student$AdjustTimeZone, $elm$time$Time$here),
+					A2($elm$core$Task$perform, $author$project$Student$CurrentTime, $elm$time$Time$now),
+					A2($author$project$Student$activitiesCmd, model, token)
+				]));
 	});
 var $author$project$User$SetPassword$GotLoadingResult = function (a) {
 	return {$: 'GotLoadingResult', a: a};
@@ -7301,7 +7581,7 @@ var $author$project$Main$initCommand = F2(
 		var mainContent = _v0.mainContent;
 		var token = $author$project$Main$tokenFrom(session);
 		var _v1 = _Utils_Tuple2(route, mainContent);
-		_v1$2:
+		_v1$3:
 		while (true) {
 			switch (_v1.a.$) {
 				case 'SetPasswordRoute':
@@ -7319,10 +7599,21 @@ var $author$project$Main$initCommand = F2(
 							$author$project$Main$GotProfessorMsg,
 							A3($author$project$Professor$initCmd, token, profModel, profRoute));
 					} else {
-						break _v1$2;
+						break _v1$3;
+					}
+				case 'StudentRoute':
+					if (_v1.b.$ === 'StudentModel') {
+						var _v2 = _v1.a;
+						var studentModel = _v1.b.a;
+						return A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$Main$GotStudentMsg,
+							A2($author$project$Student$initCmd, studentModel, token));
+					} else {
+						break _v1$3;
 					}
 				default:
-					break _v1$2;
+					break _v1$3;
 			}
 		}
 		return $elm$core$Platform$Cmd$none;
@@ -7348,18 +7639,12 @@ var $elm$http$Http$expectWhatever = function (toMsg) {
 				return $elm$core$Result$Ok(_Utils_Tuple0);
 			}));
 };
-var $author$project$User$Session$logout = $elm$http$Http$riskyRequest(
+var $author$project$User$Session$logout = $author$project$Api$getWithCredentials(
 	{
-		body: $elm$http$Http$emptyBody,
 		expect: $elm$http$Http$expectWhatever($author$project$User$Session$DeleteSessionResult),
-		headers: _List_Nil,
-		method: 'GET',
-		timeout: $elm$core$Maybe$Nothing,
-		tracker: $elm$core$Maybe$Nothing,
-		url: 'http://localhost:4000/api/auth/logout'
+		url: $author$project$Api$endpoints.logout
 	});
 var $author$project$Main$AdminModel = {$: 'AdminModel'};
-var $author$project$Main$StudentModel = {$: 'StudentModel'};
 var $author$project$Professor$Model = F2(
 	function (requstesModel, settingModel) {
 		return {requstesModel: requstesModel, settingModel: settingModel};
@@ -7420,6 +7705,13 @@ var $author$project$Professor$Settings$init = A7(
 	'',
 	false);
 var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequests$init, $author$project$Professor$Settings$init);
+var $author$project$Student$Model = F5(
+	function (zone, currentTimeSec, fragments, loading, studentInfo) {
+		return {currentTimeSec: currentTimeSec, fragments: fragments, loading: loading, studentInfo: studentInfo, zone: zone};
+	});
+var $author$project$Student$init = function (info) {
+	return A5($author$project$Student$Model, $elm$time$Time$utc, 0, $elm$core$Array$empty, true, info);
+};
 var $author$project$Main$setContentModel = F2(
 	function (user, model) {
 		switch (user.$) {
@@ -7431,9 +7723,14 @@ var $author$project$Main$setContentModel = F2(
 						mainContent: $author$project$Main$ProfessorModel($author$project$Professor$init)
 					});
 			case 'Student':
+				var info = user.a;
 				return _Utils_update(
 					model,
-					{currentUser: user, mainContent: $author$project$Main$StudentModel});
+					{
+						currentUser: user,
+						mainContent: $author$project$Main$StudentModel(
+							$author$project$Student$init(info))
+					});
 			case 'Admin':
 				return _Utils_update(
 					model,
@@ -7444,6 +7741,14 @@ var $author$project$Main$setContentModel = F2(
 					{currentUser: user, mainContent: $author$project$Main$NoContent});
 		}
 	});
+var $elm$core$Result$toMaybe = function (result) {
+	if (result.$ === 'Ok') {
+		var v = result.a;
+		return $elm$core$Maybe$Just(v);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $author$project$Main$toPageWithModel = F4(
 	function (page, toMsg, model, _v0) {
 		var pageModel = _v0.a;
@@ -7590,13 +7895,26 @@ var $elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
+var $author$project$Api$put = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	return $elm$http$Http$request(
+		A5(
+			$author$project$Api$requestParams,
+			'PUT',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			body,
+			expect));
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Professor$RegistrationRequests$updateRequestStatus = F3(
 	function (id, status, token) {
-		var headers = _List_fromArray(
-			[
-				$author$project$Api$authHeader(token)
-			]);
 		var body = $elm$json$Json$Encode$object(
 			_List_fromArray(
 				[
@@ -7610,18 +7928,15 @@ var $author$project$Professor$RegistrationRequests$updateRequestStatus = F3(
 								$elm$json$Json$Encode$string(status))
 							])))
 				]));
-		return $elm$http$Http$request(
+		return $author$project$Api$put(
 			{
 				body: $elm$http$Http$jsonBody(body),
 				expect: A2(
 					$elm$http$Http$expectJson,
 					$author$project$Professor$RegistrationRequests$StatusChanged,
 					A2($elm$json$Json$Decode$field, 'data', $author$project$Professor$RegistrationRequests$requestDecoder)),
-				headers: headers,
-				method: 'PATCH',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: 'http://localhost:4000/api/registrations/' + $elm$core$String$fromInt(id)
+				token: token,
+				url: $author$project$Api$endpoints.studentsRegistrations + ('/' + $elm$core$String$fromInt(id))
 			});
 	});
 var $author$project$Professor$RegistrationRequests$update = F3(
@@ -7680,7 +7995,7 @@ var $author$project$Professor$RegistrationRequests$update = F3(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
-var $author$project$Professor$Settings$Edit = {$: 'Edit'};
+var $author$project$Util$Edit = {$: 'Edit'};
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
 	return A2($elm$core$String$cons, _char, '');
@@ -7819,7 +8134,7 @@ var $elm$time$Time$toMonth = F2(
 				return $elm$time$Time$Dec;
 		}
 	});
-var $author$project$Professor$Settings$toTwoDigitMonth = function (month) {
+var $author$project$Util$toTwoDigitMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
 			return '01';
@@ -7852,12 +8167,12 @@ var $elm$time$Time$toYear = F2(
 		return $elm$time$Time$toCivil(
 			A2($elm$time$Time$toAdjustedMinutes, zone, time)).year;
 	});
-var $author$project$Professor$Settings$dateView = F3(
+var $author$project$Util$dateView = F3(
 	function (mode, zone, timeInMillis) {
 		var time = $elm$time$Time$millisToPosix(timeInMillis);
 		var year = $elm$core$String$fromInt(
 			A2($elm$time$Time$toYear, zone, time));
-		var month = $author$project$Professor$Settings$toTwoDigitMonth(
+		var month = $author$project$Util$toTwoDigitMonth(
 			A2($elm$time$Time$toMonth, zone, time));
 		var day = A3(
 			$elm$core$String$padLeft,
@@ -8019,7 +8334,7 @@ var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts = function
 		$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$yearFromInt(year));
 };
 var $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts;
-var $author$project$Professor$Settings$intToMonth = function (month) {
+var $author$project$Util$intToMonth = function (month) {
 	switch (month) {
 		case 1:
 			return $elm$core$Maybe$Just($elm$time$Time$Jan);
@@ -8049,7 +8364,7 @@ var $author$project$Professor$Settings$intToMonth = function (month) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Professor$Settings$getDateFromString = function (stringTime) {
+var $author$project$Util$getDateFromString = function (stringTime) {
 	var _v0 = A2(
 		$elm$core$List$map,
 		$elm$core$String$toInt,
@@ -8066,7 +8381,7 @@ var $author$project$Professor$Settings$getDateFromString = function (stringTime)
 				return $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts(
 					{day: day, month: m, year: year});
 			},
-			$author$project$Professor$Settings$intToMonth(month));
+			$author$project$Util$intToMonth(month));
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
@@ -8438,18 +8753,6 @@ var $author$project$StudentsActivity$encodeActivity = function (activity) {
 						])))
 			]));
 };
-var $author$project$Api$put = function (_v0) {
-	var url = _v0.url;
-	var body = _v0.body;
-	var token = _v0.token;
-	var expect = _v0.expect;
-	var headers = _List_fromArray(
-		[
-			$author$project$Api$authHeader(token)
-		]);
-	return $elm$http$Http$request(
-		{body: body, expect: expect, headers: headers, method: 'PUT', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: url});
-};
 var $author$project$Professor$Settings$updateActivity = F2(
 	function (activity, token) {
 		return $author$project$Api$put(
@@ -8464,7 +8767,7 @@ var $author$project$Professor$Settings$updateActivity = F2(
 						'data',
 						$elm$json$Json$Decode$array($author$project$StudentsActivity$decodeActivity))),
 				token: token,
-				url: $author$project$Api$activitiesUrl + ('/' + $elm$core$String$fromInt(activity.id))
+				url: $author$project$Api$endpoints.activities + ('/' + $elm$core$String$fromInt(activity.id))
 			});
 	});
 var $author$project$Professor$Settings$update = F3(
@@ -8485,7 +8788,7 @@ var $author$project$Professor$Settings$update = F3(
 					$elm$core$Platform$Cmd$none);
 			case 'EditTask':
 				var index = msg.a;
-				var dateEdit = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Edit, model.zone);
+				var dateEdit = A2($author$project$Util$dateView, $author$project$Util$Edit, model.zone);
 				var _v1 = A2($elm$core$Array$get, index, model.activities);
 				if (_v1.$ === 'Nothing') {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8525,9 +8828,9 @@ var $author$project$Professor$Settings$update = F3(
 				var mapToSecs = $elm$core$Maybe$map(
 					A2($elm$core$Basics$composeL, millisToSec, $PanagiotisGeorgiadis$elm_datetime$Calendar$toMillis));
 				var maybeEnds = mapToSecs(
-					$author$project$Professor$Settings$getDateFromString(model.formEnds));
+					$author$project$Util$getDateFromString(model.formEnds));
 				var maybeStarts = mapToSecs(
-					$author$project$Professor$Settings$getDateFromString(model.formStarts));
+					$author$project$Util$getDateFromString(model.formStarts));
 				var _v2 = _Utils_Tuple3(maybeStarts, maybeEnds, model.selectedActivity);
 				if (((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) && (_v2.c.$ === 'Just')) {
 					var starts = _v2.a.a;
@@ -8829,8 +9132,548 @@ var $author$project$Registration$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Student$CV = F3(
+	function (a, b, c) {
+		return {$: 'CV', a: a, b: b, c: c};
+	});
+var $author$project$Student$GotCvMsg = F2(
+	function (a, b) {
+		return {$: 'GotCvMsg', a: a, b: b};
+	});
+var $author$project$Student$GotGroupMsg = F2(
+	function (a, b) {
+		return {$: 'GotGroupMsg', a: a, b: b};
+	});
+var $author$project$Student$Group = F3(
+	function (a, b, c) {
+		return {$: 'Group', a: a, b: b, c: c};
+	});
+var $author$project$Student$CV$Model = F2(
+	function (activityId, cvFile) {
+		return {activityId: activityId, cvFile: cvFile};
+	});
+var $author$project$Student$CV$init = function (activityId) {
+	return A2($author$project$Student$CV$Model, activityId, $elm$core$Maybe$Nothing);
+};
+var $author$project$Student$Group$Model = F8(
+	function (activityId, currStudentId, loading, students, availableStudents, addedStudentsIds, search, dialogOpened) {
+		return {activityId: activityId, addedStudentsIds: addedStudentsIds, availableStudents: availableStudents, currStudentId: currStudentId, dialogOpened: dialogOpened, loading: loading, search: search, students: students};
+	});
+var $elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
+var $author$project$Student$Group$init = F2(
+	function (activityId, studentId) {
+		return A8($author$project$Student$Group$Model, activityId, studentId, true, _List_Nil, _List_Nil, $elm$core$Set$empty, '', false);
+	});
+var $author$project$Student$Group$LoadedStudents = function (a) {
+	return {$: 'LoadedStudents', a: a};
+};
+var $author$project$Student$Entity$StudentEntity = F5(
+	function (studentId, firstName, lastName, indexNumber, email) {
+		return {email: email, firstName: firstName, indexNumber: indexNumber, lastName: lastName, studentId: studentId};
+	});
+var $elm$json$Json$Decode$map5 = _Json_map5;
+var $author$project$Student$Entity$decodeStudent = A6(
+	$elm$json$Json$Decode$map5,
+	$author$project$Student$Entity$StudentEntity,
+	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int),
+	A2($elm$json$Json$Decode$field, 'first_name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'last_name', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'index_number', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'email', $elm$json$Json$Decode$string));
+var $author$project$Student$Group$loadAvailableStudents = F2(
+	function (_v0, token) {
+		return $author$project$Api$get(
+			{
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$Student$Group$LoadedStudents,
+					A2(
+						$elm$json$Json$Decode$field,
+						'data',
+						$elm$json$Json$Decode$list($author$project$Student$Entity$decodeStudent))),
+				token: token,
+				url: $author$project$Api$endpoints.students + '?noGroup'
+			});
+	});
+var $author$project$Student$Group$LoadedGroup = function (a) {
+	return {$: 'LoadedGroup', a: a};
+};
+var $author$project$Student$Group$loadGroup = F2(
+	function (groupId, token) {
+		return $author$project$Api$get(
+			{
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$Student$Group$LoadedGroup,
+					A2(
+						$elm$json$Json$Decode$field,
+						'data',
+						A2(
+							$elm$json$Json$Decode$field,
+							'students',
+							$elm$json$Json$Decode$list($author$project$Student$Entity$decodeStudent)))),
+				token: token,
+				url: $author$project$Api$endpoints.groups + ('/' + $elm$core$String$fromInt(groupId))
+			});
+	});
+var $author$project$Student$Group$initCmd = F3(
+	function (isActive, _v0, token) {
+		var groupId = _v0.groupId;
+		var semesterId = _v0.semesterId;
+		var _v1 = _Utils_Tuple2(isActive, groupId);
+		if (_v1.b.$ === 'Nothing') {
+			if (_v1.a) {
+				var _v2 = _v1.b;
+				return A2($author$project$Student$Group$loadAvailableStudents, semesterId, token);
+			} else {
+				return $elm$core$Platform$Cmd$none;
+			}
+		} else {
+			var id = _v1.b.a;
+			return A2($author$project$Student$Group$loadGroup, id, token);
+		}
+	});
+var $author$project$Student$isActive = F2(
+	function (currentTime, _v0) {
+		var ends = _v0.ends;
+		return _Utils_cmp(ends, currentTime) > 0;
+	});
+var $elm$core$Elm$JsArray$push = _JsArray_push;
+var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
+var $elm$core$Array$insertTailInTree = F4(
+	function (shift, index, tail, tree) {
+		var pos = $elm$core$Array$bitMask & (index >>> shift);
+		if (_Utils_cmp(
+			pos,
+			$elm$core$Elm$JsArray$length(tree)) > -1) {
+			if (shift === 5) {
+				return A2(
+					$elm$core$Elm$JsArray$push,
+					$elm$core$Array$Leaf(tail),
+					tree);
+			} else {
+				var newSub = $elm$core$Array$SubTree(
+					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, $elm$core$Elm$JsArray$empty));
+				return A2($elm$core$Elm$JsArray$push, newSub, tree);
+			}
+		} else {
+			var value = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (value.$ === 'SubTree') {
+				var subTree = value.a;
+				var newSub = $elm$core$Array$SubTree(
+					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, subTree));
+				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			} else {
+				var newSub = $elm$core$Array$SubTree(
+					A4(
+						$elm$core$Array$insertTailInTree,
+						shift - $elm$core$Array$shiftStep,
+						index,
+						tail,
+						$elm$core$Elm$JsArray$singleton(value)));
+				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			}
+		}
+	});
+var $elm$core$Array$unsafeReplaceTail = F2(
+	function (newTail, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var originalTailLen = $elm$core$Elm$JsArray$length(tail);
+		var newTailLen = $elm$core$Elm$JsArray$length(newTail);
+		var newArrayLen = len + (newTailLen - originalTailLen);
+		if (_Utils_eq(newTailLen, $elm$core$Array$branchFactor)) {
+			var overflow = _Utils_cmp(newArrayLen >>> $elm$core$Array$shiftStep, 1 << startShift) > 0;
+			if (overflow) {
+				var newShift = startShift + $elm$core$Array$shiftStep;
+				var newTree = A4(
+					$elm$core$Array$insertTailInTree,
+					newShift,
+					len,
+					newTail,
+					$elm$core$Elm$JsArray$singleton(
+						$elm$core$Array$SubTree(tree)));
+				return A4($elm$core$Array$Array_elm_builtin, newArrayLen, newShift, newTree, $elm$core$Elm$JsArray$empty);
+			} else {
+				return A4(
+					$elm$core$Array$Array_elm_builtin,
+					newArrayLen,
+					startShift,
+					A4($elm$core$Array$insertTailInTree, startShift, len, newTail, tree),
+					$elm$core$Elm$JsArray$empty);
+			}
+		} else {
+			return A4($elm$core$Array$Array_elm_builtin, newArrayLen, startShift, tree, newTail);
+		}
+	});
+var $elm$core$Array$push = F2(
+	function (a, array) {
+		var tail = array.d;
+		return A2(
+			$elm$core$Array$unsafeReplaceTail,
+			A2($elm$core$Elm$JsArray$push, a, tail),
+			array);
+	});
+var $author$project$Student$getFragmentsAndCommands = F5(
+	function (time, studentInfo, token, activity, _v0) {
+		var fragments = _v0.a;
+		var cmds = _v0.b;
+		var index = _v0.c;
+		var _v1 = activity.activityType;
+		switch (_v1.$) {
+			case 'CreateGroup':
+				var fragment = A3(
+					$author$project$Student$Group,
+					index,
+					activity,
+					A2($author$project$Student$Group$init, activity.id, studentInfo.id));
+				var cmd = A2(
+					$elm$core$Platform$Cmd$map,
+					$author$project$Student$GotGroupMsg(index),
+					A3(
+						$author$project$Student$Group$initCmd,
+						A2($author$project$Student$isActive, time, activity),
+						studentInfo,
+						token));
+				return _Utils_Tuple3(
+					A2($elm$core$Array$push, fragment, fragments),
+					A2($elm$core$List$cons, cmd, cmds),
+					index + 1);
+			case 'UploadCV':
+				return _Utils_Tuple3(
+					A2(
+						$elm$core$Array$push,
+						A3(
+							$author$project$Student$CV,
+							index,
+							activity,
+							$author$project$Student$CV$init(activity.id)),
+						fragments),
+					cmds,
+					index + 1);
+			default:
+				return _Utils_Tuple3(fragments, cmds, index);
+		}
+	});
+var $author$project$Student$CV$GotBase64 = function (a) {
+	return {$: 'GotBase64', a: a};
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$file$File$toUrl = _File_toUrl;
+var $author$project$Student$CV$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'SelectedFile':
+				if (msg.a.b && (!msg.a.b.b)) {
+					var _v1 = msg.a;
+					var file = _v1.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								cvFile: $elm$core$Maybe$Just(file)
+							}),
+						A2(
+							$elm$core$Task$perform,
+							$author$project$Student$CV$GotBase64,
+							$elm$file$File$toUrl(file)));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'Upload':
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			default:
+				var base64 = msg.a;
+				return A2(
+					$elm$core$Debug$log,
+					base64,
+					_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+		}
+	});
+var $author$project$Student$Group$GroupCreated = function (a) {
+	return {$: 'GroupCreated', a: a};
+};
+var $author$project$Api$post = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	return $elm$http$Http$request(
+		A5(
+			$author$project$Api$requestParams,
+			'POST',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			body,
+			expect));
+};
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0.a;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
+var $elm$json$Json$Encode$set = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$Set$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $author$project$Student$Group$createGroup = F2(
+	function (_v0, token) {
+		var activityId = _v0.activityId;
+		var addedStudentsIds = _v0.addedStudentsIds;
+		var students = A2($elm$json$Json$Encode$set, $elm$json$Json$Encode$int, addedStudentsIds);
+		var body = $elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('students', students),
+					_Utils_Tuple2(
+					'activity',
+					$elm$json$Json$Encode$int(activityId))
+				]));
+		return $author$project$Api$post(
+			{
+				body: $elm$http$Http$jsonBody(body),
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$Student$Group$GroupCreated,
+					A2(
+						$elm$json$Json$Decode$field,
+						'data',
+						A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int))),
+				token: token,
+				url: $author$project$Api$endpoints.groups
+			});
+	});
+var $elm$core$Set$insert = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A3($elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var $elm$core$Set$fromList = function (list) {
+	return A3($elm$core$List$foldl, $elm$core$Set$insert, $elm$core$Set$empty, list);
+};
+var $elm$core$Set$remove = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return $elm$core$Set$Set_elm_builtin(
+			A2($elm$core$Dict$remove, key, dict));
+	});
+var $author$project$Student$Group$update = F3(
+	function (msg, _v0, model) {
+		var studentInfo = _v0.studentInfo;
+		var token = _v0.token;
+		switch (msg.$) {
+			case 'LoadedStudents':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var students = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{availableStudents: students}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'ShowDialog':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							addedStudentsIds: $elm$core$Set$fromList(
+								_List_fromArray(
+									[studentInfo.id])),
+							dialogOpened: true
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'AddStudent':
+				var studentId = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							addedStudentsIds: A2($elm$core$Set$insert, studentId, model.addedStudentsIds),
+							search: ''
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'RemoveStudent':
+				var studentId = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							addedStudentsIds: A2($elm$core$Set$remove, studentId, model.addedStudentsIds)
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'Search':
+				var searchTxt = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{search: searchTxt}),
+					$elm$core$Platform$Cmd$none);
+			case 'ClosedDialog':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{dialogOpened: false}),
+					$elm$core$Platform$Cmd$none);
+			case 'Create':
+				return _Utils_Tuple2(
+					model,
+					A2($author$project$Student$Group$createGroup, model, token));
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
+var $author$project$Student$update = F3(
+	function (msg, model, token) {
+		switch (msg.$) {
+			case 'AdjustTimeZone':
+				var zone = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{zone: zone}),
+					$elm$core$Platform$Cmd$none);
+			case 'CurrentTime':
+				var posixTime = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							currentTimeSec: ($elm$time$Time$posixToMillis(posixTime) / 1000) | 0
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'LoadedActivities':
+				var activitiesResult = msg.a;
+				if (activitiesResult.$ === 'Ok') {
+					var activities = activitiesResult.a;
+					var foldFn = A3($author$project$Student$getFragmentsAndCommands, model.currentTimeSec, model.studentInfo, token);
+					var _v2 = A3(
+						$elm$core$List$foldr,
+						foldFn,
+						_Utils_Tuple3($elm$core$Array$empty, _List_Nil, 0),
+						activities);
+					var fragments = _v2.a;
+					var cmds = _v2.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{fragments: fragments, loading: false}),
+						$elm$core$Platform$Cmd$batch(cmds));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'GotGroupMsg':
+				if (msg.b.$ === 'GroupCreated') {
+					var result = msg.b.a;
+					if (result.$ === 'Ok') {
+						var groupId = result.a;
+						var studentInfo = model.studentInfo;
+						var newStudentInfo = _Utils_update(
+							studentInfo,
+							{
+								groupId: $elm$core$Maybe$Just(groupId)
+							});
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{studentInfo: newStudentInfo}),
+							$elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				} else {
+					var index = msg.a;
+					var groupMsg = msg.b;
+					var _v4 = A2($elm$core$Array$get, index, model.fragments);
+					if ((_v4.$ === 'Just') && (_v4.a.$ === 'Group')) {
+						var _v5 = _v4.a;
+						var activity = _v5.b;
+						var groupModel = _v5.c;
+						var _v6 = A3(
+							$author$project$Student$Group$update,
+							groupMsg,
+							{studentInfo: model.studentInfo, token: token},
+							groupModel);
+						var model_ = _v6.a;
+						var cmd = _v6.b;
+						var fragments = A3(
+							$elm$core$Array$set,
+							index,
+							A3($author$project$Student$Group, index, activity, model_),
+							model.fragments);
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{fragments: fragments}),
+							A2(
+								$elm$core$Platform$Cmd$map,
+								$author$project$Student$GotGroupMsg(index),
+								cmd));
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				}
+			default:
+				var index = msg.a;
+				var cvMsg = msg.b;
+				var _v7 = A2($elm$core$Array$get, index, model.fragments);
+				if ((_v7.$ === 'Just') && (_v7.a.$ === 'CV')) {
+					var _v8 = _v7.a;
+					var activity = _v8.b;
+					var cvModel = _v8.c;
+					var _v9 = A2($author$project$Student$CV$update, cvMsg, cvModel);
+					var model_ = _v9.a;
+					var cmd = _v9.b;
+					var fragments = A3(
+						$elm$core$Array$set,
+						index,
+						A3($author$project$Student$CV, index, activity, model_),
+						model.fragments);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{fragments: fragments}),
+						A2(
+							$elm$core$Platform$Cmd$map,
+							$author$project$Student$GotCvMsg(index),
+							cmd));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+		}
+	});
 var $author$project$User$Session$GotSessionResult = function (a) {
 	return {$: 'GotSessionResult', a: a};
+};
+var $author$project$Api$postWithCredentials = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var expect = _v0.expect;
+	return $elm$http$Http$riskyRequest(
+		A5($author$project$Api$requestParams, 'POST', _List_Nil, url, body, expect));
 };
 var $author$project$User$Session$getSession = F2(
 	function (email, password) {
@@ -8844,15 +9687,11 @@ var $author$project$User$Session$getSession = F2(
 					'password',
 					$elm$json$Json$Encode$string(password))
 				]));
-		return $elm$http$Http$riskyRequest(
+		return $author$project$Api$postWithCredentials(
 			{
 				body: $elm$http$Http$jsonBody(body),
 				expect: A2($elm$http$Http$expectJson, $author$project$User$Session$GotSessionResult, $author$project$User$Session$decodeSession),
-				headers: _List_Nil,
-				method: 'POST',
-				timeout: $elm$core$Maybe$Nothing,
-				tracker: $elm$core$Maybe$Nothing,
-				url: 'http://localhost:4000/api/auth/login'
+				url: $author$project$Api$endpoints.login
 			});
 	});
 var $author$project$User$Login$update = F2(
@@ -9009,7 +9848,7 @@ var $author$project$Main$updateUrl = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple3(msg, model.page, model.mainContent);
-		_v0$13:
+		_v0$14:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'ClickedLink':
@@ -9035,14 +9874,7 @@ var $author$project$Main$update = F2(
 					if (_v0.a.a.$ === 'GotTokenResult') {
 						var result = _v0.a.a.a;
 						var user = $author$project$User$Type$getUserType(result);
-						var session = function () {
-							if (result.$ === 'Ok') {
-								var sess = result.a;
-								return $elm$core$Maybe$Just(sess);
-							} else {
-								return $elm$core$Maybe$Nothing;
-							}
-						}();
+						var session = $elm$core$Result$toMaybe(result);
 						var model_ = A2(
 							$author$project$Main$setContentModel,
 							user,
@@ -9063,7 +9895,7 @@ var $author$project$Main$update = F2(
 								]));
 						return _Utils_Tuple2(model_, cmd);
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotSessionMsg':
 					switch (_v0.a.a.$) {
@@ -9086,9 +9918,24 @@ var $author$project$Main$update = F2(
 							}
 						case 'GotSessionResult':
 							var result = _v0.a.a.a;
-							var _v6 = _Utils_Tuple2(result, model.page);
-							if (_v6.a.$ === 'Ok') {
-								var session = _v6.a.a;
+							var _v5 = _Utils_Tuple2(result, model.page);
+							if (_v5.a.$ === 'Err') {
+								if (_v5.b.$ === 'LoginPage') {
+									var error = _v5.a.a;
+									var loginModel = _v5.b.a;
+									return _Utils_Tuple2(
+										_Utils_update(
+											model,
+											{
+												page: $author$project$Page$LoginPage(
+													A2($author$project$User$Login$updateError, loginModel, error))
+											}),
+										$elm$core$Platform$Cmd$none);
+								} else {
+									return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+								}
+							} else {
+								var session = _v5.a.a;
 								var user = $author$project$User$Type$getUserType(result);
 								var model_ = A2(
 									$author$project$Main$setContentModel,
@@ -9101,24 +9948,9 @@ var $author$project$Main$update = F2(
 								return _Utils_Tuple2(
 									model_,
 									A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute));
-							} else {
-								if (_v6.b.$ === 'LoginPage') {
-									var httpError = _v6.a.a;
-									var loginModel = _v6.b.a;
-									return _Utils_Tuple2(
-										_Utils_update(
-											model,
-											{
-												page: $author$project$Page$LoginPage(
-													A2($author$project$User$Login$updateError, loginModel, httpError))
-											}),
-										$elm$core$Platform$Cmd$none);
-								} else {
-									return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-								}
 							}
 						default:
-							break _v0$13;
+							break _v0$14;
 					}
 				case 'GotLoginMsg':
 					if (_v0.b.$ === 'LoginPage') {
@@ -9131,7 +9963,7 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$User$Login$update, loginMsg, loginModel));
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotPasswordMsg':
 					if (_v0.b.$ === 'SetPasswordPage') {
@@ -9157,7 +9989,7 @@ var $author$project$Main$update = F2(
 								A2($author$project$User$SetPassword$update, setPwdMsg, setPwdModel));
 						}
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotRegistrationMsg':
 					if (_v0.b.$ === 'RegistrationPage') {
@@ -9170,21 +10002,21 @@ var $author$project$Main$update = F2(
 							model,
 							A2($author$project$Registration$update, regMsg, regModel));
 					} else {
-						break _v0$13;
+						break _v0$14;
 					}
 				case 'GotProfessorMsg':
 					if ((_v0.b.$ === 'ProfessorPage') && (_v0.c.$ === 'ProfessorModel')) {
 						var profMsg = _v0.a.a;
 						var profPage = _v0.b.a;
 						var model_ = _v0.c.a;
-						var _v8 = A4(
+						var _v7 = A4(
 							$author$project$Professor$update,
 							profMsg,
 							model_,
 							$author$project$Main$tokenFrom(model.session),
 							profPage);
-						var profModel = _v8.a;
-						var cmd = _v8.b;
+						var profModel = _v7.a;
+						var cmd = _v7.b;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -9193,7 +10025,28 @@ var $author$project$Main$update = F2(
 								}),
 							A2($elm$core$Platform$Cmd$map, $author$project$Main$GotProfessorMsg, cmd));
 					} else {
-						break _v0$13;
+						break _v0$14;
+					}
+				case 'GotStudentMsg':
+					if (_v0.c.$ === 'StudentModel') {
+						var studentMsg = _v0.a.a;
+						var model_ = _v0.c.a;
+						var _v8 = A3(
+							$author$project$Student$update,
+							studentMsg,
+							model_,
+							$author$project$Main$tokenFrom(model.session));
+						var studentModel = _v8.a;
+						var cmd = _v8.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									mainContent: $author$project$Main$StudentModel(studentModel)
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$Main$GotStudentMsg, cmd));
+					} else {
+						break _v0$14;
 					}
 				case 'RefreshTick':
 					return _Utils_Tuple2(
@@ -9252,7 +10105,7 @@ var $aforemny$material_components_web_elm$Material$IconButton$Internal$Config = 
 	return {$: 'Config', a: a};
 };
 var $aforemny$material_components_web_elm$Material$IconButton$config = $aforemny$material_components_web_elm$Material$IconButton$Internal$Config(
-	{additionalAttributes: _List_Nil, disabled: false, label: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing});
+	{additionalAttributes: _List_Nil, disabled: false, href: $elm$core$Maybe$Nothing, label: $elm$core$Maybe$Nothing, menu: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing});
 var $aforemny$material_components_web_elm$Material$List$Config = function (a) {
 	return {$: 'Config', a: a};
 };
@@ -9324,6 +10177,7 @@ var $aforemny$material_components_web_elm$Material$IconButton$icon = function (i
 				$elm$html$Html$text(iconName)
 			]));
 };
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
@@ -9346,69 +10200,181 @@ var $aforemny$material_components_web_elm$Material$IconButton$clickHandler = fun
 	var onClick = _v0.a.onClick;
 	return A2($elm$core$Maybe$map, $elm$html$Html$Events$onClick, onClick);
 };
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $aforemny$material_components_web_elm$Material$IconButton$disabledAttr = function (_v0) {
+	var disabled = _v0.a.disabled;
+	return $elm$core$Maybe$Just(
+		$elm$html$Html$Attributes$disabled(disabled));
+};
+var $aforemny$material_components_web_elm$Material$IconButton$hrefAttr = function (_v0) {
+	var href = _v0.a.href;
+	return A2($elm$core$Maybe$map, $elm$html$Html$Attributes$href, href);
+};
+var $aforemny$material_components_web_elm$Material$IconButton$iconButtonCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-icon-button'));
+var $aforemny$material_components_web_elm$Material$Menu$closeHandler = function (_v0) {
+	var onClose = _v0.a.onClose;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Events$on('MDCMenuSurface:close'),
+			$elm$json$Json$Decode$succeed),
+		onClose);
+};
 var $elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(
 		_VirtualDom_noScript(tag));
 };
 var $elm$html$Html$node = $elm$virtual_dom$VirtualDom$node;
-var $aforemny$material_components_web_elm$Material$IconButton$rootCs = $elm$core$Maybe$Just(
-	$elm$html$Html$Attributes$class('mdc-icon-button'));
-var $elm$html$Html$Attributes$tabindex = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'tabIndex',
-		$elm$core$String$fromInt(n));
+var $elm$virtual_dom$VirtualDom$property = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_property,
+			_VirtualDom_noInnerHtmlOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$property = $elm$virtual_dom$VirtualDom$property;
+var $aforemny$material_components_web_elm$Material$Menu$openProp = function (_v0) {
+	var open = _v0.a.open;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'open',
+			$elm$json$Json$Encode$bool(open)));
 };
-var $aforemny$material_components_web_elm$Material$IconButton$tabIndexProp = $elm$core$Maybe$Just(
-	$elm$html$Html$Attributes$tabindex(0));
-var $aforemny$material_components_web_elm$Material$IconButton$iconButton = F2(
-	function (config_, icon_) {
+var $aforemny$material_components_web_elm$Material$Menu$quickOpenProp = function (_v0) {
+	var quickOpen = _v0.a.quickOpen;
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$Attributes$property,
+			'quickOpen',
+			$elm$json$Json$Encode$bool(quickOpen)));
+};
+var $aforemny$material_components_web_elm$Material$Menu$rootCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-menu mdc-menu-surface'));
+var $aforemny$material_components_web_elm$Material$Menu$menu = F2(
+	function (config_, nodes) {
 		var additionalAttributes = config_.a.additionalAttributes;
 		return A3(
 			$elm$html$Html$node,
-			'mdc-icon-button',
+			'mdc-menu',
 			_Utils_ap(
 				A2(
 					$elm$core$List$filterMap,
 					$elm$core$Basics$identity,
 					_List_fromArray(
 						[
-							$aforemny$material_components_web_elm$Material$IconButton$rootCs,
-							$aforemny$material_components_web_elm$Material$IconButton$tabIndexProp,
-							$aforemny$material_components_web_elm$Material$IconButton$clickHandler(config_)
+							$aforemny$material_components_web_elm$Material$Menu$rootCs,
+							$aforemny$material_components_web_elm$Material$Menu$openProp(config_),
+							$aforemny$material_components_web_elm$Material$Menu$quickOpenProp(config_),
+							$aforemny$material_components_web_elm$Material$Menu$closeHandler(config_)
 						])),
 				additionalAttributes),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$map,
-					$elm$core$Basics$never,
-					function () {
-						if (icon_.$ === 'Icon') {
-							var node = icon_.a.node;
-							var attributes = icon_.a.attributes;
-							var nodes = icon_.a.nodes;
-							return A2(
-								node,
+			nodes);
+	});
+var $aforemny$material_components_web_elm$Material$Menu$surfaceAnchor = $elm$html$Html$Attributes$class('mdc-menu-surface--anchor');
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
+};
+var $aforemny$material_components_web_elm$Material$IconButton$tabIndexProp = $elm$html$Html$Attributes$tabindex(0);
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $aforemny$material_components_web_elm$Material$IconButton$targetAttr = function (_v0) {
+	var href = _v0.a.href;
+	var target = _v0.a.target;
+	return (!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? A2($elm$core$Maybe$map, $elm$html$Html$Attributes$target, target) : $elm$core$Maybe$Nothing;
+};
+var $aforemny$material_components_web_elm$Material$IconButton$iconButton = F2(
+	function (config_, icon_) {
+		var innerConfig = config_.a;
+		var additionalAttributes = innerConfig.additionalAttributes;
+		var href = innerConfig.href;
+		var disabled = innerConfig.disabled;
+		var wrapMenu = function (node) {
+			var _v1 = innerConfig.menu;
+			if (_v1.$ === 'Nothing') {
+				return node;
+			} else {
+				var _v2 = _v1.a;
+				var menuConfig = _v2.a;
+				var menuNodes = _v2.b;
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[$aforemny$material_components_web_elm$Material$Menu$surfaceAnchor]),
+					_List_fromArray(
+						[
+							node,
+							A2($aforemny$material_components_web_elm$Material$Menu$menu, menuConfig, menuNodes)
+						]));
+			}
+		};
+		return wrapMenu(
+			A3(
+				$elm$html$Html$node,
+				'mdc-icon-button',
+				_List_fromArray(
+					[$aforemny$material_components_web_elm$Material$IconButton$tabIndexProp]),
+				_List_fromArray(
+					[
+						A2(
+						((!_Utils_eq(href, $elm$core$Maybe$Nothing)) && (!disabled)) ? $elm$html$Html$a : $elm$html$Html$button,
+						_Utils_ap(
+							A2(
+								$elm$core$List$filterMap,
+								$elm$core$Basics$identity,
+								_List_fromArray(
+									[
+										$aforemny$material_components_web_elm$Material$IconButton$iconButtonCs,
+										$aforemny$material_components_web_elm$Material$IconButton$hrefAttr(config_),
+										$aforemny$material_components_web_elm$Material$IconButton$targetAttr(config_),
+										$aforemny$material_components_web_elm$Material$IconButton$disabledAttr(config_),
+										$aforemny$material_components_web_elm$Material$IconButton$clickHandler(config_)
+									])),
+							additionalAttributes),
+						_List_fromArray(
+							[
 								A2(
-									$elm$core$List$cons,
-									$elm$html$Html$Attributes$class('mdc-icon-button__icon'),
-									attributes),
-								nodes);
-						} else {
-							var node = icon_.a.node;
-							var attributes = icon_.a.attributes;
-							var nodes = icon_.a.nodes;
-							return A2(
-								node,
-								A2(
-									$elm$core$List$cons,
-									$elm$svg$Svg$Attributes$class('mdc-icon-button__icon'),
-									attributes),
-								nodes);
-						}
-					}())
-				]));
+								$elm$html$Html$map,
+								$elm$core$Basics$never,
+								function () {
+									if (icon_.$ === 'Icon') {
+										var node = icon_.a.node;
+										var attributes = icon_.a.attributes;
+										var nodes = icon_.a.nodes;
+										return A2(
+											node,
+											A2(
+												$elm$core$List$cons,
+												$elm$html$Html$Attributes$class('mdc-icon-button__icon'),
+												attributes),
+											nodes);
+									} else {
+										var node = icon_.a.node;
+										var attributes = icon_.a.attributes;
+										var nodes = icon_.a.nodes;
+										return A2(
+											node,
+											A2(
+												$elm$core$List$cons,
+												$elm$svg$Svg$Attributes$class('mdc-icon-button__icon'),
+												attributes),
+											nodes);
+									}
+								}())
+							]))
+					])));
 	});
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
@@ -9444,15 +10410,6 @@ var $aforemny$material_components_web_elm$Material$CircularProgress$ariaValueNow
 			}),
 		progress);
 };
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$virtual_dom$VirtualDom$property = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_property,
-			_VirtualDom_noInnerHtmlOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$property = $elm$virtual_dom$VirtualDom$property;
 var $aforemny$material_components_web_elm$Material$CircularProgress$closedProp = function (_v0) {
 	var closed = _v0.a.closed;
 	return $elm$core$Maybe$Just(
@@ -9766,7 +10723,6 @@ var $aforemny$material_components_web_elm$Material$List$avatarListCs = function 
 	return avatarList ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-list--avatar-list')) : $elm$core$Maybe$Nothing;
 };
-var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
@@ -9971,7 +10927,6 @@ var $aforemny$material_components_web_elm$Material$List$Item$selectedCs = functi
 		$elm$core$Maybe$Just($aforemny$material_components_web_elm$Material$List$Item$Internal$Selected)) ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-list-item--selected')) : $elm$core$Maybe$Nothing;
 };
-var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
 var $aforemny$material_components_web_elm$Material$List$Item$targetAttr = function (_v0) {
 	var href = _v0.a.href;
 	var target = _v0.a.target;
@@ -10119,6 +11074,53 @@ var $aforemny$material_components_web_elm$Material$TabBar$activeTabIndexProp = f
 			$elm$json$Json$Encode$int),
 		activeTabIndex);
 };
+var $aforemny$material_components_web_elm$Material$TabBar$anyActive = function (tabs) {
+	if (!tabs.b) {
+		return false;
+	} else {
+		var active = tabs.a.a.a.active;
+		var remainingTabs = tabs.b;
+		return active || $aforemny$material_components_web_elm$Material$TabBar$anyActive(remainingTabs);
+	}
+};
+var $aforemny$material_components_web_elm$Material$TabBar$setActive = F2(
+	function (active, _v0) {
+		var config_ = _v0.a.a;
+		return $aforemny$material_components_web_elm$Material$Tab$Internal$Tab(
+			$aforemny$material_components_web_elm$Material$Tab$Internal$Config(
+				_Utils_update(
+					config_,
+					{active: active})));
+	});
+var $aforemny$material_components_web_elm$Material$TabBar$enforceActiveHelper = function (tabs) {
+	if (!tabs.b) {
+		return _List_Nil;
+	} else {
+		var tab = tabs.a;
+		var active = tab.a.a.active;
+		var remainingTabs = tabs.b;
+		return (!active) ? A2(
+			$elm$core$List$cons,
+			tab,
+			$aforemny$material_components_web_elm$Material$TabBar$enforceActiveHelper(remainingTabs)) : A2(
+			$elm$core$List$cons,
+			tab,
+			A2(
+				$elm$core$List$map,
+				$aforemny$material_components_web_elm$Material$TabBar$setActive(false),
+				remainingTabs));
+	}
+};
+var $aforemny$material_components_web_elm$Material$TabBar$enforceActive = F2(
+	function (firstTab, otherTabs) {
+		var config_ = firstTab.a.a;
+		return (!$aforemny$material_components_web_elm$Material$TabBar$anyActive(
+			A2($elm$core$List$cons, firstTab, otherTabs))) ? A2(
+			$elm$core$List$cons,
+			A2($aforemny$material_components_web_elm$Material$TabBar$setActive, true, firstTab),
+			otherTabs) : $aforemny$material_components_web_elm$Material$TabBar$enforceActiveHelper(
+			A2($elm$core$List$cons, firstTab, otherTabs));
+	});
 var $aforemny$material_components_web_elm$Material$TabBar$rootCs = $elm$core$Maybe$Just(
 	$elm$html$Html$Attributes$class('mdc-tab-bar'));
 var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerAlignCs = function (align) {
@@ -10143,7 +11145,6 @@ var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerAlignCs = f
 };
 var $aforemny$material_components_web_elm$Material$TabBar$tabScrollerCs = $elm$core$Maybe$Just(
 	$elm$html$Html$Attributes$class('mdc-tab-scroller'));
-var $elm$html$Html$button = _VirtualDom_node('button');
 var $aforemny$material_components_web_elm$Material$TabBar$tabClickHandler = function (_v0) {
 	var onClick = _v0.a.onClick;
 	return A2(
@@ -10280,8 +11281,9 @@ var $aforemny$material_components_web_elm$Material$TabBar$viewTab = F2(
 		var tabConfig = tab.a;
 		var additionalAttributes = tabConfig.a.additionalAttributes;
 		var content = tabConfig.a.content;
-		return A2(
-			$elm$html$Html$button,
+		return A3(
+			$elm$html$Html$node,
+			'mdc-tab',
 			_Utils_ap(
 				A2(
 					$elm$core$List$filterMap,
@@ -10354,10 +11356,11 @@ var $aforemny$material_components_web_elm$Material$TabBar$tabScroller = F3(
 	});
 var $aforemny$material_components_web_elm$Material$TabBar$tablistRoleAttr = $elm$core$Maybe$Just(
 	A2($elm$html$Html$Attributes$attribute, 'role', 'tablist'));
-var $aforemny$material_components_web_elm$Material$TabBar$tabBar = F2(
-	function (config_, tabs) {
+var $aforemny$material_components_web_elm$Material$TabBar$tabBar = F3(
+	function (config_, tab_, tabs_) {
 		var additionalAttributes = config_.a.additionalAttributes;
 		var align = config_.a.align;
+		var tabs = A2($aforemny$material_components_web_elm$Material$TabBar$enforceActive, tab_, tabs_);
 		return A3(
 			$elm$html$Html$node,
 			'mdc-tab-bar',
@@ -10404,12 +11407,12 @@ var $author$project$Professor$RegistrationRequests$tabBar = function (model) {
 				label: tabLabel(tab)
 			});
 	};
-	return A2(
+	return A3(
 		$aforemny$material_components_web_elm$Material$TabBar$tabBar,
 		$aforemny$material_components_web_elm$Material$TabBar$config,
+		createTab($author$project$Professor$RegistrationRequests$Pending),
 		_List_fromArray(
 			[
-				createTab($author$project$Professor$RegistrationRequests$Pending),
 				createTab($author$project$Professor$RegistrationRequests$Accepted),
 				createTab($author$project$Professor$RegistrationRequests$Rejected)
 			]));
@@ -10588,8 +11591,7 @@ var $author$project$Professor$RegistrationRequests$view = function (model) {
 				content
 			]));
 };
-var $author$project$Professor$Settings$Closed = {$: 'Closed'};
-var $author$project$Professor$Settings$Display = {$: 'Display'};
+var $author$project$Util$Display = {$: 'Display'};
 var $author$project$Professor$Settings$EditTask = function (a) {
 	return {$: 'EditTask', a: a};
 };
@@ -10619,7 +11621,7 @@ var $author$project$Professor$Settings$activityTabelView = F3(
 				$author$project$Professor$Settings$EditTask(id),
 				$aforemny$material_components_web_elm$Material$IconButton$config),
 			$aforemny$material_components_web_elm$Material$IconButton$icon('edit'));
-		var displayDate = A2($author$project$Professor$Settings$dateView, $author$project$Professor$Settings$Display, zone);
+		var displayDate = A2($author$project$Util$dateView, $author$project$Util$Display, zone);
 		var ends = displayDate(task.ends * 1000);
 		var starts = displayDate(task.starts * 1000);
 		return A2(
@@ -11189,16 +12191,6 @@ var $elm$core$Array$indexedMap = F2(
 			true,
 			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
 	});
-var $aforemny$material_components_web_elm$Material$Dialog$setOnClose = F2(
-	function (onClose, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$Dialog$Config(
-			_Utils_update(
-				config_,
-				{
-					onClose: $elm$core$Maybe$Just(onClose)
-				}));
-	});
 var $aforemny$material_components_web_elm$Material$Dialog$setOpen = F2(
 	function (open, _v0) {
 		var config_ = _v0.a;
@@ -11207,6 +12199,7 @@ var $aforemny$material_components_web_elm$Material$Dialog$setOpen = F2(
 				config_,
 				{open: open}));
 	});
+var $author$project$Professor$Settings$Closed = {$: 'Closed'};
 var $author$project$Professor$Settings$Ends = function (a) {
 	return {$: 'Ends', a: a};
 };
@@ -11768,16 +12761,9 @@ var $aforemny$material_components_web_elm$Material$TextField$textField = F2(
 					$aforemny$material_components_web_elm$Material$TextField$trailingIconElt(config_)
 				]));
 	});
-var $aforemny$material_components_web_elm$Material$TextField$outlined = function (config_) {
-	return A2($aforemny$material_components_web_elm$Material$TextField$textField, true, config_);
+var $aforemny$material_components_web_elm$Material$TextField$filled = function (config_) {
+	return A2($aforemny$material_components_web_elm$Material$TextField$textField, false, config_);
 };
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
 var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
 var $aforemny$material_components_web_elm$Material$TextField$setAttributes = F2(
 	function (additionalAttributes, _v0) {
@@ -11835,7 +12821,7 @@ var $author$project$Util$formInput = function (_v0) {
 			]),
 		_List_fromArray(
 			[
-				$aforemny$material_components_web_elm$Material$TextField$outlined(
+				$aforemny$material_components_web_elm$Material$TextField$filled(
 				A2(
 					$aforemny$material_components_web_elm$Material$TextField$setValue,
 					val,
@@ -12060,7 +13046,7 @@ var $aforemny$material_components_web_elm$Material$Button$Internal$Config = func
 	return {$: 'Config', a: a};
 };
 var $aforemny$material_components_web_elm$Material$Button$config = $aforemny$material_components_web_elm$Material$Button$Internal$Config(
-	{additionalAttributes: _List_Nil, dense: false, disabled: false, href: $elm$core$Maybe$Nothing, icon: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing, touch: true, trailingIcon: false});
+	{additionalAttributes: _List_Nil, dense: false, disabled: false, href: $elm$core$Maybe$Nothing, icon: $elm$core$Maybe$Nothing, menu: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, target: $elm$core$Maybe$Nothing, touch: true, trailingIcon: false});
 var $aforemny$material_components_web_elm$Material$Button$Raised = {$: 'Raised'};
 var $aforemny$material_components_web_elm$Material$Button$clickHandler = function (_v0) {
 	var onClick = _v0.a.onClick;
@@ -12071,19 +13057,10 @@ var $aforemny$material_components_web_elm$Material$Button$denseCs = function (_v
 	return dense ? $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$class('mdc-button--dense')) : $elm$core$Maybe$Nothing;
 };
-var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $aforemny$material_components_web_elm$Material$Button$disabledAttr = function (_v0) {
 	var disabled = _v0.a.disabled;
 	return $elm$core$Maybe$Just(
 		$elm$html$Html$Attributes$disabled(disabled));
-};
-var $aforemny$material_components_web_elm$Material$Button$disabledProp = function (_v0) {
-	var disabled = _v0.a.disabled;
-	return $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'disabled',
-			$elm$json$Json$Encode$bool(disabled)));
 };
 var $aforemny$material_components_web_elm$Material$Button$hrefAttr = function (_v0) {
 	var href = _v0.a.href;
@@ -12214,9 +13191,11 @@ var $aforemny$material_components_web_elm$Material$Button$variantCs = function (
 };
 var $aforemny$material_components_web_elm$Material$Button$button = F3(
 	function (variant, config_, label) {
-		var additionalAttributes = config_.a.additionalAttributes;
-		var touch = config_.a.touch;
-		var href = config_.a.href;
+		var innerConfig = config_.a;
+		var additionalAttributes = innerConfig.additionalAttributes;
+		var touch = innerConfig.touch;
+		var href = innerConfig.href;
+		var disabled = innerConfig.disabled;
 		var wrapTouch = function (node) {
 			return touch ? A2(
 				$elm$html$Html$div,
@@ -12227,50 +13206,66 @@ var $aforemny$material_components_web_elm$Material$Button$button = F3(
 				_List_fromArray(
 					[node])) : node;
 		};
-		return wrapTouch(
-			A3(
-				$elm$html$Html$node,
-				'mdc-button',
-				A2(
-					$elm$core$List$filterMap,
-					$elm$core$Basics$identity,
+		var wrapMenu = function (node) {
+			var _v0 = innerConfig.menu;
+			if (_v0.$ === 'Nothing') {
+				return node;
+			} else {
+				var _v1 = _v0.a;
+				var menuConfig = _v1.a;
+				var menuNodes = _v1.b;
+				return A2(
+					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$aforemny$material_components_web_elm$Material$Button$disabledProp(config_)
-						])),
-				_List_fromArray(
-					[
-						A2(
-						(!_Utils_eq(href, $elm$core$Maybe$Nothing)) ? $elm$html$Html$a : $elm$html$Html$button,
-						_Utils_ap(
+							$elm$html$Html$Attributes$class('mdc-menu-surface--anchor')
+						]),
+					_List_fromArray(
+						[
+							node,
+							A2($aforemny$material_components_web_elm$Material$Menu$menu, menuConfig, menuNodes)
+						]));
+			}
+		};
+		return wrapMenu(
+			wrapTouch(
+				A3(
+					$elm$html$Html$node,
+					'mdc-button',
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							((!_Utils_eq(href, $elm$core$Maybe$Nothing)) && (!disabled)) ? $elm$html$Html$a : $elm$html$Html$button,
+							_Utils_ap(
+								A2(
+									$elm$core$List$filterMap,
+									$elm$core$Basics$identity,
+									_List_fromArray(
+										[
+											$aforemny$material_components_web_elm$Material$Button$rootCs,
+											$aforemny$material_components_web_elm$Material$Button$variantCs(variant),
+											$aforemny$material_components_web_elm$Material$Button$denseCs(config_),
+											$aforemny$material_components_web_elm$Material$Button$touchCs(config_),
+											$aforemny$material_components_web_elm$Material$Button$disabledAttr(config_),
+											$aforemny$material_components_web_elm$Material$Button$tabIndexProp(config_),
+											$aforemny$material_components_web_elm$Material$Button$hrefAttr(config_),
+											$aforemny$material_components_web_elm$Material$Button$targetAttr(config_),
+											$aforemny$material_components_web_elm$Material$Button$clickHandler(config_)
+										])),
+								additionalAttributes),
 							A2(
 								$elm$core$List$filterMap,
 								$elm$core$Basics$identity,
 								_List_fromArray(
 									[
-										$aforemny$material_components_web_elm$Material$Button$rootCs,
-										$aforemny$material_components_web_elm$Material$Button$variantCs(variant),
-										$aforemny$material_components_web_elm$Material$Button$denseCs(config_),
-										$aforemny$material_components_web_elm$Material$Button$touchCs(config_),
-										$aforemny$material_components_web_elm$Material$Button$disabledAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$tabIndexProp(config_),
-										$aforemny$material_components_web_elm$Material$Button$hrefAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$targetAttr(config_),
-										$aforemny$material_components_web_elm$Material$Button$clickHandler(config_)
-									])),
-							additionalAttributes),
-						A2(
-							$elm$core$List$filterMap,
-							$elm$core$Basics$identity,
-							_List_fromArray(
-								[
-									$aforemny$material_components_web_elm$Material$Button$rippleElt,
-									$aforemny$material_components_web_elm$Material$Button$leadingIconElt(config_),
-									$aforemny$material_components_web_elm$Material$Button$labelElt(label),
-									$aforemny$material_components_web_elm$Material$Button$trailingIconElt(config_),
-									$aforemny$material_components_web_elm$Material$Button$touchElt(config_)
-								])))
-					])));
+										$aforemny$material_components_web_elm$Material$Button$rippleElt,
+										$aforemny$material_components_web_elm$Material$Button$leadingIconElt(config_),
+										$aforemny$material_components_web_elm$Material$Button$labelElt(label),
+										$aforemny$material_components_web_elm$Material$Button$trailingIconElt(config_),
+										$aforemny$material_components_web_elm$Material$Button$touchElt(config_)
+									])))
+						]))));
 	});
 var $aforemny$material_components_web_elm$Material$Button$raised = F2(
 	function (config_, label) {
@@ -12467,10 +13462,7 @@ var $author$project$Professor$Settings$view = function (model) {
 				}),
 				A2(
 				$aforemny$material_components_web_elm$Material$Dialog$dialog,
-				A2(
-					$aforemny$material_components_web_elm$Material$Dialog$setOnClose,
-					$author$project$Professor$Settings$Closed,
-					A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, model.dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config)),
+				A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, model.dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config),
 				{
 					actions: _List_Nil,
 					content: _List_fromArray(
@@ -12806,7 +13798,7 @@ var $author$project$Registration$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$aforemny$material_components_web_elm$Material$TextField$outlined(
+						$aforemny$material_components_web_elm$Material$TextField$filled(
 						A2(
 							$aforemny$material_components_web_elm$Material$TextField$setValue,
 							$elm$core$Maybe$Just(value),
@@ -12872,6 +13864,743 @@ var $author$project$Registration$view = function (model) {
 					{onClosed: $author$project$Registration$SnackbarClosed}),
 				model.queue)
 			]));
+};
+var $author$project$Student$CV$SelectedFile = function (a) {
+	return {$: 'SelectedFile', a: a};
+};
+var $elm$file$File$decoder = _File_decoder;
+var $author$project$Student$CV$filesDecoder = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'files']),
+	$elm$json$Json$Decode$list($elm$file$File$decoder));
+var $elm$html$Html$Attributes$multiple = $elm$html$Html$Attributes$boolProperty('multiple');
+var $author$project$Student$CV$view = function (_v0) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('file'),
+						$elm$html$Html$Attributes$multiple(false),
+						A2(
+						$elm$html$Html$Events$on,
+						'change',
+						A2($elm$json$Json$Decode$map, $author$project$Student$CV$SelectedFile, $author$project$Student$CV$filesDecoder))
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Student$Group$ShowDialog = {$: 'ShowDialog'};
+var $author$project$Student$Group$ClosedDialog = {$: 'ClosedDialog'};
+var $author$project$Student$Group$Create = {$: 'Create'};
+var $author$project$Student$Group$Search = function (a) {
+	return {$: 'Search', a: a};
+};
+var $author$project$Student$Group$RemoveStudent = function (a) {
+	return {$: 'RemoveStudent', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Chip$Input$Internal$Chip = F2(
+	function (a, b) {
+		return {$: 'Chip', a: a, b: b};
+	});
+var $aforemny$material_components_web_elm$Material$Chip$Input$chip = $aforemny$material_components_web_elm$Material$Chip$Input$Internal$Chip;
+var $aforemny$material_components_web_elm$Material$Chip$Input$Internal$Config = function (a) {
+	return {$: 'Config', a: a};
+};
+var $aforemny$material_components_web_elm$Material$Chip$Input$config = $aforemny$material_components_web_elm$Material$Chip$Input$Internal$Config(
+	{additionalAttributes: _List_Nil, leadingIcon: $elm$core$Maybe$Nothing, onClick: $elm$core$Maybe$Nothing, onDelete: $elm$core$Maybe$Nothing, trailingIcon: $elm$core$Maybe$Nothing});
+var $aforemny$material_components_web_elm$Material$Chip$Input$setOnDelete = F2(
+	function (onDelete, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Chip$Input$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onDelete: $elm$core$Maybe$Just(onDelete)
+				}));
+	});
+var $author$project$Student$Group$chip = F2(
+	function (currStudentId, _v0) {
+		var firstName = _v0.firstName;
+		var lastName = _v0.lastName;
+		var studentId = _v0.studentId;
+		var config = _Utils_eq(currStudentId, studentId) ? $aforemny$material_components_web_elm$Material$Chip$Input$config : A2(
+			$aforemny$material_components_web_elm$Material$Chip$Input$setOnDelete,
+			$author$project$Student$Group$RemoveStudent(studentId),
+			$aforemny$material_components_web_elm$Material$Chip$Input$config);
+		return _Utils_Tuple2(
+			$elm$core$String$fromInt(studentId),
+			A2($aforemny$material_components_web_elm$Material$Chip$Input$chip, config, firstName + (' ' + lastName)));
+	});
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-chip'));
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipTouchCs = $elm$core$Maybe$Just(
+	$elm$html$Html$Attributes$class('mdc-chip--touch'));
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole = A2($elm$html$Html$Attributes$attribute, 'role', 'button');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp = function (tabIndex) {
+	return A2(
+		$elm$html$Html$Attributes$property,
+		'tabIndex',
+		$elm$json$Json$Encode$int(tabIndex));
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$leadingIconElt = function (_v0) {
+	var leadingIcon = _v0.a.leadingIcon;
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$html$Html$map($elm$core$Basics$never),
+		function () {
+			if (leadingIcon.$ === 'Just') {
+				if (leadingIcon.a.$ === 'Icon') {
+					var node = leadingIcon.a.a.node;
+					var attributes = leadingIcon.a.a.attributes;
+					var nodes = leadingIcon.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$html$Html$Attributes$class('mdc-chip__icon'),
+								A2(
+									$elm$core$List$cons,
+									$elm$html$Html$Attributes$class('mdc-chip__icon--leading'),
+									A2(
+										$elm$core$List$cons,
+										$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1),
+										A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole, attributes)))),
+							nodes));
+				} else {
+					var node = leadingIcon.a.a.node;
+					var attributes = leadingIcon.a.a.attributes;
+					var nodes = leadingIcon.a.a.nodes;
+					return $elm$core$Maybe$Just(
+						A2(
+							node,
+							A2(
+								$elm$core$List$cons,
+								$elm$svg$Svg$Attributes$class('mdc-chip__icon'),
+								A2(
+									$elm$core$List$cons,
+									$elm$svg$Svg$Attributes$class('mdc-chip__icon--leading'),
+									A2(
+										$elm$core$List$cons,
+										$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1),
+										A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole, attributes)))),
+							nodes));
+				}
+			} else {
+				return $elm$core$Maybe$Nothing;
+			}
+		}());
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipPrimaryActionCs = $elm$html$Html$Attributes$class('mdc-chip__primary-action');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$gridcellRole = A2($elm$html$Html$Attributes$attribute, 'role', 'gridcell');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipTextCs = $elm$html$Html$Attributes$class('mdc-chip__text');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$textElt = function (label) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$ChipSet$Input$chipTextCs, $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(label)
+				])));
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$touchElt = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-chip__touch')
+			]),
+		_List_Nil));
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$primaryActionElt = function (label) {
+	return $elm$core$Maybe$Just(
+		A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$ChipSet$Input$chipPrimaryActionCs,
+					$aforemny$material_components_web_elm$Material$ChipSet$Input$gridcellRole,
+					$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1)
+				]),
+			A2(
+				$elm$core$List$filterMap,
+				$elm$core$Basics$identity,
+				_List_fromArray(
+					[
+						$aforemny$material_components_web_elm$Material$ChipSet$Input$textElt(label),
+						$aforemny$material_components_web_elm$Material$ChipSet$Input$touchElt
+					]))));
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$removalHandler = function (_v0) {
+	var onDelete = _v0.a.onDelete;
+	return A2(
+		$elm$core$Maybe$map,
+		A2(
+			$elm$core$Basics$composeL,
+			$elm$html$Html$Events$on('MDCChip:removal'),
+			$elm$json$Json$Decode$succeed),
+		onDelete);
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$rippleElt = $elm$core$Maybe$Just(
+	A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-chip__ripple')
+			]),
+		_List_Nil));
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$rowRole = $elm$core$Maybe$Just(
+	A2($elm$html$Html$Attributes$attribute, 'role', 'row'));
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$trailingIconElt = function (_v0) {
+	var trailingIcon = _v0.a.trailingIcon;
+	var onDelete = _v0.a.onDelete;
+	return A2(
+		$elm$core$Maybe$map,
+		function (_v1) {
+			return A2(
+				$elm$html$Html$map,
+				$elm$core$Basics$never,
+				function () {
+					if (trailingIcon.$ === 'Just') {
+						if (trailingIcon.a.$ === 'Icon') {
+							var node = trailingIcon.a.a.node;
+							var attributes = trailingIcon.a.a.attributes;
+							var nodes = trailingIcon.a.a.nodes;
+							return A2(
+								node,
+								A2(
+									$elm$core$List$cons,
+									$elm$html$Html$Attributes$class('mdc-chip__icon'),
+									A2(
+										$elm$core$List$cons,
+										$elm$html$Html$Attributes$class('mdc-chip__icon--trailing'),
+										A2(
+											$elm$core$List$cons,
+											$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1),
+											A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole, attributes)))),
+								nodes);
+						} else {
+							var node = trailingIcon.a.a.node;
+							var attributes = trailingIcon.a.a.attributes;
+							var nodes = trailingIcon.a.a.nodes;
+							return A2(
+								node,
+								A2(
+									$elm$core$List$cons,
+									$elm$svg$Svg$Attributes$class('mdc-chip__icon'),
+									A2(
+										$elm$core$List$cons,
+										$elm$svg$Svg$Attributes$class('mdc-chip__icon--trailing'),
+										A2(
+											$elm$core$List$cons,
+											$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1),
+											A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole, attributes)))),
+								nodes);
+						}
+					} else {
+						return A2(
+							$elm$html$Html$i,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('material-icons'),
+									$elm$html$Html$Attributes$class('mdc-chip__icon'),
+									$elm$html$Html$Attributes$class('mdc-chip__icon--trailing'),
+									$aforemny$material_components_web_elm$Material$ChipSet$Input$tabIndexProp(-1),
+									$aforemny$material_components_web_elm$Material$ChipSet$Input$buttonRole
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('cancel')
+								]));
+					}
+				}());
+		},
+		onDelete);
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chip = function (_v0) {
+	var config_ = _v0.a;
+	var additionalAttributes = config_.a.additionalAttributes;
+	var label = _v0.b;
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('mdc-touch-target-wrapper')
+			]),
+		_List_fromArray(
+			[
+				A3(
+				$elm$html$Html$node,
+				'mdc-chip',
+				_Utils_ap(
+					A2(
+						$elm$core$List$filterMap,
+						$elm$core$Basics$identity,
+						_List_fromArray(
+							[
+								$aforemny$material_components_web_elm$Material$ChipSet$Input$chipCs,
+								$aforemny$material_components_web_elm$Material$ChipSet$Input$chipTouchCs,
+								$aforemny$material_components_web_elm$Material$ChipSet$Input$rowRole,
+								$aforemny$material_components_web_elm$Material$ChipSet$Input$removalHandler(config_)
+							])),
+					additionalAttributes),
+				A2(
+					$elm$core$List$filterMap,
+					$elm$core$Basics$identity,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$ChipSet$Input$rippleElt,
+							$aforemny$material_components_web_elm$Material$ChipSet$Input$leadingIconElt(config_),
+							$aforemny$material_components_web_elm$Material$ChipSet$Input$primaryActionElt(label),
+							$aforemny$material_components_web_elm$Material$ChipSet$Input$trailingIconElt(config_)
+						])))
+			]));
+};
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipSetCs = $elm$html$Html$Attributes$class('mdc-chip-set');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipSetInputCs = $elm$html$Html$Attributes$class('mdc-chip-set--input');
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$gridRole = A2($elm$html$Html$Attributes$attribute, 'role', 'grid');
+var $elm$virtual_dom$VirtualDom$keyedNode = function (tag) {
+	return _VirtualDom_keyedNode(
+		_VirtualDom_noScript(tag));
+};
+var $elm$html$Html$Keyed$node = $elm$virtual_dom$VirtualDom$keyedNode;
+var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipSet = F3(
+	function (additionalAttributes, firstChip, otherChips) {
+		return A3(
+			$elm$html$Html$Keyed$node,
+			'mdc-chip-set',
+			A2(
+				$elm$core$List$cons,
+				$aforemny$material_components_web_elm$Material$ChipSet$Input$chipSetCs,
+				A2(
+					$elm$core$List$cons,
+					$aforemny$material_components_web_elm$Material$ChipSet$Input$chipSetInputCs,
+					A2($elm$core$List$cons, $aforemny$material_components_web_elm$Material$ChipSet$Input$gridRole, additionalAttributes))),
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$mapSecond($aforemny$material_components_web_elm$Material$ChipSet$Input$chip),
+				A2($elm$core$List$cons, firstChip, otherChips)));
+	});
+var $author$project$Student$Group$chips = F2(
+	function (currStudentId, students) {
+		if (students.b) {
+			var head = students.a;
+			var tail = students.b;
+			return A3(
+				$aforemny$material_components_web_elm$Material$ChipSet$Input$chipSet,
+				_List_Nil,
+				A2($author$project$Student$Group$chip, currStudentId, head),
+				A2(
+					$elm$core$List$map,
+					$author$project$Student$Group$chip(currStudentId),
+					tail));
+		} else {
+			return $author$project$Util$emptyHtmlNode;
+		}
+	});
+var $elm$html$Html$h6 = _VirtualDom_node('h6');
+var $aforemny$material_components_web_elm$Material$TextField$Icon$Internal$Icon = function (a) {
+	return {$: 'Icon', a: a};
+};
+var $aforemny$material_components_web_elm$Material$TextField$Icon$customIcon = F3(
+	function (node, attributes, nodes) {
+		return $aforemny$material_components_web_elm$Material$TextField$Icon$Internal$Icon(
+			{attributes: attributes, disabled: false, node: node, nodes: nodes, onInteraction: $elm$core$Maybe$Nothing});
+	});
+var $aforemny$material_components_web_elm$Material$TextField$Icon$icon = function (iconName) {
+	return A3(
+		$aforemny$material_components_web_elm$Material$TextField$Icon$customIcon,
+		$elm$html$Html$i,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('material-icons')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(iconName)
+			]));
+};
+var $author$project$Student$Group$AddStudent = function (a) {
+	return {$: 'AddStudent', a: a};
+};
+var $aforemny$material_components_web_elm$Material$List$Item$setOnClick = F2(
+	function (onClick, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onClick: $elm$core$Maybe$Just(onClick)
+				}));
+	});
+var $author$project$Student$Group$listItemView = function (_v0) {
+	var firstName = _v0.firstName;
+	var lastName = _v0.lastName;
+	var studentId = _v0.studentId;
+	return A2(
+		$aforemny$material_components_web_elm$Material$List$Item$listItem,
+		A2(
+			$aforemny$material_components_web_elm$Material$List$Item$setOnClick,
+			$author$project$Student$Group$AddStudent(studentId),
+			$aforemny$material_components_web_elm$Material$List$Item$config),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(firstName + (' ' + lastName))
+			]));
+};
+var $elm$core$Dict$member = F2(
+	function (key, dict) {
+		var _v0 = A2($elm$core$Dict$get, key, dict);
+		if (_v0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	});
+var $elm$core$Set$member = F2(
+	function (key, _v0) {
+		var dict = _v0.a;
+		return A2($elm$core$Dict$member, key, dict);
+	});
+var $aforemny$material_components_web_elm$Material$Button$Outlined = {$: 'Outlined'};
+var $aforemny$material_components_web_elm$Material$Button$outlined = F2(
+	function (config_, label) {
+		return A3($aforemny$material_components_web_elm$Material$Button$button, $aforemny$material_components_web_elm$Material$Button$Outlined, config_, label);
+	});
+var $elm$core$List$partition = F2(
+	function (pred, list) {
+		var step = F2(
+			function (x, _v0) {
+				var trues = _v0.a;
+				var falses = _v0.b;
+				return pred(x) ? _Utils_Tuple2(
+					A2($elm$core$List$cons, x, trues),
+					falses) : _Utils_Tuple2(
+					trues,
+					A2($elm$core$List$cons, x, falses));
+			});
+		return A3(
+			$elm$core$List$foldr,
+			step,
+			_Utils_Tuple2(_List_Nil, _List_Nil),
+			list);
+	});
+var $aforemny$material_components_web_elm$Material$List$setAttributes = F2(
+	function (additionalAttributes, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$List$Config(
+			_Utils_update(
+				config_,
+				{additionalAttributes: additionalAttributes}));
+	});
+var $aforemny$material_components_web_elm$Material$Button$setOnClick = F2(
+	function (onClick, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$Button$Internal$Config(
+			_Utils_update(
+				config_,
+				{
+					onClick: $elm$core$Maybe$Just(onClick)
+				}));
+	});
+var $aforemny$material_components_web_elm$Material$TextField$setTrailingIcon = F2(
+	function (trailingIcon, _v0) {
+		var config_ = _v0.a;
+		return $aforemny$material_components_web_elm$Material$TextField$Config(
+			_Utils_update(
+				config_,
+				{trailingIcon: trailingIcon}));
+	});
+var $aforemny$material_components_web_elm$Material$Typography$subtitle2 = $elm$html$Html$Attributes$class('mdc-typography--subtitle2');
+var $aforemny$material_components_web_elm$Material$Elevation$z = function (n) {
+	return $elm$html$Html$Attributes$class(
+		'mdc-elevation--z' + $elm$core$String$fromInt(n));
+};
+var $aforemny$material_components_web_elm$Material$Elevation$z1 = $aforemny$material_components_web_elm$Material$Elevation$z(1);
+var $author$project$Student$Group$dialogView = function (_v0) {
+	var search = _v0.search;
+	var availableStudents = _v0.availableStudents;
+	var addedStudentsIds = _v0.addedStudentsIds;
+	var dialogOpened = _v0.dialogOpened;
+	var currStudentId = _v0.currStudentId;
+	var searchFilter = function (_v4) {
+		var firstName = _v4.firstName;
+		var lastName = _v4.lastName;
+		return A2($elm$core$String$contains, search, firstName) || A2($elm$core$String$contains, search, lastName);
+	};
+	var emptySearch = $elm$core$String$isEmpty(search);
+	var _v1 = A2(
+		$elm$core$List$partition,
+		function (_v2) {
+			var studentId = _v2.studentId;
+			return A2($elm$core$Set$member, studentId, addedStudentsIds);
+		},
+		availableStudents);
+	var selectedStudents = _v1.a;
+	var unselectedStudents = _v1.b;
+	var filteredStudents = emptySearch ? unselectedStudents : A2($elm$core$List$filter, searchFilter, unselectedStudents);
+	var listView = function () {
+		if (filteredStudents.b) {
+			var head = filteredStudents.a;
+			var tail = filteredStudents.b;
+			return A3(
+				$aforemny$material_components_web_elm$Material$List$list,
+				A2(
+					$aforemny$material_components_web_elm$Material$List$setAttributes,
+					_List_fromArray(
+						[
+							$aforemny$material_components_web_elm$Material$Elevation$z1,
+							A2($elm$html$Html$Attributes$style, 'height', '100%')
+						]),
+					$aforemny$material_components_web_elm$Material$List$config),
+				$author$project$Student$Group$listItemView(head),
+				A2($elm$core$List$map, $author$project$Student$Group$listItemView, tail));
+		} else {
+			return A2(
+				$elm$html$Html$h6,
+				_List_fromArray(
+					[
+						$aforemny$material_components_web_elm$Material$Typography$subtitle2,
+						A2($elm$html$Html$Attributes$style, 'text-align', 'center')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						emptySearch ? 'Nema vise studenata bez grupe' : 'Nema takvog studenta')
+					]));
+		}
+	}();
+	return A2(
+		$aforemny$material_components_web_elm$Material$Dialog$dialog,
+		A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config),
+		{
+			actions: _List_fromArray(
+				[
+					A2(
+					$aforemny$material_components_web_elm$Material$Button$outlined,
+					A2(
+						$aforemny$material_components_web_elm$Material$Button$setOnClick,
+						$author$project$Student$Group$ClosedDialog,
+						A2(
+							$aforemny$material_components_web_elm$Material$Button$setDisabled,
+							false,
+							A2(
+								$aforemny$material_components_web_elm$Material$Button$setAttributes,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$style, 'margin-right', '5px')
+									]),
+								$aforemny$material_components_web_elm$Material$Button$config))),
+					'Odustani'),
+					A2(
+					$aforemny$material_components_web_elm$Material$Button$raised,
+					A2(
+						$aforemny$material_components_web_elm$Material$Button$setOnClick,
+						$author$project$Student$Group$Create,
+						A2($aforemny$material_components_web_elm$Material$Button$setDisabled, false, $aforemny$material_components_web_elm$Material$Button$config)),
+					'Napravi')
+				]),
+			content: _List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$TextField$filled(
+					A2(
+						$aforemny$material_components_web_elm$Material$TextField$setTrailingIcon,
+						$elm$core$Maybe$Just(
+							$aforemny$material_components_web_elm$Material$TextField$Icon$icon('search')),
+						A2(
+							$aforemny$material_components_web_elm$Material$TextField$setValue,
+							$elm$core$Maybe$Just(search),
+							A2(
+								$aforemny$material_components_web_elm$Material$TextField$setOnInput,
+								$author$project$Student$Group$Search,
+								A2(
+									$aforemny$material_components_web_elm$Material$TextField$setLabel,
+									$elm$core$Maybe$Just('Pretraga studenata'),
+									A2(
+										$aforemny$material_components_web_elm$Material$TextField$setAttributes,
+										_List_fromArray(
+											[
+												A2($elm$html$Html$Attributes$style, 'width', '100%')
+											]),
+										$aforemny$material_components_web_elm$Material$TextField$config)))))),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', '150px')
+						]),
+					_List_fromArray(
+						[listView])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2($author$project$Student$Group$chips, currStudentId, selectedStudents)
+						]))
+				]),
+			title: $elm$core$Maybe$Just('Nova grupa')
+		});
+};
+var $author$project$Student$Group$view = F3(
+	function (isActive, _v0, model) {
+		var groupId = _v0.groupId;
+		var _v1 = _Utils_Tuple2(isActive, groupId);
+		if (_v1.b.$ === 'Nothing') {
+			if (_v1.a) {
+				var _v2 = _v1.b;
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$span,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Nemate grupu!')
+								])),
+							A2(
+							$aforemny$material_components_web_elm$Material$Button$raised,
+							A2(
+								$aforemny$material_components_web_elm$Material$Button$setOnClick,
+								$author$project$Student$Group$ShowDialog,
+								A2(
+									$aforemny$material_components_web_elm$Material$Button$setIcon,
+									$elm$core$Maybe$Just(
+										$aforemny$material_components_web_elm$Material$Button$icon('group_add')),
+									$aforemny$material_components_web_elm$Material$Button$config)),
+							'Napravi grupu'),
+							$author$project$Student$Group$dialogView(model)
+						]));
+			} else {
+				return $elm$html$Html$text('Jos uvek niste rasporedjeni u grupu');
+			}
+		} else {
+			return $elm$html$Html$text('Clan ste grupe');
+		}
+	});
+var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$html$Html$header = _VirtualDom_node('header');
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $aforemny$material_components_web_elm$Material$Typography$subtitle1 = $elm$html$Html$Attributes$class('mdc-typography--subtitle1');
+var $aforemny$material_components_web_elm$Material$Elevation$z3 = $aforemny$material_components_web_elm$Material$Elevation$z(3);
+var $author$project$Student$viewActivity = F3(
+	function (_v0, activity, activityContent) {
+		var active = _v0.active;
+		var zone = _v0.zone;
+		var date = A3($author$project$Util$dateView, $author$project$Util$Display, zone, 1000 * activity.ends);
+		var endsInfo = active ? A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$Typography$subtitle1]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('aktivan do: ' + date)
+				])) : $author$project$Util$emptyHtmlNode;
+		var acitvityHeader = A2(
+			$elm$html$Html$header,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$span,
+					_List_fromArray(
+						[$aforemny$material_components_web_elm$Material$Typography$headline6]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(activity.name)
+						])),
+					endsInfo
+				]));
+		return A2(
+			$elm$html$Html$article,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Elevation$z3,
+					$elm$html$Html$Attributes$class('student-activity')
+				]),
+			_List_fromArray(
+				[
+					acitvityHeader,
+					A2(
+					$elm$html$Html$p,
+					_List_Nil,
+					_List_fromArray(
+						[activityContent]))
+				]));
+	});
+var $author$project$Student$viewFragment = F3(
+	function (_v0, isActive_, fragment) {
+		var studentInfo = _v0.studentInfo;
+		var zone = _v0.zone;
+		switch (fragment.$) {
+			case 'Group':
+				var index = fragment.a;
+				var activity = fragment.b;
+				var model_ = fragment.c;
+				return A3(
+					$author$project$Student$viewActivity,
+					{
+						active: isActive_(activity),
+						zone: zone
+					},
+					activity,
+					A2(
+						$elm$html$Html$map,
+						$author$project$Student$GotGroupMsg(index),
+						A3(
+							$author$project$Student$Group$view,
+							isActive_(activity),
+							studentInfo,
+							model_)));
+			case 'CV':
+				var index = fragment.a;
+				var activity = fragment.b;
+				var model_ = fragment.c;
+				return A3(
+					$author$project$Student$viewActivity,
+					{
+						active: isActive_(activity),
+						zone: zone
+					},
+					activity,
+					A2(
+						$elm$html$Html$map,
+						$author$project$Student$GotCvMsg(index),
+						$author$project$Student$CV$view(model_)));
+			default:
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Topic')
+						]));
+		}
+	});
+var $author$project$Student$view = function (model) {
+	var fragments = model.fragments;
+	var loading = model.loading;
+	var currentTimeSec = model.currentTimeSec;
+	return loading ? $aforemny$material_components_web_elm$Material$CircularProgress$indeterminate($aforemny$material_components_web_elm$Material$CircularProgress$config) : A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		A2(
+			$elm$core$List$map,
+			A2(
+				$author$project$Student$viewFragment,
+				model,
+				$author$project$Student$isActive(currentTimeSec)),
+			$elm$core$Array$toList(fragments)));
 };
 var $author$project$User$Login$Email = function (a) {
 	return {$: 'Email', a: a};
@@ -13027,56 +14756,7 @@ var $aforemny$material_components_web_elm$Material$Menu$Config = function (a) {
 };
 var $aforemny$material_components_web_elm$Material$Menu$config = $aforemny$material_components_web_elm$Material$Menu$Config(
 	{additionalAttributes: _List_Nil, onClose: $elm$core$Maybe$Nothing, open: false, quickOpen: false});
-var $elm$html$Html$header = _VirtualDom_node('header');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $aforemny$material_components_web_elm$Material$Menu$closeHandler = function (_v0) {
-	var onClose = _v0.a.onClose;
-	return A2(
-		$elm$core$Maybe$map,
-		A2(
-			$elm$core$Basics$composeL,
-			$elm$html$Html$Events$on('MDCMenuSurface:close'),
-			$elm$json$Json$Decode$succeed),
-		onClose);
-};
-var $aforemny$material_components_web_elm$Material$Menu$openProp = function (_v0) {
-	var open = _v0.a.open;
-	return $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'open',
-			$elm$json$Json$Encode$bool(open)));
-};
-var $aforemny$material_components_web_elm$Material$Menu$quickOpenProp = function (_v0) {
-	var quickOpen = _v0.a.quickOpen;
-	return $elm$core$Maybe$Just(
-		A2(
-			$elm$html$Html$Attributes$property,
-			'quickOpen',
-			$elm$json$Json$Encode$bool(quickOpen)));
-};
-var $aforemny$material_components_web_elm$Material$Menu$rootCs = $elm$core$Maybe$Just(
-	$elm$html$Html$Attributes$class('mdc-menu mdc-menu-surface'));
-var $aforemny$material_components_web_elm$Material$Menu$menu = F2(
-	function (config_, nodes) {
-		var additionalAttributes = config_.a.additionalAttributes;
-		return A3(
-			$elm$html$Html$node,
-			'mdc-menu',
-			_Utils_ap(
-				A2(
-					$elm$core$List$filterMap,
-					$elm$core$Basics$identity,
-					_List_fromArray(
-						[
-							$aforemny$material_components_web_elm$Material$Menu$rootCs,
-							$aforemny$material_components_web_elm$Material$Menu$openProp(config_),
-							$aforemny$material_components_web_elm$Material$Menu$quickOpenProp(config_),
-							$aforemny$material_components_web_elm$Material$Menu$closeHandler(config_)
-						])),
-				additionalAttributes),
-			nodes);
-	});
 var $elm$html$Html$nav = _VirtualDom_node('nav');
 var $author$project$Professor$navIcons = _List_fromArray(
 	[
@@ -13107,16 +14787,6 @@ var $aforemny$material_components_web_elm$Material$List$Item$setHref = F2(
 				config_,
 				{href: href}));
 	});
-var $aforemny$material_components_web_elm$Material$List$Item$setOnClick = F2(
-	function (onClick, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$List$Item$Internal$Config(
-			_Utils_update(
-				config_,
-				{
-					onClick: $elm$core$Maybe$Just(onClick)
-				}));
-	});
 var $aforemny$material_components_web_elm$Material$Menu$setOnClose = F2(
 	function (onClose, _v0) {
 		var config_ = _v0.a;
@@ -13143,7 +14813,6 @@ var $aforemny$material_components_web_elm$Material$List$setWrapFocus = F2(
 				config_,
 				{wrapFocus: wrapFocus}));
 	});
-var $aforemny$material_components_web_elm$Material$Menu$surfaceAnchor = $elm$html$Html$Attributes$class('mdc-menu-surface--anchor');
 var $author$project$Main$viewHeader = function (model) {
 	var _v0 = model;
 	var currentUser = _v0.currentUser;
@@ -13355,8 +15024,16 @@ var $author$project$Main$view = function (model) {
 						var _v1 = _v0.a;
 						return $elm$html$Html$text('Home');
 					case 'StudentPage':
-						var _v2 = _v0.a;
-						return $elm$html$Html$text('Student');
+						if (_v0.b.$ === 'StudentModel') {
+							var _v2 = _v0.a;
+							var studentModel = _v0.b.a;
+							return A2(
+								$elm$html$Html$map,
+								$author$project$Main$GotStudentMsg,
+								$author$project$Student$view(studentModel));
+						} else {
+							break _v0$7;
+						}
 					case 'AdminPage':
 						var _v3 = _v0.a;
 						return $elm$html$Html$text('Admin');

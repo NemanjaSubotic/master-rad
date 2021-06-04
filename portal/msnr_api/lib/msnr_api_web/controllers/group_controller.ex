@@ -10,10 +10,9 @@ defmodule MsnrApiWeb.GroupController do
     render(conn, "index.json", groups: groups)
   end
 
-  def create(conn, %{"students" => students}) do
-
-    with %{id: user_id, role: role} <- conn.assigns[:user_info],
-        {:ok, %Group{} = group} <- Groups.create_group(user_id, role, students) do
+  def create(conn, %{"students" => students, "activity" => activity_id}) do
+    with %{id: user_id, student_info: %{student_id: student_id}} <- conn.assigns[:user_info],
+        {:ok, %Group{} = group} <- Groups.create_group(activity_id, user_id, student_id, students) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.group_path(conn, :show, group))

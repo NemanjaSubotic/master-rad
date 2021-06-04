@@ -15,5 +15,23 @@ defmodule MsnrApi.Repo.Migrations.CreateActivities do
     create index(:activities, [:semester_id])
     create index(:activities, [:task_id])
     create index(:activities, [:signup_id])
+
+    alter table(:v1) do
+      add :activity_id, references(:activities, on_delete: :nothing), null: false
+    end
+
+    alter table(:final_v) do
+      add :activity_id, references(:activities, on_delete: :nothing), null: false
+    end
+
+    alter table(:task_signups) do
+      add :activity_id, references(:activities, on_delete: :nothing), null: false
+    end
+
+    create index(:v1, [:activity_id])
+    create index(:final_v, [:activity_id])
+    create index(:task_signups, [:activity_id])
+
+
   end
 end
