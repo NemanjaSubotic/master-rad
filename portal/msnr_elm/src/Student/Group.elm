@@ -2,9 +2,10 @@ module Student.Group exposing (..)
 
 import Api
 import Html exposing (Html, div, h6, span, text)
-import Html.Attributes exposing (class, style)
+import Html.Attributes exposing (style)
 import Http
-import Json.Decode exposing (field, list)
+import Json.Decode exposing (field, int, list)
+import Json.Encode as Encode
 import Material.Button as Button
 import Material.Chip.Input as InputChip
 import Material.ChipSet.Input as InputChipSet
@@ -23,7 +24,9 @@ import Util exposing (emptyHtmlNode)
 
 
 type alias Model =
-    { loading : Bool
+    { activityId : Int
+    , currStudentId : Int
+    , loading : Bool
     , students : List StudentEntity
     , availableStudents : List StudentEntity
     , addedStudentsIds : Set Int
@@ -32,16 +35,16 @@ type alias Model =
     }
 
 
-init : Model
-init =
-    Model True [] [] Set.empty "" False
+init : Int -> Int -> Model
+init activityId studentId =
+    Model activityId studentId True [] [] Set.empty "" False
 
 
 type Msg
     = LoadedGroup (Result Http.Error (List StudentEntity))
     | LoadedStudents (Result Http.Error (List StudentEntity))
     | Create
-    | GroupCreated
+    | GroupCreated (Result Http.Error Int)
     | Search String
     | ShowDialog
     | ClosedDialog
@@ -63,7 +66,7 @@ initCmd isActive { groupId, semesterId } token =
 
 
 update : Msg -> { studentInfo : StudentInfo, token : String } -> Model -> ( Model, Cmd Msg )
-update msg { studentInfo } model =
+update msg { studentInfo, token } model =
     case msg of
         LoadedStudents result ->
             case result of
@@ -93,6 +96,9 @@ update msg { studentInfo } model =
         ClosedDialog ->
             ( { model | dialogOpened = False }, Cmd.none )
 
+        Create ->
+            ( model, createGroup model token )
+
         _ ->
             ( model, Cmd.none )
 
@@ -120,7 +126,7 @@ view isActive { groupId } model =
 
 
 dialogView : Model -> Html Msg
-dialogView { search, availableStudents, addedStudentsIds, dialogOpened } =
+dialogView { search, availableStudents, addedStudentsIds, dialogOpened, currStudentId } =
     let
         emptySearch =
             String.isEmpty search
@@ -159,10 +165,7 @@ dialogView { search, availableStudents, addedStudentsIds, dialogOpened } =
                         ]
     in
     Dialog.dialog
-        (Dialog.config
-            |> Dialog.setOpen dialogOpened
-            |> Dialog.setOnClose ClosedDialog
-        )
+        (Dialog.config |> Dialog.setOpen dialogOpened)
         { title = Just "Nova grupa"
         , content =
             [ TextField.filled
@@ -174,7 +177,7 @@ dialogView { search, availableStudents, addedStudentsIds, dialogOpened } =
                     |> TextField.setTrailingIcon (Just (TextFieldIcon.icon "search"))
                 )
             , div [ style "height" "150px" ] [ listView ]
-            , div [] [ chips selectedStudents ]
+            , div [] [ chips currStudentId selectedStudents ]
             ]
         , actions =
             [ Button.outlined
@@ -187,33 +190,34 @@ dialogView { search, availableStudents, addedStudentsIds, dialogOpened } =
             , Button.raised
                 (Button.config
                     |> Button.setDisabled False
+                    |> Button.setOnClick Create
                 )
                 "Napravi"
             ]
         }
 
 
-chips : List StudentEntity -> Html Msg
-chips students =
+chips : Int -> List StudentEntity -> Html Msg
+chips currStudentId students =
     case students of
         head :: tail ->
             InputChipSet.chipSet []
-                (chip False head)
-                (List.map (chip True) tail)
+                (chip currStudentId head)
+                (List.map (chip currStudentId) tail)
 
         _ ->
             emptyHtmlNode
 
 
-chip : Bool -> StudentEntity -> ( String, InputChip.Chip Msg )
-chip removable { firstName, lastName, studentId } =
+chip : Int -> StudentEntity -> ( String, InputChip.Chip Msg )
+chip currStudentId { firstName, lastName, studentId } =
     let
         config =
-            if removable then
-                InputChip.config |> InputChip.setOnDelete (RemoveStudent studentId)
+            if currStudentId == studentId then
+                InputChip.config
 
             else
-                InputChip.config
+                InputChip.config |> InputChip.setOnDelete (RemoveStudent studentId)
     in
     ( String.fromInt studentId, InputChip.chip config (firstName ++ " " ++ lastName) )
 
@@ -244,4 +248,24 @@ loadGroup groupId token =
         { url = Api.endpoints.groups ++ "/" ++ String.fromInt groupId
         , token = token
         , expect = Http.expectJson LoadedGroup (field "data" (field "students" (list decodeStudent)))
+        }
+
+
+createGroup : Model -> String -> Cmd Msg
+createGroup { activityId, addedStudentsIds } token =
+    let
+        students =
+            Encode.set Encode.int addedStudentsIds
+
+        body =
+            Encode.object
+                [ ( "students", students )
+                , ( "activity", Encode.int activityId )
+                ]
+    in
+    Api.post
+        { url = Api.endpoints.groups
+        , token = token
+        , body = Http.jsonBody body
+        , expect = Http.expectJson GroupCreated (field "data" (field "id" int))
         }

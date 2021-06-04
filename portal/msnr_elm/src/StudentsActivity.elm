@@ -31,7 +31,7 @@ type alias StudentsActivity =
 
 
 type ActivityType
-    = CV
+    = UploadCV
     | CreateGroup
     | SelectTopic
     | Unknown
@@ -88,7 +88,7 @@ activityTypeDecoder =
                         Decode.succeed SelectTopic
 
                     "cv" ->
-                        Decode.succeed CV
+                        Decode.succeed UploadCV
 
                     _ ->
                         Decode.succeed Unknown

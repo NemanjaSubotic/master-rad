@@ -6,7 +6,7 @@ body{
   padding: 0px;
 }
 
-header{
+body > header{
   display: flex !important;
   flex-direction: column;
   padding-left: 10px;
@@ -17,6 +17,7 @@ header{
 
 main{
   flex: 1;
+  padding-right: 10px;
 }
 
 .active-link {
@@ -139,4 +140,23 @@ mdc-list-item a:hover {
 
 .task-input {
   width: 100%;
+}
+
+.student-activity{
+  border: 1px solid grey;
+  padding-bottom: 0px;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.student-activity > header {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px 5px 0px 0px;
+  margin: 10px 0px;
+  padding: 0px 10px;
+}
+
+.student-activity > p {
+  padding: 0px 10px;
 }

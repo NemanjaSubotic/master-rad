@@ -5,8 +5,6 @@ defmodule MsnrApi.SeminarPapers.SeminarPaper do
   schema "seminar_papers" do
     field :group_id, :id
     field :topic_id, :id
-    field :v1, :id
-    field :final, :id
 
     timestamps()
   end

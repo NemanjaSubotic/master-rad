@@ -122,15 +122,18 @@ update msg model =
                     , Cmd.none
                     )
 
-                _ ->
+                ( Ok session, _ ) ->
                     let
                         user =
                             getUserType result
 
                         model_ =
-                            setContentModel user model
+                            setContentModel user { model | session = Just session }
                     in
                     ( model_, Route.redirectTo model.key HomeRoute )
+
+                _ ->
+                    ( model, Cmd.none )
 
         ( GotLoginMsg loginMsg, LoginPage loginModel, _ ) ->
             Login.update loginMsg loginModel

@@ -25,9 +25,14 @@ defmodule MsnrApi.Accounts do
   defp get_user_info(where_clause) do
     student_info = from st in Student,
       inner_join: sem in Semester, on: sem.is_active and sem.id == st.semester_id,
-      select: st
+      left_join: g in assoc(st, :group),
+      select: %{
+        id: st.id,
+        user_id: st.user_id,
+        group_id: g.id,
+        semester_id: sem.id}
 
-    Repo.one  from u in User,
+    Repo.one from u in User,
       inner_join: r in Role, on: u.role_id == r.id,
       left_join: s in subquery(student_info), on: s.user_id == u.id,
       preload: [:role],

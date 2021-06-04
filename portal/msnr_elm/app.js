@@ -4630,6 +4630,184 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
+
+
+
+// DECODER
+
+var _File_decoder = _Json_decodePrim(function(value) {
+	// NOTE: checks if `File` exists in case this is run on node
+	return (typeof File !== 'undefined' && value instanceof File)
+		? $elm$core$Result$Ok(value)
+		: _Json_expecting('a FILE', value);
+});
+
+
+// METADATA
+
+function _File_name(file) { return file.name; }
+function _File_mime(file) { return file.type; }
+function _File_size(file) { return file.size; }
+
+function _File_lastModified(file)
+{
+	return $elm$time$Time$millisToPosix(file.lastModified);
+}
+
+
+// DOWNLOAD
+
+var _File_downloadNode;
+
+function _File_getDownloadNode()
+{
+	return _File_downloadNode || (_File_downloadNode = document.createElement('a'));
+}
+
+var _File_download = F3(function(name, mime, content)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var blob = new Blob([content], {type: mime});
+
+		// for IE10+
+		if (navigator.msSaveOrOpenBlob)
+		{
+			navigator.msSaveOrOpenBlob(blob, name);
+			return;
+		}
+
+		// for HTML5
+		var node = _File_getDownloadNode();
+		var objectUrl = URL.createObjectURL(blob);
+		node.href = objectUrl;
+		node.download = name;
+		_File_click(node);
+		URL.revokeObjectURL(objectUrl);
+	});
+});
+
+function _File_downloadUrl(href)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var node = _File_getDownloadNode();
+		node.href = href;
+		node.download = '';
+		node.origin === location.origin || (node.target = '_blank');
+		_File_click(node);
+	});
+}
+
+
+// IE COMPATIBILITY
+
+function _File_makeBytesSafeForInternetExplorer(bytes)
+{
+	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/10
+	// all other browsers can just run `new Blob([bytes])` directly with no problem
+	//
+	return new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+}
+
+function _File_click(node)
+{
+	// only needed by IE10 and IE11 to fix https://github.com/elm/file/issues/11
+	// all other browsers have MouseEvent and do not need this conditional stuff
+	//
+	if (typeof MouseEvent === 'function')
+	{
+		node.dispatchEvent(new MouseEvent('click'));
+	}
+	else
+	{
+		var event = document.createEvent('MouseEvents');
+		event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		document.body.appendChild(node);
+		node.dispatchEvent(event);
+		document.body.removeChild(node);
+	}
+}
+
+
+// UPLOAD
+
+var _File_node;
+
+function _File_uploadOne(mimes)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		_File_node = document.createElement('input');
+		_File_node.type = 'file';
+		_File_node.accept = A2($elm$core$String$join, ',', mimes);
+		_File_node.addEventListener('change', function(event)
+		{
+			callback(_Scheduler_succeed(event.target.files[0]));
+		});
+		_File_click(_File_node);
+	});
+}
+
+function _File_uploadOneOrMore(mimes)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		_File_node = document.createElement('input');
+		_File_node.type = 'file';
+		_File_node.multiple = true;
+		_File_node.accept = A2($elm$core$String$join, ',', mimes);
+		_File_node.addEventListener('change', function(event)
+		{
+			var elmFiles = _List_fromArray(event.target.files);
+			callback(_Scheduler_succeed(_Utils_Tuple2(elmFiles.a, elmFiles.b)));
+		});
+		_File_click(_File_node);
+	});
+}
+
+
+// CONTENT
+
+function _File_toString(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(reader.result));
+		});
+		reader.readAsText(blob);
+		return function() { reader.abort(); };
+	});
+}
+
+function _File_toBytes(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(new DataView(reader.result)));
+		});
+		reader.readAsArrayBuffer(blob);
+		return function() { reader.abort(); };
+	});
+}
+
+function _File_toUrl(blob)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var reader = new FileReader();
+		reader.addEventListener('loadend', function() {
+			callback(_Scheduler_succeed(reader.result));
+		});
+		reader.readAsDataURL(blob);
+		return function() { reader.abort(); };
+	});
+}
+
 var $author$project$Main$ChangedUrl = function (a) {
 	return {$: 'ChangedUrl', a: a};
 };
@@ -7185,10 +7363,10 @@ var $author$project$StudentsActivity$StudentsActivity = F7(
 	function (id, activityType, starts, ends, points, name, description) {
 		return {activityType: activityType, description: description, ends: ends, id: id, name: name, points: points, starts: starts};
 	});
-var $author$project$StudentsActivity$CV = {$: 'CV'};
 var $author$project$StudentsActivity$CreateGroup = {$: 'CreateGroup'};
 var $author$project$StudentsActivity$SelectTopic = {$: 'SelectTopic'};
 var $author$project$StudentsActivity$Unknown = {$: 'Unknown'};
+var $author$project$StudentsActivity$UploadCV = {$: 'UploadCV'};
 var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $author$project$StudentsActivity$activityTypeDecoder = A2(
 	$elm$json$Json$Decode$andThen,
@@ -7199,7 +7377,7 @@ var $author$project$StudentsActivity$activityTypeDecoder = A2(
 			case 'select_topic':
 				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$SelectTopic);
 			case 'cv':
-				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$CV);
+				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$UploadCV);
 			default:
 				return $elm$json$Json$Decode$succeed($author$project$StudentsActivity$Unknown);
 		}
@@ -7321,6 +7499,9 @@ var $author$project$Professor$initCmd = F3(
 				A2($author$project$Professor$Settings$initCmd, model.settingModel, token));
 		}
 	});
+var $author$project$Student$AdjustTimeZone = function (a) {
+	return {$: 'AdjustTimeZone', a: a};
+};
 var $author$project$Student$CurrentTime = function (a) {
 	return {$: 'CurrentTime', a: a};
 };
@@ -7350,6 +7531,7 @@ var $author$project$Student$initCmd = F2(
 		return $elm$core$Platform$Cmd$batch(
 			_List_fromArray(
 				[
+					A2($elm$core$Task$perform, $author$project$Student$AdjustTimeZone, $elm$time$Time$here),
 					A2($elm$core$Task$perform, $author$project$Student$CurrentTime, $elm$time$Time$now),
 					A2($author$project$Student$activitiesCmd, model, token)
 				]));
@@ -7523,12 +7705,12 @@ var $author$project$Professor$Settings$init = A7(
 	'',
 	false);
 var $author$project$Professor$init = A2($author$project$Professor$Model, $author$project$Professor$RegistrationRequests$init, $author$project$Professor$Settings$init);
-var $author$project$Student$Model = F4(
-	function (currentTimeSec, fragments, loading, studentInfo) {
-		return {currentTimeSec: currentTimeSec, fragments: fragments, loading: loading, studentInfo: studentInfo};
+var $author$project$Student$Model = F5(
+	function (zone, currentTimeSec, fragments, loading, studentInfo) {
+		return {currentTimeSec: currentTimeSec, fragments: fragments, loading: loading, studentInfo: studentInfo, zone: zone};
 	});
 var $author$project$Student$init = function (info) {
-	return A4($author$project$Student$Model, 0, $elm$core$Array$empty, true, info);
+	return A5($author$project$Student$Model, $elm$time$Time$utc, 0, $elm$core$Array$empty, true, info);
 };
 var $author$project$Main$setContentModel = F2(
 	function (user, model) {
@@ -7952,7 +8134,7 @@ var $elm$time$Time$toMonth = F2(
 				return $elm$time$Time$Dec;
 		}
 	});
-var $author$project$Professor$Settings$toTwoDigitMonth = function (month) {
+var $author$project$Util$toTwoDigitMonth = function (month) {
 	switch (month.$) {
 		case 'Jan':
 			return '01';
@@ -7985,12 +8167,12 @@ var $elm$time$Time$toYear = F2(
 		return $elm$time$Time$toCivil(
 			A2($elm$time$Time$toAdjustedMinutes, zone, time)).year;
 	});
-var $author$project$Professor$Settings$dateView = F3(
+var $author$project$Util$dateView = F3(
 	function (mode, zone, timeInMillis) {
 		var time = $elm$time$Time$millisToPosix(timeInMillis);
 		var year = $elm$core$String$fromInt(
 			A2($elm$time$Time$toYear, zone, time));
-		var month = $author$project$Professor$Settings$toTwoDigitMonth(
+		var month = $author$project$Util$toTwoDigitMonth(
 			A2($elm$time$Time$toMonth, zone, time));
 		var day = A3(
 			$elm$core$String$padLeft,
@@ -8152,7 +8334,7 @@ var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts = function
 		$PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$yearFromInt(year));
 };
 var $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$fromRawParts;
-var $author$project$Professor$Settings$intToMonth = function (month) {
+var $author$project$Util$intToMonth = function (month) {
 	switch (month) {
 		case 1:
 			return $elm$core$Maybe$Just($elm$time$Time$Jan);
@@ -8182,7 +8364,7 @@ var $author$project$Professor$Settings$intToMonth = function (month) {
 			return $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Professor$Settings$getDateFromString = function (stringTime) {
+var $author$project$Util$getDateFromString = function (stringTime) {
 	var _v0 = A2(
 		$elm$core$List$map,
 		$elm$core$String$toInt,
@@ -8199,7 +8381,7 @@ var $author$project$Professor$Settings$getDateFromString = function (stringTime)
 				return $PanagiotisGeorgiadis$elm_datetime$Calendar$fromRawParts(
 					{day: day, month: m, year: year});
 			},
-			$author$project$Professor$Settings$intToMonth(month));
+			$author$project$Util$intToMonth(month));
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
@@ -8606,7 +8788,7 @@ var $author$project$Professor$Settings$update = F3(
 					$elm$core$Platform$Cmd$none);
 			case 'EditTask':
 				var index = msg.a;
-				var dateEdit = A2($author$project$Professor$Settings$dateView, $author$project$Util$Edit, model.zone);
+				var dateEdit = A2($author$project$Util$dateView, $author$project$Util$Edit, model.zone);
 				var _v1 = A2($elm$core$Array$get, index, model.activities);
 				if (_v1.$ === 'Nothing') {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -8646,9 +8828,9 @@ var $author$project$Professor$Settings$update = F3(
 				var mapToSecs = $elm$core$Maybe$map(
 					A2($elm$core$Basics$composeL, millisToSec, $PanagiotisGeorgiadis$elm_datetime$Calendar$toMillis));
 				var maybeEnds = mapToSecs(
-					$author$project$Professor$Settings$getDateFromString(model.formEnds));
+					$author$project$Util$getDateFromString(model.formEnds));
 				var maybeStarts = mapToSecs(
-					$author$project$Professor$Settings$getDateFromString(model.formStarts));
+					$author$project$Util$getDateFromString(model.formStarts));
 				var _v2 = _Utils_Tuple3(maybeStarts, maybeEnds, model.selectedActivity);
 				if (((_v2.a.$ === 'Just') && (_v2.b.$ === 'Just')) && (_v2.c.$ === 'Just')) {
 					var starts = _v2.a.a;
@@ -8950,6 +9132,14 @@ var $author$project$Registration$update = F2(
 					$elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$Student$CV = F3(
+	function (a, b, c) {
+		return {$: 'CV', a: a, b: b, c: c};
+	});
+var $author$project$Student$GotCvMsg = F2(
+	function (a, b) {
+		return {$: 'GotCvMsg', a: a, b: b};
+	});
 var $author$project$Student$GotGroupMsg = F2(
 	function (a, b) {
 		return {$: 'GotGroupMsg', a: a, b: b};
@@ -8958,15 +9148,25 @@ var $author$project$Student$Group = F3(
 	function (a, b, c) {
 		return {$: 'Group', a: a, b: b, c: c};
 	});
-var $author$project$Student$Group$Model = F6(
-	function (loading, students, availableStudents, addedStudentsIds, search, dialogOpened) {
-		return {addedStudentsIds: addedStudentsIds, availableStudents: availableStudents, dialogOpened: dialogOpened, loading: loading, search: search, students: students};
+var $author$project$Student$CV$Model = F2(
+	function (activityId, cvFile) {
+		return {activityId: activityId, cvFile: cvFile};
+	});
+var $author$project$Student$CV$init = function (activityId) {
+	return A2($author$project$Student$CV$Model, activityId, $elm$core$Maybe$Nothing);
+};
+var $author$project$Student$Group$Model = F8(
+	function (activityId, currStudentId, loading, students, availableStudents, addedStudentsIds, search, dialogOpened) {
+		return {activityId: activityId, addedStudentsIds: addedStudentsIds, availableStudents: availableStudents, currStudentId: currStudentId, dialogOpened: dialogOpened, loading: loading, search: search, students: students};
 	});
 var $elm$core$Set$Set_elm_builtin = function (a) {
 	return {$: 'Set_elm_builtin', a: a};
 };
 var $elm$core$Set$empty = $elm$core$Set$Set_elm_builtin($elm$core$Dict$empty);
-var $author$project$Student$Group$init = A6($author$project$Student$Group$Model, true, _List_Nil, _List_Nil, $elm$core$Set$empty, '', false);
+var $author$project$Student$Group$init = F2(
+	function (activityId, studentId) {
+		return A8($author$project$Student$Group$Model, activityId, studentId, true, _List_Nil, _List_Nil, $elm$core$Set$empty, '', false);
+	});
 var $author$project$Student$Group$LoadedStudents = function (a) {
 	return {$: 'LoadedStudents', a: a};
 };
@@ -9125,23 +9325,143 @@ var $author$project$Student$getFragmentsAndCommands = F5(
 		var cmds = _v0.b;
 		var index = _v0.c;
 		var _v1 = activity.activityType;
-		if (_v1.$ === 'CreateGroup') {
-			var fragment = A3($author$project$Student$Group, index, activity, $author$project$Student$Group$init);
-			var cmd = A2(
-				$elm$core$Platform$Cmd$map,
-				$author$project$Student$GotGroupMsg(index),
-				A3(
-					$author$project$Student$Group$initCmd,
-					A2($author$project$Student$isActive, time, activity),
-					studentInfo,
-					token));
-			return _Utils_Tuple3(
-				A2($elm$core$Array$push, fragment, fragments),
-				A2($elm$core$List$cons, cmd, cmds),
-				index + 1);
-		} else {
-			return _Utils_Tuple3(fragments, cmds, index);
+		switch (_v1.$) {
+			case 'CreateGroup':
+				var fragment = A3(
+					$author$project$Student$Group,
+					index,
+					activity,
+					A2($author$project$Student$Group$init, activity.id, studentInfo.id));
+				var cmd = A2(
+					$elm$core$Platform$Cmd$map,
+					$author$project$Student$GotGroupMsg(index),
+					A3(
+						$author$project$Student$Group$initCmd,
+						A2($author$project$Student$isActive, time, activity),
+						studentInfo,
+						token));
+				return _Utils_Tuple3(
+					A2($elm$core$Array$push, fragment, fragments),
+					A2($elm$core$List$cons, cmd, cmds),
+					index + 1);
+			case 'UploadCV':
+				return _Utils_Tuple3(
+					A2(
+						$elm$core$Array$push,
+						A3(
+							$author$project$Student$CV,
+							index,
+							activity,
+							$author$project$Student$CV$init(activity.id)),
+						fragments),
+					cmds,
+					index + 1);
+			default:
+				return _Utils_Tuple3(fragments, cmds, index);
 		}
+	});
+var $author$project$Student$CV$GotBase64 = function (a) {
+	return {$: 'GotBase64', a: a};
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$file$File$toUrl = _File_toUrl;
+var $author$project$Student$CV$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'SelectedFile':
+				if (msg.a.b && (!msg.a.b.b)) {
+					var _v1 = msg.a;
+					var file = _v1.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								cvFile: $elm$core$Maybe$Just(file)
+							}),
+						A2(
+							$elm$core$Task$perform,
+							$author$project$Student$CV$GotBase64,
+							$elm$file$File$toUrl(file)));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'Upload':
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			default:
+				var base64 = msg.a;
+				return A2(
+					$elm$core$Debug$log,
+					base64,
+					_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+		}
+	});
+var $author$project$Student$Group$GroupCreated = function (a) {
+	return {$: 'GroupCreated', a: a};
+};
+var $author$project$Api$post = function (_v0) {
+	var url = _v0.url;
+	var body = _v0.body;
+	var token = _v0.token;
+	var expect = _v0.expect;
+	return $elm$http$Http$request(
+		A5(
+			$author$project$Api$requestParams,
+			'POST',
+			_List_fromArray(
+				[
+					$author$project$Api$authHeader(token)
+				]),
+			url,
+			body,
+			expect));
+};
+var $elm$core$Set$foldl = F3(
+	function (func, initialState, _v0) {
+		var dict = _v0.a;
+		return A3(
+			$elm$core$Dict$foldl,
+			F3(
+				function (key, _v1, state) {
+					return A2(func, key, state);
+				}),
+			initialState,
+			dict);
+	});
+var $elm$json$Json$Encode$set = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$Set$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $author$project$Student$Group$createGroup = F2(
+	function (_v0, token) {
+		var activityId = _v0.activityId;
+		var addedStudentsIds = _v0.addedStudentsIds;
+		var students = A2($elm$json$Json$Encode$set, $elm$json$Json$Encode$int, addedStudentsIds);
+		var body = $elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2('students', students),
+					_Utils_Tuple2(
+					'activity',
+					$elm$json$Json$Encode$int(activityId))
+				]));
+		return $author$project$Api$post(
+			{
+				body: $elm$http$Http$jsonBody(body),
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$Student$Group$GroupCreated,
+					A2(
+						$elm$json$Json$Decode$field,
+						'data',
+						A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$int))),
+				token: token,
+				url: $author$project$Api$endpoints.groups
+			});
 	});
 var $elm$core$Set$insert = F2(
 	function (key, _v0) {
@@ -9161,6 +9481,7 @@ var $elm$core$Set$remove = F2(
 var $author$project$Student$Group$update = F3(
 	function (msg, _v0, model) {
 		var studentInfo = _v0.studentInfo;
+		var token = _v0.token;
 		switch (msg.$) {
 			case 'LoadedStudents':
 				var result = msg.a;
@@ -9217,6 +9538,10 @@ var $author$project$Student$Group$update = F3(
 						model,
 						{dialogOpened: false}),
 					$elm$core$Platform$Cmd$none);
+			case 'Create':
+				return _Utils_Tuple2(
+					model,
+					A2($author$project$Student$Group$createGroup, model, token));
 			default:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
@@ -9224,6 +9549,13 @@ var $author$project$Student$Group$update = F3(
 var $author$project$Student$update = F3(
 	function (msg, model, token) {
 		switch (msg.$) {
+			case 'AdjustTimeZone':
+				var zone = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{zone: zone}),
+					$elm$core$Platform$Cmd$none);
 			case 'CurrentTime':
 				var posixTime = msg.a;
 				return _Utils_Tuple2(
@@ -9253,25 +9585,72 @@ var $author$project$Student$update = F3(
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
+			case 'GotGroupMsg':
+				if (msg.b.$ === 'GroupCreated') {
+					var result = msg.b.a;
+					if (result.$ === 'Ok') {
+						var groupId = result.a;
+						var studentInfo = model.studentInfo;
+						var newStudentInfo = _Utils_update(
+							studentInfo,
+							{
+								groupId: $elm$core$Maybe$Just(groupId)
+							});
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{studentInfo: newStudentInfo}),
+							$elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				} else {
+					var index = msg.a;
+					var groupMsg = msg.b;
+					var _v4 = A2($elm$core$Array$get, index, model.fragments);
+					if ((_v4.$ === 'Just') && (_v4.a.$ === 'Group')) {
+						var _v5 = _v4.a;
+						var activity = _v5.b;
+						var groupModel = _v5.c;
+						var _v6 = A3(
+							$author$project$Student$Group$update,
+							groupMsg,
+							{studentInfo: model.studentInfo, token: token},
+							groupModel);
+						var model_ = _v6.a;
+						var cmd = _v6.b;
+						var fragments = A3(
+							$elm$core$Array$set,
+							index,
+							A3($author$project$Student$Group, index, activity, model_),
+							model.fragments);
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{fragments: fragments}),
+							A2(
+								$elm$core$Platform$Cmd$map,
+								$author$project$Student$GotGroupMsg(index),
+								cmd));
+					} else {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					}
+				}
 			default:
 				var index = msg.a;
-				var groupMsg = msg.b;
-				var _v3 = A2($elm$core$Array$get, index, model.fragments);
-				if ((_v3.$ === 'Just') && (_v3.a.$ === 'Group')) {
-					var _v4 = _v3.a;
-					var activity = _v4.b;
-					var groupModel = _v4.c;
-					var _v5 = A3(
-						$author$project$Student$Group$update,
-						groupMsg,
-						{studentInfo: model.studentInfo, token: token},
-						groupModel);
-					var model_ = _v5.a;
-					var cmd = _v5.b;
+				var cvMsg = msg.b;
+				var _v7 = A2($elm$core$Array$get, index, model.fragments);
+				if ((_v7.$ === 'Just') && (_v7.a.$ === 'CV')) {
+					var _v8 = _v7.a;
+					var activity = _v8.b;
+					var cvModel = _v8.c;
+					var _v9 = A2($author$project$Student$CV$update, cvMsg, cvModel);
+					var model_ = _v9.a;
+					var cmd = _v9.b;
 					var fragments = A3(
 						$elm$core$Array$set,
 						index,
-						A3($author$project$Student$Group, index, activity, model_),
+						A3($author$project$Student$CV, index, activity, model_),
 						model.fragments);
 					return _Utils_Tuple2(
 						_Utils_update(
@@ -9279,7 +9658,7 @@ var $author$project$Student$update = F3(
 							{fragments: fragments}),
 						A2(
 							$elm$core$Platform$Cmd$map,
-							$author$project$Student$GotGroupMsg(index),
+							$author$project$Student$GotCvMsg(index),
 							cmd));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -9540,20 +9919,32 @@ var $author$project$Main$update = F2(
 						case 'GotSessionResult':
 							var result = _v0.a.a.a;
 							var _v5 = _Utils_Tuple2(result, model.page);
-							if ((_v5.a.$ === 'Err') && (_v5.b.$ === 'LoginPage')) {
-								var error = _v5.a.a;
-								var loginModel = _v5.b.a;
-								return _Utils_Tuple2(
+							if (_v5.a.$ === 'Err') {
+								if (_v5.b.$ === 'LoginPage') {
+									var error = _v5.a.a;
+									var loginModel = _v5.b.a;
+									return _Utils_Tuple2(
+										_Utils_update(
+											model,
+											{
+												page: $author$project$Page$LoginPage(
+													A2($author$project$User$Login$updateError, loginModel, error))
+											}),
+										$elm$core$Platform$Cmd$none);
+								} else {
+									return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+								}
+							} else {
+								var session = _v5.a.a;
+								var user = $author$project$User$Type$getUserType(result);
+								var model_ = A2(
+									$author$project$Main$setContentModel,
+									user,
 									_Utils_update(
 										model,
 										{
-											page: $author$project$Page$LoginPage(
-												A2($author$project$User$Login$updateError, loginModel, error))
-										}),
-									$elm$core$Platform$Cmd$none);
-							} else {
-								var user = $author$project$User$Type$getUserType(result);
-								var model_ = A2($author$project$Main$setContentModel, user, model);
+											session: $elm$core$Maybe$Just(session)
+										}));
 								return _Utils_Tuple2(
 									model_,
 									A2($author$project$Route$redirectTo, model.key, $author$project$Route$HomeRoute));
@@ -11230,7 +11621,7 @@ var $author$project$Professor$Settings$activityTabelView = F3(
 				$author$project$Professor$Settings$EditTask(id),
 				$aforemny$material_components_web_elm$Material$IconButton$config),
 			$aforemny$material_components_web_elm$Material$IconButton$icon('edit'));
-		var displayDate = A2($author$project$Professor$Settings$dateView, $author$project$Util$Display, zone);
+		var displayDate = A2($author$project$Util$dateView, $author$project$Util$Display, zone);
 		var ends = displayDate(task.ends * 1000);
 		var starts = displayDate(task.starts * 1000);
 		return A2(
@@ -13474,8 +13865,39 @@ var $author$project$Registration$view = function (model) {
 				model.queue)
 			]));
 };
+var $author$project$Student$CV$SelectedFile = function (a) {
+	return {$: 'SelectedFile', a: a};
+};
+var $elm$file$File$decoder = _File_decoder;
+var $author$project$Student$CV$filesDecoder = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'files']),
+	$elm$json$Json$Decode$list($elm$file$File$decoder));
+var $elm$html$Html$Attributes$multiple = $elm$html$Html$Attributes$boolProperty('multiple');
+var $author$project$Student$CV$view = function (_v0) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('file'),
+						$elm$html$Html$Attributes$multiple(false),
+						A2(
+						$elm$html$Html$Events$on,
+						'change',
+						A2($elm$json$Json$Decode$map, $author$project$Student$CV$SelectedFile, $author$project$Student$CV$filesDecoder))
+					]),
+				_List_Nil)
+			]));
+};
 var $author$project$Student$Group$ShowDialog = {$: 'ShowDialog'};
 var $author$project$Student$Group$ClosedDialog = {$: 'ClosedDialog'};
+var $author$project$Student$Group$Create = {$: 'Create'};
 var $author$project$Student$Group$Search = function (a) {
 	return {$: 'Search', a: a};
 };
@@ -13503,14 +13925,14 @@ var $aforemny$material_components_web_elm$Material$Chip$Input$setOnDelete = F2(
 				}));
 	});
 var $author$project$Student$Group$chip = F2(
-	function (removable, _v0) {
+	function (currStudentId, _v0) {
 		var firstName = _v0.firstName;
 		var lastName = _v0.lastName;
 		var studentId = _v0.studentId;
-		var config = removable ? A2(
+		var config = _Utils_eq(currStudentId, studentId) ? $aforemny$material_components_web_elm$Material$Chip$Input$config : A2(
 			$aforemny$material_components_web_elm$Material$Chip$Input$setOnDelete,
 			$author$project$Student$Group$RemoveStudent(studentId),
-			$aforemny$material_components_web_elm$Material$Chip$Input$config) : $aforemny$material_components_web_elm$Material$Chip$Input$config;
+			$aforemny$material_components_web_elm$Material$Chip$Input$config);
 		return _Utils_Tuple2(
 			$elm$core$String$fromInt(studentId),
 			A2($aforemny$material_components_web_elm$Material$Chip$Input$chip, config, firstName + (' ' + lastName)));
@@ -13766,22 +14188,23 @@ var $aforemny$material_components_web_elm$Material$ChipSet$Input$chipSet = F3(
 				$elm$core$Tuple$mapSecond($aforemny$material_components_web_elm$Material$ChipSet$Input$chip),
 				A2($elm$core$List$cons, firstChip, otherChips)));
 	});
-var $author$project$Student$Group$chips = function (students) {
-	if (students.b) {
-		var head = students.a;
-		var tail = students.b;
-		return A3(
-			$aforemny$material_components_web_elm$Material$ChipSet$Input$chipSet,
-			_List_Nil,
-			A2($author$project$Student$Group$chip, false, head),
-			A2(
-				$elm$core$List$map,
-				$author$project$Student$Group$chip(true),
-				tail));
-	} else {
-		return $author$project$Util$emptyHtmlNode;
-	}
-};
+var $author$project$Student$Group$chips = F2(
+	function (currStudentId, students) {
+		if (students.b) {
+			var head = students.a;
+			var tail = students.b;
+			return A3(
+				$aforemny$material_components_web_elm$Material$ChipSet$Input$chipSet,
+				_List_Nil,
+				A2($author$project$Student$Group$chip, currStudentId, head),
+				A2(
+					$elm$core$List$map,
+					$author$project$Student$Group$chip(currStudentId),
+					tail));
+		} else {
+			return $author$project$Util$emptyHtmlNode;
+		}
+	});
 var $elm$html$Html$h6 = _VirtualDom_node('h6');
 var $aforemny$material_components_web_elm$Material$TextField$Icon$Internal$Icon = function (a) {
 	return {$: 'Icon', a: a};
@@ -13887,16 +14310,6 @@ var $aforemny$material_components_web_elm$Material$Button$setOnClick = F2(
 					onClick: $elm$core$Maybe$Just(onClick)
 				}));
 	});
-var $aforemny$material_components_web_elm$Material$Dialog$setOnClose = F2(
-	function (onClose, _v0) {
-		var config_ = _v0.a;
-		return $aforemny$material_components_web_elm$Material$Dialog$Config(
-			_Utils_update(
-				config_,
-				{
-					onClose: $elm$core$Maybe$Just(onClose)
-				}));
-	});
 var $aforemny$material_components_web_elm$Material$TextField$setTrailingIcon = F2(
 	function (trailingIcon, _v0) {
 		var config_ = _v0.a;
@@ -13916,6 +14329,7 @@ var $author$project$Student$Group$dialogView = function (_v0) {
 	var availableStudents = _v0.availableStudents;
 	var addedStudentsIds = _v0.addedStudentsIds;
 	var dialogOpened = _v0.dialogOpened;
+	var currStudentId = _v0.currStudentId;
 	var searchFilter = function (_v4) {
 		var firstName = _v4.firstName;
 		var lastName = _v4.lastName;
@@ -13965,10 +14379,7 @@ var $author$project$Student$Group$dialogView = function (_v0) {
 	}();
 	return A2(
 		$aforemny$material_components_web_elm$Material$Dialog$dialog,
-		A2(
-			$aforemny$material_components_web_elm$Material$Dialog$setOnClose,
-			$author$project$Student$Group$ClosedDialog,
-			A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config)),
+		A2($aforemny$material_components_web_elm$Material$Dialog$setOpen, dialogOpened, $aforemny$material_components_web_elm$Material$Dialog$config),
 		{
 			actions: _List_fromArray(
 				[
@@ -13990,7 +14401,10 @@ var $author$project$Student$Group$dialogView = function (_v0) {
 					'Odustani'),
 					A2(
 					$aforemny$material_components_web_elm$Material$Button$raised,
-					A2($aforemny$material_components_web_elm$Material$Button$setDisabled, false, $aforemny$material_components_web_elm$Material$Button$config),
+					A2(
+						$aforemny$material_components_web_elm$Material$Button$setOnClick,
+						$author$project$Student$Group$Create,
+						A2($aforemny$material_components_web_elm$Material$Button$setDisabled, false, $aforemny$material_components_web_elm$Material$Button$config)),
 					'Napravi')
 				]),
 			content: _List_fromArray(
@@ -14029,7 +14443,7 @@ var $author$project$Student$Group$dialogView = function (_v0) {
 					_List_Nil,
 					_List_fromArray(
 						[
-							$author$project$Student$Group$chips(selectedStudents)
+							A2($author$project$Student$Group$chips, currStudentId, selectedStudents)
 						]))
 				]),
 			title: $elm$core$Maybe$Just('Nova grupa')
@@ -14074,36 +14488,71 @@ var $author$project$Student$Group$view = F3(
 			return $elm$html$Html$text('Clan ste grupe');
 		}
 	});
-var $author$project$Student$viewActivity = F2(
-	function (activity, activityContent) {
-		return A2(
-			$elm$html$Html$div,
+var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$html$Html$header = _VirtualDom_node('header');
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $aforemny$material_components_web_elm$Material$Typography$subtitle1 = $elm$html$Html$Attributes$class('mdc-typography--subtitle1');
+var $aforemny$material_components_web_elm$Material$Elevation$z3 = $aforemny$material_components_web_elm$Material$Elevation$z(3);
+var $author$project$Student$viewActivity = F3(
+	function (_v0, activity, activityContent) {
+		var active = _v0.active;
+		var zone = _v0.zone;
+		var date = A3($author$project$Util$dateView, $author$project$Util$Display, zone, 1000 * activity.ends);
+		var endsInfo = active ? A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[$aforemny$material_components_web_elm$Material$Typography$subtitle1]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('aktivan do: ' + date)
+				])) : $author$project$Util$emptyHtmlNode;
+		var acitvityHeader = A2(
+			$elm$html$Html$header,
 			_List_Nil,
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$h2,
-					_List_Nil,
+					$elm$html$Html$span,
+					_List_fromArray(
+						[$aforemny$material_components_web_elm$Material$Typography$headline6]),
 					_List_fromArray(
 						[
 							$elm$html$Html$text(activity.name)
 						])),
+					endsInfo
+				]));
+		return A2(
+			$elm$html$Html$article,
+			_List_fromArray(
+				[
+					$aforemny$material_components_web_elm$Material$Elevation$z3,
+					$elm$html$Html$Attributes$class('student-activity')
+				]),
+			_List_fromArray(
+				[
+					acitvityHeader,
 					A2(
-					$elm$html$Html$div,
+					$elm$html$Html$p,
 					_List_Nil,
 					_List_fromArray(
 						[activityContent]))
 				]));
 	});
 var $author$project$Student$viewFragment = F3(
-	function (studentInfo, isActive_, fragment) {
+	function (_v0, isActive_, fragment) {
+		var studentInfo = _v0.studentInfo;
+		var zone = _v0.zone;
 		switch (fragment.$) {
 			case 'Group':
 				var index = fragment.a;
 				var activity = fragment.b;
 				var model_ = fragment.c;
-				return A2(
+				return A3(
 					$author$project$Student$viewActivity,
+					{
+						active: isActive_(activity),
+						zone: zone
+					},
 					activity,
 					A2(
 						$elm$html$Html$map,
@@ -14114,13 +14563,20 @@ var $author$project$Student$viewFragment = F3(
 							studentInfo,
 							model_)));
 			case 'CV':
-				return A2(
-					$elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text('CV')
-						]));
+				var index = fragment.a;
+				var activity = fragment.b;
+				var model_ = fragment.c;
+				return A3(
+					$author$project$Student$viewActivity,
+					{
+						active: isActive_(activity),
+						zone: zone
+					},
+					activity,
+					A2(
+						$elm$html$Html$map,
+						$author$project$Student$GotCvMsg(index),
+						$author$project$Student$CV$view(model_)));
 			default:
 				return A2(
 					$elm$html$Html$div,
@@ -14131,11 +14587,10 @@ var $author$project$Student$viewFragment = F3(
 						]));
 		}
 	});
-var $author$project$Student$view = function (_v0) {
-	var fragments = _v0.fragments;
-	var loading = _v0.loading;
-	var studentInfo = _v0.studentInfo;
-	var currentTimeSec = _v0.currentTimeSec;
+var $author$project$Student$view = function (model) {
+	var fragments = model.fragments;
+	var loading = model.loading;
+	var currentTimeSec = model.currentTimeSec;
 	return loading ? $aforemny$material_components_web_elm$Material$CircularProgress$indeterminate($aforemny$material_components_web_elm$Material$CircularProgress$config) : A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -14143,7 +14598,7 @@ var $author$project$Student$view = function (_v0) {
 			$elm$core$List$map,
 			A2(
 				$author$project$Student$viewFragment,
-				studentInfo,
+				model,
 				$author$project$Student$isActive(currentTimeSec)),
 			$elm$core$Array$toList(fragments)));
 };
@@ -14301,7 +14756,6 @@ var $aforemny$material_components_web_elm$Material$Menu$Config = function (a) {
 };
 var $aforemny$material_components_web_elm$Material$Menu$config = $aforemny$material_components_web_elm$Material$Menu$Config(
 	{additionalAttributes: _List_Nil, onClose: $elm$core$Maybe$Nothing, open: false, quickOpen: false});
-var $elm$html$Html$header = _VirtualDom_node('header');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$nav = _VirtualDom_node('nav');
 var $author$project$Professor$navIcons = _List_fromArray(

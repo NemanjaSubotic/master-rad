@@ -2,41 +2,50 @@ module Student exposing (..)
 
 import Api
 import Array exposing (Array)
-import Html exposing (Html, div, h2, text)
+import Html exposing (Html, article, div, header, p, span, text)
+import Html.Attributes exposing (class)
 import Http
 import Json.Decode exposing (field, list)
 import Material.CircularProgress as CircularProgress
-import Professor.Settings exposing (Msg(..))
-import Student.Group as Group
+import Material.Elevation as Elevation
+import Material.Typography as Typography
+import Student.CV as CV exposing (Msg(..))
+import Student.Group as Group exposing (Msg(..))
 import StudentsActivity exposing (ActivityType(..), StudentsActivity)
 import Task
-import Time
+import Time exposing (Zone)
+import Url.Parser exposing (fragment)
 import User.Session exposing (StudentInfo)
-
+import Util exposing (ViewMode(..), dateView, emptyHtmlNode)
 
 type StudentActivityFragment
     = Group Int StudentsActivity Group.Model
     | Topic StudentsActivity
-    | CV StudentsActivity
+    | CV Int StudentsActivity CV.Model
 
 
 type alias Model =
-    { currentTimeSec : Int
+    { zone : Zone
+    , currentTimeSec : Int
     , fragments : Array StudentActivityFragment
     , loading : Bool
     , studentInfo : StudentInfo
     }
 
-
 type Msg
     = CurrentTime Time.Posix
+    | AdjustTimeZone Time.Zone
     | LoadedActivities (Result Http.Error (List StudentsActivity))
     | GotGroupMsg Int Group.Msg
+    | GotCvMsg Int CV.Msg
 
 
 update : Msg -> Model -> String -> ( Model, Cmd Msg )
 update msg model token =
     case msg of
+        AdjustTimeZone zone ->
+            ( { model | zone = zone }, Cmd.none )
+
         CurrentTime posixTime ->
             ( { model | currentTimeSec = Time.posixToMillis posixTime // 1000 }, Cmd.none )
 
@@ -51,6 +60,21 @@ update msg model token =
                             List.foldr foldFn ( Array.empty, [], 0 ) activities
                     in
                     ( { model | loading = False, fragments = fragments }, Cmd.batch cmds )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        GotGroupMsg _ (GroupCreated result) ->
+            case result of
+                Ok groupId ->
+                    let
+                        studentInfo =
+                            model.studentInfo
+
+                        newStudentInfo =
+                            { studentInfo | groupId = Just groupId }
+                    in
+                    ( { model | studentInfo = newStudentInfo }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -70,46 +94,80 @@ update msg model token =
                 _ ->
                     ( model, Cmd.none )
 
+        GotCvMsg index cvMsg ->
+            case Array.get index model.fragments of
+                Just (CV _ activity cvModel) ->
+                    let
+                        ( model_, cmd ) =
+                            CV.update cvMsg cvModel
+
+                        fragments =
+                            Array.set index (CV index activity model_) model.fragments
+                    in
+                    ( { model | fragments = fragments }, cmd |> Cmd.map (GotCvMsg index) )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 init : StudentInfo -> Model
 init info =
-    Model 0 Array.empty True info
+    Model Time.utc 0 Array.empty True info
 
 
 view : Model -> Html Msg
-view { fragments, loading, studentInfo, currentTimeSec } =
+view ({ fragments, loading, currentTimeSec } as model) =
     if loading then
         CircularProgress.indeterminate CircularProgress.config
 
     else
         div []
-            (List.map (viewFragment studentInfo (isActive currentTimeSec)) (Array.toList fragments))
+            (List.map (viewFragment model (isActive currentTimeSec)) (Array.toList fragments))
 
 
 viewFragment :
-    StudentInfo
+    Model
     -> (StudentsActivity -> Bool)
     -> StudentActivityFragment
     -> Html Msg
-viewFragment studentInfo isActive_ fragment =
+viewFragment { studentInfo, zone } isActive_ fragment =
     case fragment of
         Group index activity model_ ->
             Group.view (isActive_ activity) studentInfo model_
                 |> Html.map (GotGroupMsg index)
-                |> viewActivity activity
+                |> viewActivity { active = isActive_ activity, zone = zone } activity
 
-        CV _ ->
-            div [] [ text "CV" ]
+        CV index activity model_ ->
+            CV.view model_
+                |> Html.map (GotCvMsg index)
+                |> viewActivity { active = isActive_ activity, zone = zone } activity
 
         Topic _ ->
             div [] [ text "Topic" ]
 
 
-viewActivity : StudentsActivity -> Html Msg -> Html Msg
-viewActivity activity activityContent =
-    div []
-        [ h2 [] [ text activity.name ]
-        , div [] [ activityContent ]
+viewActivity : { active : Bool, zone : Zone } -> StudentsActivity -> Html Msg -> Html Msg
+viewActivity { active, zone } activity activityContent =
+    let
+        date =
+            dateView Display zone (1000 * activity.ends)
+
+        endsInfo =
+            if active then
+                span [ Typography.subtitle1 ] [ text ("aktivan do: " ++ date) ]
+
+            else
+                emptyHtmlNode
+
+        acitvityHeader =
+            header []
+                [ span [ Typography.headline6 ] [ text activity.name ]
+                , endsInfo
+                ]
+    in
+    article [ Elevation.z3, class "student-activity" ]
+        [ acitvityHeader
+        , p [] [ activityContent ]
         ]
 
 
@@ -134,13 +192,16 @@ getFragmentsAndCommands time studentInfo token activity ( fragments, cmds, index
         CreateGroup ->
             let
                 fragment =
-                    Group index activity Group.init
+                    Group index activity (Group.init activity.id studentInfo.id)
 
                 cmd =
                     Cmd.map (GotGroupMsg index) <|
                         Group.initCmd (isActive time activity) studentInfo token
             in
             ( Array.push fragment fragments, cmd :: cmds, index + 1 )
+
+        UploadCV ->
+            ( Array.push (CV index activity (CV.init activity.id)) fragments, cmds, index + 1 )
 
         _ ->
             ( fragments, cmds, index )
@@ -149,7 +210,8 @@ getFragmentsAndCommands time studentInfo token activity ( fragments, cmds, index
 initCmd : Model -> String -> Cmd Msg
 initCmd model token =
     Cmd.batch
-        [ Task.perform CurrentTime Time.now
+        [ Task.perform AdjustTimeZone Time.here
+        , Task.perform CurrentTime Time.now
         , activitiesCmd model token
         ]
 

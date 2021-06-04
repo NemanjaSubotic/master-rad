@@ -18,9 +18,9 @@ defmodule MsnrApi.Students do
       [%Student{}, ...]
 
   """
-  def list_students(params) do
+  def list_students(params \\ %{}) do
     query =
-      from s in Student,
+      from s in Student, as: :student,
       join: sem in Semester,
       on: sem.is_active == true and s.semester_id == sem.id,
       join: u in assoc(s, :user),
@@ -29,15 +29,20 @@ defmodule MsnrApi.Students do
         first_name: u.first_name,
         last_name: u.last_name,
         email: u.email,
-        index_number: s.index_number}
+        index_number: s.index_number
+      }
 
     query =
       case params do
-        %{"noGroup" => _} -> where(query, [s], is_nil(s.group_id))
+        %{"noGroup" => _} ->
+          query
+          |> join(:left, [{:student, s}],  g in assoc(s, :group), as: :group)
+          |> where([{:group, g}], is_nil(g.id))
+
         _ -> query
       end
 
-    Repo.all(query)
+     Repo.all query
   end
 
   @doc """

@@ -17,7 +17,7 @@ import Maybe
 import StudentsActivity exposing (StudentsActivity)
 import Task
 import Time exposing (Month(..), Zone)
-import Util exposing (ViewMode(..), formInput, progressLine, submitButton)
+import Util exposing (ViewMode(..), dateView, formInput, getDateFromString, progressLine, submitButton)
 
 
 type alias Model =
@@ -233,124 +233,6 @@ taskForm model =
             , progressLine model.formProcessing
             ]
         ]
-
-
-dateView : ViewMode -> Zone -> Int -> String
-dateView mode zone timeInMillis =
-    let
-        time =
-            Time.millisToPosix timeInMillis
-
-        day =
-            String.padLeft 2 '0' <| String.fromInt (Time.toDay zone time)
-
-        month =
-            toTwoDigitMonth (Time.toMonth zone time)
-
-        year =
-            String.fromInt (Time.toYear zone time)
-    in
-    case mode of
-        Display ->
-            day ++ "." ++ month ++ "." ++ year ++ "."
-
-        Edit ->
-            year ++ "-" ++ month ++ "-" ++ day
-
-
-toTwoDigitMonth : Month -> String
-toTwoDigitMonth month =
-    case month of
-        Jan ->
-            "01"
-
-        Feb ->
-            "02"
-
-        Mar ->
-            "03"
-
-        Apr ->
-            "04"
-
-        May ->
-            "05"
-
-        Jun ->
-            "06"
-
-        Jul ->
-            "07"
-
-        Aug ->
-            "08"
-
-        Sep ->
-            "09"
-
-        Oct ->
-            "10"
-
-        Nov ->
-            "11"
-
-        Dec ->
-            "12"
-
-
-intToMonth : Int -> Maybe Month
-intToMonth month =
-    case month of
-        1 ->
-            Just Jan
-
-        2 ->
-            Just Feb
-
-        3 ->
-            Just Mar
-
-        4 ->
-            Just Apr
-
-        5 ->
-            Just May
-
-        6 ->
-            Just Jun
-
-        7 ->
-            Just Jul
-
-        8 ->
-            Just Aug
-
-        9 ->
-            Just Sep
-
-        10 ->
-            Just Oct
-
-        11 ->
-            Just Nov
-
-        12 ->
-            Just Dec
-
-        _ ->
-            Nothing
-
-
-getDateFromString : String -> Maybe Calendar.Date
-getDateFromString stringTime =
-    case List.map String.toInt (String.split "-" stringTime) of
-        [ Just year, Just month, Just day ] ->
-            intToMonth month
-                |> Maybe.andThen
-                    (\m -> Calendar.fromRawParts { year = year, month = m, day = day })
-
-        _ ->
-            Nothing
 
 
 activitiesCmd : Model -> String -> Cmd Msg
