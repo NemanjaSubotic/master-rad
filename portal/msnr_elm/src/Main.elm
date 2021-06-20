@@ -102,15 +102,7 @@ update msg model =
         ( GotSessionMsg (Session.GotTokenResult result), _, _ ) ->
             case result of
                 Ok session ->
-                    let
-                        user =
-                            getUserType result
-
-                        -- DOTO: UPDATE CONTENT MODEL not SET !!!!
-                        model_ =
-                            setContentModel user { model | session = Just session }
-                    in
-                    ( model_, Cmd.none )
+                    ( {model | session = Just session, currentUser = getUserType result}, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )

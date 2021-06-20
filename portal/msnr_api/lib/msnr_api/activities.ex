@@ -53,6 +53,8 @@ defmodule MsnrApi.Activities do
   """
   def get_activity!(id), do: Repo.get!(Activity, id)
 
+  def get_activity(id), do: Repo.get(Activity, id) |> Repo.preload(:task)
+
   @doc """
   Creates a activity.
 

@@ -2,12 +2,14 @@ defmodule MsnrApi.Activities.Activity do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias MsnrApi.Tasks
+
   schema "activities" do
     field :ends_sec, :integer
     field :starts_sec, :integer
     field :semester_id, :id
-    field :task_id, :id
-    field :signup_id, :id
+    belongs_to :task, Tasks.Task
+    belongs_to :signup, Tasks.TaskSignup
 
     timestamps()
   end

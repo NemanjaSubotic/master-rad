@@ -28,17 +28,12 @@ defmodule MsnrApiWeb.AuthController do
     end
   end
 
-  defp return_tokens(conn, %{user: user, student_info: student_info}) do
-    role = user.role.name
-    student_role = MsnrApi.Accounts.Role.student
+  defp return_tokens(conn, %{user: user} = user_info) do
+    IO.inspect(user_info)
 
-    { palyoad, info } =
-      case role do
-        ^student_role -> { %{id: user.id, role: role, student_info: student_info}, student_info}
-        _ -> { %{id: user.id, role: role}, nil }
-      end
-
+    { palyoad, info } = get_token_payload user_info
     access_token = MsnrApiWeb.Authentication.sign(palyoad)
+
     with  {:ok, refresh_token } <- create_refresh_token user do
       conn
       |> set_refresh_cookie(refresh_token)
@@ -70,5 +65,16 @@ defmodule MsnrApiWeb.AuthController do
       secure: Application.get_env(:msnr_api, :secure_cookie)
     ]
     put_resp_cookie(conn, @refresh_token, refresh_token, opts)
+  end
+
+  defp get_token_payload(%{user: user, student_info: student_info}) do
+    role = user.role.name
+    student_role = MsnrApi.Accounts.Role.student
+
+    payload = %{id: user.id, role: role, first_name: user.first_name, last_name: user.last_name}
+    case role do
+      ^student_role -> { payload, student_info}
+      _ -> { payload, nil }
+    end
   end
 end

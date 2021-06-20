@@ -12,9 +12,15 @@ defmodule MsnrApi.Files.File do
   end
 
   @doc false
-  def changeset(file, attrs) do
+  def changeset_student_file(file, attrs) do
     file
-    |> cast(attrs, [:file_path])
-    |> validate_required([:file_path])
+    |> cast(attrs, [:file_path, :student_id, :user_id])
+    |> validate_required([:file_path, :student_id, :user_id])
+  end
+
+  def changeset_group_file(file, attrs) do
+    file
+    |> cast(attrs, [:file_path, :group_id, :user_id])
+    |> validate_required([:file_path, :group_id, :user_id])
   end
 end

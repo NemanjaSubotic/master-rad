@@ -2,11 +2,15 @@ defmodule MsnrApi.Accounts.Role do
   use Ecto.Schema
   import Ecto.Changeset
 
-  def student, do: "student"
+  @student "student"
+  @professor "professor"
+  @admin "admin"
 
-  def professor, do: "professor"
+  def student, do: @student
 
-  def admin, do: "admin"
+  def professor, do: @professor
+
+  def admin, do: @admin
 
   schema "roles" do
     field :name, :string
@@ -19,7 +23,7 @@ defmodule MsnrApi.Accounts.Role do
     user
     |> cast(attrs, [:name, :description])
     |> validate_required([:name])
-    |> validate_inclusion(:name, [student(), professor(), admin()])
+    |> validate_inclusion(:name, [@student, @professor, @admin])
     |> unique_constraint(:name)
   end
 end

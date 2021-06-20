@@ -9360,40 +9360,66 @@ var $author$project$Student$getFragmentsAndCommands = F5(
 				return _Utils_Tuple3(fragments, cmds, index);
 		}
 	});
-var $author$project$Student$CV$GotBase64 = function (a) {
-	return {$: 'GotBase64', a: a};
+var $author$project$Student$CV$Uploaded = function (a) {
+	return {$: 'Uploaded', a: a};
 };
-var $elm$core$Debug$log = _Debug_log;
-var $elm$file$File$toUrl = _File_toUrl;
+var $author$project$Student$CV$endpoint = 'http://localhost:4000/api/cvs';
+var $elm$http$Http$filePart = _Http_pair;
+var $elm$http$Http$multipartBody = function (parts) {
+	return A2(
+		_Http_pair,
+		'',
+		_Http_toFormData(parts));
+};
+var $elm$http$Http$stringPart = _Http_pair;
+var $author$project$Student$CV$upload = F2(
+	function (activityId, file) {
+		var body = $elm$http$Http$multipartBody(
+			_List_fromArray(
+				[
+					A2(
+					$elm$http$Http$stringPart,
+					'activity_id',
+					$elm$core$String$fromInt(activityId)),
+					A2($elm$http$Http$filePart, 'file', file)
+				]));
+		return $elm$http$Http$request(
+			{
+				body: body,
+				expect: $elm$http$Http$expectWhatever($author$project$Student$CV$Uploaded),
+				headers: _List_Nil,
+				method: 'POST',
+				timeout: $elm$core$Maybe$Nothing,
+				tracker: $elm$core$Maybe$Nothing,
+				url: $author$project$Student$CV$endpoint
+			});
+	});
 var $author$project$Student$CV$update = F2(
 	function (msg, model) {
-		switch (msg.$) {
-			case 'SelectedFile':
-				if (msg.a.b && (!msg.a.b.b)) {
-					var _v1 = msg.a;
-					var file = _v1.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								cvFile: $elm$core$Maybe$Just(file)
-							}),
-						A2(
-							$elm$core$Task$perform,
-							$author$project$Student$CV$GotBase64,
-							$elm$file$File$toUrl(file)));
-				} else {
+		_v0$2:
+		while (true) {
+			switch (msg.$) {
+				case 'SelectedFile':
+					if (msg.a.b && (!msg.a.b.b)) {
+						var _v1 = msg.a;
+						var file = _v1.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									cvFile: $elm$core$Maybe$Just(file)
+								}),
+							A2($author$project$Student$CV$upload, model.activityId, file));
+					} else {
+						break _v0$2;
+					}
+				case 'Upload':
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
-			case 'Upload':
-				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-			default:
-				var base64 = msg.a;
-				return A2(
-					$elm$core$Debug$log,
-					base64,
-					_Utils_Tuple2(model, $elm$core$Platform$Cmd$none));
+				default:
+					break _v0$2;
+			}
 		}
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Student$Group$GroupCreated = function (a) {
 	return {$: 'GroupCreated', a: a};
@@ -9903,16 +9929,14 @@ var $author$project$Main$update = F2(
 							var result = _v0.a.a.a;
 							if (result.$ === 'Ok') {
 								var session = result.a;
-								var user = $author$project$User$Type$getUserType(result);
-								var model_ = A2(
-									$author$project$Main$setContentModel,
-									user,
+								return _Utils_Tuple2(
 									_Utils_update(
 										model,
 										{
+											currentUser: $author$project$User$Type$getUserType(result),
 											session: $elm$core$Maybe$Just(session)
-										}));
-								return _Utils_Tuple2(model_, $elm$core$Platform$Cmd$none);
+										}),
+									$elm$core$Platform$Cmd$none);
 							} else {
 								return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 							}
