@@ -83,27 +83,29 @@ robusnost i otpornost na greške. Kao jezik specifične namene uvodi poseban
 način izvršavanja aplikacije, poznat kao \emph{Elm arhitektura}, koja je
 poslužila kao inspiracija mnogim \emph{JavaScript} bibliotekama.
 Programski jezik \emph{Elixir} nastaje pod
-uticajem velikog broja programskih jezika sa idejom da se izvršava na \emph{Erlang}
-virtuelnoj mašini. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
-ali je svoj upotrebu našao gotovo u svim oblastima računarstva.
+uticajem velikog broja programskih jezika sa idejom da se izvršava na virtuelnoj
+mašini \emph{Erlang}. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
+ali je svoju upotrebu našao gotovo u svim oblastima računarstva.
 Za razvoj veb aplikacija najpopularnije je razvojno okruženje \emph{Phoenix}, koje
 nastaje i razvija se uporedo sa samim programskim jezikom.
 
-Kurs \emph{Metodologija stručnog i naučnog rada} se održava na master studijama
+Kurs \emph{Metodologija stručnog i naučnog rada} (skraćeno MSNR) se održava na master studijama
 studijskog programa \emph{Informatika} Matematičkog fakulteta Univerziteta u Beogradu.
 Osnovni cilj kursa jeste da studente uvede u metode stručnog i naučnog rada u oblasti računarstva
 i informatike. Tok kursa prati veliki broj studentskih aktivnosti koje kroz timski rad
 obrađuju teme pisanja, recenziranja i prezentovanja radova, kao i razvoj "mekih" veština.
 Dosadašnje izvršavanje aktivnosti zasnivalo se na komunikaciji putem mejlova i otpremanju datoteka na
-privremenim veb stranicama. MSNR portal je zamišljen kao centralno mesto organizacije kursa i izvršavanja
-aktivnosti. Nastavnik će na jednom mestu dodavati nove aktivnosti, dodeljivati ih studentima i ocenjivati
+privremenim veb stranicama.
+Cilj ovog rada je implemetacija portala MSNR.
+Ovaj portal treba da bude centralno mesto organizacije kursa i izvršavanja aktivnosti.
+Nastavnik će na jednom mestu dodavati nove aktivnosti, dodeljivati ih studentima i ocenjivati
 njihovo izvršavanje, dok će studenti sve aktivnosti izvršavati unutar portala i imati celokupan
-pregled aktivnosti, zajendo sa ocenama i komentarima nastavnika, na jednom mestu.
+pregled aktivnosti, zajedno sa ocenama i komentarima nastavnika, na jednom mestu.
 
 Detaljni opis programskog jezika \emph{Elm} dat je u drugom poglavlju dok je u trećem poglavlju predstavljen programski jezik \emph{Elixir}.
-Četvrto poglavlje sadrži opis funkcionalnosti MSNR portala i arhiteturu rešenja.
+Četvrto poglavlje sadrži opis funkcionalnosti portala MSNR i arhitekturu rešenja.
 U poglavlju pet prikazuje se implementacija serverskog dela upotrebom razvojnog
-okruženja \emph{Phoenix}. U poglavlju šest predstavljan je implementacija korisničkog interfejsa
+okruženja \emph{Phoenix}. U poglavlju šest predstavljena je implementacija korisničkog interfejsa
 portala korišćenjem programskog jezika \emph{Elm}. Sedmo poglavlje sadrži zaključak celog rada sa
 mogućim daljim unapređenjima.
 
@@ -2115,8 +2117,8 @@ end
 \label{listing:elixirImplProtocol}
 \end{listing}
 
-\chapter{MSNR portal}
-MSNR portal je zamišljen kao veb aplikacija koja će ispratiti mnogobrojne aktivnosti tokom kursa \emph{Metodologija stručnog i naučnog rada} i olakšati njihovo sprovođenje.
+\chapter{Portal MSNR}
+Portal MSNR je zamišljen kao veb aplikacija koja će ispratiti mnogobrojne aktivnosti tokom kursa \emph{Metodologija stručnog i naučnog rada} i olakšati njihovo sprovođenje.
 Jedan od osnovnih ciljeva kursa jeste da uvede studente u pisanje i recenziranje naučnih radova, kako se navode reference kao i koji su etički kodeksi naučnoistrživačkog rada.
 Takođe, velika pažnja se posvećuje timskom radu, komunikaciji, sticanju "mekih" veština, držanju prezentacija i pisanju CV-a.
 
@@ -2143,8 +2145,10 @@ zahteve za registracije, dodaje aktivnosti i teme za tekuću godinu, i ocenjuje 
 Širi opis funkcionalnosti portala dat je u sekciji gde su predstavljeni entiteti portala i njihov odnos. Takođe, prijava i ocenjivanje
 studentskih prezentacija neće biti obrađene u sklopu rada, ali je predviđeno njihovo naknadno dodavanje.
 
+K\^{o}d implementacije portala MSNR dostupan je na \emph{GitHub}-u \cite{msnr-portal}.
+
 \section{Arhitektura portala}
-Arhitektura MSNR portala prikazana je na slici \ref{fig:msnr-arch} i predstavlja tipičan primer troslojne arhitekture.
+Arhitektura portala MSNR prikazana je na slici \ref{fig:msnr-arch} i predstavlja tipičan primer troslojne arhitekture.
 Na klijentskoj strani se nalazi korisnički interfejs koji je implementiran u \emph{Elm}-u kao jednostranična aplikacija (eng. \emph{Single Page Application --- SPA}).
 Središnji sloj predstavlja aplikacioni veb interfejs - (eng. \emph{Web Appilicatoin Programming Interface --- API})
 koji je pomoću razvojnog okruženja \emph{Phoenix} implementiran u stilu REST arhitekture.
@@ -2152,7 +2156,7 @@ Treći sloj čini relaciona baza podataka, a odabrani sistem za upravljanje bazo
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\textwidth]{msnr-arch.png}
-  \caption{Arhitektura MSNR portala}
+  \caption{Arhitektura portala MSNR}
   \label{fig:msnr-arch}
 \end{figure}
 
@@ -2161,7 +2165,7 @@ Na slici \ref{fig:msnr-db} data je šema baze gde su prikazani osnovni entiteti 
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\textwidth]{msnr-db.png}
-  \caption{Dijagram tabela MSNR portala}
+  \caption{Dijagram tabela portala MSNR}
   \label{fig:msnr-db}
 \end{figure}
 
@@ -2232,7 +2236,7 @@ Pored navedenih alata potrebno je instalirati i PostgreSQL.
 \section{Kreiranje i struktura projekta}
 \emph{Phoenix} je okruženja za razvoj svih tipova veb aplikcaija, omogućava HTML renderovanje na serverskoj strani i ima odličnu podršku
 za komunikaciju u realnom vremenu. Poseduje i svojstven \emph{LiveView} koncept koji pruža bogato korisničko iskustvo u realnom vremenu sa
-renderovanjem na serverskoj strani. Za potrebe implementacije MSNR portala kreiraće se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
+renderovanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreiraće se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
 Takođe, portal neće podržavati lokalizaciju, stoga nema potreba za uključivanje \emph{gettext} modula.
 
 Komanda korišćena za kreiranje projekta:
@@ -2276,7 +2280,7 @@ Folder \emph{controllers} je inicijalno prazan, dok su u folderu \emph{views} kr
 Moduli \emph{MsnrApiWeb.Endpoint} i \emph{MsnrApiWeb.Router} imaju ulogu da pripreme \emph{HTTP} zahtev i proslede ga odgovarajućem
 upravljaču.
 
-Folder \emph{priv} sadrži sve resurse koji su potrebni u produkciji ali nisu direktan deo izvornog koda. U slučaju MSNR portala
+Folder \emph{priv} sadrži sve resurse koji su potrebni u produkciji ali nisu direktan deo izvornog koda. U slučaju portala MSNR
 sadržaće skripte vezane za menjanje i popunjavanje baze podataka. Testiranje, kao ni telemetrija, nije tema ovog rada.
 
 \section{Odrada \emph{HTTP} zahteva}
@@ -2356,7 +2360,7 @@ Deo modula \emph{Router} koji sadrži definisanje toka i opsega dat je u listing
 \label{listing:router}
 \end{listing}
 
-U slučaju MSNR portala definisan je jedan tok i jedan opseg koji nadgleda sve zahteve koji počinju sa \emph{/api}.
+U slučaju portala MSNR definisan je jedan tok i jedan opseg koji nadgleda sve zahteve koji počinju sa \emph{/api}.
 Svaki od tih zahteva proći će kroz prethodno definisani tok, nakon čega se na osnovu metoda \emph{HTTP} zahteva i nastavka
 putanje pozvia određena akcija, tj. funkcija iz navedenog upravljača. Na primer, za zahtev sa metodom
 \emph{GET} i putanjom \emph{/api/auth/refresh} poziva se funkcija \emph{refresh} iz kontolera 
@@ -2560,7 +2564,7 @@ dodaju jedinstveni indeksi za naziv i k\^{o}d tipa aktivnosti.
 Migracije se mogu definisati na dva načina --- prvi, predstavljen u listingu, koristi funkciju \texttt{\textbf{change}}
 i drugi sa dve funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}}, kojima se difinišu akcije koje prilikom izvršavanja i
 poništavanja migracije. U slučaju funkcije \texttt{\textbf{change}} \emph{Ecto} sam zaključuje potrebne korake prilikom
-poništavanja migracije. Prilikom implentacije MSNR portala funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}} korišćene
+poništavanja migracije. Prilikom implentacije portala MSNR funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}} korišćene
 su prilikom definisanje tipova za role korsnika i status registracije. 
 
 \subsection{Kreiranje, preuzimanje i brisanje podataka iz baze}
@@ -2684,7 +2688,7 @@ i greškama validacije. Modul \emph{Ecto.Changeset} pruža brojne funkcije za va
 Prilikom definisanja entiteta, dodaje se njegov kontekst sa \emph{Ecto.Shcema} strukturom, kao i migracija. 
 Ukoliko je potrebno dodati i kontoler, to su još dve datoteke --- kontolor i pogled. Da bi se olakšavo ovaj
 proces, \emph{Phoenix} pruža komande za automakstog generisanja navedenih datoteka zajedno sa šablonima za testove.
-Za potrebe MSNR portala najčešće korišćena komanda jeste \texttt{mix phx.gen.json} koja generiše sve prethodno
+Za potrebe portala MSNR najčešće korišćena komanda jeste \texttt{mix phx.gen.json} koja generiše sve prethodno
 navedene fajlove. Prethodno prikazani listinzi vezani za \emph{ActivityType} entitet rezultat su komande prikazane u
 listingu \ref{listing:gen-json}. Parametari su redom: naziv konteksta, naziv sturkture i naziv tabele u bazi, nakon čega slede
 definicije polja, odnosno kolona.
@@ -2722,7 +2726,7 @@ resources "/semesters", SemesterController, except: [:new, :edit] do
 \label{listing:registration-routes}
 \end{listing}
 
-Unutar MSNR portala putanje su organizovane hijererhiski, budući da se sve aktivnosti vrše u toku semestra,
+Unutar portala MSNR putanje su organizovane hijererhiski, budući da se sve aktivnosti vrše u toku semestra,
 putanja \emph{/semesters} se nalazi na vrhu hijerarhije. Delom koda prikazanim u prethodnom listingu registruju
 se putanje \emph{api/semesters} za rad sa semestrima i \emph{api/semesters/<semester{\textunderscore}id>/registrations}
 za izlistavanje registracija. Vrednost <semester{\textunderscore}id> iz putanje prosleđuje se kao parametar akciji
@@ -2817,12 +2821,12 @@ i pošto u \texttt{with} izrazu taj slučaj nije obrađen dolazi do greške. Gre
 se pomoću kotrolora \emph{FallbackController} prevodi u 401 grešku i korisniku vraća validan odgovor. 
 
 \section{Autentifikacija i autorizacija korisnika}
-Autentifikacija i autorizacija korisnika MSNR portala zasnovana je na tokenima. Nakon uspešnog prijavaljivanja korisniku
+Autentifikacija i autorizacija korisnika portala MSNR zasnovana je na tokenima. Nakon uspešnog prijavaljivanja korisniku
 se prosleđuje token koji se prilikom svakog \emph{HTTP} zahteva šalje serveru kroz zaglavlje \emph{Authorization}.
 Token nosi informacije o korisniku i ima ograničeno vreme trajanja, nakon čega više nije validan.
 Pomoću utikača se prilikom obrade zahteva validira token i proveravaju prava pristupa određenim resursima.
 
-Unutar implementacije MSNR portala koriste se dva tokena: \begin{itemize}
+Unutar implementacije portala MSNR koriste se dva tokena: \begin{itemize}
 \item \emph{acceess{\textunderscore}token} --- Sadrži informacije o korisniku i koristi se za pristupanje portalu. Ima kraće vreme trajanja (do pola sata) i korsniku se prosleđuje kroz telo \emph{HTTP} odgovora.
 \item \emph{refresh{\textunderscore}token} --- Koristi se za obnavaljanje \emph{acceess{\textunderscore}token}, ima duže vreme trajanja (nekoliko dana) i prosležuje se u \emph{HttpOnly} i \emph{Secure} kolačiću.  
 \end{itemize}
@@ -2870,7 +2874,7 @@ Unutar \emph{MsnrApiWeb.Plugs.Authorization} modula
 definisane su funkcije \texttt{professor{\textunderscore}only} i \texttt{allow{\textunderscore}students} koje imaju
 iste argumente kao i funkcija \texttt{call} (listing \ref{listing:authentication-plug}) u slučaju modula.
 Prilikom provere studentske uloge proverava se, ukoliko postoji, i \emph{student{\textunderscore}id} parametar iz putanje.
-Upotreba utkača se može ograničiti na određene akcije unutar upravljača, što se može videti na primetu \emph{AssignementController} upravljača (listing \ref{listing:authorization-plug}).
+Upotreba utkača se može ograničiti na određene akcije unutar upravljača, što se može videti na primetu \emph{AssignmentController} upravljača (listing \ref{listing:authorization-plug}).
 \begin{listing}[h!]
   \begin{minted}[fontsize=\footnotesize]{elixir}
     defmodule MsnrApiWeb.AssignmentController do
@@ -2924,7 +2928,7 @@ Funkcija \texttt{create{\textunderscore}assignments{\textunderscore}for{\textund
 kreira odgovarajuću listu dodeljenih aktivnosti.
 \section{Izvršavanje i ocenjivanje aktivnosti}
 
-Upravljač \emph{AssignementController} studentima pruža pristup samo akciji \texttt{index}, tj. preko ovog upravljača
+Upravljač \emph{AssignmentController} studentima pruža pristup samo akciji \texttt{index}, tj. preko ovog upravljača
 studentima je moguće samo prikazivanje njihovih dodeljenih aktivnosti. Za izvršavanje aktivnosti kreirani su drugi upravljači.
 
 Jedne od osnovih aktivnosti su prijavljivanje grupe i odabir teme. Prijavljivanje grupe nije grupna aktivnost, već se dodeljuje svakom
@@ -2964,7 +2968,7 @@ imenuju na osnovu tipa aktivnosti i studenta ili grupe kojoj je aktivnost dodelj
 Izmena priloženih dokumenata se vrši se preko \texttt{update} akcije upravljača \emph{DocumentController},
 mogu se menjati samo pojedinačno i čuva se samo poslednja verzija.
 
-Profesor ocenjivanje aktivnosti pozivanjem \texttt{update} akcije upravljača \emph{AssignementController},
+Profesor ocenjivanje aktivnosti pozivanjem \texttt{update} akcije upravljača \emph{AssignmentController},
 unoseći odgovarajući komentar i broj poena. Takođe, preko upravljača \emph{DocumentController} profesor može
 priložiti dokument, ukolko je to potrebno.  
 
@@ -2972,11 +2976,11 @@ priložiti dokument, ukolko je to potrebno.
 Za razliku od \emph{Phoenix} projekata, inicijalizaciom \emph{Elm} projekta kreira
 se samo prazan \emph{src} direktorijum i datoteka \emph{elm.json}, tako da se kreiranje i
 organizacija datoteka u potpunosti prepušta korisniku. Rešenje organizacije \emph{Elm} datoteka u slučaju
-MSNR portala prikazano je na slici \ref{fig:msnr-elm-src}.
+portala MSNR prikazano je na slici \ref{fig:msnr-elm-src}.
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.5\textwidth]{msnr-elm-src.png}
-  \caption{Organizacija \emph{Elm} datoteka unutar MSNR portala}
+  \caption{Organizacija \emph{Elm} datoteka unutar portala MSNR}
   \label{fig:msnr-elm-src}
 \end{figure}
 
@@ -2989,7 +2993,7 @@ rada \emph{Elm} aplikacije, biće prikazana uloga navedenih modula.
 \section{Elm aplikacija}
 U uvodnom delu rada, na primeru brojača, prikazan je najjednostavniji primer \emph{Elm} programa kreiran funkciom \texttt{sandbox}.
 Pored nje, u modulu \texttt{Browser} se nalaze funkcije \texttt{element}, \texttt{document} i \texttt{application}
-kojom je implementiran korisnički interfejs MSNR portala.
+kojom je implementiran korisnički interfejs portala MSNR.
 
 Prethodno navedene četiri funkcije poređane su po kompeksnosti i svaka naredna pruža dodatne mogućnosti.
 Funkciom \texttt{element} se uvodi mogućnost komunikacije sa "spoljašnjim svetom" pomoću koncepta komande, supskripcije, portova
@@ -3018,7 +3022,7 @@ Oznakama (\emph{flags}) je moguće prosleđivanje podataka \emph{Elm} programu i
 Komande (\texttt{Cmd}) služe za izvršavanje akcija izvan \emph{Elm} okruženja (npr. \emph{HTTP} zahtevi), a supskripcijama
 (\texttt{Sub})je moguće pretplatiti se na određeni događaj. Polja \texttt{onUrlRequest} i \texttt{onUrlChange}, kao i
 \texttt{Url} parametar \texttt{init} funkcije, koriste se za rad sa putanjam prilikom implementacije jednostranične aplikacije.
-Navedeni koncepti i njihova upotreba unutar MSNR portala biće detaljnije objašnjeni dalje u radu.
+Navedeni koncepti i njihova upotreba unutar portala MSNR biće detaljnije objašnjeni dalje u radu.
 
 \subsection{Inicijalizacija aplikacije}
 Tip funkcije \texttt{init} prikazan je u listingu \ref{listing:elm-application} i kao argumente prihvata oznake, trenutnu putanju i ključ navigacije,
@@ -3327,12 +3331,214 @@ Analogno ažuriranju, unutar glavne \texttt{view} funkcije se na osnovu trenutne
 \label{listing:elm-update}
 \end{listing} 
 
+
+\section{Stilizovanje aplikacije}
+Elm kao jezik specijalne namene sadrži sve što je potrebno za razvoj korisničkog interfejsa veb aplikacija,
+ipak zgodno je iskoristiti gotove stilizovane komponent (npr. modale, tabove i slično) kako ne bismo
+implementirali sve od početka.
+
+Za potrebe implementacije portala MSNR korišćen je paket \emph{NoRedInk/noredink-ui},
+koji se oslanja na dosta drugih paketa među kojima je bitno izdoviti paket 
+\emph{tesk9/accessible-html-with-css}.
+
+Ovaj paket predstavlja proširenje paketa \emph{rtfeldman/elm-css} koji se takođe koristi u projektu
+i omogućava stilizovanje \emph{HTML} elemenata unutar programskog jezika \emph{Elm}, bez upotrebe
+\emph{css} datoteka. Za iscrtavanje \emph{HTML} elemenata koriste se odgovarajuće funkcije iz
+modula \emph{Html.Styled} umesto iz modula \emph{Html}.
+
+\begin{listing}[h]
+\begin{minted}[fontsize=\footnotesize]{haskell}
+import Accessibility.Styled as Html exposing (Html)
+import Browser exposing (Document)
+import Css exposing (..)
+import Html.Styled.Attributes exposing (css, href)
+...
+view_ : Model -> Html Msg
+view_ model =
+    ... 
+    Html.div
+        [ css [ height (vh 100), displayFlex, flexDirection column ] ]
+        [ {-sadrzaj-}
+        ]
+
+view : Model -> Document Msg
+view model =
+    { title = "MSNR"
+    , body = [ view_ model |> Html.toUnstyled ]
+    }
+\end{minted}
+\caption{Primer stilizovanja elementa i upotreba \texttt{toUnstyled} funkcije}
+\label{listing:elm-toUnstyled}
+\end{listing}
+
+Modul \emph{Accessibility.Styled} iz paketa \emph{tesk9/accessible-html-with-css} pored stilizovanja pruža i podršku za pristupačnost
+(eng. \emph{accessibility --- a11y}). Funkcija \texttt{toUnstyled} omogućava korišćenje \emph{Accessibility.Styled.Html} unutar \emph{Elm} aplikacije,
+primer njene upotrebe unutar \emph{Main} modual prikazana je u listingu \ref{listing:elm-toUnstyled}.
+
 \section{Struktura profesorske stranice}
+Profesorske stranice nalaze se pod folderom \emph{ProgessorPage} (slika \ref{fig:prof-dir}),
+svaka stranica predstavljena je zasebnim modulom i to su:
+\begin{itemize}
+  \item \emph{RegistrationRequestsPage} --- za obradu studentskih zahteva za registraciju
+  \item \emph{ActivitiesPage} --- za dodavanje novih aktivnosti
+  \item \emph{GroupsPage} --- za prikazivanje svih grupa
+  \item \emph{TopicsPage} --- za dodavanje tema studentskih radova
+  \item \emph{ActivityAssignmentPage} --- za pregled i ocenjivanje studentskih aktivnosti
+\end{itemize}
 
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{prof-page-dir.png}
+  \caption{Sadržaj foldera \emph{ProgessorPage}}
+  \label{fig:prof-dir}
+\end{figure}
+
+Prikazivanje odgovarajućih stranica u odnosu na trenutnu putanju obrađuje se unutar modula
+\emph{ProgessorPage}, slično obradi svih stanica unutar modula \emph{Main}. 
+Svaka stanica ima svoj model, kao i funkcije \texttt{view} i \texttt{update}.
+Model definisan u modulu \emph{ProgessorPage} sadrži sve modele stranica
+kao i zajedničke podatke o studentima, grupama i aktivnostima. 
+\begin{listing}[h]
+\begin{minted}[fontsize=\footnotesize]{haskell}
+type alias Model =
+  { zone : Zone
+  , accessToken : Token
+  , apiBaseUrl : String
+  , currentSemesterId : Int
+  , requstesModel : Requests.Model
+  , activitiesModel : Activities.Model
+  , activityAssignmentsModel : ActivityAssignments.Model
+  , topicsModel : TopicsPage.Model
+  , activities : Dict Int Activity
+  , activityTypes : Dict Int ActivityType
+  , groups : Dict Int Group
+  , students : Dict Int Student
+  , assignments : List ShallowAssignment
+  , loadingActivities : Bool
+  , loadingActivityTypes : Bool
+  , loadingGroups : Bool
+  , loadingStudents : Bool
+  , loadingAssignment : Bool
+  , hasLoadingError : Bool
+  }
+\end{minted}
+\caption{Glavni model za prikazivanje profesorskih stranica}
+\label{listing:prof-model}
+\end{listing}
+U listingu \ref{listing:prof-model} prikazan je alijas sveobuhvatnog modela, gde se pored
+modela stranica mogu videti i ostali podaci potrebni za njihovo prikazivanje.
+Modeli stranica čuvaju podakte koji su im potrebni isključivo za njihov rad
+i prilikom pozivanja funkcije \texttt{view} iz modula \emph{ProgessorPage}
+prosleđuju im se svi potrebni podaci (uključujuči i odgovarajući model).
+
+Kretanjem kroz stranice vrši se pomoću navigacione trake čiji prikaz se može videti na
+slici \ref{fig:professor-page} zajedno sa izgledom stranice za ocenjivanje aktivnosti.
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{professor-page.png}
+  \caption{Izgled stranice za ocenjivanje aktivnosti}
+  \label{fig:professor-page}
+\end{figure}
 \section{Struktura studentske stranice}
+Za razliku od profesorskog dela aplikacije koji je podeljen na više stranica,
+studentski deo se sastoji iz samo jedne stranice u kojoj su prikazane sve dodeljene
+aktivnosti studenta. 
 
-% Elm kao jezik specijalne namene sadrži sve što je potrebno za razvoj korisničkog interfejsa veb aplikacija,
-% stoga nije potrebno uključivanje dodatnih 
+Svaka dodeljena aktivnosti ima naziv i opis aktivnosti, rok za izvršenje
+i broj poena koji nosi. Način prikazivanja pojedinačnih aktivnosti razlikuje se po
+jedinstvenom kodu i sadržaju tipa aktivnosti, kao i po tome da li je u pitanju prijava
+za aktivnost. Tako da se prikazivanje same aktivnosti može podeliti u dva dela,
+jedan se odnosi na osnovne podatke, a drugi na sam sadržaj aktivnosti potreban za prijavljivanje grupe,
+tema, prilaganja dokumenata ili prijavljivanje za određenu aktivnost.
+
+Prikazivanje studentske stranice obrađuje se unutar modula \emph{StudentPage},
+a pomoćni moduli koji se tom prilikom koriste nalaze se pod folderom \emph{StudentPage} čija je
+struktura prikazana na slici \ref{fig:student-dir}.
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{student-dir.png}
+  \caption{Sadržaj foldera \emph{StudentPage}}
+  \label{fig:student-dir}
+\end{figure}
+
+Modeli studentske stanice i sadržaja aktivnosti izdvojeni su u posebne module --- \emph{StudentPage.Model} i
+\emph{AssignmentContent.Model} da bi se izbegla ciklična zavisnost, jer se osnovni model koristi unutar
+\emph{AssignmentContent} modula. U listingu \ref{listing:student-model} predstavljen je osnovi model studentske stranice u kom se
+nalaze svi podaci potrebni za njen prikaz. Za razliku od profesorskog modela, modeli sadržaja aktivnosti čuvaju se u nizu
+(\texttt{assignmentsModels}). Svakom elementu niza modela odgovara dodeljena aktivnost (niz \texttt{assignments}) na istom indeksu.
+\begin{listing}[h]
+\begin{minted}[fontsize=\footnotesize]{haskell}
+    type alias Model =
+      { accessToken : Token
+      , apiBaseUrl : String
+      , email : String
+      , firstName : String
+      , lastName : String
+      , studentId : Int
+      , semesterId : Int
+      , groupId : Maybe Int
+      , loadingGroup : Bool
+      , group : Maybe Group
+      , indexNumber : String
+      , zone : Zone
+      , currentTimeSec : Int
+      , loading : Bool
+      , assignments : Array Assignment
+      , assignmentsModels : Array ACM.Model
+      , assignmentsState : AssignmentsState
+      , loadingStudents : Bool
+      , students : List Student
+      , loadingTopics : Bool
+      , topics : List Topic
+      }
+\end{minted}
+\caption{Osnovni model za prikazivanje studentske stranice}
+\label{listing:student-model}
+\end{listing}
+
+Osnovni modul za prikazivanje studentske stranice, pored modula \emph{StudentPage}, jeste modul
+\emph{AssignmentContent} koji ima sličnu ulogu kao modul \emph{ProfessorPage} kod profesorskih
+stranica. U folderu \emph{AssignmentContent} nalaze se moduli za obradu sadržaja --- \emph{GroupContent}, \emph{FilesContent},
+\emph{SignupContent} i \emph{TopicContent}, i kao kod profesorskih stranica svaki od njih ima svoj
+model i funkcije \texttt{update} i \texttt{view}.
+
+Prilikom pozivanja funkcije \texttt{update} u modulu \emph{StudentPage} unutar poruke (\texttt{Msg}), pored informacije o
+samoj poruci, nalazi se i indeks na osnovu kog se menja odgovarajući model u nizu. Definisanje poruke sa indeksom i njena
+obrada prikazana je u listingu \ref{listing:student-update}.
+\begin{listing}[h]
+\begin{minted}[fontsize=\footnotesize]{haskell}
+  type Msg
+    = ...
+    | GotAssignmentContentMsg Int AssignmentContent.Msg
+
+  update : Msg -> Model -> ( Model, Cmd Msg )
+  update msg model =
+  ...
+  GotAssignmentContentMsg index assignmentMsg ->
+  let
+      ( model_, cmd ) =
+          AssignmentContent.update assignmentMsg index model
+  in
+  ( model_, Cmd.map (GotAssignmentContentMsg index) cmd )
+\end{minted}
+\caption{Ažuriranje sadržaja aktivnosti}
+\label{listing:student-update}
+\end{listing}
+Funkcija \emph{AssignmentContent} iz modula \emph{AssignmentContent} na osnovu tipa poruke poziva
+fukciju ažuriranja iz odgovarajućeg modela za obradu sadržaja.
+
+Za prikazivanje dodeljenih aktivnosti koristi sa komponenta harmonika (eng. \emph{accordion}) iz paketa \emph{NoRedInk/noredink-ui},
+tako da inicijalno prikazuju samo zaglavlje aktivnosti sa osnovnim informacijama.
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{student-page.png}
+  \caption{Izgled studentske stranice}
+  \label{fig:student-page}
+\end{figure}
+Klikom na zaglavlje prikazuje se i sam sadžaj aktivnosti. Izgled studentske stanice prikazan je na slici \ref{fig:student-page}.
+Prikazivanje zaglavlja aktivnosti definiše se unutar modula \emph{StudentPage}, a za prikazivanje sadržaja, analogno ažuriranju,
+poziva se \emph{view} funkcija iz modula \emph{AssignmentContent}.
+
 % ------------------------------------------------------------------------------
 \chapter{Zaključak}
 % ------------------------------------------------------------------------------
@@ -3345,21 +3551,20 @@ objašnjenje implementacije najvažnijih delova.
 Radno okruženje \emph{Phoenix} daje jasne smernice kako struktura projekta treba
 da izgleda. Biblioteke unutar ekosistema \emph{Elixir} nastale su na osnovu dobrih
 praksi postojećih biblioteka drugih programskih jezika što njihovu adaptaciju
-čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm} predstavlja
-potpuno novo iskustvo u odnosu \emph{JavaScript}, sa \emph{Elm} arhitekturom
-kao centralnim delom. Prilikom razvoja portala, korisnički interfejs je prošao
+čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm} sa \emph{Elm}
+arhitekturom kao centralnim delom, predstavlja potpuno novo iskustvo u odnosu na rad
+u programskom jeziku \emph{JavaScript}. Prilikom razvoja portala, korisnički interfejs je prošao
 kroz nekoliko iteracija i značajnih izmena tokom kojih se sam autor uverio u lakoću
 refaktorisanja i sigurnost koju \emph{Elm} zajedno sa kompilatorom pruža programerima.
 
 Pre upotrebe portala trebalo bi ubaciti podršku za telemetriju na serverskoj strani
-u cilju nadgledanje rada aplikacije. Kao i skup testova kojim bi se verifikovale osnove
-funkcionalnosti sistema i osigurala ispravnost prilikom dodavanja novih funkcionalnosti.
-Sadžaj tipa aktivnosti trenutno podržava samo rad sa dokumentima, dodavanjem podrške za
+u cilju nadgledanje rada aplikacije. 
+Sadržaj tipa aktivnosti trenutno podržava samo rad sa dokumentima, dodavanjem podrške za
 kreiranje prilagođenih formi zaokružile bi se sve aktivnosti unutar portala i pružila
 mogućnost sprovođenja anketi i sličnih aktivnosti.
 Kao značajnije unapređenje portala trebalo bi razmotriti
 upotrebu rešenja za čuvanje dokumenata na oblaku. Na klijentskoj strani potrebno je
-prilagoditi upotrebu korisničkog interfejsa na manjim uređajima.
+prilagoditi upotrebu korisničkog interfejsa za manje uređaje kao što su mobilni telefoni i tableti.
 
 % ------------------------------------------------------------------------------
 % Literatura
@@ -3375,7 +3580,7 @@ prilagoditi upotrebu korisničkog interfejsa na manjim uređajima.
 % ------------------------------------------------------------------------------
 % Biografija kandidata
 \begin{biografija}
-Nemanja Subotić rođen je 04.09.1993. godine u Užicu, odrastao u Novoj Varoši,
+Nemanja Subotić rođen je 04.09.1993. godine u Užicu, odrastao je u Novoj Varoši,
 gde je završio prirodno-matematički smer gimnazije "Pivo Karamatijević".
 Smer \emph{Informatika} na Matematičkom fakultetu Univerziteta u Beogradu upisuje
 2012. godine u septembru i završava u julu 2015. sa prosečnom ocenom \emph{9,38}.
