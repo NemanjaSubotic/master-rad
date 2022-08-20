@@ -21,9 +21,9 @@
 % Naslov teze na srpskom jeziku (u odabranom pismu)
 \naslov{Programski jezici Elm i Elixir u razvoju studentskog veb portala}
 % Godina u kojoj je teza predana komisiji
-\godina{2020}
+\godina{2022}
 % Ime i afilijacija mentora (u odabranom pismu)
-\mentor{dr Milena \textsc{Vujošević Janičić}, docent    \\ Univerzitet u Beogradu, Matematički fakultet}
+\mentor{dr Milena \textsc{Vujošević Janičić}, vanredni profesor\\ Univerzitet u Beogradu, Matematički fakultet}
 % Ime i afilijacija prvog člana komisije (u odabranom pismu)
 \komisijaA{dr Filip \textsc{Marić}, vanredni profesor\\ Univerzitet u Beogradu, Matematički fakultet}
 % Ime i afilijacija drugog člana komisije (u odabranom pismu)
@@ -96,6 +96,7 @@ i informatike. Tok kursa prati veliki broj studentskih aktivnosti koje kroz tims
 obrađuju teme pisanja, recenziranja i prezentovanja radova, kao i razvoj "mekih" veština.
 Dosadašnje izvršavanje aktivnosti zasnivalo se na komunikaciji putem mejlova i otpremanju datoteka na
 privremenim veb stranicama.
+
 Cilj ovog rada je implemetacija portala MSNR.
 Ovaj portal treba da bude centralno mesto organizacije kursa i izvršavanja aktivnosti.
 Nastavnik će na jednom mestu dodavati nove aktivnosti, dodeljivati ih studentima i ocenjivati
@@ -1037,7 +1038,7 @@ Osnovne odlike jezika Elixir sažete su u okviru njegove zvanične strane \cite{
 Elixir je dinamički tipiziran, funkcionlni programski jezik dizajniran za izgradnju skalabilnih
 aplikacija, lakih za održavanje.
 
-Elixir koristi virtuelnu mašinu programskog jezika Erlang, poznatu po podršci za rad sistema sa malim kašnjenjem,
+Elixir koristi virtuelnu mašinu programskog jezika \emph{Erlang}, poznatu po podršci za rad sistema sa malim kašnjenjem,
 distribuiranih sistema i sistemima koji su otpornim na greške, ali se uspešno koristi i u razvoju
 veba, u sistemima sa ugrađenim računarom (eng. \emph{embedded sotfware}), učitavanju podataka
 (eng. \emph{data ingestion}) i u domenima za obradu mulitmedije.
@@ -1083,7 +1084,7 @@ distribuirana baza podataka i \emph{Heroku Cloud}\cite{heroku}.
 
 Kao razvojna platforma, \emph{Erlang} se sastoji od jezika, virtuelne mašine, razvojnog okvira (eng.
 \emph{framework}) i alata.
-\subsection{Erlang virtuelna mašina --- BEAM}
+\subsection{ Virtuelna mašina Erlang --- BEAM}
 Jezik \emph{Erlang} predstavlja primaran način pisanja koda koji se izvršava na sopstvenoj virtuelnoj
 mašini koja se naziva \emph{BEAM}. \emph{BEAM} je skraćenica za \emph{Bogdan’s Erlang Abstract Machine}, po
 Bogumilu Bogdanu Hausmanu koji je kreirao originalnu verziju, ali se može posmatrati i kao
@@ -1104,7 +1105,7 @@ Ovi laki procesi su međusobno potpuno izolovani, ne dele memoriju i komuniciraj
 asinhronih poruka, što pruža mogućnost \emph{Erlang} sistemima da budu skalabilni, distribuirani i 
 otporni na greške.  
 
-\subsection{OTP razvojni okvir}
+\subsection{Razvojni okvir OTP}
 \emph{OTP} je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovaj razvojni
 okvir. On nije vezan za telekomunikacione sisteme, već predstavlja razvojni okvir opšte namene koji
 apstrahuje tipične zadatke Erlang sistema:
@@ -1115,28 +1116,28 @@ apstrahuje tipične zadatke Erlang sistema:
   \item Postavljanje (eng. \emph{deployment}) sistema
   \item Uživo ažuriranje softvera 
 \end{itemize}
-\emph{OTP} predstavlja sastavni deo Erlang-a, stoga i zvanična distribucija nosi naziv Erlang/OTP.
-\subsection{Erlang i Elixir}
-\emph{Elixir} predstavlja alternativni načina pisanja programa koji se izvršava na BEAM virtuelnoj
-mašini i samim tim preuzima sve osobine Erlang platforme. Za razliku od Erlang-a pruža dodatne
+\emph{OTP} predstavlja sastavni deo \emph{Erlang}-a, stoga i zvanična distribucija nosi naziv \emph{Erlang/OTP}.
+\subsection{Odnos programskih jezika Erlang i Elixir}
+\emph{Elixir} predstavlja alternativni načina pisanja programa koji se izvršava na virtuelnoj
+mašini BEAM i samim tim preuzima sve osobine platforme Erlang. Za razliku od Erlang-a pruža dodatne
 koncepte koji omogućavaju značajno smanjenje ponavljajućeg i šablonskog (eng.
-\emph{boilerplate}) koda. \emph{Elixir} i Erlang su kompatibilni, pa \emph{Elixir} može direktno da koristi
+\emph{boilerplate}) koda. \emph{Elixir} i \emph{Erlang} su kompatibilni, pa \emph{Elixir} može direktno da koristi
 \emph{Erlang} biblioteke i module. Važi i obrnuto, a sve što je moguće implementrati u programskom jeziku \emph{Erlang},
 moguće je u programskom jeziku \emph{Elixir} bez razlike u performansama. Takođe, važno je napomenuti da oba jezika
 odlikuje nepromenljivost podataka (imutabilnost).
 \section{Uputstvo za instalaciju}
-Proces instalacije je vrlo jednostavan, potrebno je pratiti uputstva sa zvanične Elixir
+Proces instalacije je vrlo jednostavan, potrebno je pratiti uputstva sa zvanične \emph{Elixir}
 stranice \cite{elixir} za odgovarajući operativni sistem. Podržani su gotovo svi operativni
 sistemi. Provera usprešne instalacije može se izvršiti pokretanjem komande
-\textbf{\texttt{elixir -{}-version}} u komandnoj liniji ili pokretanjem interaktivnog Elixir-a
+\textbf{\texttt{elixir -{}-version}} u komandnoj liniji ili pokretanjem interaktivnog \emph{Elixir}-a
 komandom \textbf{\texttt{iex}}.
 \section{Osnovne odlike}
 Za razliku od programskog jezika \emph{Elm}, \emph{Elixir} nije čist funkcionalni programski jezik, jer dozvoljava bočne efekte.
-Pored prethodno spomenutih karakteristika preuzetih od Erlang-a, dinamičke tipiziranosti i 
-sintakse slične Ruby-ju, \emph{Elixir} odlikuju izraženo poklapanje obrazaca, polimorfizam, makroi
+Pored prethodno spomenutih karakteristika preuzetih od \emph{Erlang}-a, dinamičke tipiziranosti i 
+sintakse slične \emph{Ruby}-ju, \emph{Elixir} odlikuju izraženo poklapanje obrazaca, polimorfizam, makroi
 i metaprogramiranje, kao i podrška za lenjo izračunavanje.   
 \section{Osnove jezika Elixir}
-U ovoj glavi biće predstavljeni osnovi operatori i tipovi podataka, poklapanje obrazaca,
+U ovoj glavi biće predstavljeni osnovni operatori i tipovi podataka, poklapanje obrazaca,
 definisanje i gruisanje funkcija u module. 
 \subsubsection{Osnovni tipovi podataka}
 Osnovni tipovi podataka predstavljaju brojevi (celobrojni i realni), bulovske
@@ -1381,7 +1382,7 @@ Pored navedenih, \emph{Elixir} poseduje i druge ugrađene tipove podataka:
 \begin{itemize}
   \item Referenca --- jedinstven podatak u jednoj BEAM instanci i jedinstvenost je
   zagarantovana samo tokom životnog veka te instance
-  \item Identifikator procesa (\emph{pid}) --- koristi se za identifikaciju Erlang procesa
+  \item Identifikator procesa (\emph{pid}) --- koristi se za identifikaciju \emph{Erlang} procesa
   \item Identifikator porta --- koristi se za identifikaciju portova, mehanizma koji se
   koristi za komunikaciju sa spoljnim svetom (datotekama, programima...)
 \end{itemize} 
@@ -1901,7 +1902,7 @@ import Api.Accounts, :only [authenticate: 2]
 \end{listing}
 
 \subsection{Makroi}
-Makroi predstavljaju jednu od najvažnijih novouvedenih karakteristika Elixira u odnosu na Erlang.
+Makroi predstavljaju jednu od najvažnijih novouvedenih karakteristika \emph{Elixir}-a u odnosu na \emph{Erlang}.
 Makroi omogućavaju metaprogramiranje, tj. pisanje koda koji generiše k\^{o}d, što dovodi do 
 značajnog smanjenja količine šablonskog (eng. \emph{boilerplate}) koda, a samim tim i do
 vrlo čitljivog i elegantnog koda. Upotrebom makroa se tokom kompilacije vrše transformacije
@@ -2145,7 +2146,7 @@ zahteve za registracije, dodaje aktivnosti i teme za tekuću godinu, i ocenjuje 
 Širi opis funkcionalnosti portala dat je u sekciji gde su predstavljeni entiteti portala i njihov odnos. Takođe, prijava i ocenjivanje
 studentskih prezentacija neće biti obrađene u sklopu rada, ali je predviđeno njihovo naknadno dodavanje.
 
-K\^{o}d implementacije portala MSNR dostupan je na \emph{GitHub}-u \cite{msnr-portal}.
+K\^{o}d implementacije portala MSNR javno je dostupan na \emph{GitHub}-u \cite{msnr-portal}.
 
 \section{Arhitektura portala}
 Arhitektura portala MSNR prikazana je na slici \ref{fig:msnr-arch} i predstavlja tipičan primer troslojne arhitekture.
@@ -2221,7 +2222,7 @@ potrebne za razvoj veb aplikacije, neophodna je njihova instalacija.
 Instaliranjem Elixir-a ujedno je instaliran i osnovni alat za rad sa Elixir projektima --- \emph{Mix}, koji se koristi za
 kreiranje, kompajliranje i testiranje projekata, instaliranje i objavljivanje paketa, kao i za upravljanje zavisnim paketima projekta.
 Upravo se pomoću njega instalira radno okruženje \emph{Phoenix} i alat za generisanje \emph{Phoenix} projekata, ali prethodno je potrebno instalirati
-\emph{Hex} --- menažer paketa za ekosistem Erlang. Instalacija potrebnih alata prikazana je u listingu \ref{listing:installPhxNew}.
+\emph{Hex} --- menažer paketa za ekosistem \emph{Erlang}. Instalacija potrebnih alata prikazana je u listingu \ref{listing:installPhxNew}.
 Pored navedenih alata potrebno je instalirati i PostgreSQL.
 
 \begin{listing}[h]
@@ -2258,7 +2259,7 @@ Pored ove tri osnovne stavke, tu su i \emph{.formatter.exs} skripta za formatira
 listu zavisnih paketa koji se koriste u projektu. Nakon kompajliranja projekta, generisaće se \emph{mix.lock} datoteka koja
 čuva precizne verzije zavisnih paketa čime se garantuje da se u produkciji koriste iste verzije kao i tokom razvoja.
 
-Radno okruženja\emph{Phoenix} dodaje i konfiugracije vezane za okruženje u kom se aplikacija izvršava. 
+Radno okruženje \emph{Phoenix} dodaje i konfiugracije vezane za okruženje u kom se aplikacija izvršava. 
 Podržana okruženja su razvojno (\emph{dev.exs}), testno (\emph{test.exs}) i produkciono (\emph{prod.exs}) i konfiguracije su smeštene u folderu \emph{config},
 zajedno sa glavnom konfiguraciom(\emph{config.exs}) koja se odnosi na sva okruženja. Mogu se dodati i druga ukoliko je potrebno, a pored navedenih
 u folderu \emph{config} nalazi se i \emph{runtime.exs} konfiguracija zadužena za učitavanje šifri (eng. \emph{secrets}) i drugih konfiguracionih vrednosti
@@ -2291,7 +2292,7 @@ Utikač predstavlja funkciju čija je ulazna i povratna vrednost \emph{Plug.Conn
 primljenom \emph{HTTP} zahtevu. Veb server daje početne podatke za obradu zahteva, nakon čega \emph{Phoenix} poziva utikače jedan za drugim,
 gde svaki utikač transformiše strukturu \emph{Plug.Conn} dok se obrada ne završi i odgovor pošalje korisniku. Za upotrebnu utikača neophodan je
 veb server i njegovo povezivanje sa utikačem, stoga je automatski ubačena zavisost \texttt{\textbf{plug{\textunderscore}cowboy}} u \emph{mix.exs}
---- \emph{Cowboy} je napopularniji veb server u Erlang svetu.
+--- \emph{Cowboy} je napopularniji veb server u ekosistemu \emph{Erlang}.
 
 \begin{listing}[!ht]
 \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2431,7 +2432,7 @@ Poslednji poziv u akciji kotrolora je funkcija \texttt{\textbf{render}} definisa
 naziv šablona i podatke potrebne za renderovanje. U slučaju JSON veb interfejsa kreira se mapa koja se prevodi u JSON objekat,
 čime se završava obrada zahteva u okviru radnog okruženja \emph{Phoenix}. 
 
-\section{Komunikacija sa bazom podatak}
+\section{Komunikacija sa bazom podataka}
 Za komunikaciju sa bazom podataka u Elixir projektima pretežno se koristi projekat \emph{Ecto}.
 On nije sastavni deo okruženja \emph{Phoenix}, ali se podrazumevano uključuje i prilikom kreiranja
 \emph{Phoenix} projekta dodaje se potrebni \emph{Ecto} moduli i konfiguracija. Ukoliko nije potrebno
@@ -2634,7 +2635,7 @@ funkciji \texttt{all} se prosleđuje samo naziv tabela, tako da funkcija vraća 
 \subsection{Definisanje upita}
 Modul \emph{Ecto.Query} pruža sintaksu za pisanje upita koja je veoma slična samoj \emph{SQL} sintaksi. 
 S tim da sintaksa upita započinju makroom \texttt{from} nakon čega se ostali delovi upita se definišu pomoću list ključnih reči.
-Prkasa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} sintakse iz radnog okvira \emph{.NET}
+Prkasa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} sintakse iz radnog okruženja \emph{.NET}
 koja je bila inspiracija za \emph{Ecto}, a može se i izostaviti. Za interpolaciju parametara koristi se operator \texttt{ \^{}}.
 Primer jednostavnog upita dat je u listingu \ref{listing:query-example} gde je prikazana funkcija za prikazivanje studentskih
 registracija iz modula \emph{StudentRegistrations}.
@@ -2972,7 +2973,7 @@ Profesor ocenjivanje aktivnosti pozivanjem \texttt{update} akcije upravljača \e
 unoseći odgovarajući komentar i broj poena. Takođe, preko upravljača \emph{DocumentController} profesor može
 priložiti dokument, ukolko je to potrebno.  
 
-\chapter{Implementacija klijetskog dela portala}
+\chapter{Implementacija klijentskog dela portala}
 Za razliku od \emph{Phoenix} projekata, inicijalizaciom \emph{Elm} projekta kreira
 se samo prazan \emph{src} direktorijum i datoteka \emph{elm.json}, tako da se kreiranje i
 organizacija datoteka u potpunosti prepušta korisniku. Rešenje organizacije \emph{Elm} datoteka u slučaju
