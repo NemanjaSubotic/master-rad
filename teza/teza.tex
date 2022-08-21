@@ -3428,9 +3428,10 @@ type alias Model =
 \end{listing}
 U listingu \ref{listing:prof-model} prikazan je alijas sveobuhvatnog modela, gde se pored
 modela stranica mogu videti i ostali podaci potrebni za njihovo prikazivanje.
-Modeli stranica čuvaju podatke koji se koriste isključivo unutar odgovarajuće stranice
-i prilikom pozivanja funkcije \texttt{view} iz modula \emph{ProgessorPage}
-prosleđuju im se, zajedno sa odgovarajućim modelom, svi ostali potrebni podaci.
+Modeli stranica čuvaju podatke koji se koriste isključivo unutar odgovarajuće stranice.
+Prilikom prikazivanja profesorskih stranica u modula \emph{ProgessorPage}
+poziva se funkcija \texttt{view} odgovarajuće stranice kojoj se prosleđuje adekvatan
+model, zajedno sa drugim potrebnim podacima.
 
 Kretanjem kroz stranice vrši se pomoću navigacione trake čiji prikaz se može videti na
 slici \ref{fig:professor-page} zajedno sa izgledom stranice za ocenjivanje aktivnosti.
@@ -3465,8 +3466,7 @@ struktura prikazana na slici \ref{fig:student-dir}.
 Modeli studentske stanice i sadržaja aktivnosti izdvojeni su u posebne module --- \emph{StudentPage.Model} i
 \emph{AssignmentContent.Model} da bi se izbegla ciklična zavisnost, jer se osnovni model koristi unutar
 \emph{AssignmentContent} modula. U listingu \ref{listing:student-model} predstavljen je osnovi model studentske stranice u kom se
-nalaze svi podaci potrebni za njen prikaz. Za razliku od profesorskog modela, modeli sadržaja aktivnosti čuvaju se u nizu
-(\texttt{assignmentsModels}). Svakom elementu niza modela odgovara dodeljena aktivnost (niz \texttt{assignments}) na istom indeksu.
+nalaze svi podaci potrebni za njen prikaz.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
     type alias Model =
@@ -3496,6 +3496,8 @@ nalaze svi podaci potrebni za njen prikaz. Za razliku od profesorskog modela, mo
 \caption{Osnovni model za prikazivanje studentske stranice}
 \label{listing:student-model}
 \end{listing}
+Za razliku od profesorskog modela, modeli sadržaja aktivnosti čuvaju se u nizu
+(\texttt{assignmentsModels}). Svakom elementu niza modela odgovara dodeljena aktivnost (niz \texttt{assignments}) na istom indeksu.
 
 Osnovni modul za prikazivanje studentske stranice, pored modula \emph{StudentPage}, jeste modul
 \emph{AssignmentContent} koji ima sličnu ulogu kao modul \emph{ProfessorPage} kod profesorskih
@@ -3529,7 +3531,7 @@ Funkcija \emph{AssignmentContent} iz modula \emph{AssignmentContent} na osnovu t
 fukciju ažuriranja iz odgovarajućeg modela za obradu sadržaja.
 
 Za prikazivanje dodeljenih aktivnosti koristi sa komponenta harmonika (eng. \emph{accordion}) iz paketa \emph{NoRedInk/noredink-ui},
-tako da inicijalno prikazuju samo zaglavlje aktivnosti sa osnovnim informacijama.
+tako da se inicijalno prikazuju samo zaglavlja aktivnosti sa osnovnim informacijama.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.9\textwidth]{student-page.png}
