@@ -14,7 +14,7 @@
 % Podrazumevano pismo je ćirilica.
 
 % Datoteka sa literaturom u BibTex tj. BibLaTeX/Biber formatu
-\bib{teza} 
+\bib{MasterRadNemanjaSubotic} 
 
 % Ime kandidata na srpskom jeziku (u odabranom pismu)
 \autor{Nemanja Subotić} 
@@ -221,7 +221,7 @@ Kao i većina statički tipiziranih funkcionalnih programskih jezika, \emph{Elm}
 programskom jeziku \emph{ML}, a budući da su u programskom jeziku \emph{Haskell} napisani \emph{Elm} kompilator
 i ostali alati, \emph{Haskell} je ostavio veliki uticaj i na sam jezik. Autor \emph{Elm}-a smatra:
 \begin{displayquote}
-"Rekao bih da \emph{Elm} pripada porodici \emph{ML} jezika sa sintaksom poput \emph{Haskell}-a. Ako poredimo semantiku,
+"Rekao bih da \emph{Elm} pripada porodici \emph{ML} jezika, sa sintaksom poput \emph{Haskell}-a. Ako poredimo semantiku,
 \emph{Elm} je dosta sličniji \emph{OCaml}-u i \emph{SML}-u." \cite{eczaplicki:2015}
 \end{displayquote}
 
@@ -272,7 +272,7 @@ Osnovni tipovi podataka programskog jezika \emph{Elm} su \textbf{Char}, \textbf{
 \textbf{Int} i \textbf{Float}. U listingu \ref{listing:tipovi} prikazani su osnovni
 tipovi korišćenjem interpretera (\texttt{\textbf{elm repl}}). Budući da i \emph{Elm} poseduje zaključivanje tipova, nakon
 izračunate vrednosti unetog izraza ispisuje se tip. U konkretnom primeru broj 42 se
-može posmartati i kao tip \textbf{Int} i kao tip \textbf{Float}, pa interpreter vraća
+može posmatrati i kao tip \textbf{Int} i kao tip \textbf{Float}, pa interpreter vraća
 \texttt{number} kao tip, iako \texttt{number} nije konkretan tip podataka.
 
 
@@ -404,7 +404,7 @@ podrazumevane vrednosti parametara, kao ni preopterećivanje funkcija.
 U programskom jeziku \emph{Elm} ne postoje promenljive, jednom definisani podaci se ne mogu promeniti, ali je 
 moguće definisati konstante. Često se u literaturi definisanje konstanti naziva 
 \emph{imenovanjem vrednosti izraza} i ne dovodi se u vezu sa funkcijama, ali se konstante 
-mogu posmartati kao \emph{konstantne funkcije}, koje se izvrše tokom kompilacije. Definišu se
+mogu posmatrati kao \emph{konstantne funkcije}, koje se izvrše tokom kompilacije. Definišu se
 kao i funkcije, ali bez parametara (listing \ref{listing:lambda}).
 
 \subsubsection{Anonimne funkcije}
@@ -426,7 +426,7 @@ dok se simboli \texttt{\textbf{->}} koristi umesto znaka pridruživanja (listing
 Moduli se koriste za grupisanje funkcija u logičke jedinice i kreiranje imenskih 
 prostora (eng. \emph{namespace}). Osnovni tipovi, kao i funkcije i operatori nad njima 
 definisani su u \texttt{\textbf{Basics}} modulu, koji je podrazumevano uvezen i nalazi se 
-unutar \texttt{\textbf{elm/core}} paketa. Svaki modul predstavlja jedanu \emph{.elm} datoteku,
+unutar \texttt{\textbf{elm/core}} paketa. Svaki modul predstavlja jednu \emph{.elm} datoteku,
 koja se mora zvati isto kao i modul, dok ime modula mora počinjati velikim slovom.
 Za definisanje modula koristi se ključna reč \texttt{\textbf{module}} nakon koje sledi
 ime modula, ključna reč \texttt{\textbf{exposing}} i lista funkcija kojima se može 
@@ -492,8 +492,8 @@ U primeru funckije \texttt{\textbf{not}} vidimo da je njen tip \emph{Bool -> Boo
 što je na prvi pogled jasno i znači da se radi o funkciji jednog argumenta koja
 prihvata vrednost tipa \emph{Bool} i vraća vrednost tipa \emph{Bool}. U slučaju
 funkcija koje imaju više argumenata, tip funkcije se može
-posmartati na način da poslednji tip u nizu koji je razdvojen strelicama
-(\texttt{\textbf{->}}) predstavlja povrati tip funkcije, dok tipovi pre njega 
+posmatrati na način da poslednji tip u nizu koji je razdvojen strelicama
+(\texttt{\textbf{->}}) predstavlja povratni tip funkcije, dok tipovi pre njega 
 predstavljaju tipove argumenata funkcije. Tipovi argumenata se takođe odvajaju strelicama
 iz razloga što su sve funkcije u \emph{Elm} programskom jeziku zapravo Karijeve (\emph{Curried}) funkcije,
 što znači da su sve n-arne funkcije zapravo funkcije jednog argumeta
@@ -525,7 +525,7 @@ da sam navede tip u liniji iznad definicije (listing \ref{listing:anotacija}).
 \label{listing:anotacija}
 \end{listing}
 
-Korišćenje anotacije tipova nije obavezno, ali je vrlo preporučiljivo iz više razloga.
+Korišćenje anotacije tipova nije obavezno, ali je vrlo preporučljivo iz više razloga.
 Prilikom kompilacije proverava se poklapanje anotacije sa stvarnim tipom funkcije, što
 dovodi do lakšeg uočavanja i otklanjanja grešaka. Pored toga, anotacije predsavljaju veoma
 dobar vid dokumentacije, a činjenica da kompilator uvek poredi navedeni i stvarni tip nam
@@ -600,7 +600,7 @@ True : Bool
 \label{listing:torke}
 \end{listing}
 \subsubsection{Slogovi} 
-Slog (eng. \emph{Record}) predstavlja strukuru podataka koja može sadržati više vrednosti različitih tipova, 
+Slog (eng. \emph{Record}) predstavlja strukturu podataka koja može sadržati više vrednosti različitih tipova, 
 pri čemu je svakoj vrednosti dodeljen naziv. Liče na \emph{JavaScript} objekte, čak je i 
 sintaksa veoma slična, umesto dvotačke slog koristi znak jednakosti za dodelu naziva.
 Prilikom definisanja sloga, \emph{Elm} kreira funkcije za pristup njegovim svojstvima. Nije 
@@ -630,15 +630,15 @@ skupovima (\texttt{Set}) i rečnicima (\texttt{Dict}).
 
 \subsection{Tipske promenljive} 
 U listingu \ref{listing:rekord} vidimo da funkcija za pristup prezimenu ima tip:\\ 
-\texttt{\textbf{\{ b | prezime : a \} -> a}}. Ovo znači da funkcija kao argumenat
+\texttt{\textbf{\{ b | prezime : a \} -> a}}. Ovo znači da funkcija kao argument
 prima slog, koji može biti bilo kog tipa, ali mora imati svojstvo\texttt{\textbf{
-prezime}}, koje takođe može biti bilo kog tipa, i čiji tip je ujedno povrati tip 
+prezime}}, koje takođe može biti bilo kog tipa, i čiji tip je ujedno povratni tip 
 funkcije. Promenljive \texttt{\textbf{a}} i \texttt{\textbf{b}} nazivaju se 
 \emph{tipske promenljive}, a prisustvo dve tipske promenljive nam govori da one mogu, 
 ali ne moraju, predstavljati različite tipove. U konkretnom primeru \texttt{\textbf{a}}
 i \texttt{\textbf{b}} su uvek različitog tipa, dok u slučaju funckije \texttt{Tuple.pair
 : a -> b -> ( a, b )} mogu biti istog tipa. Prilikom anotacije tipova mogu se koristi i
-duža imena tipskih pormenljivih, a pravlia imenovanja su ista kao i za funkcije.
+duža imena tipskih promenljivih, a pravlia imenovanja su ista kao i za funkcije.
 
 Tipske promenljive u programskom jeziku \emph{Elm} ukazuju na prisustvo \textbf{parametarskog polimorfizma},
 jedine vrste polimorfizma u ovom jeziku.
@@ -683,7 +683,7 @@ mogu se pozivati i u prefiksnoj ukoliko ih navedemo unutar zagrada: \texttt{\tex
 (++), (>=)}}... , dok pozivanjem bez argumenata možemo videti i kog su tipa (listing \ref{listing:tipskePromenljive}).
 
 U ranijim verzijama jezika bilo je moguće definisati korisničke operatore, ali je ta
-opcija izbačena u verziji \emph{0.19.0}., a od verziji \emph{0.18.0} nije moguće pozivanja 
+opcija izbačena u verziji \emph{0.19.0}, a od verzije \emph{0.18.0} nije moguće pozivanje 
 binarnih funkcija u infiksnoj notaciji.
 
 \subsection{Alijasi tipova}
@@ -737,7 +737,7 @@ NaCekanju : StatusPrijave
 \end{listing}
 
 \subsection{Kontrola toka}
-\emph{Elm} ne izvršavana naredbe, već evaluira izraza, tako da umesto naredbi grananja
+\emph{Elm} ne izvršava naredbe, već evaluira izraze, tako da umesto naredbi grananja
 imamo izraze \texttt{\textbf{if}} i \texttt{\textbf{case}}, a rekurziju umesto petlji.  
 \subsubsection{Izraz \texttt{\textbf{if}}}
 Izraz \texttt{\textbf{if}} se može posmatrati kao ternarni operator u progamskim jezicima \emph{JavaScript}, \emph{C++} i 
@@ -757,14 +757,14 @@ if x == 1 then x * 2 else if x == 2 then x / 2 else x
 Ključna reč \texttt{\textbf{else}} je sastavni deo izraza \texttt{\textbf{if}} tako
 da \texttt{\textbf{else}} "grana" uvek postoji. Mogu se navoditi i ugnježdeni
 izrazi \texttt{\textbf{if}}, pa \texttt{\textbf{else if}} grana predstavlja korišćenje
-izraza \texttt{\textbf{if}} nakon ključna reč \texttt{\textbf{else}}.
+izraza \texttt{\textbf{if}} nakon ključne reči \texttt{\textbf{else}}.
 
 \subsubsection{Izraz \texttt{\textbf{case}}}
 Izraz \texttt{\textbf{case}} predstavlja pandan \texttt{\textbf{switch}} naredbi u drugim
-programski jezicima. Prilikom korišćenja izraza \texttt{\textbf{case}} moraju se pokriti sve
+programskim jezicima. Prilikom korišćenja izraza \texttt{\textbf{case}} moraju se pokriti sve
 mogućnosti, ukoliko to nije slučaj kompilator prijavljuje grešku. Za podrazumevani slučaj
 može se korisiti simbol \texttt{\textbf{\textunderscore}}. Izraz \texttt{\textbf{case}}
-zauzima značajno mesto u programskom jeziku \emph{Elm}, jer se koriste u \textbf{poklapanju obrazaca}.
+zauzima značajno mesto u programskom jeziku \emph{Elm}, jer se koristi u \textbf{poklapanju obrazaca}.
 \begin{listing}[h]
 \begin{minted}{haskell}
 case mesto of
@@ -815,7 +815,7 @@ Poklapanje obrazaca može se posmatrati kao pokušavanje usklađivanja (poklapan
 podatka sa unapred definisanim obrascom. Ukoliko dođe do usklađivanja, poklopljenim
 vrednostima se može prisupiti putem identifikatora definisanim u obrascu. Pored spomenutih
 \texttt{\textbf{case}} izraza, poklapanje obrazaca može se korisiti u vidu 
-razlaganja slogova ili torki prilikom definisanja funkcija ili korišćenja\texttt{\textbf{
+razlaganja slogova ili torki prilikom definisanja funkcija ili korišćenja \texttt{\textbf{
 let}} izraza.
 \begin{listing}[h]
 \begin{minted}{haskell}
@@ -854,8 +854,8 @@ prikaziPodatke ({ime, adresa} as osoba) =
 Unutar case izraza sekvencijalno se vrši poklapanje obrazaca. Kada dođe do poklapanja
 izračunava se izraz dodeljen datom obrascu, ne nastavlja se sa poklapanjem. Kompilator
 prepoznaje ukoliko može doći do nepoklapanja nijednog obrasca i prijavljuje grešku.
-Takođe, greška se prijavljuje i ukoliko se navede redudantan obrazac, tj. obrazac čiji je
-skup vrednosti zapravo podskup skup vrednosti prethodno definisanog obrasca. 
+Takođe, greška se prijavljuje i ukoliko se navede redudantan obrazac, tj. obrazac čiji se
+skup vrednosti preklapa sa skupom vrednosti prethodno definisanog obrasca.
 Simbol \texttt{\textbf{\textunderscore}} služi za poklapanje vrednosti koje se ne koriste,
 a ključna reč \texttt{\textbf{as}} se može koristiti ukoliko je potrebno pristupiti celom
 ulaznom podatku. U listingu \ref{listing:pokalapanjeObrazaca} mogu se videti primeri
@@ -869,12 +869,12 @@ gde imamo \texttt{\textbf{Maybe}} i \texttt{\textbf{Either}}.
 
 \subsubsection{Maybe}
 U slučaju da je potrebno napisati funkciju koja vraća prvi element liste, ukoliko on
-postoji, rezultat bi bio \textbf{baš} prvi element. Dok u slučaju prazne liste, funkija ne
+postoji, rezultat bi bio \textbf{baš} prvi element. Dok u slučaju prazne liste, funkcija ne
 bi vratila \textbf{ništa}. Upravo tako radi funkcija \texttt{List.head : List a -> Maybe a}, 
 ukoliko se pozove \textbf{možda} vrati prvi element.
 
 \texttt{\textbf{Maybe}} se definiše kao \texttt{\textbf{type Maybe a = Just a | Nothing}}
-i može se koristiti za opcione argument, obradu grešaka i u slogovima sa opcionim svojstvima.
+i može se koristiti za opcione argumente, obradu grešaka i u slogovima sa opcionim svojstvima.
 Zapravo svuda gde očekivani podatak može, ali ne mora, postojati.
 
 \subsubsection{Result}
@@ -929,7 +929,7 @@ jedna od njih je i \emph{.NET 5} \cite{net5}.
 
 \subsection{Generisanje HTML sadržaja}
 Za razliku od drugih radnih okruženja koji uglavnom koriste \emph{HTML} šablone, \emph{Elm} za 
-opisivanje izgleda stanice koristi funkcije. Stoga imamo funkcije za kreiranje \emph{HTML}
+opisivanje izgleda stranice koristi funkcije. Stoga imamo funkcije za kreiranje \emph{HTML}
 čvorova i atributa.
 \begin{listing}[h]
   \begin{minted}{haskell}
@@ -938,12 +938,12 @@ opisivanje izgleda stanice koristi funkcije. Stoga imamo funkcije za kreiranje \
   -- korišćenje pomoćne funkcije button umesto node "button"
         button  [id "btn-ok", class "btn-default"] [text "Ok"]
   \end{minted}
-  \caption{Primeri kreiranje \emph{HTML} čvorova}
+  \caption{Primeri kreiranja \emph{HTML} čvorova}
   \label{listing:nodeHtml}
   \end{listing}
   
 Funkcija \texttt{\textbf{node}} iz modula \texttt{\textbf{Html}} predstavlja generičku
-funkcija za kreiranje \emph{HTML} čvorova, koja kao argumente prima \emph{HTML} oznaku, listu atributa
+funkciju za kreiranje \emph{HTML} čvorova, koja kao argumente prima \emph{HTML} oznaku, listu atributa
 i listu čvorova (deca čvora). U listingu \ref{listing:nodeHtml} predstavljena je analogija
 kreiranja \emph{HTML} čvora funkciom \texttt{\textbf{node}} i \emph{HTML} sintakse.
 Modul \texttt{\textbf{Html}} pruža veliki broj pomoćnih funckija, koje imaju nazive po
@@ -961,7 +961,7 @@ programa u pretraživaču. Unutar ovog paketa, u modulu \texttt{\textbf{Browser}
 funkcije koje nam omogučavaju kreiranje različitih tipova programa, među kojima je i
 funkcija \texttt{\textbf{sandbox}} namenjena za učenje osnova arhitekture \emph{Elm} i
 omogućava bazičnu interakciju sa korisnicima, bez komunikacije sa spoljnim svetom.
-Primer jednostavanog \emph{Elm} programa upotrebom \texttt{\textbf{sandbox}} funkcije prikazan
+Primer jednostavnog \emph{Elm} programa upotrebom \texttt{\textbf{sandbox}} funkcije prikazan
 je u listingu \ref{listing:elmProgram}.
 \begin{listing}[h!]
 \begin{minted}{haskell}
@@ -1068,11 +1068,11 @@ sistema koji gotovo neprestano pružaju usluge. Švedska telekomunikaciona kompa
 \emph{Ericsson}) osmislila je ovu platformu sredinom  osamdesetih godina prošlog veka. 
 Da bi \emph{Erlang} mogao da upravlja telekomunikacionim sistemima kompanije, morao
 je da bude pouzdan, skalabilan, da ima brz odziv i bude konstantno dostupan, jer telefonska mreža
-mora da funkcioniše bez obzira na broj istovremenih poziva, neočekivane grešake ili hardver.
+mora da funkcioniše bez obzira na broj istovremenih poziva, neočekivane greške ili hardver.
 
 Iako je prvobitno izgrađen za telekomunikacione sisteme, \emph{Erlang} ni na koji način nije 
 specijalizovan za ovaj domen, ne sadrži podršku za programiranje telefona i drugih 
-telekomunikacionih uređaja. \emph{Erlang} predstavlja razvojnu platforma koja pruža posebnu podršku
+telekomunikacionih uređaja. \emph{Erlang} predstavlja razvojnu platformu koja pruža posebnu podršku
 tehničkim, nefunkcionalnim zahtevima kao što su: paralelnost, skalabilnost, tolerancija na
 greške, distribuiranost i velika dostupnost. U vreme njegovog nastajanja, programi su se uglavnom
 koristili bez komunikacije sa nekim veb servisom (eng. \emph{desktop-based sotfware}), pa je 
@@ -1093,7 +1093,7 @@ virtuelne mašine.
 
 K\^{o}d napisan u programskom jeziku \emph{Erlang} se prevodi u binarni k\^{o}d (eng. \emph{bytecode})
 koji se unutar \emph{BEAM}-a izvršava paralelno u vidu veoma lakih \emph{Erlang procesa}. \emph{BEAM}, umesto 
-da se oslanja na procese i niti operativnog sistema, samostalno raspoređuje konkurente
+da se oslanja na procese i niti operativnog sistema, samostalno raspoređuje konkurentne
 \emph{Erlang procese} na dostupna procesorska jezgra, što je prikazano na slici \ref{fig:beam}.
 \begin{figure}[h]
   \centering
@@ -1106,23 +1106,23 @@ asinhronih poruka, što pruža mogućnost \emph{Erlang} sistemima da budu skalab
 otporni na greške.  
 
 \subsection{Razvojno okruženje OTP}
-\emph{OTP} je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovaj razvojno
+\emph{OTP} je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovo razvojno
 okruženje. On nije vezan za telekomunikacione sisteme, već predstavlja razvojno okruženje opšte namene koji
-apstrahuje tipične zadatke Erlang sistema:
+apstrahuje tipične zadatke \emph{Erlang} sistema:
 \begin{itemize}
   \item Obrasce konkurentnosti i distribuiranosti
-  \item Detekciju i oporavak od grešaka u konkurentim sistemima
-  \item Pravljanje biblioteka
+  \item Detekciju i oporavak od grešaka u konkurentnim sistemima
+  \item Pravljenje biblioteka
   \item Postavljanje (eng. \emph{deployment}) sistema
   \item Uživo ažuriranje softvera 
 \end{itemize}
 \emph{OTP} predstavlja sastavni deo \emph{Erlang}-a, stoga i zvanična distribucija nosi naziv \emph{Erlang/OTP}.
 \subsection{Odnos programskih jezika Erlang i Elixir}
-\emph{Elixir} predstavlja alternativni načina pisanja programa koji se izvršava na virtuelnoj
+\emph{Elixir} predstavlja alternativni način pisanja programa koji se izvršava na virtuelnoj
 mašini BEAM i samim tim preuzima sve osobine platforme Erlang. Za razliku od Erlang-a pruža dodatne
 koncepte koji omogućavaju značajno smanjenje ponavljajućeg i šablonskog (eng.
 \emph{boilerplate}) koda. \emph{Elixir} i \emph{Erlang} su kompatibilni, pa \emph{Elixir} može direktno da koristi
-\emph{Erlang} biblioteke i module. Važi i obrnuto, a sve što je moguće implementrati u programskom jeziku \emph{Erlang},
+\emph{Erlang} biblioteke i module. Važi i obrnuto, a sve što je moguće implementirati u programskom jeziku \emph{Erlang},
 moguće je u programskom jeziku \emph{Elixir} bez razlike u performansama. Takođe, važno je napomenuti da oba jezika
 odlikuje nepromenljivost podataka (imutabilnost).
 \section{Uputstvo za instalaciju}
@@ -1138,7 +1138,7 @@ sintakse slične \emph{Ruby}-ju, \emph{Elixir} odlikuju izraženo poklapanje obr
 i metaprogramiranje, kao i podrška za lenjo izračunavanje.   
 \section{Osnove jezika Elixir}
 U ovoj glavi biće predstavljeni osnovni operatori i tipovi podataka, poklapanje obrazaca,
-definisanje i gruisanje funkcija u module. 
+definisanje i grupisanje funkcija u module. 
 \subsubsection{Osnovni tipovi podataka}
 Osnovni tipovi podataka predstavljaju brojevi (celobrojni i realni), bulovske
 vrednosti, atomi i stringovi. Takođe, u osnovne tipove podataka jezika \emph{Elixir} ubrajaju se liste i torke. Pregled
