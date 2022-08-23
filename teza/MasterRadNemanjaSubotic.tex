@@ -1301,7 +1301,7 @@ kog se navodi karakter.
 
 \subsubsection{Liste}
 Kao i u \emph{Elm}-u, lista kao tip predstavlja jednostuko povezanu listu, čiji se elementi navode
-unutar uglastih zagrada, ali za raliku od \emph{Elm}-a ne moraju biti istog tipa. Lista spada u 
+unutar uglastih zagrada, ali za razliku od \emph{Elm}-a ne moraju biti istog tipa. Lista spada u 
 nabrojive (eng. \emph{enumerable}) tipove, pa se pored funkcija iz modula \texttt{\textbf{List}},
 mogu koristiti i funkcije iz modula \texttt{\textbf{Enum}}. Takođe, u modulu \texttt{\textbf{Kernel}}
 se nalaze operatori za proveru da li element pripada listi (\texttt{\textbf{in}}), za nadovezivanje
@@ -1333,7 +1333,7 @@ iex> Enum.sum([1 | [2 | [3, 4]]])
 Lista karaktera (eng. \emph{charlists}) je lista celih brojeva, gde svaki element predstavlja jedan karakter.
 Veoma je slična stringovima, za navođenje se koriste apostrofi umesto navodnika, 
 ali glavna razlika je u internoj reprezentaciji, kao i funkcijama koje se nad njima
-izvršavaju. Mogu se navoditi u jednostrukoj i trostrukoj notacija, a moguća je i 
+izvršavaju. Mogu se navoditi u jednostrukoj i trostrukoj notaciji, a moguća je i 
 interpolacija. U listingu \ref{listing:elixirCharList} dati su primeri liste karaktera.
 \begin{listing}[h]
 \begin{minted}{elixir}
@@ -1356,7 +1356,7 @@ iex> '123' ++ [0]
 \subsubsection{Torke}
 I u \emph{Elixir}-u torke mogu sadržati elemente različitih tipova, ali za razliku od \emph{Elm}-a,
 navode unutar vitičastih zagrada, broj elemenata nije ograničen i elemenati se mogu uklanjati
-i dodavati. Iako dozvoljavaju promenljiv broj elemeata, torke su zamišljene kao kolekcija
+i dodavati. Iako dozvoljavaju promenljiv broj elemenata, torke su zamišljene kao kolekcija
 podataka fiksne dužine i ne spadaju u nabrojive tipove. U modulu \texttt{\textbf{Kernel}}
 se nalaze funkcije za pristupanje i ažuriranje elemenata, kao i funkcija za određivanje broja
 elemenata torke, dok se ostale funkcije za rad sa torkama nalaze u modulu \texttt{\textbf{Tuple}}.
@@ -1383,7 +1383,7 @@ Pored navedenih, \emph{Elixir} poseduje i druge ugrađene tipove podataka:
   \item Referenca --- jedinstven podatak u jednoj BEAM instanci i jedinstvenost je
   zagarantovana samo tokom životnog veka te instance
   \item Identifikator procesa (\emph{pid}) --- koristi se za identifikaciju \emph{Erlang} procesa
-  \item Identifikator porta --- koristi se za identifikaciju portova, mehanizma koji se
+  \item Identifikator porta --- koristi se za identifikaciju porta, mehanizma koji se
   koristi za komunikaciju sa spoljnim svetom (datotekama, programima...)
 \end{itemize} 
 \subsubsection{Asocijativne strukture podataka}
@@ -1440,7 +1440,7 @@ funkcija iz modula \texttt{Map}, a ukoliko su svi ključevi mape atomi, dostupna
 sintaksa oblika \emph{mapa.ključ}. Pored funkcija iz modula \texttt{Map}, nad mapama se
 mogu koristiti i funkcije iz modula \texttt{Enum}, jer pripadaju nabrojivim tipovima.
 Mape predstavljaju dinamičku strukturu u kojoj se mogu dodavati i uklanjati elementi,
-a moguća je i ažuriranje elemenata. Zbog nepromenljivosti, ne menja se postojeći, već se
+a moguće je i ažuriranje elemenata. Zbog nepromenljivosti, ne menja se postojeći, već se
 kreira novi element. Pored funkcija iz modula, dostupna je i sintaksa ažuriranja slična 
 sintaksi ažuriranja slogova u \emph{Elm}-u i prikazana je u listingu \ref{listing:elixirMap2}. 
 \begin{listing}[!h]
@@ -2036,10 +2036,10 @@ iex> stream |> Enum.take(5)
 \caption{Kompozicaija tokova i lenjo izračunavanje}
 \label{listing:elixirStream}
 \end{listing}
-\paragraph{Komprehenzije}
+\paragraph{Skraćenice}
 Filtriranje i mapiranje nad nabrojivim podacima predstaljaju čestu pojavu u \emph{Elixir} programima,
-te su uvedene \emph{komprehenzije} kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
-grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}} . Upotreba komprehenzije
+te su uvedene skraćenice (eng. \emph{comprehensions}) kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
+grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}} . Upotreba skraćenica
 prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj
 \cite{elixir} stranici.
 \begin{listing}[!ht]
@@ -2052,7 +2052,7 @@ iex> nije_paran? = &(rem(&1, 2) != 0)
 iex> for n <- 1..10, nije_paran?.(n), do: 2 * n
 [2, 6, 10, 14, 18]
 \end{minted}
-\caption{Primeri upotrebe komprehenzije}
+\caption{Primeri upotrebe skraćenica}
 \label{listing:elixirComprehensions}
 \end{listing}
 \subsubsection{Upravljanje greškama}
@@ -3554,7 +3554,7 @@ objašnjenje implementacije najvažnijih delova.
 Razvojno okruženje \emph{Phoenix} daje jasne smernice kako struktura projekta treba
 da izgleda. Biblioteke unutar ekosistema \emph{Elixir} nastale su na osnovu dobrih
 praksi postojećih biblioteka drugih programskih jezika što njihovu adaptaciju
-čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm} sa svojstvenom \emph{Elm}
+čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm}, sa svojstvenom arhitekturom \emph{Elm}
 kao centralnim delom, predstavlja potpuno novo iskustvo u odnosu na rad
 u programskom jeziku \emph{JavaScript}. Prilikom razvoja portala, korisnički interfejs je prošao
 kroz nekoliko iteracija i značajnih izmena tokom kojih se sam autor uverio u lakoću
