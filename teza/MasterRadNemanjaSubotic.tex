@@ -425,8 +425,8 @@ dok se simboli \texttt{\textbf{->}} koristi umesto znaka pridruživanja (listing
 \subsubsection{Moduli}
 Moduli se koriste za grupisanje funkcija u logičke jedinice i kreiranje imenskih 
 prostora (eng. \emph{namespace}). Osnovni tipovi, kao i funkcije i operatori nad njima 
-definisani su u \texttt{\textbf{Basics}} modulu, koji je podrazumevano uvezen i nalazi se 
-unutar \texttt{\textbf{elm/core}} paketa. Svaki modul predstavlja jednu \emph{.elm} datoteku,
+definisani su u modulu \texttt{\textbf{Basics}}, koji je podrazumevano uvezen i nalazi se 
+unutar paketa \texttt{\textbf{elm/core}}. Svaki modul predstavlja jednu \emph{.elm} datoteku,
 koja se mora zvati isto kao i modul, dok ime modula mora počinjati velikim slovom.
 Za definisanje modula koristi se ključna reč \texttt{\textbf{module}} nakon koje sledi
 ime modula, ključna reč \texttt{\textbf{exposing}} i lista funkcija kojima se može 
@@ -471,7 +471,7 @@ import Krug as K exposing (povrsina)  -- K.obim, povrsina
 \subsubsection{Tip funkcije}
 Prilikom definisanje funkcije u interpreteru ili
 poziva funkcije bez parametara, kao vrednost izraza vraća se \texttt{\textbf{<function>}} 
-i tip funkcije. U listing-u  \ref{listing:tipoviFunkcije} prikazano je nekoliko primera 
+i tip funkcije. U listingu  \ref{listing:tipoviFunkcije} prikazano je nekoliko primera 
 tipova funkcija u interpreteru.
 \begin{listing}[h]
 \begin{minted}{haskell}
@@ -557,7 +557,7 @@ Osnovne strukture podatka progamskog jezika \emph{Elm} čine liste, torke i slog
 \subsubsection{Liste}
 Lista predstavlja kolekciju u obliku jednostruko povezane liste. Elementi se navode
 unutar uglastih zagrada---\textbf{\texttt{[\smallskip ]}} i moraju biti istog tipa. Funkcije za rad
-sa listama nalaze se unutar \texttt{List} modula, među kojim su i tri veoma važne funkcije 
+sa listama nalaze se unutar modula \texttt{List}, među kojim su i tri veoma važne funkcije 
 u funkcionalnoj paradigmi --- \textbf{\texttt{map, filter}} i \textbf{\texttt{fold}} (ili
 \textbf{\texttt{reduce}} u drugim programskim jezicima).
 Pored operatora za nadovezivanje \textbf{\texttt{++}}, postoji i operator \textbf{\texttt{::}} koji
@@ -945,7 +945,7 @@ opisivanje izgleda stranice koristi funkcije. Stoga imamo funkcije za kreiranje 
 Funkcija \texttt{\textbf{node}} iz modula \texttt{\textbf{Html}} predstavlja generičku
 funkciju za kreiranje \emph{HTML} čvorova, koja kao argumente prima \emph{HTML} oznaku, listu atributa
 i listu čvorova (deca čvora). U listingu \ref{listing:nodeHtml} predstavljena je analogija
-kreiranja \emph{HTML} čvora funkciom \texttt{\textbf{node}} i \emph{HTML} sintakse.
+kreiranja \emph{HTML} čvora funkcijom \texttt{\textbf{node}} i \emph{HTML} sintakse.
 Modul \texttt{\textbf{Html}} pruža veliki broj pomoćnih funckija, koje imaju nazive po
 \emph{HTML} oznakama (npr. \texttt{\textbf{button}} --- listing \ref{listing:nodeHtml}) i omogućavaju bolju čitljivost. Stoga se 
 funkcija \texttt{\textbf{node}} koristi prilikom upotrebe korisnički definisanih elemenata
@@ -1547,14 +1547,14 @@ true
 \label{listing:elixirOp}
 \end{listing}
 
-Takođe, u listing \ref{listing:elixirOp} vidimo da \emph{Elixir} dozvoljava poređenje vrednosti
+Takođe, u listingu \ref{listing:elixirOp} vidimo da \emph{Elixir} dozvoljava poređenje vrednosti
 različitih tipova i to po sledećem uređenju : \textbf{\texttt{number < atom < reference <
 function < port < pid < tuple < map < list < bitstring}}
 
 \subsection{Poklapanje obrazaca}
 U prethodnom poglavlju nije naveden jedan od najvažnijih operatora u programskom jeziku
 \emph{Elixir} ---  operator uparivanja ili poklapanja (\texttt{\textbf{=}}), koji ima veoma
-bitnu ulogu u poklapaju obrazaca. Za razliku od Elm-a gde se
+bitnu ulogu u poklapanju obrazaca. Za razliku od \emph{Elm}-a gde se
 poklapanje obrazaca korisiti isključivo unutar izraza \textbf{\texttt{case}} i
 \textbf{\texttt{let}}, u \emph{Elixir}-u je ono dosta prisutnije i koristi se prilikom
 definisanja promenljivih i funkcija, kao i u kontroli toka.
@@ -1783,7 +1783,7 @@ Operator \texttt{\textbf{|>}} u \emph{Elixir}-u prosleđuje vrednost sa leve str
 funkciji sa desne strana, što je različito ponašanje koje isti operator ima u \emph{Elm}-u, gde se
 vrednost sa leve strane prosleđuje kao poslednji argument funkciji sa desne
 strane. Takođe, \emph{Elixir} ne podržava slične operatore koji postoje u \emph{Elm}-u. Različito ponašanje
-operatora \texttt{\textbf{|>}} u oba jezika predstavljeno je listingu \ref{listing:elixirPipe}.
+operatora \texttt{\textbf{|>}} u oba jezika predstavljeno je u listingu \ref{listing:elixirPipe}.
 \begin{figure}[!h]
 \begin{minipage}{0.5\textwidth}
   \centering
@@ -1846,7 +1846,7 @@ defmodule Osoba1 do
   defstruct [:ime, godine: 25]
 end
 \end{minted}
-\caption{Primeri definisanje struktura}
+\caption{Primeri definisanja struktura}
 \label{listing:elixirStruct}
 \end{listing}
 
@@ -1973,7 +1973,7 @@ je makrou \texttt{if} i može se posmatrati kao \texttt{if not}. Sintaksa upotre
 \label{listing:elixirIf}
 \end{figure}
   
-Kao kod operatora \texttt{\&\&} i \texttt{||} uslov se smatra tačnim ukoliko njegova vrednosti
+Kao kod operatora \texttt{\&\&} i \texttt{||} uslov se smatra tačnim ukoliko njegova vrednost
 nije \texttt{nil} ili \texttt{false}. Za razliku od Elm-a, gde je navođenje \texttt{else} grane
 obavezno, u \emph{Elixir}-u to nije slučaj. Ukoliko se \texttt{else} grana ne navede, a uslov nije istinit
 (odnosno nije neistinit u slučaju makroa \texttt{unless}), vrednost izraza je \texttt{nil}.
@@ -2009,7 +2009,7 @@ listingu \ref{listing:elixirCond}.
 
 Bitan je redosled navođenja, jer će se izvršiti blok prvog istinitog izraza (\texttt{cond}) ili
 poklopljenog obrasca (\texttt{case}). Povratna verednost predstavlja vrednost izvršenog bloka, a
-u slučaju da se ne izvrši nijedan blok izbacuje se grešaka. 
+u slučaju da se ne izvrši nijedan blok izbacuje se greška. 
 
 \subsubsection{Iteracija}
 Slično \emph{Elm}-u, \emph{Elixir} umesto petlji koristi rekurziju i funkcije modula \texttt{Enum}, s tim
@@ -2033,13 +2033,13 @@ iex> stream = 1..1_000_000 |>
 iex> stream |> Enum.take(5) 
 [6, 12, 18, 24, 30]
 \end{minted}
-\caption{Kompozicaija tokova i lenjo izračunavanje}
+\caption{Kompozicija tokova i lenjo izračunavanje}
 \label{listing:elixirStream}
 \end{listing}
 \paragraph{Skraćenice}
 Filtriranje i mapiranje nad nabrojivim podacima predstaljaju čestu pojavu u \emph{Elixir} programima,
 te su uvedene skraćenice (eng. \emph{comprehensions}) kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
-grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}} . Upotreba skraćenica
+grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}}. Upotreba skraćenica
 prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj
 \cite{elixir} stranici.
 \begin{listing}[!ht]
@@ -2165,7 +2165,7 @@ Treći sloj čini relaciona baza podataka, a odabrani sistem za upravljanje bazo
 Na slici \ref{fig:msnr-db} data je šema baze gde su prikazani osnovni entiteti i relacije između njih, u nastavku je dat njihov opis.
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=0.9\textwidth]{msnr-db.png}
+  \includegraphics[width=0.95\textwidth]{msnr-db.png}
   \caption{Dijagram tabela portala MSNR}
   \label{fig:msnr-db}
 \end{figure}
@@ -2179,7 +2179,7 @@ Tabela \emph{users} predviđena je za upravljanje korisničkim nalozima. Mogu po
 Pored osnovnih informacija o korisniku --- ime, prezime, rola i email, sadrži šifrovanu lozinku (\emph{hashed{\textunderscore}password}), osvežavajući
 token (\emph{refresh{\textunderscore}token}) čija će upotreba biti objšnjena kasnije, i jedinstveni univerzalni identifikator koji se koristi prilikom postvaljanja lozinke
 pre prvog prijavljivanja ili u slučaju da se zaboravi. Inicijalno će postojati profesorski nalog u tabeli, a prilikom prihvatanja zahteva za registraciju kreira se studentski nalog
-i studentu se šalje mail sa vezom za postvaljane lozinke. 
+i studentu se šalje mail sa vezom za postavljanje lozinke. 
 
 \subsection{Semestar}
 Sve aktivnosti studenata vezane su za semestar, koji se predstavlja godinom u kojoj se održava i oznakom da li je aktivan, gde samo jedan semestar može biti trenutno aktivan. 
@@ -2187,18 +2187,18 @@ Sve aktivnosti studenata vezane su za semestar, koji se predstavlja godinom u ko
 \subsection{Student}
 Kada profesor prihvati zahtev za registraciju, pored unosa u tabelu korisnici, vrše se još dva unosa --- jedan u tabelu \emph{students}, koja sadrži samo referencu ka korisniku i broj indeksa studenta, i 
 drugi u tabelu koja predstavlja relaciju studenta i semestra --- \emph{students{\textunderscore}semestars}. Ova tabela, pored referenci ka studentu i semestru, ima i referencu ka grupi tako da 
-svaki student u toku jednog semestar može biti član samo jedne grupe.
+svaki student u toku jednog semestra može biti član samo jedne grupe.
 
 \subsection{Grupa}
 Prilikom prijave grupe, kreira se novi unos u tabeli grupe, dok se u tabeli \emph{students{\textunderscore}semestars} unosi
-referenca ka kreiroanoj grupi za sve studente iz grupe. Tabela grupe sadrži i referencu ka temi koja se unosi prilikom odabira teme.
+referenca ka kreiranoj grupi za sve studente iz grupe. Tabela grupe sadrži i referencu ka temi koja se unosi prilikom odabira teme.
 
 \subsection{Tema seminarskog rada} 
-Profesor unosi naslove tema seminarskih radova koji se mogu odabrati u toku trenutnog semestra. Teme su predstavljene tabelom \emph{topics} i sadrže naslove i referencu ka semestru u kom se mogu odabrati.
+Profesor unosi naslove tema seminarskih radova koji se mogu odabrati u toku trenutnog semestra. Teme su predstavljene tabelom \emph{topics} i sadrže naslov, redni broj i referencu ka semestru u kom se mogu odabrati.
 
 \subsection{Aktivnost i tip aktivnosti}
 Navedene aktivnosti na početku poglavlja su zapravo tipovi aktivnosti koji su predstavljeni tabelom \emph{activity{\textunderscore}types},
-a aktivnosti (tabela \emph{activities}) predstavljaju relaciju izmeljđe između tipa aktivnosti i semestra. 
+a aktivnosti (tabela \emph{activities}) predstavljaju relaciju između tipa aktivnosti i semestra. 
 Tip aktivnosti sadrži naziv i opis aktivnosti, jedinstven k\^{o}d, oznake da li ima prijavu i da li je grupna aktivnost, i sam sadržaj aktivnosti.
 Pored reference ka semestru i tipu, aktivnost sadrži informacije o periodu u kom se može izvršiti, broju poena koji nosi i oznaku da li predstavlja
 samo prijavu za referisani tip ili konkretno izvršavanje.
@@ -2221,8 +2221,8 @@ potrebne za razvoj veb aplikacije, neophodna je njihova instalacija.
 \section{Instalacija razvojnog okruženja}
 Instaliranjem \emph{Elixir}-a ujedno je instaliran i osnovni alat za rad sa \emph{Elixir} projektima --- \emph{Mix}, koji se koristi za
 kreiranje, kompajliranje i testiranje projekata, instaliranje i objavljivanje paketa, kao i za upravljanje zavisnim paketima projekta.
-Upravo se pomoću njega instalira raz okruženje \emph{Phoenix} i alat za generisanje \emph{Phoenix} projekata, ali prethodno je potrebno instalirati
-\emph{Hex} \cite{hex} --- menažer paketa za ekosistem \emph{Erlang}. Instalacija potrebnih alata prikazana je u listingu \ref{listing:installPhxNew}.
+Upravo se pomoću njega instalira razvojno okruženje \emph{Phoenix} i alat za generisanje \emph{Phoenix} projekata, ali prethodno je potrebno instalirati
+\emph{Hex} \cite{hex} --- menadžer paketa za ekosistem \emph{Erlang}. Instalacija potrebnih alata prikazana je u listingu \ref{listing:installPhxNew}.
 Pored navedenih alata potrebno je instalirati i \emph{PostgreSQL}.
 
 \begin{listing}[h]
@@ -2235,15 +2235,15 @@ Pored navedenih alata potrebno je instalirati i \emph{PostgreSQL}.
 \end{listing}
 
 \section{Kreiranje i struktura projekta}
-\emph{Phoenix} je okruženja za razvoj svih tipova veb aplikcaija, omogućava renderovanje \emph{HTML}-a na serverskoj strani i ima odličnu podršku
+\emph{Phoenix} je okruženje za razvoj svih tipova veb aplikcaija, omogućava renderovanje \emph{HTML}-a na serverskoj strani i ima odličnu podršku
 za komunikaciju u realnom vremenu. Poseduje i svojstven koncept \emph{LiveView} koji pruža bogato korisničko iskustvo u realnom vremenu sa
-renderovanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreiraće se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
-Takođe, portal neće podržavati lokalizaciju, stoga nema potreba za uključivanje \emph{gettext} modula.
+renderovanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreira se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
+Takođe, portal neće podržavati lokalizaciju, stoga nema potreba za uključivanje modula \emph{gettext}.
 
 Komanda korišćena za kreiranje projekta:
 \mint{bash}|mix phx.new msnr_api --no-assets --no-html --no-gettext|
 \noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje foldera \emph{assets} koji je predviđen za JavaScript i CSS datoteke,
-dok se postavljanjem \emph{-{}-no-html} isključuje generisnje \emph{HTML} šablona za serversko renderovanje.
+dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šablona za serversko renderovanje.
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.5\textwidth]{msnr-dir.png}
@@ -2259,15 +2259,15 @@ Pored ove tri osnovne stavke, tu su i \emph{.formatter.exs} skripta za formatira
 listu zavisnih paketa koji se koriste u projektu. Nakon kompajliranja projekta, generisaće se \emph{mix.lock} datoteka koja
 čuva precizne verzije zavisnih paketa čime se garantuje da se u produkciji koriste iste verzije kao i tokom razvoja.
 
-Razvojno okruženje \emph{Phoenix} dodaje i konfiugracije vezane za okruženje u kom se aplikacija izvršava. 
+Razvojno okruženje \emph{Phoenix} dodaje i konfiguracije vezane za okruženje u kom se aplikacija izvršava. 
 Podržana okruženja su razvojno (\emph{dev.exs}), testno (\emph{test.exs}) i produkciono (\emph{prod.exs}) i konfiguracije su smeštene u folderu \emph{config},
-zajedno sa glavnom konfiguraciom(\emph{config.exs}) koja se odnosi na sva okruženja. Mogu se dodati i druga ukoliko je potrebno, a pored navedenih
+zajedno sa glavnom konfiguracijom (\emph{config.exs}) koja se odnosi na sva okruženja. Mogu se dodati i druga ukoliko je potrebno, a pored navedenih
 u folderu \emph{config} nalazi se i \emph{runtime.exs} konfiguracija zadužena za učitavanje šifri (eng. \emph{secrets}) i drugih konfiguracionih vrednosti
 iz varijabli okruženja.
 
-U razvojnom okruženju \emph{Phoenix} projekti se organizuju po konetekstima (eng. \emph{context}). Kontekst predstavlja modul koji grupiše funkcije sa
+U razvojnom okruženju \emph{Phoenix} projekti se organizuju po kontekstima (eng. \emph{context}). Kontekst predstavlja modul koji grupiše funkcije sa
 zajedničkom svrhom. Folder \emph{lib} sadrži dva konteksta, odnosno modula: \emph{MsnrApi} koji enkapsulira svu domensku i
-poslovnu logiku i \emph{MsnrApiWeb} modul koji definiše veb interfejs. Podmoduli se definišu u folderima \emph{msnr{\textunderscore}api}
+poslovnu logiku i modul \emph{MsnrApiWeb} koji definiše veb interfejs. Podmoduli se definišu u folderima \emph{msnr{\textunderscore}api}
 i \emph{msnr{\textunderscore}api{\textunderscore}web}. 
 Kontekst \emph{MsnrApi} se odnosi na \emph{Model} u smislu arhitekture \emph{MVC --- Model-View-Controller} i u njemu će se definisati svi entiteta i
 funkcije za rad sa njima. Inicjalno su kreirani:
@@ -2290,9 +2290,9 @@ U osnovi obrade \emph{HTTP} zahteva nalazi se biblioteka \emph{Plug} \cite{plug}
 Osnovne komponente razvojnog okruženja \emph{Phoenix}, kao što su \emph{Endpoint}, ruter i upravljači, su interno utikači (eng. \emph{plug}).
 Utikač predstavlja funkciju čija je ulazna i povratna vrednost \emph{Plug.Conn} struktura koja sadrži sve informacije o
 primljenom \emph{HTTP} zahtevu. Veb server daje početne podatke za obradu zahteva, nakon čega \emph{Phoenix} poziva utikače jedan za drugim,
-gde svaki utikač transformiše strukturu \emph{Plug.Conn} dok se obrada ne završi i odgovor pošalje korisniku. Za upotrebnu utikača neophodan je
-veb server i njegovo povezivanje sa utikačem, stoga je automatski ubačena zavisost \texttt{\textbf{plug{\textunderscore}cowboy}} u \emph{mix.exs}
---- \emph{Cowboy} je napopularniji veb server u ekosistemu \emph{Erlang}.
+gde svaki utikač transformiše strukturu \emph{Plug.Conn} dok se obrada ne završi i odgovor pošalje korisniku. Za upotrebu utikača neophodan je
+veb server i njegovo povezivanje sa utikačem, stoga je automatski ubačena zavisnost \texttt{\textbf{plug{\textunderscore}cowboy}} u \emph{mix.exs}
+--- \emph{Cowboy} je najpopularniji veb server u ekosistemu \emph{Erlang}.
 
 \begin{listing}[!ht]
 \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2309,7 +2309,7 @@ defmodule MsnrApiWeb.Endpoint do
   plug MsnrApiWeb.Router
 end
 \end{minted}
-\caption{Utikači modlula \emph{Endpoint}}
+\caption{Utikači modula \emph{Endpoint}}
 \label{listing:plugsEndpoint}
 \end{listing}
 Modul \emph{MsnrApiWeb.Endpoint} predstavlja početnu tačku prilikom obrade \emph{HTTP} zahteva i sastoji se od niza utikača. Kostur
@@ -2333,9 +2333,9 @@ connection
 \end{listing}
 
 \subsection{Ruter}
-Poslenji utikač modula \emph{Endpoint} je \emph{Router} koji se takođe sastoji od utikača, ali se oni grupišu
+Poslednji utikač modula \emph{Endpoint} je \emph{Router} koji se takođe sastoji od utikača, ali se oni grupišu
 u tokove (eng. \emph{pipeline}). Unutar modula \emph{Router}, na osnovu putanje iz zahteva defnišu se opsezi
-(eng. \emph{scope}), u kojima se navodi tok utikača koji će se koristi i kontoleri koji će se pozivati za određene rute.
+(eng. \emph{scope}), u kojima se navodi tok utikača koji će se koristiti i upravljači koji će se pozivati za određene rute.
 Deo modula \emph{Router} koji sadrži definisanje toka i opsega dat je u listingu \ref{listing:router}.
 \begin{listing}[!h]
   \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2357,21 +2357,21 @@ Deo modula \emph{Router} koji sadrži definisanje toka i opsega dat je u listing
       resources "/activity-types", ActivityTypeController, except: [:new, :edit]
       ...
 \end{minted}
-\caption{Deo \emph{MsnrApiWeb.Router} modula}
+\caption{Deo modula \emph{MsnrApiWeb.Router}}
 \label{listing:router}
 \end{listing}
 
 U slučaju portala MSNR definisan je jedan tok i jedan opseg koji nadgleda sve zahteve koji počinju sa \emph{/api}.
-Svaki od tih zahteva proći će kroz prethodno definisani tok, nakon čega se na osnovu metoda \emph{HTTP} zahteva i nastavka
-putanje pozvia određena akcija, tj. funkcija iz navedenog upravljača. Na primer, za zahtev sa metodom
-\emph{GET} i putanjom \emph{/api/auth/refresh} poziva se funkcija \emph{refresh} iz kontolera 
+Svaki od tih zahteva prolazi kroz prethodno definisani tok, nakon čega se na osnovu metoda \emph{HTTP} zahteva i nastavka
+putanje poziva određena akcija, tj. funkcija iz navedenog upravljača. Na primer, za zahtev sa metodom
+\emph{GET} i putanjom \emph{/api/auth/refresh} poziva se funkcija \emph{refresh} iz upravljača 
 \emph{AuthController}. Za upravljač tipova aktivnosti koristi se funkcija \emph{resource} koja
-predstavlja skraćenu sintaksu za navođenje ruta. Jednim pozivom se kreira mapiranje metoda za akcija
+predstavlja skraćenu sintaksu za navođenje ruta. Jednim pozivom se kreira mapiranje metoda za akcije
 (\texttt{\textbf{index}}, \texttt{\textbf{new}}, \texttt{\textbf{create}}, \texttt{\textbf{show}}, \texttt{\textbf{edit}},
 \texttt{\textbf{update}}, i \texttt{\textbf{delete}}) koje su komplementarne REST akcijama. Poslednji argument označava da
 će se izostaviti akcije \texttt{\textbf{new}} i \texttt{\textbf{edit}} koje se koriste prilikom upotrebe \emph{HTML} šablona. Takođe je moguće
 navesti i samo akcije koje će se koristiti pomoći atoma \texttt{\textbf{:only}} umesto \texttt{\textbf{:except}}. U listingu \ref{listing:routes}
-prikazan je deo rezultat poziva komande \texttt{\textbf{mix phx.routes}} koja izlistava sve definisane rute aplikacije i njihovo mapiranje na kotrolere.
+prikazan je deo rezultata izvršene komande \texttt{\textbf{mix phx.routes}} koja izlistava sve definisane rute aplikacije i njihovo mapiranje na upravljače.
 \begin{listing}[!h]
   \begin{minted}[fontsize=\scriptsize]{bash}
 $ mix phx.routes
@@ -2391,9 +2391,9 @@ activity_type_path  DELETE  /api/activity-types/:id  MsnrApiWeb.ActivityTypeCont
 \end{listing}
 
 \subsection{Upravljači i pogledi}
-Budući da je kontolor takođe utikač, njegova osnovna uloga je da sakupi i pripremi podatke za sledeći korak obrade korisničkog zahteva.
+Budući da je upravljač takođe utikač, njegova osnovna uloga je da sakupi i pripremi podatke za sledeći korak obrade korisničkog zahteva.
 To može uključiti pozivanje baze podataka, eksternog veb servisa ili obradu nekog statičkog fajla. 
-Na primeru upravljača \emph{ActivityTypeController} u listingu \ref{listing:controller} može se videti generalna struktura konrolera
+Na primeru upravljača \emph{ActivityTypeController} u listingu \ref{listing:controller} može se videti generalna struktura upravljača
 i implementacija akcije \texttt{\textbf{:index}}.
 \begin{listing}[!h]
 \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2428,14 +2428,14 @@ end
 \label{listing:controller}
 \end{listing}
 
-Poslednji poziv u akciji kotrolora je funkcija \texttt{\textbf{render}} definisana u \emph{ActivityTypeView} modulu koja za argumente ima \emph{Plug.Conn} strukturu,
+Poslednji poziv u akciji upravljača je funkcija \texttt{\textbf{render}} definisana u modulu \emph{ActivityTypeView} koja za argumente ima \emph{Plug.Conn} strukturu,
 naziv šablona i podatke potrebne za renderovanje. U slučaju JSON veb interfejsa kreira se mapa koja se prevodi u JSON objekat,
 čime se završava obrada zahteva u okviru razvojnog okruženja \emph{Phoenix}. 
 
 \section{Komunikacija sa bazom podataka}
 Za komunikaciju sa bazom podataka u \emph{Elixir} projektima pretežno se koristi biblioteka \emph{Ecto} \cite{ecto}.
 Ona nije sastavni deo okruženja \emph{Phoenix}, ali se podrazumevano uključuje i prilikom kreiranja
-\emph{Phoenix} projekta dodaje se potrebni \emph{Ecto} moduli i konfiguracija. Ukoliko nije potrebno
+\emph{Phoenix} projekta u se potrebni \emph{Ecto} moduli i konfiguracija. Ukoliko nije potrebno
 korišćenje ove biblioteke prilikom kreiranja projekta navodi se parametar \emph{-{}-no-ecto}.
 
 Biblioteka \emph{Ecto} pruža jednostavan način za izvršavanje upita, transakcija, opisivanje kako se strukture mapiraju
@@ -2447,8 +2447,8 @@ proces prihvatanja eksternih podataka, validiranja, konvertovanja i proveravanja
   \item \emph{Ecto.Query} --- za definisanje upita u \emph{Elixir} sintaksi, opisuje kako se čitaju podaci,
   \item \emph{Ecto.Changeset} --- za praćenje i validiranje izmena, opisuje kako se menjaju podaci.
 \end{itemize}
-Za integraciju sa bibliotekom \emph{Ecto}, \emph{Phoenix} uključuje \texttt{\textbf{phoenix{\textunderscore}ecto}} paket
-, adapter za bazu podatak PostgreSQL ---\texttt{\textbf{postgrex}} i \texttt{\textbf{ecto{\textunderscore}sql}} paket
+Za integraciju sa bibliotekom \emph{Ecto}, \emph{Phoenix} uključuje paket \texttt{\textbf{phoenix{\textunderscore}ecto}},
+adapter za bazu podataka \emph{PostgreSQL} ---\texttt{\textbf{postgrex}} i paket \texttt{\textbf{ecto{\textunderscore}sql}}
 koji pored prethodno navedenih \emph{Ecto} osobina ima i podršku za migracije, što omogućava menjanje i praćenje strukture
 baze tokom vremena.
 \begin{listing}[!h]
@@ -2456,12 +2456,12 @@ baze tokom vremena.
   config :msnr_api,
     ecto_repos: [MsnrApi.Repo]
 \end{minted}
-\caption{Navođenje \emph{Ecto} repoziturijuma u kofiguraciji}
+\caption{Navođenje \emph{Ecto} repozitorijuma u konfiguraciji}
 \label{listing:configRepo}
 \end{listing}
 U generisanom modulu \emph{MsnrApi.Repo} definiše se repozitorijum i adapter koji se koristi. Repozitorijum koji se koristi neophodno je navesti u
-glavnoj konfiguraciji \emph{config.exs}, što je prikazano je u listingu \ref{listing:configRepo}. \emph{Ecto} podržava rad sa više repozitorijuma istovremeno, 
-zato se navodi lista naziva repozitorijuma. Parametri za definisanje komunikacije sa bazom podataka se postavljaju se posebno za svako okruženje.
+glavnoj konfiguraciji \emph{config.exs}, što je prikazano u listingu \ref{listing:configRepo}. \emph{Ecto} podržava rad sa više repozitorijuma istovremeno, 
+zato se navodi lista naziva repozitorijuma. Parametri za definisanje komunikacije sa bazom podataka postavljaju se posebno za svako okruženje.
 U listingu \ref{listing:dbDevConfig} prikazana je konfiguracija za razvojno okruženje (\emph{config/dev.exs}) i pokretanjem komande
 \texttt{\textbf{mix ecto.create}} lokalno se kreira \texttt{\textbf{msnr{\textunderscore}api{\textunderscore}dev}} baza podataka. 
 \begin{listing}[!h]
@@ -2481,7 +2481,7 @@ U listingu \ref{listing:dbDevConfig} prikazana je konfiguracija za razvojno okru
 \section{Definisanje entiteta}
 Budući da kontekst \emph{MsnrApi} sadži domensku logiku aplikacije, u njemu su definisani svi entiteti aplikacije, takođe
 kao konteksti. Na primeru tipa aktivnosti, pod folderom \emph{msnr{\textunderscore}api} nalazi se direktorijum
-\emph{activity{\textunderscore}types} sa definiciom strukture \emph{ActivityType} kojom se predstavlja
+\emph{activity{\textunderscore}types} sa definicijom strukture \emph{ActivityType} kojom se predstavlja
 entitet i datoteka \emph{activity{\textunderscore}types.ex} u kojoj je definisan modul \emph{ActivityTypes} sa
 funkcijama za rad sa entitetom.
 
@@ -2510,7 +2510,7 @@ U listingu \ref{listing:activityType} prikazano je definisanje entiteta tipa akt
 \caption{Upotreba \emph{Ecto.Schema} na primeru tipa aktivnosti }
 \label{listing:activityType}
 \end{listing}
-Makroi \texttt{\textbf{schama}} i \texttt{\textbf{filed}} definišu istovremeno tabelu u bazi i Elixir
+Makroi \texttt{\textbf{schema}} i \texttt{\textbf{filed}} definišu istovremeno tabelu u bazi i Elixir
 strukturu. Svako polje definisano makroom \texttt{\textbf{filed}} odgovara polju u strukturi 
 \emph{ActivityType} i polju, odnosno koloni, tabele \emph{activity{\textunderscore}types}.
 Makro \texttt{\textbf{filed}} ima tri argumenta --- naziv polja, tip i opcije. U prikazanom primeru korišćena je
@@ -2519,10 +2519,10 @@ opcija za postavljanje podrazumevane vrednosi kolone. Funkcija \texttt{\textbf{t
 promena entiteta u bazi. 
 
 Makroom \texttt{\textbf{has{\textunderscore}many}} opisuje se asocijacija 
-entiteta --- jedan tip aktivnosti se može navesti u više aktivnost. Sa druge strame, svaki aktivnost ima svoj tip
-aktivnost, tako da se u modulu \emph{MsnrApi.Activities.Activity}
-asocijacija definiše sa \texttt{\textbf{belongs{\textunderscore}to}}. Pored navedenih, za druge tipove asocijacija
-mogu se koristiti moakroi \texttt{\textbf{has{\textunderscore}one}} i \texttt{\textbf{many{\textunderscore}many}}.
+entiteta --- jedan tip aktivnosti se može navesti u više aktivnosti. Sa druge strane, svaka aktivnost ima svoj tip,
+tako da se u modulu \emph{MsnrApi.Activities.Activity} asocijacija sa odgovarajućim tipom aktivnosti definiše pomoću \texttt{\textbf{belongs{\textunderscore}to}}.
+Pored navedenih, za druge tipove asocijacija
+mogu se koristiti makroi \texttt{\textbf{has{\textunderscore}one}} i \texttt{\textbf{many{\textunderscore}many}}.
 
 Pored prikazanih polja, \emph{Ecto} podrazumevano dodaje i \texttt{\textbf{:id}} polje
 koje predstavlja primarni ključ tabele. U sličaju kada je potrebno drugačije definisati primarni ključ koristi
@@ -2530,7 +2530,7 @@ se atribut \texttt{\textbf{@primary{\textunderscore}key}}, što se može videti 
 
 \subsection{Migracije}
 Kreiranjem šeme entiteta, definiše se način na koji \emph{Ecto} komunicira sa bazom, dok se kreiranje odgovarajućih
-tabela u bazi vrši migracijama. Migracije su predstavljane modulima u kojima se definišu promene koja će se izvršiti nad
+tabela u bazi vrši migracijama. Migracije su predstavljane modulima u kojima se definišu promene koje će se izvršiti nad
 bazom i pružaju mogućnost da se izvršene promene ponište. Kreiraju se pomoću \emph{Mix} komande 
 \texttt{\textbf{mix ecto.gen.migration \emph{<naziv migracije>}}} i nalaze se u folderu
 \emph{priv/repo/migrations}, a naziv datoteke je oblika \emph{<vreme kreiranja>{\textunderscore}<naziv migracije>.exs}.
@@ -2565,10 +2565,12 @@ dodaju jedinstveni indeksi za naziv i k\^{o}d tipa aktivnosti.
 Migracije se mogu definisati na dva načina --- prvi, predstavljen u listingu, koristi funkciju \texttt{\textbf{change}}
 i drugi sa dve funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}}, kojima se difinišu akcije koje prilikom izvršavanja i
 poništavanja migracije. U slučaju funkcije \texttt{\textbf{change}} \emph{Ecto} sam zaključuje potrebne korake prilikom
-poništavanja migracije. Prilikom implentacije portala MSNR funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}} korišćene
-su prilikom definisanje tipova za role korsnika i status registracije. 
+poništavanja migracije. Prilikom implementacije portala MSNR funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}} korišćene
+su za definisanje tipova uloga korsnika i statusa registracije.
 
 \subsection{Kreiranje, preuzimanje i brisanje podataka iz baze}
+\emph{Ecto} pruža brojne funkcije za interakciju sa bazom podataka kroz modul \emph{Ecto.Repo}.
+U tabeli \ref{table:repoFuntions} prikazane su najčešće korišćene funkcije i njihov kratak opis.
 \begin{table}[h!]
   \renewcommand*{\arraystretch}{1.4}
   \small
@@ -2577,8 +2579,8 @@ su prilikom definisanje tipova za role korsnika i status registracije.
     Funkcija & Opis & Povratna vrednost\\ [0.5ex] 
     \hline
     \texttt{all} & Vraća svaki red iz tabele za zadati upit & Lista redova \\ 
-    \texttt{get} & Vraća jedan red za zadati primarni kljuć & Red ili \texttt{nill} ako nije pronđen  \\
-    \texttt{one} & Vraća jedan red za zadati upit &  Red ili \texttt{nill} ako nije pronđen, ukoliko pronađe više redova izbacuje izuzetak \\
+    \texttt{get} & Vraća jedan red za zadati primarni ključ & Red ili \texttt{nill} ako nije pronađen  \\
+    \texttt{one} & Vraća jedan red za zadati upit &  Red ili \texttt{nill} ako nije pronađen, ukoliko pronađe više redova izbacuje izuzetak \\
     \hline
     \texttt{delete} & Briše red iz tabele na osnovu primarnog ključa iz struktue & \texttt{\{:ok, red\}} \\ 
     \texttt{insert} & Dodaje red u tabeli na osnovu date strukture & \texttt{\{:ok, red\}} ili \texttt{\{:error, changeset\}}\\
@@ -2587,13 +2589,11 @@ su prilikom definisanje tipova za role korsnika i status registracije.
   \caption{\emph{Ecto.Repo} funkcije za rad sa bazom podataka}
   \label{table:repoFuntions}
   \end{table}
-\emph{Ecto} pruža brojne funkcije za interakciju sa bazom podatka kroz \emph{Ecto.Repo} modul.
-U tabeli \ref{table:repoFuntions} prikazane su najčešće korišćene funkcije i njihov kratak opis.
 
 Funkcije \texttt{get} i \texttt{one} imaju verzije sa znakom \texttt{\textbf{!}}
 na kraju naziva (npr. \texttt{get!}) koje u slučaju da red nije pronađen izbacuju izuzetak.
 U slučaju funkcija za modifikaciju podataka, takođe postoje pandan funkcije sa \texttt{\textbf{!}} u nazivu
-i prilikom greške izbacuju izuzetak. One prilikom uspešnog izvršavanja vračaju samo red, bez torke.
+i prilikom greške izbacuju izuzetak. One prilikom uspešnog izvršavanja vraćaju samo red, bez torke.
 
 U listingu \ref{listing:ActivityTypes} prikazan je modul
 \emph{MsnrApi.ActivityTypes} i način upotrebe nekih od funkcija iz tabele. Za izlistavanje tipova aktivnosti,
@@ -2628,14 +2628,14 @@ funkciji \texttt{all} se prosleđuje samo naziv tabela, tako da funkcija vraća 
     end
   end
 \end{minted}
-\caption{Definica \emph{MsnrApi.ActivityTypes} modula}
+\caption{Definica modula \emph{MsnrApi.ActivityTypes}}
 \label{listing:ActivityTypes}
 \end{listing}
 
 \subsection{Definisanje upita}
 Modul \emph{Ecto.Query} pruža sintaksu za pisanje upita koja je veoma slična samoj \emph{SQL} sintaksi. 
-S tim da sintaksa upita započinju makroom \texttt{from} nakon čega se ostali delovi upita se definišu pomoću list ključnih reči.
-Prkasa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} \cite{linq} sintakse iz razvojnog okruženja \emph{.NET}
+S tim da sintaksa upita započinje makroom \texttt{from} nakon čega se ostali delovi upita definišu pomoću liste ključnih reči.
+Praksa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} \cite{linq} sintakse iz razvojnog okruženja \emph{.NET}
 koja je bila inspiracija za \emph{Ecto}, a može se i izostaviti. Za interpolaciju parametara koristi se operator \texttt{ \^{}}.
 Primer jednostavnog upita dat je u listingu \ref{listing:query-example} gde je prikazana funkcija za prikazivanje studentskih
 registracija iz modula \emph{StudentRegistrations}.
@@ -2652,14 +2652,14 @@ registracija iz modula \emph{StudentRegistrations}.
 \label{listing:query-example}
 \end{listing}
 
-Modul \emph{Ecto.Query} pruža mogućnost definisanja dinamičlih upita, podupita i dosta drugih karakteristika o kojima se može videti više na zvaničnoj stranici.
+Modul \emph{Ecto.Query} pruža mogućnost definisanja dinamičnih upita, podupita i dosta drugih karakteristika o kojima se može videti više na zvaničnoj stranici.
 
 \subsection{Izmena entiteta}
 U listingu \ref{listing:ActivityTypes} tokom kreiranja i izmene tipa aktivnosti poziva se
 funkcija \emph{ActivityType.changeset} kojom se kreira skup promena. Prilikom kreiranje
 podataka se može koristiti i struktura definisana sa \emph{Ecto.Schema}, dok je 
 menjanje podataka moguće samo korišćenjem strukture \emph{Ecto.Changeset}.
-Kreiranje strukture  \emph{Ecto.Changeset} funkciom \texttt{changeset} 
+Kreiranje strukture  \emph{Ecto.Changeset} funkcijom \texttt{changeset} 
 prikazano je u listingu \ref{listing:changeset}. 
 \begin{listing}[!h]
 \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2681,17 +2681,18 @@ U prikazanom primeru, ne mogu se izmeniti polja \texttt{:id}, \texttt{:created{\
 prilikom izvršavanja funkcije \texttt{update}.
 
 Zatim se funkcijama \texttt{validate{\textunderscore}required} i \texttt{unique{\textunderscore}constraint} 
-proveravaju obavezna polja i jedinstvenost naziva i koda. Izvršavanje funkcija jednom za drugom, menja se stanje
-strukture \emph{Ecto.Changeset} koja nosi mnoge informacije među kojima su i promene koje treba izvršiti, validnost izmena
-i greškama validacije. Modul \emph{Ecto.Changeset} pruža brojne funkcije za validranje, a moguće je definisati i prilagođene funkcije.
+proveravaju obavezna polja i jedinstvenost naziva i koda. Rezultat izvršavanja niza funkcija nad strukturom
+\emph{Ecto.Changeset} je takođe struktura \emph{Ecto.Changeset}. Rezultujuća struktura sadrži mnoge informacije
+među kojima su promene koje treba izvršiti, validnost izmena i greške validacije ukoliko ih ima.
+Modul \emph{Ecto.Changeset} pruža brojne funkcije za validiranje, a moguće je definisati i prilagođene funkcije.
 
 \subsection{Generisanje datoteka}
-Prilikom definisanja entiteta, dodaje se njegov kontekst sa \emph{Ecto.Shcema} strukturom, kao i migracija. 
-Ukoliko je potrebno dodati i kontoler, to su još dve datoteke --- kontolor i pogled. Da bi se olakšavo ovaj
-proces, \emph{Phoenix} pruža komande za automakstog generisanja navedenih datoteka zajedno sa šablonima za testove.
+Prilikom definisanja entiteta, dodaje se njegov kontekst sa \emph{Ecto.Schema} strukturom, kao i migracija. 
+Ukoliko je potrebno dodati i upravljač, to su još dve datoteke --- upravljač i pogled. Da bi se olakšao ovaj
+proces, \emph{Phoenix} pruža komande za automatsko generisanje navedenih datoteka zajedno sa šablonima za testove.
 Za potrebe portala MSNR najčešće korišćena komanda jeste \texttt{mix phx.gen.json} koja generiše sve prethodno
 navedene fajlove. Prethodno prikazani listinzi vezani za \emph{ActivityType} entitet rezultat su komande prikazane u
-listingu \ref{listing:gen-json}. Parametari su redom: naziv konteksta, naziv sturkture i naziv tabele u bazi, nakon čega slede
+listingu \ref{listing:gen-json}. Parametri su redom: naziv konteksta, naziv strukture i naziv tabele u bazi, nakon čega slede
 definicije polja, odnosno kolona.
 \begin{listing}[h]
   \begin{minted}[fontsize=\footnotesize,breaklines=true]{bash}
@@ -2709,9 +2710,9 @@ zahteva i kreiranje korisničkog naloga, a treća na završno podešavanje nalog
 
 Prve dve celine se izvršavaju unutar upravljača \emph{StudentRegistrationController} čije su
 osnovne akcije \texttt{create} za podnošenje zahteva, \texttt{index} za izlistavanje svih zahteva u toku
-trenutnog semestra i \texttt{update} za odbradu zahteva. S tim da se url putanja za izlistavanje razlikuje od drugih,
-jer se ukljućuje i informaciju o semestru. Za akciju \texttt{index} definisana je putanja pod kontolorom
-\emph{SemesterController}, zahvaljujući tome što razvojno okruženje \emph{Phoenix} omogućava definisanje potputanja, kao i korišćenje jednog kontolera u više putanja.
+trenutnog semestra i \texttt{update} za obradu zahteva. Akcija za izlistavanje zahteva se razlikuje od drugih
+po tome što uključuje i informaciju o semestru, tako da se za akciju \texttt{index} definiše putanja pod upravljačem
+\emph{SemesterController}. Ovo je moguće zato što razvojno okruženje \emph{Phoenix} omogućava definisanje potputanja, kao i korišćenje jednog upravljača u više putanja.
 Putanje koje se koriste prilikom registrovanja studenata prikazane su u listingu \ref{listing:registration-routes}.
 U poslednjem koraku registrovanja studenata koristi se upravljač \emph{PasswordController}.
 \begin{listing}[h]
@@ -2727,7 +2728,7 @@ resources "/semesters", SemesterController, except: [:new, :edit] do
 \label{listing:registration-routes}
 \end{listing}
 
-Unutar portala MSNR putanje su organizovane hijererhiski, budući da se sve aktivnosti vrše u toku semestra,
+Unutar portala MSNR putanje su organizovane hijerarhijski, budući da se sve aktivnosti vrše u toku semestra,
 putanja \emph{/semesters} se nalazi na vrhu hijerarhije. Delom koda prikazanim u prethodnom listingu registruju
 se putanje \emph{api/semesters} za rad sa semestrima i \emph{api/semesters/<semester{\textunderscore}id>/registrations}
 za izlistavanje registracija. Vrednost <semester{\textunderscore}id> iz putanje prosleđuje se kao parametar akciji
@@ -2739,15 +2740,15 @@ upravljača što je prikazano u listingu \ref{listing:index-registrations}.
       render(conn, "index.json", student_registrations: student_registrations)
     end
   \end{minted}
-\caption{Definicija akcije \texttt{index} u kontoleru \emph{StudentRegistrationController}}
+\caption{Definicija akcije \texttt{index} u upravljaču \emph{StudentRegistrationController}}
 \label{listing:index-registrations}
 \end{listing}
 
 Podnošenje zahteva se izvršava slanjem \emph{POST} \emph{HTTP} zahteva za čiju obradu je dovoljan k\^{o}d generisan komandom
 \texttt{mix phx.gen.json}, s tim da je prilikom kreiranja potrebno povezati zahtev sa aktivnim semestrom.
 Sa druge strane, obrada zahteva od strane profesora unutar akcije \texttt{update} je dosta kompleksnija.
-Unutar transakcije je potrebno je ažurirati zahtev, kreirati nalog za studenta, ukoliko je prihvaćen, i poslati mail.
-Funkcija za prihvatanje zahteva unutar \emph{StudentsRegistrations} modula prikazana je u listingu \ref{listing:accept-registration}.
+Unutar transakcije je potrebno ažurirati zahtev, kreirati nalog za studenta, ukoliko je prihvaćen, i poslati mail.
+Funkcija za prihvatanje zahteva unutar modula \emph{StudentsRegistrations} prikazana je u listingu \ref{listing:accept-registration}.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{elixir}
   def update_student_registration(
@@ -2778,16 +2779,16 @@ Funkcija za prihvatanje zahteva unutar \emph{StudentsRegistrations} modula prika
 \label{listing:accept-registration}
 \end{listing}
 Sturktura \emph{Ecto.Multi} se koristiti za grupisanje više operacija nad repozitorijumom, pri čemu se svakoj
-operaciji daje jednistveno ime koja će identifikovati njen rezultat u slučaju uspeha ili neuspeha. Svaka od 
+operaciji daje jedinstveno ime koja će identifikovati njen rezultat u slučaju uspeha ili neuspeha. Svaka od 
 operacija mora vraćati rezultat oblika \texttt{\{:ok, vrednost\}} ili \texttt{\{:error, greška\}}.
 
-Za slanje mejlova koristi se biblioteka \emph{Swoosh}, kao i \emph{Ecto}, uključena je u prilikom kreiranja
+Za slanje mejlova koristi se biblioteka \emph{Swoosh}, koja je, kao i \emph{Ecto}, uključena prilikom kreiranja
 projekta. Modul \emph{MsnrApi.Mailer}, definisan slično kao i \emph{MsnrApi.Repo}, sadrži funkcije za slanje mailova.
-Unutra modula \emph{MsnrApi.Emails} definišu se funkcije kojima se kreira sastav mejlova pomoću \emph{Swoosh.Email} modula.
+Unutra modula \emph{MsnrApi.Emails} definišu se funkcije kojima se kreira sastav mejlova pomoću modula \emph{Swoosh.Email}.
 
 Da bi student mogao da se prijavi na portal, potrebno je da postavi lozinku, čime se zaokružuje proces registracije.
-U listingu \ref{listing:password-controller} prikazan je upravaljač \emph{PasswordController} sa akciom \texttt{update}
-zadužena za postvljanje lozinke. Parametari \texttt{email} i \texttt{password} dolaze iz tela zahteva, a \texttt{id} iz putanje
+U listingu \ref{listing:password-controller} prikazan je upravljač \emph{PasswordController} sa akcijom \texttt{update} koja je
+zadužena za postavljanje lozinke. Parametri \texttt{email} i \texttt{password} dolaze iz tela zahteva, a \texttt{id} iz putanje
 i očekuje se da odgovara vrednosti kolone \emph{pasword{\textunderscore}url{\textunderscore}path} iz tabele \emph{users}.
 
 Nakon uspešne verifikacije korisnika, unutar funkcije \texttt{set{\textunderscore}password} poziva se
@@ -2815,32 +2816,32 @@ Ukoliko i provera lozinke prođe uspešno, šalje se odgovor sa statusom 200 bez
 \label{listing:password-controller}
 \end{listing}
 
-Unutar svakog kontolera makroom \texttt{action{\textunderscore}fallback} se registurje utikač, odnosno kontolor,
+Unutar svakog upravljača makroom \texttt{action{\textunderscore}fallback} se registruje utikač, odnosno upravljač,
 \emph{MsnrApiWeb.FallbackController} koji se poziva u slučaju da dođe do greške prilikom izvršavanja akcije.
-U slučaju korisnik nije verifikovan, funkcija \texttt{verify{\textunderscore}user} vraća \texttt{\{:error, :unauthorized\}}
+U slučaju da korisnik nije verifikovan, funkcija \texttt{verify{\textunderscore}user} vraća \texttt{\{:error, :unauthorized\}}
 i pošto u \texttt{with} izrazu taj slučaj nije obrađen dolazi do greške. Greška se ne prosleđuje odmah korisniku već
-se pomoću kotrolora \emph{FallbackController} prevodi u 401 grešku i korisniku vraća validan odgovor. 
+se pomoću upravljača \emph{FallbackController} prevodi u 401 grešku i korisniku vraća validan odgovor. 
 
 \section{Autentifikacija i autorizacija korisnika}
-Autentifikacija i autorizacija korisnika portala MSNR zasnovana je na tokenima. Nakon uspešnog prijavaljivanja korisniku
+Autentifikacija i autorizacija korisnika portala MSNR zasnovana je na tokenima. Nakon uspešnog prijavljivanja korisniku
 se prosleđuje token koji se prilikom svakog \emph{HTTP} zahteva šalje serveru kroz zaglavlje \emph{Authorization}.
 Token nosi informacije o korisniku i ima ograničeno vreme trajanja, nakon čega više nije validan.
 Pomoću utikača se prilikom obrade zahteva validira token i proveravaju prava pristupa određenim resursima.
 
 Unutar implementacije portala MSNR koriste se dva tokena: \begin{itemize}
 \item \emph{acceess{\textunderscore}token} --- Sadrži informacije o korisniku i koristi se za pristupanje portalu. Ima kraće vreme trajanja (do pola sata) i korsniku se prosleđuje kroz telo \emph{HTTP} odgovora.
-\item \emph{refresh{\textunderscore}token} --- Koristi se za obnavaljanje \emph{acceess{\textunderscore}token}, ima duže vreme trajanja (nekoliko dana) i prosležuje se u \emph{HttpOnly} i \emph{Secure} kolačiću.  
+\item \emph{refresh{\textunderscore}token} --- Koristi se za obnavljanje \emph{acceess{\textunderscore}token}, ima duže vreme trajanja (nekoliko dana) i prosležuje se u \emph{HttpOnly} i \emph{Secure} kolačiću.  
 \end{itemize}
 
-Prijavaljivanje korisnika izvršava se unutar \texttt{login} akcije upravljača \emph{AuthController} i
-način obrade zahteva je sličan akciji \texttt{refresh} za obnavaljanje tokena. U prvoj se
-korisnik verifukuje na osnovu imejla i lozinke, a u drugoj na osnovu sadržaja kolačića, nakon čega se kreiraju novi tokeni.
+Prijavljivanje korisnika izvršava se unutar akcije \texttt{login} upravljača \emph{AuthController} i
+način obrade zahteva je sličan akciji \texttt{refresh} za obnavljanje tokena. U prvoj se
+korisnik verifikuje na osnovu imejla i lozinke, a u drugoj na osnovu sadržaja kolačića, nakon čega se kreiraju novi tokeni.
 Razvojno okruženje \emph{Phoenix} ima ugrađenu podršku za rad sa tokenima i preko modula \emph{Phoenix.Token}
-pruža funkcije za potipisivanje i verifikaciju tokena koje se koriste unutar modula \emph{MsnrApiWeb.Authentication}.
-Akciom \texttt{logout} se uklanja token za obnavljanje iz kolačića i kada token za pristup istekne potrebno je ponovno prijavljivanje. 
+pruža funkcije za potpisivanje i verifikaciju tokena koje se koriste unutar modula \emph{MsnrApiWeb.Authentication}.
+Akcijom \texttt{logout} se uklanja token za obnavljanje iz kolačića i kada token za pristup istekne potrebno je ponovno prijavljivanje. 
 
 \subsection{Utikač za autentifikaciju korisnika}
-Uključivanje utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazano je zajedno sa registrovanjem akcija kontolora
+Uključivanje utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazano je zajedno sa registrovanjem akcija upravljača
 \emph{AuthController} u listingu \ref{listing:router} u poglavlju 5.3 prilikom opisa obrade \emph{HTTP} zahteva.
 \begin{listing}[h!]
   \begin{minted}[fontsize=\footnotesize]{elixir}
@@ -2864,18 +2865,18 @@ Uključivanje utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazano je 
 \label{listing:authentication-plug}
 \end{listing}
 Njegova uloga jeste da, ukoliko se token verifikuje, informacije o korisniku iz tokena dodele trenutnoj konekciji tako
-da seone mogu koristit dalje u upravljačima. Definicija utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazana je u
+da se one mogu koristiti dalje u upravljačima. Definicija utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazana je u
 listingu \ref{listing:authentication-plug}.
 
 \subsection{Utikač za autorizaciju studenata}
 Utikači se mogu definisati na dva načina. Prvi, pomoću modula, prikazan je na primeru utikača za autentifikaciju,
 i drugi, pomoću funkcije, kojim su definisani utikači za autorizaciju. Autorizacija pomoću utikača se zasniva na
-proveri uloge korisnika i uključuju se različitno za svaki uravljač.
-Unutar \emph{MsnrApiWeb.Plugs.Authorization} modula
+proveri uloge korisnika i uključuju se različito za svaki upravljač.
+Unutar modula \emph{MsnrApiWeb.Plugs.Authorization}
 definisane su funkcije \texttt{professor{\textunderscore}only} i \texttt{allow{\textunderscore}students} koje imaju
 iste argumente kao i funkcija \texttt{call} (listing \ref{listing:authentication-plug}) u slučaju modula.
 Prilikom provere studentske uloge proverava se, ukoliko postoji, i \emph{student{\textunderscore}id} parametar iz putanje.
-Upotreba utkača se može ograničiti na određene akcije unutar upravljača, što se može videti na primetu \emph{AssignmentController} upravljača (listing \ref{listing:authorization-plug}).
+Upotreba utkača se može ograničiti na određene akcije unutar upravljača, što se može videti na primeru upravljača \emph{AssignmentController} (listing \ref{listing:authorization-plug}).
 \begin{listing}[h!]
   \begin{minted}[fontsize=\footnotesize]{elixir}
     defmodule MsnrApiWeb.AssignmentController do
@@ -2888,16 +2889,16 @@ Upotreba utkača se može ograničiti na određene akcije unutar upravljača, š
       plug :professor_only when action in [:create, :update, :delete, :show]
       ...
 \end{minted}
-\caption{Primer upotrebe utičaka za autorizaciju}
+\caption{Primer upotrebe utikača za autorizaciju}
 \label{listing:authorization-plug}
 \end{listing}
 \section{Ubacivanje i dodela aktivnosti}
 Osnovi tipovi aktivnosti (prijava grupe, predaja CV-a, rada i recenzije) biće inicijalno ubačene u
-bazu prilikom izvršavanja skripte \emph{seed.exs}. Sadržaj tipova aktivnosti je \texttt{:map} tipa, što odgovara
-\emph{JSON} objektu u bazi. Fleksibila struktura sadržaja je uvedena sa idejom da se kasnije mogu dodavati i drugačiji
-tipovi aktivnosti (npr. forme). Upravljanje tipovima aktivnosti vrši se preko \emph{ActivityTypeController} upravljča.
+bazu prilikom izvršavanja skripte \emph{seed.exs}. Sadržaj tipova aktivnosti je tipa \texttt{:map}, što odgovara
+\emph{JSON} objektu u bazi. Fleksibilna struktura sadržaja je uvedena sa idejom da se kasnije mogu dodavati i drugačiji
+tipovi aktivnosti (npr. forme). Upravljanje tipovima aktivnosti vrši se preko \emph{ActivityTypeController} upravljača.
 
-Rad sa aktivnostima vrši se unutar upravljča \emph{ActivityController} čije su akcije \texttt{index} i \texttt{create}
+Rad sa aktivnostima vrši se unutar upravljača \emph{ActivityController} čije su akcije \texttt{index} i \texttt{create}
 pod putanjom \emph{semesters}. Kreiranjem aktivnosti za trenutni semestar, ona se istovremeno dodeljuje studentima ili
 grupama u zavisnosti od tipa aktivnosti. Takođe, ukoliko postoji prijava za aktivnost dodela se vrši samo studentima koji su
 se prijavili. Neki tipovi aktivnosti, poput recenzija, zahtevaju dodatnu obradu, ali osnovni princip dodele je isti za sve i
@@ -2934,16 +2935,16 @@ studentima je moguće samo prikazivanje njihovih dodeljenih aktivnosti. Za izvr�
 
 Jedne od osnovih aktivnosti su prijavljivanje grupe i odabir teme. Prijavljivanje grupe nije grupna aktivnost, već se dodeljuje svakom
 studentu. Dodeljena aktivnost prijavljivanja grupe se izvršava pozivom akcije \texttt{create} upravljača \emph{GroupController}.
-Prilikom prijave, unutar transkacije, se kreira nova grupa i dodeljuje prijavljenim studentima, takođe se svim studentima
-obeležava da je aktivnost ispunjena. Odabir teme se takođe izvršava unutar \emph{GroupController} upravljača akciom
-\texttt{update}, unutar koje se grupi dodljuje  Upravljač \emph{TopicController} se koristi priliko dodavanja i izlistavanja tema.
+Prilikom prijave, unutar transakcije, se kreira nova grupa i dodeljuje prijavljenim studentima, takođe se svim studentima
+obeležava da je aktivnost ispunjena. Odabir teme se takođe izvršava unutar upravljača \emph{GroupController}, pozivanjem 
+akcije \texttt{update} grupi se dodeljuje izabrana tema. Upravljač \emph{TopicController} se koristi prilikom dodavanja i izlistavanja tema.
 
-Za prijave studenata za samu aktivnost ukoliko prijava postoji, korisiti se poseban upravljača --- \emph{SignupController}.
-On ima samo akciju \texttt{update} preko koje se samo ažurira kolona \emph{completed} u tabeli \emph{assignments}.
+Prijavljivanje studenata za aktivnosti koje zahtevaju prijavu, vrši se unutar posebnog upravljača --- \emph{SignupController}.
+On ima samo akciju \texttt{update} preko koje se ažurira kolona \emph{completed} u tabeli \emph{assignments}.
 Ukoliko je vrednost kolone \emph{true} smatra se da je student izvršio prijavu.
 
 Najveći broj aktivnosti odnosi se na prilaganje dokumenata. Rad sa dokumentima izvršava se unutar upravljača \emph{DocumentController},
-čije se akcije izlistavanja i kreiranje nalaze pod putanjom \emph{assignments}. Kao i u prethodnim slučajevima, prilikom prilaganja dokumenta,
+čije se akcije izlistavanja i kreiranja nalaze pod putanjom \emph{assignments}. Kao i u prethodnim slučajevima, prilikom prilaganja dokumenta,
 izvršava se dodeljena aktivnost. Priloženi dokumenati se čuvaju na serveru u folderu podešenom u konfiguraciji.
 Tip i broj dokumenata koji se prilaže određen je sadržajem tipa aktivnosti. \emph{JSON} objekat za prilaganje dokumenata prikazan je
 na primeru recenzije u lisingu \ref{listing:files-json}. 
@@ -2956,22 +2957,22 @@ na primeru recenzije u lisingu \ref{listing:files-json}.
       ]
     }
 \end{minted}
-\caption{Primer upotrebe utičaka za autorizaciju}
+\caption{Primer upotrebe utikača za autorizaciju}
 \label{listing:files-json}
 \end{listing}
 Unutar polja \texttt{files} nalazi se niz objekata koji opisuju dokumenta koja je potrebno predati.
 Dokumenta se predaju kroz \emph{multipart} sadržaj \emph{HTTP} zahteva i telo zahteva čine dva niza ---
-\texttt{documentsIds} koji sadži niz identifikatora dokumenata koji nastaju konkatenaciom polja
+\texttt{documentsIds} koji sadži niz identifikatora dokumenata koji nastaju konkatenacijom polja
 \texttt{name} i \texttt{extension}, i niza \texttt{documents} koji sadrži sama dokumenta.
-Prilikom obrade zahteva proverava se prosležena struktura sa odgovarajućim sadržajem tipa aktivnosti.
+Prilikom obrade zahteva proverava se prosleđena struktura sa odgovarajućim sadržajem tipa aktivnosti.
 Takođe, polje \texttt{name} učestvuje u organizaciji dokumenata na serveru, a priloženi dokumenti se
 imenuju na osnovu tipa aktivnosti i studenta ili grupe kojoj je aktivnost dodeljena.
-Izmena priloženih dokumenata se vrši se preko \texttt{update} akcije upravljača \emph{DocumentController},
-mogu se menjati samo pojedinačno i čuva se samo poslednja verzija.
+Izmena priloženih dokumenata se vrši preko akcije \texttt{update} upravljača \emph{DocumentController},
+Nije moguće promeniti više dokumenata istovremeno i čuva se samo poslednja verzija promenjenog dokumenta.
 
-Profesor ocenjivanje aktivnosti pozivanjem \texttt{update} akcije upravljača \emph{AssignmentController},
+Profesor ocenjuje aktivnosti pozivanjem akcije \texttt{update} upravljača \emph{AssignmentController},
 unoseći odgovarajući komentar i broj poena. Takođe, preko upravljača \emph{DocumentController} profesor može
-priložiti dokument, ukolko je to potrebno.  
+priložiti dokument, ukoliko je to potrebno.  
 
 \chapter{Implementacija klijentskog dela portala}
 Za razliku od \emph{Phoenix} projekata, inicijalizaciom \emph{Elm} projekta kreira
@@ -2985,23 +2986,23 @@ portala MSNR prikazano je na slici \ref{fig:msnr-elm-src}.
   \label{fig:msnr-elm-src}
 \end{figure}
 
-Aplikacija je podeljena na različite stranice koje se prikazuju u zavisnosti od trenutne \emph{Url} putanje. 
-U korenu projekta nalazi se osnovna \emph{Main.elm} datotka u kojoj se nalazi funkcija \texttt{main} sa definiciom \emph{Elm} aplikacije.
+Aplikacija je podeljena na različite stranice koje se prikazuju u zavisnosti od trenutne \emph{url} putanje. 
+U korenu projekta nalazi se osnovna \emph{Main.elm} datotka u kojoj se nalazi funkcija \texttt{main} sa definicijom \emph{Elm} aplikacije.
 Zajedno sa njom su i datoteke koje sadrže definicije osnovnih stranica, entiteta, putanja i modula za komunikaciju sa serverom, a
 u posebnim direktorijuma odvojene su datoteke za prikazivanje studentskih i profesorskih stranica. U nastavku rada, zajedno sa načinom
 rada \emph{Elm} aplikacije, biće prikazana uloga navedenih modula.
 
 \section{Elm aplikacija}
-U uvodnom delu rada, na primeru brojača, prikazan je najjednostavniji primer \emph{Elm} programa kreiran funkciom \texttt{sandbox}.
+U uvodnom delu rada, na primeru brojača, prikazan je najjednostavniji primer \emph{Elm} programa kreiran funkcijom \texttt{sandbox}.
 Pored nje, u modulu \texttt{Browser} se nalaze funkcije \texttt{element}, \texttt{document} i \texttt{application}
-kojom je implementiran korisnički interfejs portala MSNR.
+kojima je implementiran korisnički interfejs portala MSNR.
 
-Prethodno navedene četiri funkcije poređane su po kompeksnosti i svaka naredna pruža dodatne mogućnosti.
-Funkciom \texttt{element} se uvodi mogućnost komunikacije sa "spoljašnjim svetom" pomoću koncepta komande, supskripcije, portova
-i oznaka (\emph{flags}). Pruža kontolu nad jednim \emph{HTML} elementom i ova funkcija je veoma bitna za \emph{Elm} adaptaciju,
+Prethodno navedene četiri funkcije poređane su po kompleksnosti i svaka naredna pruža dodatne mogućnosti.
+Funkcijom \texttt{element} se uvodi mogućnost komunikacije sa "spoljašnjim svetom" pomoću koncepta komande, supskripcije, portova
+i oznaka (\emph{flags}). Pruža kontrolu nad jednim \emph{HTML} elementom i ova funkcija je veoma bitna za \emph{Elm} adaptaciju,
 jer omogućava laku integraciju u postojeći \emph{JavaScript} projekat. 
 Funkcija \texttt{document} proširuje funkciju \texttt{element} time što upravlja celim dokumentom i pruža kontrolu nad \emph{HTML} elementima \texttt{<title>}
-i \texttt{<body>}. Na kraju, funkcija \texttt{application} kreira aplikaciju koja upravalja \emph{Url} promenama, u listingu
+i \texttt{<body>}. Na kraju, funkcija \texttt{application} kreira aplikaciju koja upravlja \emph{url} promenama, u listingu
 \ref{listing:elm-application} prikazana je njena anotacija. 
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3021,8 +3022,8 @@ i \texttt{<body>}. Na kraju, funkcija \texttt{application} kreira aplikaciju koj
 
 Oznakama (\emph{flags}) je moguće prosleđivanje podataka \emph{Elm} programu iz \emph{JavaScript} koda.
 Komande (\texttt{Cmd}) služe za izvršavanje akcija izvan okruženja \emph{Elm} (npr. \emph{HTTP} zahtevi), a supskripcijama
-(\texttt{Sub})je moguće pretplatiti se na određeni događaj. Polja \texttt{onUrlRequest} i \texttt{onUrlChange}, kao i
-\texttt{Url} parametar \texttt{init} funkcije, koriste se za rad sa putanjam prilikom implementacije jednostranične aplikacije.
+(\texttt{Sub}) je moguće pretplatiti se na određeni događaj. Polja \texttt{onUrlRequest} i \texttt{onUrlChange}, kao i
+parametar \texttt{Url} funkcije \texttt{init}, koriste se za rad sa putanjama prilikom implementacije jednostranične aplikacije.
 Navedeni koncepti i njihova upotreba unutar portala MSNR biće detaljnije objašnjeni dalje u radu.
 
 \subsection{Inicijalizacija aplikacije}
@@ -3051,7 +3052,7 @@ a definisan je u \emph{Main.elm} datoteci.
 
 Aplikacija je kompajlirana tako da se kreira \emph{app.js} fajl koji se uključuje u \emph{index.html} dokument,
 čiji je osnovna struktura prikazana u listingu \ref{listing:elm-index-html}. Pokreće se pozivanjem \texttt{init}
-funkcije iz \texttt{Main} modula i tom prilikom se vrši prosleđivanje putanje ka veb interfjesu, tj. serverskom delu portala,
+funkcije iz modula \texttt{Main} i tom prilikom se vrši prosleđivanje putanje ka veb interfjesu, tj. serverskom delu portala,
 preko oznaka.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{html}
@@ -3083,12 +3084,12 @@ mogu imati različite rezultate ukoliko se izvrše više puta. Kao takve, ne mog
 funkcijama već se za to koriste komande.
 
 Komanda predstavlja vrednost koja opisuje operaciju koju okruženje \emph{Elm} treba da izvrši.
-Rezultat izvršene operacije se preko poruke prosleđuje \texttt{update} funkciji. Tako da se svako
+Rezultat izvršene operacije se preko poruke prosleđuje funkciji \texttt{update}. Tako da se svako
 izvršavanje komandi posmatra kao ulazni podataka aplikacije čime se garantuje da sve funkcije budu
 čiste, iako se izvršavaju operacije koje to nisu.
 
-Definicija komande --- \texttt{type \textbf{Cmd} msg} nalazi se unutar \emph{Platform.Cmd} modula
-u osnovnom \emph{elm/core} paketu, gde \texttt{msg} predstavlja tip poruke koja se vraća aplikaciji.
+Definicija komande --- \texttt{type \textbf{Cmd} msg} nalazi se unutar modula \emph{Platform.Cmd} 
+u osnovnom paketu \emph{elm/core}, gde \texttt{msg} predstavlja tip poruke koja se vraća aplikaciji.
 Funkcija \texttt{Cmd.none} se koristi kada nema komandi za izvršavanje, a ukoliko je potrebno izvršiti
 više operacija koristi se \texttt{Cmd.batch}.
 
@@ -3103,7 +3104,7 @@ Ilustracija funkcije \texttt{update} sa komandama unutar arhitekture \emph{Elm} 
 \end{figure}
 
 \subsection{Komunikacija sa serverom}
-Kreiranje komandi za slanje \emph{HTTP} zahteva izvršava se pomoću \emph{elm/http} paketa.
+Kreiranje komandi za slanje \emph{HTTP} zahteva izvršava se pomoću paketa \emph{elm/http}.
 Osnovna funkcija unutar paketa je \texttt{request}, čija je anotacija prikazana u listingu \ref{listing:elm-request}.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3128,7 +3129,7 @@ svojstva \emph{HTTP} zahteva. Poljem \texttt{expect} se označava koji tip podat
 nije korišćeno u aplikaciji. Pored funkcije \texttt{request} i funkcija \texttt{riskyRequest} koja ima istu anotaciju, s tim što omogućava
 postavljanje kolačića od strane servera (uključuje opiciju \texttt{withCredentials}).
 
-Za komuniciranje sa MSNR veb interfejsom kreiran je modul \emph{Api} koji oktriva funkcije \texttt{get}, \texttt{post},
+Za komuniciranje sa MSNR veb interfejsom kreiran je modul \emph{Api} koji otkriva funkcije \texttt{get}, \texttt{post},
 \texttt{put} i \texttt{delete} koje se oslanjaju na \texttt{request}, kao i funkcije koje se oslanjaju na
 \texttt{riskyRequest} --- \texttt{getWithCredentials} i \texttt{postWithCredentials}. Takođe, unutar modula
 su navedene sve putanje veb interfejsa koje se korste u aplikaciji.
@@ -3147,12 +3148,12 @@ Anotacija funkcije \texttt{get} prikazana je u listingu \ref{listing:elm-api-get
   \label{listing:elm-api-get}
   \end{listing}
 Prilikom slanja zahteva MSNR veb interfejsu potrebno je proslediti token za autorizaciju,
-osnovu adresu i krajnju tačku (nastavak putanje) kojom se određuje resurs kom se pristupa.
+osnovnu adresu i krajnju tačku (nastavak putanje) kojom se određuje resurs kom se pristupa.
 U slučaju \texttt{post} i \texttt{put}, dodaje se i telo zahteva pored prikazanih parametara.
 
 Funkcije \texttt{getWithCredentials} i \texttt{postWithCredentials} koriste se za obnavljanje tokena,
-prijavljivanje i odjavljivanje korisnika i njihova upotreba izdvojena je u poseban \emph{Session} modul.
-Deo modula \emph{Session} sa definiciom poruka i funkcije za obnavljanje tokena
+prijavljivanje i odjavljivanje korisnika i njihova upotreba izdvojena je u poseban modul \emph{Session}.
+Deo modula \emph{Session} sa definicijom poruka i funkcije za obnavljanje tokena
 prikazan je u listingu \ref{listing:elm-session}.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3206,14 +3207,14 @@ definisanu u dekoderu dobija se grešku \texttt{BadBody}.
 
 \subsection{Supskripcije}
 Nakon inicijalizacije, obnavljanje tokena se izvršava svaki put kada istekne period važenja tokena za pristup.
-Budući da se tada komande mogu izvršavati samo unutar funkcije \texttt{update}, potrebno je nekako prolsediti poruku
+Budući da se tada komande mogu izvršavati samo unutar funkcije \texttt{update}, potrebno je nekako proslediti poruku
 kojom će se komanda obnavljanja izazvati. To upravo omogućavaju supskripcije.
 
 Supskripcije predstavljaju način da se određeni događaji izvan \emph{Elm} programa prevedu u
-poruku koja će biti prosleđena \texttt{update} funkciji. Kao i komande, definisane su unutar \emph{elm/core}
-paketa i mogu se koristiti \texttt{Sub.none} i \texttt{Sub.batch} funkcije.
-U listing \ref{listing:elm-subscriptions} prikazana je supskripcija za obnavljanje
-token. Funkciom \texttt{Time.every} se periodično, na određeni broj milisekundi uzima trenutno vreme i prisledjuje se
+poruku koja će biti prosleđena funkciji \texttt{update}. Kao i komande, definisane su unutar paketa \emph{elm/core}
+i mogu se koristiti funkcije \texttt{Sub.none} i \texttt{Sub.batch}.
+U listingu \ref{listing:elm-subscriptions} prikazana je supskripcija za obnavljanje
+token. Funkcijom \texttt{Time.every} se periodično, na određeni broj milisekundi uzima trenutno vreme i prosleđuje se
 aplikaciji preko poruke. 
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3256,8 +3257,8 @@ Prilikom inicijlizacije aplikacije, upotrebom funkcije \texttt{Route.fromUrl} vr
 predstavljaju se putanjom \texttt{NotFound}. U slučaju putanje \texttt{SetPassword} očekuje se univerzalni
 identifikator za postavljanje lozinke kao deo putanje.
 
-Modulu \emph{Route} sadrži funkciju \texttt{guard} za sprečavanje
-neautorizovanog pristup određenim stranicama i funkciju \texttt{redirectTo} za kreiranje
+Modul \emph{Route} sadrži funkciju \texttt{guard} za sprečavanje
+neautorizovanog pristupa određenim stranicama i funkciju \texttt{redirectTo} za kreiranje
 komande promene putanje. Funkcija \texttt{redirectTo} poziva funkciju \texttt{pushUrl} iz modula
 \emph{Browser.Navigation} koja koristi navigacioni ključ. Nakon izvršavanja komande,
 nova putanja se prosleđuje funkciji \texttt{update} kroz poruku navedenu kao \texttt{onUrlChange} prilikom
@@ -3280,7 +3281,7 @@ listingu \ref{listing:elm-pages} nalazi se u modulu \emph{Page}, a definicija pr
     | StudentPage
     | NotFoundPage
 \end{minted}
-\caption{Stanice aplikacije}
+\caption{Stranice aplikacije}
 \label{listing:elm-pages}
 \end{listing}
 Stanje, odnosno model, studentskih i profesorskih stranica čuva se u glavnom modelu pod poljem \texttt{mainContent}.
@@ -3288,9 +3289,9 @@ Stranice koje se koriste za prijavljivanje i registrovanje korisnika uključuju 
 i unutar glavnog modela se nalaze pod poljem \texttt{currentPage}. Unutar modula \emph{Page}
 nalazi se funkcija \texttt{forRoute} kojim se na osnovu date putanje kreira odgovarajuća stranica.
 
-Svaki stranica koja ima svoj modul ima i definisan svoj model, poruke, kao i funkcije \texttt{update} i \texttt{view} koje
+Svaka stranica koja ima svoj modul ima i definisan svoj model, poruke, kao i funkcije \texttt{update} i \texttt{view} koje
 se pozivaju iz glavnog modula aplikacije. Poruke svih stranica, zajedno sa ostalim porukama aplikacije, objedinjuju
-se unutar \emph{Main} modula u glavni tip poruke (listing \ref{listing:elm-msgs}).
+se unutar modula \emph{Main} u glavni tip poruke (listing \ref{listing:elm-msgs}).
 \begin{listing}[h]
   \begin{minted}[fontsize=\footnotesize]{haskell}
     type Msg
@@ -3309,10 +3310,10 @@ se unutar \emph{Main} modula u glavni tip poruke (listing \ref{listing:elm-msgs}
   \caption{Objedinjene poruke aplikacije}
   \label{listing:elm-msgs}
   \end{listing}
-Unutar \texttt{update} funkcjie glavnog modula se na osnovu poruke poziva \texttt{update} funkcija 
+Unutar funkcjie \texttt{update} glavnog modula se na osnovu poruke poziva funkcija \texttt{update}
 odgovarajuće stranice. Trenutni model se ažurira novim modelom date stranice, a poruku rezultujuće komande je potrebno
 transformisati u odgovarajući glavni tip poruke. Primer ažuriranja studentske stranice dat je u listingu \ref{listing:elm-update}.
-Analogno ažuriranju, unutar glavne \texttt{view} funkcije se na osnovu trenutne stranice poziva \texttt{view} funkcija odgovarajućeg modula.  
+Analogno ažuriranju, unutar glavne funkcije \texttt{view} se na osnovu trenutne stranice poziva funkcija \texttt{view} odgovarajućeg modula.  
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
   update msg model =
@@ -3335,11 +3336,11 @@ Analogno ažuriranju, unutar glavne \texttt{view} funkcije se na osnovu trenutne
 
 \section{Stilizovanje aplikacije}
 Elm kao jezik specijalne namene sadrži sve što je potrebno za razvoj korisničkog interfejsa veb aplikacija,
-ipak zgodno je iskoristiti gotove stilizovane komponent (npr. modale, tabove i slično) kako ne bismo
+ipak zgodno je iskoristiti gotove stilizovane komponente (npr. modale, tabove i slično) kako ne bismo
 implementirali sve od početka.
 
 Za potrebe implementacije portala MSNR korišćen je paket \emph{NoRedInk/noredink-ui},
-koji se oslanja na dosta drugih paketa među kojima je bitno izdoviti paket 
+koji se oslanja na dosta drugih paketa među kojima je bitno izdvojiti paket 
 \emph{tesk9/accessible-html-with-css}.
 
 Ovaj paket predstavlja proširenje paketa \emph{rtfeldman/elm-css} koji se takođe koristi u projektu
@@ -3374,7 +3375,7 @@ view model =
 
 Modul \emph{Accessibility.Styled} iz paketa \emph{tesk9/accessible-html-with-css} pored stilizovanja pruža i podršku za pristupačnost
 (eng. \emph{accessibility --- a11y}). Funkcija \texttt{toUnstyled} omogućava korišćenje \emph{Accessibility.Styled.Html} unutar \emph{Elm} aplikacije,
-primer njene upotrebe unutar \emph{Main} modual prikazana je u listingu \ref{listing:elm-toUnstyled}.
+primer njene upotrebe unutar modula \emph{Main} prikazana je u listingu \ref{listing:elm-toUnstyled}.
 
 \section{Struktura profesorske stranice}
 Profesorske stranice nalaze se pod folderom \emph{ProgessorPage} (slika \ref{fig:prof-dir}),
@@ -3395,8 +3396,8 @@ svaka stranica predstavljena je zasebnim modulom i to su:
 \end{figure}
 
 Prikazivanje odgovarajućih stranica u odnosu na trenutnu putanju obrađuje se unutar modula
-\emph{ProgessorPage}, slično obradi svih stanica unutar modula \emph{Main}. 
-Svaka stanica ima svoj model, kao i funkcije \texttt{view} i \texttt{update}.
+\emph{ProgessorPage}, slično obradi svih stranica unutar modula \emph{Main}. 
+Svaka stranica ima svoj model, kao i funkcije \texttt{view} i \texttt{update}.
 Model definisan u modulu \emph{ProgessorPage} sadrži sve modele stranica
 kao i zajedničke podatke o studentima, grupama i aktivnostima. 
 \begin{listing}[h]
@@ -3433,7 +3434,7 @@ Prilikom prikazivanja profesorskih stranica u modula \emph{ProgessorPage}
 poziva se funkcija \texttt{view} odgovarajuće stranice kojoj se prosleđuje adekvatan
 model, zajedno sa drugim potrebnim podacima.
 
-Kretanjem kroz stranice vrši se pomoću navigacione trake čiji prikaz se može videti na
+Kretanje kroz stranice vrši se pomoću navigacione trake čiji prikaz se može videti na
 slici \ref{fig:professor-page} zajedno sa izgledom stranice za ocenjivanje aktivnosti.
 \begin{figure}[!ht]
   \centering
@@ -3446,7 +3447,7 @@ Za razliku od profesorskog dela aplikacije koji je podeljen na više stranica,
 studentski deo se sastoji iz samo jedne stranice u kojoj su prikazane sve dodeljene
 aktivnosti studenta. 
 
-Svaka dodeljena aktivnosti ima naziv i opis aktivnosti, rok za izvršenje
+Svaka dodeljena aktivnost ima naziv i opis aktivnosti, rok za izvršenje
 i broj poena koji nosi. Način prikazivanja pojedinačnih aktivnosti razlikuje se po
 jedinstvenom kodu i sadržaju tipa aktivnosti, kao i po tome da li je u pitanju prijava
 za aktivnost. Tako da se prikazivanje same aktivnosti može podeliti u dva dela,
@@ -3463,9 +3464,9 @@ struktura prikazana na slici \ref{fig:student-dir}.
   \label{fig:student-dir}
 \end{figure}
 
-Modeli studentske stanice i sadržaja aktivnosti izdvojeni su u posebne module --- \emph{StudentPage.Model} i
+Modeli studentske stranice i sadržaja aktivnosti izdvojeni su u posebne module --- \emph{StudentPage.Model} i
 \emph{AssignmentContent.Model} da bi se izbegla ciklična zavisnost, jer se osnovni model koristi unutar
-\emph{AssignmentContent} modula. U listingu \ref{listing:student-model} predstavljen je osnovi model studentske stranice u kom se
+modula \emph{AssignmentContent}. U listingu \ref{listing:student-model} predstavljen je osnovi model studentske stranice u kom se
 nalaze svi podaci potrebni za njen prikaz.
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3538,9 +3539,9 @@ tako da se inicijalno prikazuju samo zaglavlja aktivnosti sa osnovnim informacij
   \caption{Izgled studentske stranice}
   \label{fig:student-page}
 \end{figure}
-Klikom na zaglavlje prikazuje se i sam sadžaj aktivnosti. Izgled studentske stanice prikazan je na slici \ref{fig:student-page}.
+Klikom na zaglavlje prikazuje se i sam sadžaj aktivnosti. Izgled studentske stranice prikazan je na slici \ref{fig:student-page}.
 Prikazivanje zaglavlja aktivnosti definiše se unutar modula \emph{StudentPage}, a za prikazivanje sadržaja, analogno ažuriranju,
-poziva se \emph{view} funkcija iz modula \emph{AssignmentContent}.
+poziva se funkcija \emph{view} iz modula \emph{AssignmentContent}.
 
 % ------------------------------------------------------------------------------
 \chapter{Zaključak}
@@ -3561,7 +3562,7 @@ kroz nekoliko iteracija i značajnih izmena tokom kojih se sam autor uverio u la
 refaktorisanja i sigurnost koju \emph{Elm} zajedno sa kompilatorom pruža programerima.
 
 Pre upotrebe portala trebalo bi ubaciti podršku za telemetriju na serverskoj strani
-u cilju nadgledanje rada aplikacije. 
+u cilju nadgledanja rada aplikacije. 
 Sadržaj tipa aktivnosti trenutno podržava samo rad sa dokumentima, dodavanjem podrške za
 kreiranje prilagođenih formi zaokružile bi se sve aktivnosti unutar portala i pružila
 mogućnost sprovođenja anketi i sličnih aktivnosti.
