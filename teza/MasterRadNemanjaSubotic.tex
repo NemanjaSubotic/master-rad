@@ -132,7 +132,7 @@ najstabilnija i najpouzdanija razvojna okruženja, a za \emph{Elm} aplikacije va
 da, u praksi, ne izbacuju neplanirane greške tokom izvršavanja (eng. \emph{No 
 Runtime Exceptions}).
 
-\section{Uputstvo za instlaciju}
+\section{Uputstvo za instalaciju}
 Pored želje da frontend programiranje učini prijatnijim, kreator jezika nastoji 
 da ono bude i pristupačnije. Stoga, da bi se počelo sa korišćenjem progamskog jezika \emph{Elm} instalacija,
 nije potrebna, dovoljno je otići na zvaničnu veb stranicu i pokrenuti dostupan 
@@ -171,13 +171,13 @@ brzo renderovanje \emph{HTML}-a, jer se poređenja u virtuelnom \emph{DOM}-u mog
 Verzija \emph{Elm 0.17} imala je najbrže renderovanje u poređenju sa tadašnjim aktuelnim verzijama 
 popularnih okruženja\cite{elm-html}.
 
-Elm se može integrisati i u postojeće \emph{JavaScript} projekte za implementaciju pojedinačnih 
+\emph{Elm} se može integrisati i u postojeće \emph{JavaScript} projekte za implementaciju pojedinačnih 
 komponenti. Takođe, moguća je i komunikacija između ova dva programska jezika. 
 
 \section{Elm kao platforma}
 \emph{Elm} sa sobom donosi niz alata (tabela \ref{table:elmTools}) i okruženje \emph{Elm} (eng. \emph{Elm 
 Runtime}), koji su neophodni za razvoj i izvršavanje aplikacija. \emph{Elm} k\^{o}d se nalazi u 
-datotekama sa \emph{.elm} ekstenziom i prilikom kompilacije kreira se jedna izlazna 
+datotekama sa \emph{.elm} ekstenzijom i prilikom kompilacije kreira se jedna izlazna 
 \emph{.js} datoteka. U izlaznoj datoteci se pored prevedenog koda iz ulaznih \emph{.elm} 
 datoteka nalaze i funkcije iz okruženja \emph{Elm} potrebne za izvršavanje programa.
 
@@ -451,7 +451,7 @@ naKvadrat x =
 \end{listing}
 
 Da bi se modul iz listinga \ref{listing:modul} koristio u interpreteru (\texttt{\textbf{elm repl}}),
-prvo je potrebno inicijalizovati elm projekat (\texttt{\textbf{elm init}}) i u \texttt{src} folderu napraviti 
+prvo je potrebno inicijalizovati \emph{Elm} projekat (\texttt{\textbf{elm init}}) i u \texttt{src} folderu napraviti 
 \emph{Krug.elm} datoteku sa prikazanim sadržajem. Zatim, u interpreteru naredbom 
 \texttt{\textbf{import}} treba uvesti modul. Načini korišćenja funkcija iz modula
 \emph{Krug} prikazani su u listingu \ref{listing:import}.
@@ -644,7 +644,7 @@ Tipske promenljive u programskom jeziku \emph{Elm} ukazuju na prisustvo \textbf{
 jedine vrste polimorfizma u ovom jeziku.
 
 \subsubsection{Uslovne tipske promenljive}
-Za razliku od programskog jezika \emph{Haskell}, Elm nema toliko složen sistem tipova i umesto tipskih 
+Za razliku od programskog jezika \emph{Haskell}, \emph{Elm} nema toliko složen sistem tipova i umesto tipskih 
 klasa (eng. \emph{typeclasses})\cite{typeclasses} poseduje jednostavniji koncept
 ---\emph{uslovne tipske promenljive}. 
 
@@ -1004,7 +1004,7 @@ je u listingu \ref{listing:elmProgram}.
       , button [ onClick Increment ] [ text "+" ]
       ]
 \end{minted}
-\caption{Primer Elm programa}
+\caption{Primer \emph{Elm} programa}
 \label{listing:elmProgram}
 \end{listing}
 
@@ -2270,7 +2270,7 @@ zajedničkom svrhom. Folder \emph{lib} sadrži dva konteksta, odnosno modula: \e
 poslovnu logiku i modul \emph{MsnrApiWeb} koji definiše veb interfejs. Podmoduli se definišu u folderima \emph{msnr{\textunderscore}api}
 i \emph{msnr{\textunderscore}api{\textunderscore}web}. 
 Kontekst \emph{MsnrApi} se odnosi na \emph{Model} u smislu arhitekture \emph{MVC --- Model-View-Controller} i u njemu će se definisati svi entiteta i
-funkcije za rad sa njima. Inicjalno su kreirani:
+funkcije za rad sa njima. Inicijalno su kreirani:
 \begin{itemize}
   \item \emph{MsnrApi.Application} --- modul zadužen za pokretanje aplikacije,
   \item \emph{MsnrApi.Repo} --- modul zadužen za komunikaciju sa bazom,
@@ -2975,7 +2975,7 @@ unoseći odgovarajući komentar i broj poena. Takođe, preko upravljača \emph{D
 priložiti dokument, ukoliko je to potrebno.  
 
 \chapter{Implementacija klijentskog dela portala}
-Za razliku od \emph{Phoenix} projekata, inicijalizaciom \emph{Elm} projekta kreira
+Za razliku od \emph{Phoenix} projekata, inicijalizacijom \emph{Elm} projekta kreira
 se samo prazan \emph{src} direktorijum i datoteka \emph{elm.json}, tako da se kreiranje i
 organizacija datoteka u potpunosti prepušta korisniku. Rešenje organizacije \emph{Elm} datoteka u slučaju
 portala MSNR prikazano je na slici \ref{fig:msnr-elm-src}.
@@ -2987,9 +2987,9 @@ portala MSNR prikazano je na slici \ref{fig:msnr-elm-src}.
 \end{figure}
 
 Aplikacija je podeljena na različite stranice koje se prikazuju u zavisnosti od trenutne \emph{url} putanje. 
-U korenu projekta nalazi se osnovna \emph{Main.elm} datotka u kojoj se nalazi funkcija \texttt{main} sa definicijom \emph{Elm} aplikacije.
+U korenu projekta nalazi se osnovna \emph{Main.elm} datoteka u kojoj se nalazi funkcija \texttt{main} sa definicijom \emph{Elm} aplikacije.
 Zajedno sa njom su i datoteke koje sadrže definicije osnovnih stranica, entiteta, putanja i modula za komunikaciju sa serverom, a
-u posebnim direktorijuma odvojene su datoteke za prikazivanje studentskih i profesorskih stranica. U nastavku rada, zajedno sa načinom
+u posebnim direktorijumima odvojene su datoteke za prikazivanje studentskih i profesorskih stranica. U nastavku rada, zajedno sa načinom
 rada \emph{Elm} aplikacije, biće prikazana uloga navedenih modula.
 
 \section{Elm aplikacija}
@@ -3028,9 +3028,9 @@ Navedeni koncepti i njihova upotreba unutar portala MSNR biće detaljnije objaš
 
 \subsection{Inicijalizacija aplikacije}
 Tip funkcije \texttt{init} prikazan je u listingu \ref{listing:elm-application} i kao argumente prihvata oznake, trenutnu putanju i ključ navigacije,
-a povratna vrednost je torka modela i komande. Ključ navigacije generiše se prilikom inicjalizacije, obavezan je parametar prilikom menjanja
+a povratna vrednost je torka modela i komande. Ključ navigacije generiše se prilikom inicijalizacije, obavezan je parametar prilikom menjanja
 putanja unutar aplikacije i kao takav se mora čuvati u modelu. Pored ključa navigacije, u modelu se čuvaju informacije o trenutnom korisniku,
-putanji i stranici koja se prikazuje. Takođe, model sadrži podatke o aktivnostima čiji sadržaj zavisi od trnutnog korisnika, \emph{Url} veb interfejsa,
+putanji i stranici koja se prikazuje. Takođe, model sadrži podatke o aktivnostima čiji sadržaj zavisi od trenutnog korisnika, \emph{Url} veb interfejsa,
 dužinu trajanja tokena za pristup i oznaku da li je u toku inicijalno učitavanje aplikacije. Model aplikacije može se videti u listingu \ref{listing:elm-model},
 a definisan je u \emph{Main.elm} datoteci.
 \begin{listing}[h]
@@ -3051,7 +3051,7 @@ a definisan je u \emph{Main.elm} datoteci.
 \end{listing}
 
 Aplikacija je kompajlirana tako da se kreira \emph{app.js} fajl koji se uključuje u \emph{index.html} dokument,
-čiji je osnovna struktura prikazana u listingu \ref{listing:elm-index-html}. Pokreće se pozivanjem \texttt{init}
+čija je osnovna struktura prikazana u listingu \ref{listing:elm-index-html}. Pokreće se pozivanjem \texttt{init}
 funkcije iz modula \texttt{Main} i tom prilikom se vrši prosleđivanje putanje ka veb interfjesu, tj. serverskom delu portala,
 preko oznaka.
 \begin{listing}[h]
@@ -3079,13 +3079,13 @@ Prilikom inicijalizacije, trenutna stranica i putanja se određuju na osnovu \em
 slanjem \emph{HTTP} zahteva za obnovu tokena. Korisnik je podrazumevano neautentifikovan dok se ne dobije
 odgovor servera. 
 \subsection{Komande}
-Slanje \emph{HTTP} zahetva, generisanje slučajnih brojeva, određivanje trenutnog vremena i slične operacije
+Slanje \emph{HTTP} zahteva, generisanje slučajnih brojeva, određivanje trenutnog vremena i slične operacije
 mogu imati različite rezultate ukoliko se izvrše više puta. Kao takve, ne mogu se predstaviti \emph{Elm}
 funkcijama već se za to koriste komande.
 
 Komanda predstavlja vrednost koja opisuje operaciju koju okruženje \emph{Elm} treba da izvrši.
 Rezultat izvršene operacije se preko poruke prosleđuje funkciji \texttt{update}. Tako da se svako
-izvršavanje komandi posmatra kao ulazni podataka aplikacije čime se garantuje da sve funkcije budu
+izvršavanje komandi posmatra kao ulazni podatak aplikacije čime se garantuje da sve funkcije budu
 čiste, iako se izvršavaju operacije koje to nisu.
 
 Definicija komande --- \texttt{type \textbf{Cmd} msg} nalazi se unutar modula \emph{Platform.Cmd} 
@@ -3094,7 +3094,7 @@ Funkcija \texttt{Cmd.none} se koristi kada nema komandi za izvršavanje, a ukoli
 više operacija koristi se \texttt{Cmd.batch}.
 
 Inicijalna komanda se izvršava samo prilikom pokretanja aplikacije, centralno mesto izvršavanja komandi
-predstavlja funkcija \texttt{update}, čiji je povratni tip, kao i kod \texttt{init} fukncije, proširen sa \texttt{\textbf{Cmd} msg}.
+predstavlja funkcija \texttt{update}, čiji je povratni tip, kao i kod \texttt{init} funkcije, proširen sa \texttt{\textbf{Cmd} msg}.
 Ilustracija funkcije \texttt{update} sa komandama unutar arhitekture \emph{Elm} prikazan je na slici \ref{fig:elm-command}.
 \begin{figure}[!h]
   \centering
@@ -3127,7 +3127,7 @@ Polja \texttt{method}, \texttt{headers}, \texttt{url}, \texttt{body} i \texttt{t
 svojstva \emph{HTTP} zahteva. Poljem \texttt{expect} se označava koji tip podataka se očekuje kao odgovor i kojom porukom
 će se ažurirati aplikacija. Polje \texttt{tracker} služi za praćenje progresa zahteva, ali kao ni \texttt{timeout},
 nije korišćeno u aplikaciji. Pored funkcije \texttt{request} i funkcija \texttt{riskyRequest} koja ima istu anotaciju, s tim što omogućava
-postavljanje kolačića od strane servera (uključuje opiciju \texttt{withCredentials}).
+postavljanje kolačića od strane servera (uključuje opciju \texttt{withCredentials} \cite{withCredentials}).
 
 Za komuniciranje sa MSNR veb interfejsom kreiran je modul \emph{Api} koji otkriva funkcije \texttt{get}, \texttt{post},
 \texttt{put} i \texttt{delete} koje se oslanjaju na \texttt{request}, kao i funkcije koje se oslanjaju na
@@ -3203,7 +3203,7 @@ Funkcija \texttt{decodeSession} iz prethodnog primera sa upotrebom funkcija za d
 \end{listing}
 Unutar dekodera mogu se pozivati i drugi dekoderi što se može videti na primeru \texttt{decodeUser} i \texttt{decodeStudentInfo}.
 Ovakva obrada \emph{JSON} podataka pruža validaciju podataka pre nego što oni dođu do aplikacije. Ukoliko podaci nemaju očekivanu strukturu
-definisanu u dekoderu dobija se grešku \texttt{BadBody}.
+definisanu u dekoderu dobija se greška \texttt{BadBody}.
 
 \subsection{Supskripcije}
 Nakon inicijalizacije, obnavljanje tokena se izvršava svaki put kada istekne period važenja tokena za pristup.
@@ -3214,7 +3214,7 @@ Supskripcije predstavljaju način da se određeni događaji izvan \emph{Elm} pro
 poruku koja će biti prosleđena funkciji \texttt{update}. Kao i komande, definisane su unutar paketa \emph{elm/core}
 i mogu se koristiti funkcije \texttt{Sub.none} i \texttt{Sub.batch}.
 U listingu \ref{listing:elm-subscriptions} prikazana je supskripcija za obnavljanje
-token. Funkcijom \texttt{Time.every} se periodično, na određeni broj milisekundi uzima trenutno vreme i prosleđuje se
+tokena. Funkcijom \texttt{Time.every} se periodično, na određeni broj milisekundi uzima trenutno vreme i prosleđuje se
 aplikaciji preko poruke. 
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3231,11 +3231,11 @@ subscriptions { currentUser, accessTokenExpiresIn } =
     in
     Sub.batch [ refreshTick ]
 \end{minted}
-\caption{Supskripcija za obnavljnje tokena}
+\caption{Supskripcija za obnavljanje tokena}
 \label{listing:elm-subscriptions}
 \end{listing}
 
-\section{Moduli stranica i putanja aplikaicje}
+\section{Moduli stranica i putanja aplikacije}
 Definicija svih putanja aplikacije nalazi se u modulu \emph{Route} i prikazane su u listingu \ref{listing:elm-routes}.
 Profesorskih putanja ima više i definisane su posebnim tipom, takođe unutar istog modula.
 \begin{listing}[h]
@@ -3252,7 +3252,7 @@ Profesorskih putanja ima više i definisane su posebnim tipom, takođe unutar is
 \caption{Putanje aplikacije}
 \label{listing:elm-routes}
 \end{listing}
-Prilikom inicijlizacije aplikacije, upotrebom funkcije \texttt{Route.fromUrl} vrši se parsiranje trenutne
+Prilikom inicijalizacije aplikacije, upotrebom funkcije \texttt{Route.fromUrl} vrši se parsiranje trenutne
 \emph{url} putanje iz pregledača i mapira se na jednu od definisanih putanja. Sve nevalidne putanje 
 predstavljaju se putanjom \texttt{NotFound}. U slučaju putanje \texttt{SetPassword} očekuje se univerzalni
 identifikator za postavljanje lozinke kao deo putanje.
@@ -3267,7 +3267,7 @@ vezu unutar aplikacije.
 
 Osnovna podela aplikacije jeste na stranice koje se koriste za prijavljivanje i registraciju korisnika
 (moduli \emph{LoginPage}, \emph{RegistrationPage} i \emph{SetPasswordPage}), studentsku stranicu (modul \emph{StudentPage})
-i profesorske stranice kojima se kordiniše kroz modul \emph{ProfessorPage}. Pored njih, tu su i stranice koje nisu izdvojene u
+i profesorske stranice kojima se koordiniše kroz modul \emph{ProfessorPage}. Pored njih, tu su i stranice koje nisu izdvojene u
 posebne module --- početna i stranica koja se prikazuje u slučaju pogrešne putanje. Definicija tipova stranica prikazanih u
 listingu \ref{listing:elm-pages} nalazi se u modulu \emph{Page}, a definicija profesorskih podstranica se nalazi u modulu \emph{ProfessorPage}.
 \begin{listing}[h]
@@ -3310,7 +3310,7 @@ se unutar modula \emph{Main} u glavni tip poruke (listing \ref{listing:elm-msgs}
   \caption{Objedinjene poruke aplikacije}
   \label{listing:elm-msgs}
   \end{listing}
-Unutar funkcjie \texttt{update} glavnog modula se na osnovu poruke poziva funkcija \texttt{update}
+Unutar funkcijie \texttt{update} glavnog modula se na osnovu poruke poziva funkcija \texttt{update}
 odgovarajuće stranice. Trenutni model se ažurira novim modelom date stranice, a poruku rezultujuće komande je potrebno
 transformisati u odgovarajući glavni tip poruke. Primer ažuriranja studentske stranice dat je u listingu \ref{listing:elm-update}.
 Analogno ažuriranju, unutar glavne funkcije \texttt{view} se na osnovu trenutne stranice poziva funkcija \texttt{view} odgovarajućeg modula.  
@@ -3329,21 +3329,20 @@ Analogno ažuriranju, unutar glavne funkcije \texttt{view} se na osnovu trenutne
           )
           ...
 \end{minted}
-\caption{Ažurirnje studentske stranice}
+\caption{Ažuriranje studentske stranice}
 \label{listing:elm-update}
 \end{listing} 
 
 
 \section{Stilizovanje aplikacije}
-Elm kao jezik specijalne namene sadrži sve što je potrebno za razvoj korisničkog interfejsa veb aplikacija,
-ipak zgodno je iskoristiti gotove stilizovane komponente (npr. modale, tabove i slično) kako ne bismo
+\emph{Elm} kao jezik specijalne namene sadrži sve što je potrebno za razvoj korisničkog interfejsa veb aplikacija.
+Zgodno je, ipak, iskoristiti gotove, stilizovane komponente (npr. modale, tabove i slično) kako ne bismo
 implementirali sve od početka.
 
 Za potrebe implementacije portala MSNR korišćen je paket \emph{NoRedInk/noredink-ui},
 koji se oslanja na dosta drugih paketa među kojima je bitno izdvojiti paket 
 \emph{tesk9/accessible-html-with-css}.
-
-Ovaj paket predstavlja proširenje paketa \emph{rtfeldman/elm-css} koji se takođe koristi u projektu
+Ovaj paket predstavlja proširenje paketa \emph{rtfeldman/\\elm-css} koji se takođe koristi u projektu
 i omogućava stilizovanje \emph{HTML} elemenata unutar programskog jezika \emph{Elm}, bez upotrebe
 \emph{css} datoteka. Za iscrtavanje \emph{HTML} elemenata koriste se odgovarajuće funkcije iz
 modula \emph{Html.Styled} umesto iz modula \emph{Html}.
@@ -3373,13 +3372,13 @@ view model =
 \label{listing:elm-toUnstyled}
 \end{listing}
 
-Modul \emph{Accessibility.Styled} iz paketa \emph{tesk9/accessible-html-with-css} pored stilizovanja pruža i podršku za pristupačnost
-(eng. \emph{accessibility --- a11y}). Funkcija \texttt{toUnstyled} omogućava korišćenje \emph{Accessibility.Styled.Html} unutar \emph{Elm} aplikacije,
-primer njene upotrebe unutar modula \emph{Main} prikazana je u listingu \ref{listing:elm-toUnstyled}.
+Modul \emph{Accessibility.Styled} iz paketa \emph{tesk9/accessible-html-with-css} pored stilizovanja pruža i podršku za pristupačnost \cite{a11y}
+(eng. \emph{accessibility} --- skraćeno \emph{a11y}). Funkcija \texttt{toUnstyled} omogućava korišćenje \emph{Accessibility.Styled.Html} unutar \emph{Elm} aplikacije.
+Primer njene upotrebe unutar modula \emph{Main} prikazan je u listingu \ref{listing:elm-toUnstyled}.
 
 \section{Struktura profesorske stranice}
-Profesorske stranice nalaze se pod folderom \emph{ProgessorPage} (slika \ref{fig:prof-dir}),
-svaka stranica predstavljena je zasebnim modulom i to su:
+Profesorske stranice nalaze se pod folderom \emph{ProfessorPage} (slika \ref{fig:prof-dir}).
+Svaka stranica predstavljena je zasebnim modulom i to su:
 \begin{itemize}
   \item \emph{RegistrationRequestsPage} --- za obradu studentskih zahteva za registraciju,
   \item \emph{ActivitiesPage} --- za dodavanje novih aktivnosti,
@@ -3391,14 +3390,14 @@ svaka stranica predstavljena je zasebnim modulom i to su:
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{prof-page-dir.png}
-  \caption{Sadržaj foldera \emph{ProgessorPage}}
+  \caption{Sadržaj foldera \emph{ProfessorPage}}
   \label{fig:prof-dir}
 \end{figure}
 
 Prikazivanje odgovarajućih stranica u odnosu na trenutnu putanju obrađuje se unutar modula
-\emph{ProgessorPage}, slično obradi svih stranica unutar modula \emph{Main}. 
+\emph{ProfessorPage}, slično obradi svih stranica unutar modula \emph{Main}. 
 Svaka stranica ima svoj model, kao i funkcije \texttt{view} i \texttt{update}.
-Model definisan u modulu \emph{ProgessorPage} sadrži sve modele stranica
+Model definisan u modulu \emph{ProfessorPage} sadrži sve modele stranica
 kao i zajedničke podatke o studentima, grupama i aktivnostima. 
 \begin{listing}[h]
 \begin{minted}[fontsize=\footnotesize]{haskell}
@@ -3430,8 +3429,8 @@ type alias Model =
 U listingu \ref{listing:prof-model} prikazan je alijas sveobuhvatnog modela, gde se pored
 modela stranica mogu videti i ostali podaci potrebni za njihovo prikazivanje.
 Modeli stranica čuvaju podatke koji se koriste isključivo unutar odgovarajuće stranice.
-Prilikom prikazivanja profesorskih stranica u modula \emph{ProgessorPage}
-poziva se funkcija \texttt{view} odgovarajuće stranice kojoj se prosleđuje adekvatan
+Prilikom prikazivanja profesorskih stranica u modulu \emph{ProfessorPage}
+poziva se funkcija \texttt{view} odgovarajuće stranice, kojoj se prosleđuje adekvatan
 model, zajedno sa drugim potrebnim podacima.
 
 Kretanje kroz stranice vrši se pomoću navigacione trake čiji prikaz se može videti na
@@ -3497,7 +3496,7 @@ nalaze svi podaci potrebni za njen prikaz.
 \caption{Osnovni model za prikazivanje studentske stranice}
 \label{listing:student-model}
 \end{listing}
-Za razliku od profesorskog modela, modeli sadržaja aktivnosti čuvaju se u nizu
+Za razliku od modela profesorskih stranica, modeli sadržaja aktivnosti čuvaju se u nizu
 (\texttt{assignmentsModels}). Svakom elementu niza modela odgovara dodeljena aktivnost (niz \texttt{assignments}) na istom indeksu.
 
 Osnovni modul za prikazivanje studentske stranice, pored modula \emph{StudentPage}, jeste modul
@@ -3529,7 +3528,7 @@ obrada prikazana je u listingu \ref{listing:student-update}.
 \label{listing:student-update}
 \end{listing}
 Funkcija \emph{AssignmentContent} iz modula \emph{AssignmentContent} na osnovu tipa poruke poziva
-fukciju ažuriranja iz odgovarajućeg modela za obradu sadržaja.
+funkciju ažuriranja iz odgovarajućeg modela za obradu sadržaja.
 
 Za prikazivanje dodeljenih aktivnosti koristi sa komponenta harmonika (eng. \emph{accordion}) iz paketa \emph{NoRedInk/noredink-ui},
 tako da se inicijalno prikazuju samo zaglavlja aktivnosti sa osnovnim informacijama.
@@ -3565,7 +3564,7 @@ Pre upotrebe portala trebalo bi ubaciti podršku za telemetriju na serverskoj st
 u cilju nadgledanja rada aplikacije. 
 Sadržaj tipa aktivnosti trenutno podržava samo rad sa dokumentima, dodavanjem podrške za
 kreiranje prilagođenih formi zaokružile bi se sve aktivnosti unutar portala i pružila
-mogućnost sprovođenja anketi i sličnih aktivnosti.
+mogućnost sprovođenja anketa i sličnih aktivnosti.
 Kao značajnije unapređenje portala trebalo bi razmotriti
 upotrebu rešenja za čuvanje dokumenata na oblaku. Na klijentskoj strani potrebno je
 prilagoditi upotrebu korisničkog interfejsa za manje uređaje kao što su mobilni telefoni i tableti.
