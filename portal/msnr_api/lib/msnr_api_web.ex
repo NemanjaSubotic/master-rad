@@ -22,7 +22,6 @@ defmodule MsnrApiWeb do
       use Phoenix.Controller, namespace: MsnrApiWeb
 
       import Plug.Conn
-      import MsnrApiWeb.Gettext
       alias MsnrApiWeb.Router.Helpers, as: Routes
     end
   end
@@ -54,7 +53,6 @@ defmodule MsnrApiWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import MsnrApiWeb.Gettext
     end
   end
 
@@ -64,7 +62,6 @@ defmodule MsnrApiWeb do
       import Phoenix.View
 
       import MsnrApiWeb.ErrorHelpers
-      import MsnrApiWeb.Gettext
       alias MsnrApiWeb.Router.Helpers, as: Routes
     end
   end

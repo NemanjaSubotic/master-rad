@@ -1,14 +1,9 @@
 defmodule MsnrApiWeb.Router do
   use MsnrApiWeb, :router
 
-  if Mix.env == :dev do
-    forward "/sent_emails", Bamboo.SentEmailViewerPlug
-  end
-
   pipeline :api do
-    plug CORSPlug, origin: ["http://localhost:8080"]
     plug :accepts, ["json"]
-    plug MsnrApiWeb.Plugs.UserInfo
+    plug MsnrApiWeb.Plugs.TokenAuthentication
   end
 
   scope "/api", MsnrApiWeb do
@@ -18,17 +13,35 @@ defmodule MsnrApiWeb.Router do
     post "/auth/login", AuthController, :login
     get "/auth/logout", AuthController, :logout
 
-    resources "/registrations", RegistrationController, only: [:index, :create, :update]
-    resources "/students", StudentController, only: [:index, :create, :update, :show]
-    resources "/users", UserController, only: [:update, :show]
-    resources "/semesters", SemesterController
-    resources "/groups", GroupController
-    resources "/topics", TopicController
-    resources "/files", FileController, except: [:new, :edit]
-    resources "/seminar_papers", SeminarPaperController, except: [:new, :edit]
-    resources "/tasks", TaskController, except: [:new, :edit]
-    resources "/activities", ActivityController, except: [:new, :edit]
-    resources "/cvs", CVController, except: [:new, :edit]
+    resources "/activity-types", ActivityTypeController, except: [:new, :edit]
+    resources "/passwords", PasswordController, only: [:update]
+    resources "/registrations", StudentRegistrationController, except: [:new, :edit, :index]
+
+    resources "/semesters", SemesterController, except: [:new, :edit] do
+      resources "/registrations", StudentRegistrationController, only: [:index]
+      resources "/topics", TopicController, only: [:index, :create]
+      resources "/groups", GroupController, only: [:index, :create]
+      resources "/activities", ActivityController, only: [:index, :create]
+      resources "/assignments", AssignmentController, only: [:index]
+
+      resources "/students", StudentController, except: [:new, :edit] do
+        resources "/assignments", AssignmentController, only: [:index]
+      end
+    end
+
+    resources "/assignments", AssignmentController, only: [:show, :edit] do
+      resources "/documents", DocumentController, only: [:index, :create]
+    end
+
+    resources "/activities", ActivityController, except: [:new, :edit] do
+      resources "/assignments", AssignmentController, only: [:index]
+    end
+
+    resources "/documents", DocumentController, only: [:show, :update]
+    resources "/activities", ActivityController, only: [:show, :update]
+    resources "/topics", TopicController, only: [:show, :update, :delete]
+    resources "/groups", GroupController, only: [:show, :update]
+    resources "/signups", SignupController, only: [:update]
   end
 
   # Enables LiveDashboard only for development
@@ -44,6 +57,18 @@ defmodule MsnrApiWeb.Router do
     scope "/" do
       pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: MsnrApiWeb.Telemetry
+    end
+  end
+
+  # Enables the Swoosh mailbox preview in development.
+  #
+  # Note that preview only shows emails that were sent by the same
+  # node running the Phoenix server.
+  if Mix.env() == :dev do
+    scope "/dev" do
+      pipe_through [:fetch_session, :protect_from_forgery]
+
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

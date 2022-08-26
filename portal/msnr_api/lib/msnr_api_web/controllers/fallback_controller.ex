@@ -35,5 +35,4 @@ defmodule MsnrApiWeb.FallbackController do
     |> put_view(MsnrApiWeb.ErrorView)
     |> render(:"400")
   end
-
 end

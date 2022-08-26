@@ -1,38 +1,30 @@
 defmodule MsnrApi.Students.Student do
   use Ecto.Schema
   import Ecto.Changeset
-  alias MsnrApi.Accounts
-  alias MsnrApi.Semesters
 
+  alias MsnrApi.Accounts.User
+  alias MsnrApi.Semesters.Semester
+  alias MsnrApi.Students.StudentSemester
+
+  @primary_key {:user_id, :integer, []}
   schema "students" do
+    belongs_to :user, User, define_field: false, foreign_key: :user_id
     field :index_number, :string
-    belongs_to :user, Accounts.User
-    belongs_to :semester, Semesters.Semester
 
-    has_one :group_registrations, MsnrApi.Groups.GroupRegistration
-    has_one :group, through: [:group_registrations, :group]
+    many_to_many :semesters, Semester,
+      join_through: StudentSemester,
+      join_keys: [student_id: :user_id, semester_id: :id]
 
     timestamps()
   end
 
   @doc false
-  def changeset(student, attrs) do
-    student
-    |> cast(attrs, [:index_number, :user_id])
-    |> validate_required([:user_id, :index_number])
-    |> set_user()
-    |> set_semester()
-  end
-
-  defp set_user(%Ecto.Changeset{changes: %{user_id: user_id}} = changeset) do
-    user = Accounts.get_user!(user_id)
-    changeset
-    |> put_assoc(:user, user)
-  end
-
-  defp set_semester(changeset) do
-    semester = Semesters.get_active_semester()
-    changeset
-    |> put_assoc(:semester, semester)
+  def changeset(%User{} = user, attrs) do
+    user
+    |> Ecto.build_assoc(:student)
+    |> cast(attrs, [:index_number])
+    |> validate_required([:index_number])
+    |> unique_constraint([:index_number])
+    |> put_assoc(:semesters, [MsnrApi.Semesters.get_active_semester!()])
   end
 end

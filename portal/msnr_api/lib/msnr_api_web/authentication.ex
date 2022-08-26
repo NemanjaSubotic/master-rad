@@ -8,11 +8,10 @@ defmodule MsnrApiWeb.Authentication do
   end
 
   def verify_access_token(token) do
-    Phoenix.Token.verify(MsnrApiWeb.Endpoint, @salt, token, [max_age: @access_token_expiration])
+    Phoenix.Token.verify(MsnrApiWeb.Endpoint, @salt, token, max_age: @access_token_expiration)
   end
 
   def verify_refresh_token(token) do
-    Phoenix.Token.verify(MsnrApiWeb.Endpoint, @salt, token, [max_age: @refresh_token_expiration])
+    Phoenix.Token.verify(MsnrApiWeb.Endpoint, @salt, token, max_age: @refresh_token_expiration)
   end
-
 end

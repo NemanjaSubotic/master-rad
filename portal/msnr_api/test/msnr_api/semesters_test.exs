@@ -3,25 +3,16 @@ defmodule MsnrApi.SemestersTest do
 
   alias MsnrApi.Semesters
 
-  describe "semesters" do
+  describe "semester" do
     alias MsnrApi.Semesters.Semester
 
-    @valid_attrs %{is_active: true, module: "some module", ordinal_number: 42, year: 42}
-    @update_attrs %{is_active: false, module: "some updated module", ordinal_number: 43, year: 43}
-    @invalid_attrs %{is_active: nil, module: nil, ordinal_number: nil, year: nil}
+    import MsnrApi.SemestersFixtures
 
-    def semester_fixture(attrs \\ %{}) do
-      {:ok, semester} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Semesters.create_semester()
+    @invalid_attrs %{is_active: nil, module: nil, year: nil}
 
-      semester
-    end
-
-    test "list_semesters/0 returns all semesters" do
+    test "list_semester/0 returns all semester" do
       semester = semester_fixture()
-      assert Semesters.list_semesters() == [semester]
+      assert Semesters.list_semester() == [semester]
     end
 
     test "get_semester!/1 returns the semester with given id" do
@@ -30,10 +21,11 @@ defmodule MsnrApi.SemestersTest do
     end
 
     test "create_semester/1 with valid data creates a semester" do
-      assert {:ok, %Semester{} = semester} = Semesters.create_semester(@valid_attrs)
+      valid_attrs = %{is_active: true, module: "some module", year: 42}
+
+      assert {:ok, %Semester{} = semester} = Semesters.create_semester(valid_attrs)
       assert semester.is_active == true
       assert semester.module == "some module"
-      assert semester.ordinal_number == 42
       assert semester.year == 42
     end
 
@@ -43,10 +35,11 @@ defmodule MsnrApi.SemestersTest do
 
     test "update_semester/2 with valid data updates the semester" do
       semester = semester_fixture()
-      assert {:ok, %Semester{} = semester} = Semesters.update_semester(semester, @update_attrs)
+      update_attrs = %{is_active: false, module: "some updated module", year: 43}
+
+      assert {:ok, %Semester{} = semester} = Semesters.update_semester(semester, update_attrs)
       assert semester.is_active == false
       assert semester.module == "some updated module"
-      assert semester.ordinal_number == 43
       assert semester.year == 43
     end
 

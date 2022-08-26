@@ -1,21 +1,13 @@
 defmodule MsnrApiWeb.GroupControllerTest do
   use MsnrApiWeb.ConnCase
 
-  alias MsnrApi.Groups
+  import MsnrApi.GroupsFixtures
+
   alias MsnrApi.Groups.Group
 
-  @create_attrs %{
-
-  }
-  @update_attrs %{
-
-  }
+  @create_attrs %{}
+  @update_attrs %{}
   @invalid_attrs %{}
-
-  def fixture(:group) do
-    {:ok, group} = Groups.create_group(@create_attrs)
-    group
-  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -36,7 +28,7 @@ defmodule MsnrApiWeb.GroupControllerTest do
       conn = get(conn, Routes.group_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => ^id
              } = json_response(conn, 200)["data"]
     end
 
@@ -56,7 +48,7 @@ defmodule MsnrApiWeb.GroupControllerTest do
       conn = get(conn, Routes.group_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => ^id
              } = json_response(conn, 200)["data"]
     end
 
@@ -80,7 +72,7 @@ defmodule MsnrApiWeb.GroupControllerTest do
   end
 
   defp create_group(_) do
-    group = fixture(:group)
+    group = group_fixture()
     %{group: group}
   end
 end

@@ -31,11 +31,27 @@ defmodule MsnrApiWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("msnr_api.repo.query.total_time", unit: {:native, :millisecond}),
-      summary("msnr_api.repo.query.decode_time", unit: {:native, :millisecond}),
-      summary("msnr_api.repo.query.query_time", unit: {:native, :millisecond}),
-      summary("msnr_api.repo.query.queue_time", unit: {:native, :millisecond}),
-      summary("msnr_api.repo.query.idle_time", unit: {:native, :millisecond}),
+      summary("msnr_api.repo.query.total_time",
+        unit: {:native, :millisecond},
+        description: "The sum of the other measurements"
+      ),
+      summary("msnr_api.repo.query.decode_time",
+        unit: {:native, :millisecond},
+        description: "The time spent decoding the data received from the database"
+      ),
+      summary("msnr_api.repo.query.query_time",
+        unit: {:native, :millisecond},
+        description: "The time spent executing the query"
+      ),
+      summary("msnr_api.repo.query.queue_time",
+        unit: {:native, :millisecond},
+        description: "The time spent waiting for a database connection"
+      ),
+      summary("msnr_api.repo.query.idle_time",
+        unit: {:native, :millisecond},
+        description:
+          "The time the connection spent waiting before being checked out for the query"
+      ),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),

@@ -1,34 +1,60 @@
-module Api exposing (endpoints, get, getWithCredentials, post, postWithCredentials, put)
+module Api exposing (delete, endpoints, get, getWithCredentials, post, postWithCredentials, put)
 
 import Html.Attributes exposing (headers)
 import Http exposing (Body, Expect, Header)
+import String exposing (fromInt)
+import Url.Builder
 
 
-baseUrl : String
-baseUrl =
-    "http://localhost:4000/api/"
+relativeUrl : List String -> String
+relativeUrl pathList =
+    Url.Builder.relative pathList []
 
 
 type alias Endpoints =
-    { activities : String
-    , studentsRegistrations : String
+    { registrations : String
+    , registration : Int -> String
+    , registrationsPerSemester : Int -> String
     , refreshToken : String
     , login : String
     , logout : String
-    , groups : String
-    , students : String
+    , password : String -> String
+    , groups : Int -> String
+    , group : Int -> String
+    , activityTypes : String
+    , activities : Int -> String
+    , assignments : Int -> String
+    , activity : Int -> String
+    , students : Int -> String
+    , student : Int -> Int -> String
+    , documents : Int -> String
+    , document : Int -> String
+    , topics : Int -> String
+    , signup : Int -> String
     }
 
 
 endpoints : Endpoints
 endpoints =
-    { activities = baseUrl ++ "activities"
-    , studentsRegistrations = baseUrl ++ "registrations"
-    , refreshToken = baseUrl ++ "auth/refresh"
-    , login = baseUrl ++ "auth/login"
-    , logout = baseUrl ++ "auth/logout"
-    , groups = baseUrl ++ "groups"
-    , students = baseUrl ++ "students"
+    { registrations = "registrations"
+    , registration = \id -> relativeUrl [ "registrations", fromInt id ]
+    , registrationsPerSemester = \id -> relativeUrl [ "semesters", fromInt id, "registrations" ]
+    , refreshToken = relativeUrl [ "auth", "refresh" ]
+    , login = relativeUrl [ "auth", "login" ]
+    , logout = relativeUrl [ "auth", "logout" ]
+    , password = \uuid -> relativeUrl [ "passwords", uuid ]
+    , groups = \semId -> relativeUrl [ "semesters", fromInt semId, "groups" ]
+    , group = \groupId -> relativeUrl [ "groups", fromInt groupId ]
+    , activityTypes = relativeUrl [ "activity-types" ]
+    , activities = \semId -> relativeUrl [ "semesters", fromInt semId, "activities" ]
+    , activity = \id -> relativeUrl [ "activities", fromInt id ]
+    , students = \id -> relativeUrl [ "semesters", fromInt id, "students" ]
+    , student = \semId studId -> relativeUrl [ "semesters", fromInt semId, "students", fromInt studId ]
+    , document = \id -> relativeUrl [ "documents", fromInt id ]
+    , documents = \actId -> relativeUrl [ "assignments", fromInt actId, "documents" ]
+    , topics = \semId -> relativeUrl [ "semesters", fromInt semId, "topics" ]
+    , signup = \id -> relativeUrl [ "signups", fromInt id ]
+    , assignments = \semId -> relativeUrl [ "semesters", fromInt semId, "assignments" ]
     }
 
 
@@ -38,35 +64,65 @@ authHeader token =
 
 
 get :
-    { url : String
+    { apiBaseUrl : String
+    , endpoint : String
     , token : String
     , expect : Http.Expect msg
     }
     -> Cmd msg
-get { url, token, expect } =
+get { apiBaseUrl, endpoint, token, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
     Http.request (requestParams "GET" [ authHeader token ] url Http.emptyBody expect)
 
 
 post :
-    { url : String
+    { apiBaseUrl : String
+    , endpoint : String
     , body : Http.Body
     , token : String
     , expect : Http.Expect msg
     }
     -> Cmd msg
-post { url, body, token, expect } =
+post { apiBaseUrl, endpoint, body, token, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
     Http.request (requestParams "POST" [ authHeader token ] url body expect)
 
 
 put :
-    { url : String
+    { apiBaseUrl : String
+    , endpoint : String
     , body : Http.Body
     , token : String
     , expect : Http.Expect msg
     }
     -> Cmd msg
-put { url, body, token, expect } =
+put { apiBaseUrl, endpoint, body, token, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
     Http.request (requestParams "PUT" [ authHeader token ] url body expect)
+
+
+delete :
+    { apiBaseUrl : String
+    , endpoint : String
+    , token : String
+    , expect : Http.Expect msg
+    }
+    -> Cmd msg
+delete { apiBaseUrl, endpoint, token, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
+    Http.request (requestParams "DELETE" [ authHeader token ] url Http.emptyBody expect)
 
 
 requestParams :
@@ -95,24 +151,30 @@ requestParams method headers url body expect =
     }
 
 
-
--- getWithCredentials
-
-
 getWithCredentials :
-    { url : String
+    { apiBaseUrl : String
+    , endpoint : String
     , expect : Http.Expect msg
     }
     -> Cmd msg
-getWithCredentials { url, expect } =
+getWithCredentials { apiBaseUrl, endpoint, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
     Http.riskyRequest (requestParams "GET" [] url Http.emptyBody expect)
 
 
 postWithCredentials :
-    { url : String
+    { apiBaseUrl : String
+    , endpoint : String
     , body : Http.Body
     , expect : Http.Expect msg
     }
     -> Cmd msg
-postWithCredentials { url, body, expect } =
+postWithCredentials { apiBaseUrl, endpoint, body, expect } =
+    let
+        url =
+            relativeUrl [ apiBaseUrl, endpoint ]
+    in
     Http.riskyRequest (requestParams "POST" [] url body expect)

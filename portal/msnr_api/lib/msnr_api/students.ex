@@ -4,10 +4,11 @@ defmodule MsnrApi.Students do
   """
 
   import Ecto.Query, warn: false
-
   alias MsnrApi.Repo
+
+  alias MsnrApi.Accounts.User
   alias MsnrApi.Students.Student
-  alias MsnrApi.Semesters.Semester
+  alias MsnrApi.Students.StudentSemester
 
   @doc """
   Returns the list of students.
@@ -18,31 +19,15 @@ defmodule MsnrApi.Students do
       [%Student{}, ...]
 
   """
-  def list_students(params \\ %{}) do
-    query =
-      from s in Student, as: :student,
-      join: sem in Semester,
-      on: sem.is_active == true and s.semester_id == sem.id,
+  def list_students(semester_id) do
+    from(ss in StudentSemester,
+      join: s in Student,
+      on: ss.semester_id == ^semester_id and ss.student_id == s.user_id,
       join: u in assoc(s, :user),
-      select: %{
-        id: s.id,
-        first_name: u.first_name,
-        last_name: u.last_name,
-        email: u.email,
-        index_number: s.index_number
-      }
-
-    query =
-      case params do
-        %{"noGroup" => _} ->
-          query
-          |> join(:left, [{:student, s}],  g in assoc(s, :group), as: :group)
-          |> where([{:group, g}], is_nil(g.id))
-
-        _ -> query
-      end
-
-     Repo.all query
+      preload: [student: {s, user: u}],
+      select: ss
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -59,7 +44,15 @@ defmodule MsnrApi.Students do
       ** (Ecto.NoResultsError)
 
   """
-  def get_student!(id), do: Repo.get!(Student, id)
+  def get_student!(id) do
+    from(s in Student,
+      where: s.user_id == ^id,
+      join: u in assoc(s, :user),
+      preload: [user: u],
+      select: s
+    )
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a student.
@@ -73,10 +66,8 @@ defmodule MsnrApi.Students do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_student(attrs \\ %{}) do
-    %Student{}
-    |> Student.changeset(attrs)
-    |> Repo.insert()
+  def create_student(%User{} = user, attrs \\ %{}) do
+    Student.changeset(user, attrs) |> Repo.insert()
   end
 
   @doc """
@@ -90,8 +81,9 @@ defmodule MsnrApi.Students do
       iex> update_student(student, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
+      TO DO: ispravi updae
   """
-  def update_student(%Student{} = student, attrs) do
+  def update_student(student, attrs) do
     student
     |> Student.changeset(attrs)
     |> Repo.update()
@@ -113,16 +105,16 @@ defmodule MsnrApi.Students do
     Repo.delete(student)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking student changes.
+  # @doc """
+  # Returns an `%Ecto.Changeset{}` for tracking student changes.
 
-  ## Examples
+  # ## Examples
 
-      iex> change_student(student)
-      %Ecto.Changeset{data: %Student{}}
+  #     iex> change_student(student)
+  #     %Ecto.Changeset{data: %Student{}}
 
-  """
-  def change_student(%Student{} = student, attrs \\ %{}) do
-    Student.changeset(student, attrs)
-  end
+  # """
+  # def change_student(%Student{} = student, attrs \\ %{}) do
+  #   Student.changeset(student, attrs)
+  # end
 end

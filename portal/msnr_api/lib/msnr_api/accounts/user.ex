@@ -1,26 +1,36 @@
 defmodule MsnrApi.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias MsnrApi.Accounts.Role
+
+  alias MsnrApi.StudentRegistrations.StudentRegistration
 
   schema "users" do
     field :email, :string
     field :first_name, :string
     field :last_name, :string
-    field :password, :string, virtual: true
     field :hashed_password, :string
-    field :is_active, :boolean
-    belongs_to :role, Role
-    field :refresh_token,  Ecto.UUID, autogenerate: true
+    field :password, :string, virtual: true
     field :password_url_path, Ecto.UUID, autogenerate: true
+    field :refresh_token, Ecto.UUID, autogenerate: true
+    field :role, Ecto.Enum, values: [:student, :professor]
+    has_one :student, MsnrApi.Students.Student
+
     timestamps()
   end
 
-  @doc false
+  def changeset(user, %StudentRegistration{} = student_registration) do
+    student_attrs =
+      student_registration
+      |> Map.from_struct()
+      |> Map.put(:role, :student)
+
+    changeset(user, student_attrs)
+  end
+
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:first_name, :last_name, :email])
-    |> validate_required([:first_name, :last_name, :email])
+    |> cast(attrs, [:email, :first_name, :last_name, :role])
+    |> validate_required([:email, :first_name, :last_name, :role])
     |> unique_constraint(:email)
   end
 
@@ -31,11 +41,6 @@ defmodule MsnrApi.Accounts.User do
     |> validate_length(:password, min: 4)
     |> hash_password()
     |> changeset(attrs)
-  end
-
-  def changeset_role(user, %Role{} = role) do
-    user
-    |> put_assoc(:role, role)
   end
 
   def changeset_token(user, attrs \\ %{}) do

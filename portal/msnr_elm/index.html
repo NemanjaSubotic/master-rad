@@ -3,19 +3,22 @@
     <head>
         <meta charset="utf-8"/>
         <title>Msnr Elm</title>
-        
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/material-components-web-elm@7.0.0/dist/material-components-web-elm.min.css">
-        <script src="https://unpkg.com/material-components-web-elm@7.0.0/dist/material-components-web-elm.min.js"></script>
-
-        <link rel="stylesheet" href="/styles.css">
         <script src="/app.js"></script>
+        <style>
+          body,html {
+            margin: 0;
+            padding: 0;
+          }
+        </style>
     </head>
     <body>
-        <div id="app"></div>
+        
+      <div>TEST</div>
+      <div id="app"></div>
         <script>
             var app = Elm.Main.init({
-                node: document.getElementById("app")
+                node: document.getElementById("app"),
+                flags: { apiBaseUrl : "http://localhost:4000/api" }
             });
         </script>
     </body>

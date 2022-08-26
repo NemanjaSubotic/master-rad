@@ -6,13 +6,17 @@ defmodule MsnrApiWeb.TopicController do
 
   action_fallback MsnrApiWeb.FallbackController
 
-  def index(conn, _params) do
-    topics = Topics.list_topics()
+  def index(conn, params) do
+    topics = Topics.list_topics(params)
     render(conn, "index.json", topics: topics)
   end
 
-  def create(conn, %{"topic" => topic_params}) do
-    with {:ok, %Topic{} = topic} <- Topics.create_topic(topic_params) do
+  def create(conn, %{"semester_id" => sem_id, "topic" => topic_params}) do
+    params =
+      topic_params
+      |> Map.put("semester_id", sem_id)
+
+    with {:ok, %Topic{} = topic} <- Topics.create_topic(params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.topic_path(conn, :show, topic))

@@ -1,47 +1,42 @@
 module Page exposing (..)
 
-import Professor
-import Registration
-import Route exposing (..)
-import User.Login as Login
-import User.SetPassword as SetPassword
-import User.Type exposing (UserType(..))
+import LoginPage as LP
+import RegistrationPage as RP
+import Route exposing (Route)
+import SetPasswordPage as SPP
+import UserType exposing (UserType(..))
 
 
 type Page
     = HomePage
-    | LoginPage Login.Model
-    | RegistrationPage Registration.Model
-    | SetPasswordPage SetPassword.Model
-    | ProfessorPage Professor.Page
+    | LoginPage LP.Model
+    | RegistrationPage RP.Model
+    | SetPasswordPage SPP.Model
+    | ProfessorPage
     | StudentPage
-    | AdminPage
     | NotFoundPage
 
 
-forRoute : Route -> Page
-forRoute route =
+forRoute : Route -> String -> Page
+forRoute route apiBaseUrl =
     case route of
-        HomeRoute ->
+        Route.Home ->
             HomePage
 
-        LoginRoute ->
-            LoginPage Login.init
+        Route.Login ->
+            LoginPage (LP.init apiBaseUrl)
 
-        RegistrationRoute ->
-            RegistrationPage Registration.init
+        Route.Registration ->
+            RegistrationPage (RP.init apiBaseUrl)
 
-        SetPasswordRoute _ ->
-            SetPasswordPage SetPassword.init
+        Route.SetPassword uuid ->
+            SetPasswordPage (SPP.init apiBaseUrl uuid)
 
-        ProfessorRoute profRoute ->
-            ProfessorPage (Professor.pageFromRoute profRoute)
+        Route.Professor _ ->
+            ProfessorPage
 
-        StudentRoute ->
+        Route.Student ->
             StudentPage
-
-        AdminRoute ->
-            AdminPage
 
         _ ->
             NotFoundPage

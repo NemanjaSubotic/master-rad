@@ -6,18 +6,9 @@ defmodule MsnrApi.StudentsTest do
   describe "students" do
     alias MsnrApi.Students.Student
 
-    @valid_attrs %{index_number: "some index_number", userId: 42}
-    @update_attrs %{index_number: "some updated index_number", userId: 43}
-    @invalid_attrs %{index_number: nil, userId: nil}
+    import MsnrApi.StudentsFixtures
 
-    def student_fixture(attrs \\ %{}) do
-      {:ok, student} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Students.create_student()
-
-      student
-    end
+    @invalid_attrs %{index_number: nil}
 
     test "list_students/0 returns all students" do
       student = student_fixture()
@@ -30,9 +21,10 @@ defmodule MsnrApi.StudentsTest do
     end
 
     test "create_student/1 with valid data creates a student" do
-      assert {:ok, %Student{} = student} = Students.create_student(@valid_attrs)
+      valid_attrs = %{index_number: "some index_number"}
+
+      assert {:ok, %Student{} = student} = Students.create_student(valid_attrs)
       assert student.index_number == "some index_number"
-      assert student.userId == 42
     end
 
     test "create_student/1 with invalid data returns error changeset" do
@@ -41,9 +33,10 @@ defmodule MsnrApi.StudentsTest do
 
     test "update_student/2 with valid data updates the student" do
       student = student_fixture()
-      assert {:ok, %Student{} = student} = Students.update_student(student, @update_attrs)
+      update_attrs = %{index_number: "some updated index_number"}
+
+      assert {:ok, %Student{} = student} = Students.update_student(student, update_attrs)
       assert student.index_number == "some updated index_number"
-      assert student.userId == 43
     end
 
     test "update_student/2 with invalid data returns error changeset" do

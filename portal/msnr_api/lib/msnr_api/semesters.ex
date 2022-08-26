@@ -7,17 +7,18 @@ defmodule MsnrApi.Semesters do
   alias MsnrApi.Repo
 
   alias MsnrApi.Semesters.Semester
+  alias MsnrApi.Activities.Activity
 
   @doc """
-  Returns the list of semesters.
+  Returns the list of semester.
 
   ## Examples
 
-      iex> list_semesters()
+      iex> list_semester()
       [%Semester{}, ...]
 
   """
-  def list_semesters do
+  def list_semester do
     Repo.all(Semester)
   end
 
@@ -102,7 +103,7 @@ defmodule MsnrApi.Semesters do
     Semester.changeset(semester, attrs)
   end
 
-  def get_active_semester() do
-    Repo.get_by!(Semester, is_active: true )
+  def get_active_semester!() do
+    Repo.one(from s in Semester, where: s.is_active == true)
   end
 end

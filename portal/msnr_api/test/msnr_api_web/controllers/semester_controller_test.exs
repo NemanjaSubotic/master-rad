@@ -1,34 +1,28 @@
 defmodule MsnrApiWeb.SemesterControllerTest do
   use MsnrApiWeb.ConnCase
 
-  alias MsnrApi.Semesters
+  import MsnrApi.SemestersFixtures
+
   alias MsnrApi.Semesters.Semester
 
   @create_attrs %{
     is_active: true,
     module: "some module",
-    ordinal_number: 42,
     year: 42
   }
   @update_attrs %{
     is_active: false,
     module: "some updated module",
-    ordinal_number: 43,
     year: 43
   }
-  @invalid_attrs %{is_active: nil, module: nil, ordinal_number: nil, year: nil}
-
-  def fixture(:semester) do
-    {:ok, semester} = Semesters.create_semester(@create_attrs)
-    semester
-  end
+  @invalid_attrs %{is_active: nil, module: nil, year: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
   describe "index" do
-    test "lists all semesters", %{conn: conn} do
+    test "lists all semester", %{conn: conn} do
       conn = get(conn, Routes.semester_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
@@ -42,10 +36,9 @@ defmodule MsnrApiWeb.SemesterControllerTest do
       conn = get(conn, Routes.semester_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "is_active" => true,
                "module" => "some module",
-               "ordinal_number" => 42,
                "year" => 42
              } = json_response(conn, 200)["data"]
     end
@@ -59,17 +52,19 @@ defmodule MsnrApiWeb.SemesterControllerTest do
   describe "update semester" do
     setup [:create_semester]
 
-    test "renders semester when data is valid", %{conn: conn, semester: %Semester{id: id} = semester} do
+    test "renders semester when data is valid", %{
+      conn: conn,
+      semester: %Semester{id: id} = semester
+    } do
       conn = put(conn, Routes.semester_path(conn, :update, semester), semester: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.semester_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "id" => ^id,
                "is_active" => false,
                "module" => "some updated module",
-               "ordinal_number" => 43,
                "year" => 43
              } = json_response(conn, 200)["data"]
     end
@@ -94,7 +89,7 @@ defmodule MsnrApiWeb.SemesterControllerTest do
   end
 
   defp create_semester(_) do
-    semester = fixture(:semester)
+    semester = semester_fixture()
     %{semester: semester}
   end
 end

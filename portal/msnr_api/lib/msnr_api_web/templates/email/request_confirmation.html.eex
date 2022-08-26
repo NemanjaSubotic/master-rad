@@ -1,4 +1,0 @@
-<p>Zdravo <%= @user.first_name %>,</p>
-
-<p>Vas zahtev za kreiranje naloga je prihvacen.</p>
-<p>Podesite Vasu lozinku <a href="<%= @url %>" target="_blank">ovde</a> </p>

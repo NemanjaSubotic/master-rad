@@ -7,8 +7,8 @@ defmodule MsnrApiWeb.SemesterController do
   action_fallback MsnrApiWeb.FallbackController
 
   def index(conn, _params) do
-    semesters = Semesters.list_semesters()
-    render(conn, "index.json", semesters: semesters)
+    semester = Semesters.list_semester()
+    render(conn, "index.json", semester: semester)
   end
 
   def create(conn, %{"semester" => semester_params}) do

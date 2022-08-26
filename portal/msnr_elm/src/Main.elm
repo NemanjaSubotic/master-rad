@@ -1,68 +1,110 @@
 module Main exposing (main)
 
+import Accessibility.Styled as Html exposing (Html)
 import Browser exposing (Document)
 import Browser.Navigation as Nav
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Material.Icon as Icon
-import Material.IconButton as IconButton
-import Material.List as MList
-import Material.List.Item as MListItem
-import Material.Menu as Menu
-import Material.Typography as Typography
+import Css exposing (..)
+import Html.Styled.Attributes exposing (css, href)
+import Http
+import LoginPage as Login
+import Nri.Ui.AssignmentIcon.V2 as AssignmentIcon
+import Nri.Ui.Button.V10 as Button
+import Nri.Ui.Colors.V1 as Colors
+import Nri.Ui.Heading.V2 as Heading
+import Nri.Ui.Loading.V1 as LoadingSpinner
+import Nri.Ui.Svg.V1 as Svg exposing (Svg)
+import Nri.Ui.UiIcon.V1 as UiIcon
 import Page exposing (..)
-import Professor
-import Registration
-import Route exposing (Route(..))
-import Student
+import ProfessorPage
+import RegistrationPage as Registration
+import Route exposing (Route)
+import Session as Session exposing (Msg(..), Session, logout, silentTokenRefresh)
+import SetPasswordPage as SetPassword
+import StudentPage
+import StudentPage.Model as StudentPageModel
 import Time
 import Url exposing (Url)
-import Url.Parser exposing ((</>), s)
-import User.Login as Login
-import User.Session as Session exposing (logout, silentTokenRefresh)
-import User.SetPassword as SetPassword
-import User.Type exposing (UserType(..), getUserType)
-import Util exposing (emptyHtmlNode)
+import Url.Parser exposing ((</>))
+import UserType exposing (UserType(..))
 
 
 type ContentModel
-    = ProfessorModel Professor.Model
-    | StudentModel Student.Model
-    | AdminModel
+    = ProfessorModel ProfessorPage.Model
+    | StudentModel StudentPageModel.Model
     | NoContent
 
 
 type alias Model =
     { currentUser : UserType
     , currentRoute : Route
-    , session : Maybe Session.Session
-    , page : Page
+    , currentPage : Page
+    , accessTokenExpiresIn : Float
     , key : Nav.Key
-    , isMenuOpened : Bool
     , mainContent : ContentModel
-    , loading : Bool
+    , initalLoading : Bool
+    , apiBaseUrl : String
     }
 
 
 type Msg
     = ClickedLink Browser.UrlRequest
     | ChangedUrl Url
-    | GotProfessorMsg Professor.Msg
-    | GotStudentMsg Student.Msg
+    | GotProfessorMsg ProfessorPage.Msg
+    | GotStudentMsg StudentPage.Msg
     | GotLoginMsg Login.Msg
     | GotRegistrationMsg Registration.Msg
     | GotPasswordMsg SetPassword.Msg
     | GotInitSessionMsg Session.Msg
     | GotSessionMsg Session.Msg
     | RefreshTick Time.Posix
-    | MenuOpened
-    | MenuClosed
     | Logout
+
+
+updateMainContent : Model -> Session -> ContentModel
+updateMainContent { mainContent, apiBaseUrl } ({ accessToken } as session) =
+    case mainContent of
+        NoContent ->
+            initMainContent apiBaseUrl session
+
+        ProfessorModel model ->
+            ProfessorModel { model | accessToken = accessToken }
+
+        StudentModel model ->
+            StudentModel { model | accessToken = accessToken }
+
+
+initMainContent : String -> Session -> ContentModel
+initMainContent apiBaseUrl { accessToken, userInfo, studentInfo, semesterId } =
+    case studentInfo of
+        Just stInfo ->
+            StudentModel (StudentPageModel.init apiBaseUrl accessToken userInfo stInfo semesterId)
+
+        Nothing ->
+            ProfessorModel (ProfessorPage.init apiBaseUrl accessToken semesterId)
+
+
+updateFromSession : Model -> Session -> Model
+updateFromSession model session =
+    { model
+        | accessTokenExpiresIn = session.expiresIn
+        , currentUser = UserType.fromSession session
+        , mainContent = updateMainContent model session
+    }
+
+
+updateFromSessionResult : Model -> Result Http.Error Session -> Model
+updateFromSessionResult model result =
+    case result of
+        Ok session ->
+            updateFromSession model session
+
+        Err _ ->
+            model
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case ( msg, model.page, model.mainContent ) of
+    case ( msg, model.currentPage, model.mainContent ) of
         ( ClickedLink urlRequest, _, _ ) ->
             case urlRequest of
                 Browser.External href ->
@@ -74,82 +116,57 @@ update msg model =
         ( ChangedUrl url, _, _ ) ->
             updateUrl url model
 
-        ( GotInitSessionMsg (Session.GotTokenResult result), _, _ ) ->
+        ( GotInitSessionMsg (GotTokenResult result), _, _ ) ->
             let
-                { currentRoute, key } =
-                    model
-
-                user =
-                    getUserType result
-
-                { route, redirection } =
-                    Route.guard user currentRoute key
-
-                session =
-                    Result.toMaybe result
-
                 model_ =
-                    setContentModel user { model | loading = False, session = session }
-
-                cmd =
-                    Cmd.batch
-                        [ initCommand route model_
-                        , redirection
-                        ]
+                    updateFromSessionResult { model | initalLoading = False } result
             in
-            ( model_, cmd )
+            case Route.guard model_.currentUser model_.currentRoute model_.key of
+                Just redirection ->
+                    ( model_, redirection )
 
-        ( GotSessionMsg (Session.GotTokenResult result), _, _ ) ->
+                Nothing ->
+                    ( model_, initCommand model_ )
+
+        ( GotSessionMsg (GotTokenResult result), _, _ ) ->
             case result of
                 Ok session ->
-                    ( {model | session = Just session, currentUser = getUserType result}, Cmd.none )
+                    ( updateFromSession model session, Cmd.none )
 
                 Err _ ->
                     ( model, Cmd.none )
 
-        ( GotSessionMsg (Session.GotSessionResult result), _, _ ) ->
-            case ( result, model.page ) of
-                ( Err error, LoginPage loginModel ) ->
-                    ( { model | page = LoginPage (Login.updateError loginModel error) }
+        ( GotSessionMsg (GotSessionResult result), LoginPage loginModel, _ ) ->
+            case result of
+                Ok session ->
+                    ( updateFromSession model session, Route.redirectTo model.key Route.Home )
+
+                Err error ->
+                    ( { model | currentPage = LoginPage (Login.updateError loginModel error) }
                     , Cmd.none
                     )
-
-                ( Ok session, _ ) ->
-                    let
-                        user =
-                            getUserType result
-
-                        model_ =
-                            setContentModel user { model | session = Just session }
-                    in
-                    ( model_, Route.redirectTo model.key HomeRoute )
-
-                _ ->
-                    ( model, Cmd.none )
 
         ( GotLoginMsg loginMsg, LoginPage loginModel, _ ) ->
             Login.update loginMsg loginModel
                 |> toPageWithModel LoginPage GotSessionMsg model
 
-        ( GotPasswordMsg setPwdMsg, SetPasswordPage setPwdModel, _ ) ->
-            case setPwdMsg of
+        ( GotPasswordMsg passwordMsg, SetPasswordPage passwordModel, _ ) ->
+            case passwordMsg of
                 SetPassword.SessionMsg (Session.GotSessionResult (Ok session)) ->
-                    ( { model | session = Just session, currentUser = getUserType (Ok session) }
-                    , Route.redirectTo model.key HomeRoute
-                    )
+                    ( updateFromSession model session, Route.redirectTo model.key Route.Home )
 
                 _ ->
-                    SetPassword.update setPwdMsg setPwdModel
+                    SetPassword.update passwordMsg passwordModel
                         |> toPageWithModel SetPasswordPage GotPasswordMsg model
 
         ( GotRegistrationMsg regMsg, RegistrationPage regModel, _ ) ->
             Registration.update regMsg regModel
                 |> toPageWithModel RegistrationPage GotRegistrationMsg model
 
-        ( GotProfessorMsg profMsg, ProfessorPage profPage, ProfessorModel model_ ) ->
+        ( GotProfessorMsg profMsg, ProfessorPage, ProfessorModel model_ ) ->
             let
                 ( profModel, cmd ) =
-                    Professor.update profMsg model_ (tokenFrom model.session) profPage
+                    ProfessorPage.update profMsg model_
             in
             ( { model | mainContent = ProfessorModel profModel }
             , cmd |> Cmd.map GotProfessorMsg
@@ -158,26 +175,20 @@ update msg model =
         ( GotStudentMsg studentMsg, _, StudentModel model_ ) ->
             let
                 ( studentModel, cmd ) =
-                    Student.update studentMsg model_ (tokenFrom model.session)
+                    StudentPage.update studentMsg model_
             in
             ( { model | mainContent = StudentModel studentModel }
             , cmd |> Cmd.map GotStudentMsg
             )
 
         ( RefreshTick _, _, _ ) ->
-            ( model, silentTokenRefresh |> Cmd.map GotSessionMsg )
-
-        ( MenuOpened, _, _ ) ->
-            ( { model | isMenuOpened = True }, Cmd.none )
-
-        ( MenuClosed, _, _ ) ->
-            ( { model | isMenuOpened = False }, Cmd.none )
+            ( model, silentTokenRefresh model.apiBaseUrl |> Cmd.map GotSessionMsg )
 
         ( Logout, _, _ ) ->
-            ( { model | session = Nothing, currentUser = Guest, isMenuOpened = False }
+            ( { model | currentUser = Guest, mainContent = NoContent }
             , Cmd.batch
-                [ Route.redirectTo model.key HomeRoute
-                , logout |> Cmd.map GotSessionMsg
+                [ Route.redirectTo model.key Route.Home
+                , logout model.apiBaseUrl |> Cmd.map GotSessionMsg
                 ]
             )
 
@@ -187,21 +198,23 @@ update msg model =
 
 toPageWithModel : (pageModel -> Page) -> (subMsg -> Msg) -> Model -> ( pageModel, Cmd subMsg ) -> ( Model, Cmd Msg )
 toPageWithModel page toMsg model ( pageModel, pageCmd ) =
-    ( { model | page = page pageModel }
+    ( { model | currentPage = page pageModel }
     , Cmd.map toMsg pageCmd
     )
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.batch
-        [ case model.session of
-            Just { expiresIn } ->
-                Time.every (1000 * (expiresIn - 5)) RefreshTick
+subscriptions { currentUser, accessTokenExpiresIn } =
+    let
+        refreshTick =
+            case currentUser of
+                Guest ->
+                    Sub.none
 
-            Nothing ->
-                Sub.none
-        ]
+                _ ->
+                    Time.every (1000 * (accessTokenExpiresIn - 5)) RefreshTick
+    in
+    Sub.batch [ refreshTick ]
 
 
 updateUrl : Url -> Model -> ( Model, Cmd Msg )
@@ -210,84 +223,75 @@ updateUrl url model =
         route =
             Route.fromUrl url
 
-        page =
-            Page.forRoute route
-
         model_ =
-            { model | page = page, currentRoute = route, isMenuOpened = False }
-
-        cmd =
-            initCommand route model_
+            { model | currentPage = Page.forRoute route model.apiBaseUrl, currentRoute = route }
     in
-    ( model_, cmd )
+    ( model_, initCommand model_ )
 
 
-initCommand : Route -> Model -> Cmd Msg
-initCommand route model =
-    let
-        { session, mainContent } =
-            model
+initCommand : Model -> Cmd Msg
+initCommand { currentRoute, mainContent } =
+    case ( currentRoute, mainContent ) of
+        ( Route.Professor profRoute, ProfessorModel profModel ) ->
+            ProfessorPage.initCmd profModel profRoute |> Cmd.map GotProfessorMsg
 
-        token =
-            tokenFrom session
-    in
-    case ( route, mainContent ) of
-        ( SetPasswordRoute uuid, _ ) ->
-            SetPassword.loadRequest uuid |> Cmd.map GotPasswordMsg
-
-        ( ProfessorRoute profRoute, ProfessorModel profModel ) ->
-            Professor.initCmd token profModel profRoute |> Cmd.map GotProfessorMsg
-
-        ( StudentRoute, StudentModel studentModel ) ->
-            Student.initCmd studentModel token
+        ( Route.Student, StudentModel studentModel ) ->
+            StudentPage.initCmd studentModel
                 |> Cmd.map GotStudentMsg
 
         _ ->
             Cmd.none
 
 
-init : () -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url key =
+init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init { apiBaseUrl } url key =
     let
         route =
             Route.fromUrl url
 
         sessionCheck =
-            silentTokenRefresh |> Cmd.map GotInitSessionMsg
+            silentTokenRefresh apiBaseUrl |> Cmd.map GotInitSessionMsg
     in
-    ( { page = Page.forRoute route
+    ( { currentPage = Page.forRoute route apiBaseUrl
       , key = key
+      , accessTokenExpiresIn = 0
       , currentRoute = route
-      , session = Nothing
-      , isMenuOpened = False
       , mainContent = NoContent
       , currentUser = Guest
-      , loading = True
+      , initalLoading = True
+      , apiBaseUrl = apiBaseUrl
       }
     , sessionCheck
     )
 
 
-view : Model -> Document Msg
-view model =
+homePageView : Html Msg
+homePageView =
+    Html.text "Home"
+
+
+notFoundPageView : Html Msg
+notFoundPageView =
+    Html.text "Not found"
+
+
+view_ : Model -> Html Msg
+view_ model =
     let
         content =
-            if model.loading then
-                text "laoding..."
+            if model.initalLoading then
+                LoadingSpinner.fadeInPage
 
             else
-                case ( model.page, model.mainContent ) of
+                case ( model.currentPage, model.mainContent ) of
                     ( HomePage, _ ) ->
-                        text "Home"
+                        homePageView
 
                     ( StudentPage, StudentModel studentModel ) ->
-                        Student.view studentModel |> Html.map GotStudentMsg
+                        StudentPage.view studentModel |> Html.map GotStudentMsg
 
-                    ( AdminPage, _ ) ->
-                        text "Admin"
-
-                    ( ProfessorPage profPage, ProfessorModel profModel ) ->
-                        Professor.view profModel profPage |> Html.map GotProfessorMsg
+                    ( ProfessorPage, ProfessorModel profModel ) ->
+                        ProfessorPage.view profModel model.currentRoute |> Html.map GotProfessorMsg
 
                     ( LoginPage loginModel, _ ) ->
                         Login.view loginModel |> Html.map GotLoginMsg
@@ -299,124 +303,118 @@ view model =
                         SetPassword.view setPwsModel |> Html.map GotPasswordMsg
 
                     _ ->
-                        text "Not Found"
+                        notFoundPageView
     in
-    { title = "MSNR"
-    , body =
+    Html.div
+        [ css [ Css.height (vh 100), displayFlex, flexDirection column ] ]
         [ viewHeader model
-        , main_ [] [ content ]
+        , Html.main_
+            [ css
+                [ backgroundColor Colors.gray96
+                , flexGrow (int 1)
+                , margin4 (px 0) (px 8) (px 8) (px 8)
+                , padding4 (px 8) (px 0) (px 0) (px 0)
+                ]
+            ]
+            [ content ]
         ]
+
+
+view : Model -> Document Msg
+view model =
+    { title = "MSNR"
+    , body = [ view_ model |> Html.toUnstyled ]
     }
 
 
 viewHeader : Model -> Html Msg
-viewHeader model =
+viewHeader { currentUser, currentRoute } =
     let
-        { currentUser, currentRoute } =
-            model
-
-        navIcon : { route : Route, icon : String } -> Html Msg
+        navIcon : { route : Route, icon : Svg } -> Html Msg
         navIcon { route, icon } =
             let
-                iconClass =
-                    if route == currentRoute then
-                        "active"
+                isActive =
+                    case ( route, currentRoute ) of
+                        ( Route.Professor (Route.ActivityAssignments _), Route.Professor (Route.ActivityAssignments _) ) ->
+                            True
+
+                        _ ->
+                            route == currentRoute
+
+                color =
+                    if isActive then
+                        Colors.textHighlightBlue
 
                     else
-                        "unactive"
+                        Colors.gray45
             in
-            div
-                [ class "nav-icon" ]
-                [ a
-                    [ href (Route.toString route), class "center" ]
-                    [ Icon.icon [ class iconClass ] icon ]
+            Html.div
+                [ css [ height (px 32), width (px 32), marginLeft (rem 1), marginRight (rem 1) ] ]
+                [ Html.a
+                    [ href (Route.toString route) ]
+                    [ icon
+                        |> Svg.withColor color
+                        |> Svg.toHtml
+                    ]
                 ]
 
         navbar =
             let
                 navItems =
-                    nav [] << (::) (navIcon { route = HomeRoute, icon = "home" })
+                    Html.nav
+                        [ css [ displayFlex, justifyContent center ] ]
+                        << (::) (navIcon { route = Route.Home, icon = UiIcon.home })
             in
             case currentUser of
                 Student _ ->
-                    navItems [ navIcon { route = StudentRoute, icon = "school" } ]
+                    navItems [ navIcon { route = Route.Student, icon = AssignmentIcon.quiz } ]
 
-                Professor ->
-                    navItems (List.map (\{ icon, route } -> navIcon { icon = icon, route = ProfessorRoute route }) Professor.navIcons)
+                Professor _ ->
+                    navItems (List.map (\{ icon, route } -> navIcon { icon = icon, route = Route.Professor route }) ProfessorPage.navIcons)
 
                 _ ->
-                    emptyHtmlNode
+                    Html.text ""
 
-        profileDropUp =
-            let
-                menuContent =
-                    case currentUser of
-                        Guest ->
-                            MList.list
-                                (MList.config |> MList.setWrapFocus True)
-                                (MListItem.listItem (MListItem.config |> MListItem.setHref (Just "/login"))
-                                    [ MListItem.graphic [] [ Icon.icon [] "login" ]
-                                    , text "Prijava"
-                                    ]
-                                )
-                                [ MListItem.listItem (MListItem.config |> MListItem.setHref (Just "/register"))
-                                    [ MListItem.graphic [] [ Icon.icon [] "person_add" ]
-                                    , text "Registracija"
-                                    ]
-                                ]
+        loginButtons =
+            if currentUser == Guest then
+                [ Button.link "Napravi nalog"
+                    [ Button.secondary
+                    , Button.linkSpa (Route.toString Route.Registration)
+                    ]
+                , Button.link "Prijavi se"
+                    [ Button.primary
+                    , Button.linkSpa (Route.toString Route.Login)
+                    ]
+                ]
 
-                        _ ->
-                            MList.list
-                                (MList.config |> MList.setWrapFocus True)
-                                (MListItem.listItem (MListItem.config |> MListItem.setOnClick Logout)
-                                    [ MListItem.graphic [] [ Icon.icon [] "logout" ]
-                                    , div [ style "display" "inline-block", style "width" "100px" ] [ text "Odjavi se" ]
-                                    ]
-                                )
-                                []
-            in
-            div [ Menu.surfaceAnchor, class "account-dropup" ]
-                [ IconButton.iconButton
-                    (IconButton.config |> IconButton.setOnClick MenuOpened |> IconButton.setAttributes [ class "account-button" ])
-                    (IconButton.icon "account_circle")
-                , Menu.menu
-                    (Menu.config
-                        |> Menu.setOpen model.isMenuOpened
-                        |> Menu.setOnClose MenuClosed
-                        |> Menu.setAttributes [ class "account-menu" ]
-                    )
-                    [ menuContent ]
+            else
+                [ Button.button "Odjavi se"
+                    [ Button.primary
+                    , Button.onClick Logout
+                    ]
                 ]
     in
-    header []
-        [ span [ id "logo", Typography.headline6 ] [ text "MSNR" ]
+    Html.header
+        [ css
+            [ backgroundColor Colors.white
+            , displayFlex
+            , justifyContent spaceBetween
+            , alignItems center
+            , margin (px 8)
+            ]
+        ]
+        [ Heading.h2 [ Heading.css [ color Colors.textHighlightBlue ] ] [ Html.text "MSNR" ]
         , navbar
-        , profileDropUp
+        , Html.div [] loginButtons
         ]
 
 
-tokenFrom : Maybe Session.Session -> String
-tokenFrom session =
-    Maybe.withDefault "" <| Maybe.map (\s -> s.accessToken) session
+type alias Flags =
+    { apiBaseUrl : String
+    }
 
 
-setContentModel : UserType -> Model -> Model
-setContentModel user model =
-    case user of
-        Professor ->
-            { model | mainContent = ProfessorModel Professor.init, currentUser = user }
-
-        Student info ->
-            { model | mainContent = StudentModel (Student.init info), currentUser = user }
-
-        Admin ->
-            { model | mainContent = AdminModel, currentUser = user }
-
-        Guest ->
-            { model | mainContent = NoContent, currentUser = user }
-
-
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.application
         { init = init

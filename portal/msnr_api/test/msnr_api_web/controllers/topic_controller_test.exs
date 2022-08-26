@@ -1,23 +1,17 @@
 defmodule MsnrApiWeb.TopicControllerTest do
   use MsnrApiWeb.ConnCase
 
-  alias MsnrApi.Topics
+  import MsnrApi.TopicsFixtures
+
   alias MsnrApi.Topics.Topic
 
   @create_attrs %{
-    available: true,
     title: "some title"
   }
   @update_attrs %{
-    available: false,
     title: "some updated title"
   }
-  @invalid_attrs %{available: nil, title: nil}
-
-  def fixture(:topic) do
-    {:ok, topic} = Topics.create_topic(@create_attrs)
-    topic
-  end
+  @invalid_attrs %{title: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -38,8 +32,7 @@ defmodule MsnrApiWeb.TopicControllerTest do
       conn = get(conn, Routes.topic_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "available" => true,
+               "id" => ^id,
                "title" => "some title"
              } = json_response(conn, 200)["data"]
     end
@@ -60,8 +53,7 @@ defmodule MsnrApiWeb.TopicControllerTest do
       conn = get(conn, Routes.topic_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "available" => false,
+               "id" => ^id,
                "title" => "some updated title"
              } = json_response(conn, 200)["data"]
     end
@@ -86,7 +78,7 @@ defmodule MsnrApiWeb.TopicControllerTest do
   end
 
   defp create_topic(_) do
-    topic = fixture(:topic)
+    topic = topic_fixture()
     %{topic: topic}
   end
 end

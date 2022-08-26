@@ -7,6 +7,7 @@ defmodule MsnrApi.Topics do
   alias MsnrApi.Repo
 
   alias MsnrApi.Topics.Topic
+  alias MsnrApi.Groups.Group
 
   @doc """
   Returns the list of topics.
@@ -17,8 +18,18 @@ defmodule MsnrApi.Topics do
       [%Topic{}, ...]
 
   """
-  def list_topics do
-    Repo.all(Topic)
+  def list_topics(%{"semester_id" => semester_id, "available" => "true"}) do
+    from(t in Topic,
+      left_join: g in Group,
+      on: t.id == g.topic_id,
+      where: t.semester_id == ^semester_id and is_nil(g.topic_id),
+      select: t
+    )
+    |> Repo.all()
+  end
+
+  def list_topics(%{"semester_id" => semester_id}) do
+    Repo.all(from t in Topic, where: t.semester_id == ^semester_id)
   end
 
   @doc """
@@ -100,5 +111,24 @@ defmodule MsnrApi.Topics do
   """
   def change_topic(%Topic{} = topic, attrs \\ %{}) do
     Topic.changeset(topic, attrs)
+  end
+
+  def selected_topics_ids(semester_id) do
+    Repo.all(
+      from g in MsnrApi.Groups.Group,
+        join: ss in MsnrApi.Students.StudentSemester,
+        on: ss.semester_id == ^semester_id and ss.group_id == g.id,
+        distinct: true,
+        select: g.topic_id
+    )
+  end
+
+  def next_topic_number(semester_id) do
+    query = from t in Topic, where: t.semester_id == ^semester_id, select: max(t.number)
+
+    case Repo.one(query) do
+      nil -> 1
+      val -> val + 1
+    end
   end
 end

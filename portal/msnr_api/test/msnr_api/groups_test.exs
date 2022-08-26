@@ -6,18 +6,9 @@ defmodule MsnrApi.GroupsTest do
   describe "groups" do
     alias MsnrApi.Groups.Group
 
-    @valid_attrs %{}
-    @update_attrs %{}
+    import MsnrApi.GroupsFixtures
+
     @invalid_attrs %{}
-
-    def group_fixture(attrs \\ %{}) do
-      {:ok, group} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Groups.create_group()
-
-      group
-    end
 
     test "list_groups/0 returns all groups" do
       group = group_fixture()
@@ -30,7 +21,9 @@ defmodule MsnrApi.GroupsTest do
     end
 
     test "create_group/1 with valid data creates a group" do
-      assert {:ok, %Group{} = group} = Groups.create_group(@valid_attrs)
+      valid_attrs = %{}
+
+      assert {:ok, %Group{} = group} = Groups.create_group(valid_attrs)
     end
 
     test "create_group/1 with invalid data returns error changeset" do
@@ -39,7 +32,9 @@ defmodule MsnrApi.GroupsTest do
 
     test "update_group/2 with valid data updates the group" do
       group = group_fixture()
-      assert {:ok, %Group{} = group} = Groups.update_group(group, @update_attrs)
+      update_attrs = %{}
+
+      assert {:ok, %Group{} = group} = Groups.update_group(group, update_attrs)
     end
 
     test "update_group/2 with invalid data returns error changeset" do

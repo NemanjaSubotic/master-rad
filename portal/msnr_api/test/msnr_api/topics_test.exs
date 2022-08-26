@@ -6,18 +6,9 @@ defmodule MsnrApi.TopicsTest do
   describe "topics" do
     alias MsnrApi.Topics.Topic
 
-    @valid_attrs %{available: true, title: "some title"}
-    @update_attrs %{available: false, title: "some updated title"}
-    @invalid_attrs %{available: nil, title: nil}
+    import MsnrApi.TopicsFixtures
 
-    def topic_fixture(attrs \\ %{}) do
-      {:ok, topic} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Topics.create_topic()
-
-      topic
-    end
+    @invalid_attrs %{title: nil}
 
     test "list_topics/0 returns all topics" do
       topic = topic_fixture()
@@ -30,8 +21,9 @@ defmodule MsnrApi.TopicsTest do
     end
 
     test "create_topic/1 with valid data creates a topic" do
-      assert {:ok, %Topic{} = topic} = Topics.create_topic(@valid_attrs)
-      assert topic.available == true
+      valid_attrs = %{title: "some title"}
+
+      assert {:ok, %Topic{} = topic} = Topics.create_topic(valid_attrs)
       assert topic.title == "some title"
     end
 
@@ -41,8 +33,9 @@ defmodule MsnrApi.TopicsTest do
 
     test "update_topic/2 with valid data updates the topic" do
       topic = topic_fixture()
-      assert {:ok, %Topic{} = topic} = Topics.update_topic(topic, @update_attrs)
-      assert topic.available == false
+      update_attrs = %{title: "some updated title"}
+
+      assert {:ok, %Topic{} = topic} = Topics.update_topic(topic, update_attrs)
       assert topic.title == "some updated title"
     end
 

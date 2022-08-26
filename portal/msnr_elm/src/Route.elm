@@ -1,111 +1,141 @@
 module Route exposing (..)
 
 import Browser.Navigation as Nav
-import Professor
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, parse, s, string, top)
-import User.Type exposing (UserType(..))
+import UserType as UT exposing (UserType)
 
 
 type Route
-    = HomeRoute
-    | StudentRoute
-    | LoginRoute
-    | RegistrationRoute
-    | ProfessorRoute Professor.Route
-    | AdminRoute
-    | SetPasswordRoute String
-    | NotFoundRoute
+    = Home
+    | Student
+    | Login
+    | Registration
+    | Professor ProfessorSubRoute
+    | SetPassword String
+    | NotFound
+
+
+type alias ActivityId =
+    Int
+
+
+type ProfessorSubRoute
+    = RegistrationRequests
+    | Activities
+    | ActivityAssignments ActivityId
+    | Topics
+    | Groups
 
 
 parser : Parser (Route -> a) a
 parser =
     Parser.oneOf
-        [ Parser.map HomeRoute top
-        , Parser.map StudentRoute (s "student")
-        , Parser.map LoginRoute (s "login")
-        , Parser.map RegistrationRoute (s "register")
-        , Parser.map ProfessorRoute (s "professor" </> Professor.routeParser)
-        , Parser.map AdminRoute (s "admin")
-        , Parser.map SetPasswordRoute (s "setPassword" </> string)
-        , Parser.map NotFoundRoute (s "notFound")
+        [ Parser.map Home top
+        , Parser.map Student (s "student")
+        , Parser.map Login (s "login")
+        , Parser.map Registration (s "register")
+        , Parser.map Professor (s "professor" </> professorParser)
+        , Parser.map SetPassword (s "setPassword" </> string)
+        , Parser.map NotFound (s "notFound")
+        ]
+
+
+professorParser : Parser (ProfessorSubRoute -> a) a
+professorParser =
+    Parser.oneOf
+        [ Parser.map RegistrationRequests (s "registrations")
+        , Parser.map Activities (s "activities")
+        , Parser.map ActivityAssignments (s "activities" </> Parser.int </> s "assignments")
+        , Parser.map Topics (s "topics")
+        , Parser.map Groups (s "groups")
         ]
 
 
 fromUrl : Url -> Route
 fromUrl =
-    Maybe.withDefault NotFoundRoute << parse parser
+    Maybe.withDefault NotFound << parse parser
 
 
-guard : UserType -> Route -> Nav.Key -> { route : Route, redirection : Cmd msg }
+guard : UserType -> Route -> Nav.Key -> Maybe (Cmd msg)
 guard user route key =
     let
         redirectWithKey =
             redirectTo key
     in
     case ( user, route ) of
-        ( Guest, HomeRoute ) ->
-            { route = HomeRoute, redirection = Cmd.none }
+        ( UT.Guest, Home ) ->
+            Nothing
 
-        ( Guest, LoginRoute ) ->
-            { route = LoginRoute, redirection = Cmd.none }
+        ( UT.Guest, Login ) ->
+            Nothing
 
-        ( Guest, RegistrationRoute ) ->
-            { route = RegistrationRoute, redirection = Cmd.none }
+        ( UT.Guest, Registration ) ->
+            Nothing
 
-        ( Guest, SetPasswordRoute uuid ) ->
-            { route = SetPasswordRoute uuid, redirection = Cmd.none }
+        ( UT.Guest, SetPassword _ ) ->
+            Nothing
 
-        ( Student _, StudentRoute ) ->
-            { route = StudentRoute, redirection = Cmd.none }
+        ( UT.Student _, Student ) ->
+            Nothing
 
-        ( Student _, _ ) ->
-            { route = HomeRoute, redirection = redirectWithKey HomeRoute }
+        ( UT.Student _, _ ) ->
+            Just (redirectWithKey Home)
 
-        ( Professor, ProfessorRoute subRoute ) ->
-            { route = ProfessorRoute subRoute, redirection = Cmd.none }
+        ( UT.Professor _, Professor _ ) ->
+            Nothing
 
-        ( Professor, _ ) ->
-            { route = HomeRoute, redirection = redirectWithKey HomeRoute }
-
-        ( Admin, AdminRoute ) ->
-            { route = AdminRoute, redirection = Cmd.none }
-
-        ( Admin, _ ) ->
-            { route = HomeRoute, redirection = redirectWithKey HomeRoute }
+        ( UT.Professor _, _ ) ->
+            Just (redirectWithKey Home)
 
         _ ->
-            { route = NotFoundRoute, redirection = redirectWithKey NotFoundRoute }
-
-
-toString : Route -> String
-toString route =
-    case route of
-        HomeRoute ->
-            "/"
-
-        StudentRoute ->
-            "/student"
-
-        LoginRoute ->
-            "/login"
-
-        RegistrationRoute ->
-            "/register"
-
-        ProfessorRoute subRoute ->
-            "/professor" ++ Professor.routeToString subRoute
-
-        AdminRoute ->
-            "/adim"
-
-        SetPasswordRoute uuid ->
-            "/setPassword/" ++ uuid
-
-        NotFoundRoute ->
-            "/notFound"
+            Just (redirectWithKey NotFound)
 
 
 redirectTo : Nav.Key -> Route -> Cmd msg
 redirectTo key route =
     Nav.pushUrl key (toString route)
+
+
+toString : Route -> String
+toString route =
+    case route of
+        Home ->
+            "/"
+
+        Student ->
+            "/student"
+
+        Login ->
+            "/login"
+
+        Registration ->
+            "/register"
+
+        Professor subRoute ->
+            "/professor" ++ professorSubRouteToString subRoute
+
+        SetPassword uuid ->
+            "/setPassword/" ++ uuid
+
+        NotFound ->
+            "/notFound"
+
+
+professorSubRouteToString : ProfessorSubRoute -> String
+professorSubRouteToString route =
+    case route of
+        RegistrationRequests ->
+            "/registrations"
+
+        Activities ->
+            "/activities"
+
+        ActivityAssignments activityId ->
+            "/activities/" ++ String.fromInt activityId ++ "/assignments"
+
+        Topics ->
+            "/topics"
+
+        Groups ->
+            "/groups"

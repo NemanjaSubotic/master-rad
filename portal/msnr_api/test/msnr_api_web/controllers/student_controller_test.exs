@@ -1,23 +1,17 @@
 defmodule MsnrApiWeb.StudentControllerTest do
   use MsnrApiWeb.ConnCase
 
-  alias MsnrApi.Students
+  import MsnrApi.StudentsFixtures
+
   alias MsnrApi.Students.Student
 
   @create_attrs %{
-    index_number: "some index_number",
-    userId: 42
+    index_number: "some index_number"
   }
   @update_attrs %{
-    index_number: "some updated index_number",
-    userId: 43
+    index_number: "some updated index_number"
   }
-  @invalid_attrs %{index_number: nil, userId: nil}
-
-  def fixture(:student) do
-    {:ok, student} = Students.create_student(@create_attrs)
-    student
-  end
+  @invalid_attrs %{index_number: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -38,9 +32,8 @@ defmodule MsnrApiWeb.StudentControllerTest do
       conn = get(conn, Routes.student_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "index_number" => "some index_number",
-               "userId" => 42
+               "id" => ^id,
+               "index_number" => "some index_number"
              } = json_response(conn, 200)["data"]
     end
 
@@ -60,9 +53,8 @@ defmodule MsnrApiWeb.StudentControllerTest do
       conn = get(conn, Routes.student_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "index_number" => "some updated index_number",
-               "userId" => 43
+               "id" => ^id,
+               "index_number" => "some updated index_number"
              } = json_response(conn, 200)["data"]
     end
 
@@ -86,7 +78,7 @@ defmodule MsnrApiWeb.StudentControllerTest do
   end
 
   defp create_student(_) do
-    student = fixture(:student)
+    student = student_fixture()
     %{student: student}
   end
 end

@@ -4,63 +4,60 @@ defmodule MsnrApi.ActivitiesTest do
   alias MsnrApi.Activities
 
   describe "activities" do
-    alias MsnrApi.Activities.Activit
+    alias MsnrApi.Activities.Activity
 
-    @valid_attrs %{ends_sec: 42, starts_sec: 42}
-    @update_attrs %{ends_sec: 43, starts_sec: 43}
-    @invalid_attrs %{ends_sec: nil, starts_sec: nil}
+    import MsnrApi.ActivitiesFixtures
 
-    def activit_fixture(attrs \\ %{}) do
-      {:ok, activit} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Activities.create_activit()
-
-      activit
-    end
+    @invalid_attrs %{end_date: nil, is_signup: nil, start_date: nil}
 
     test "list_activities/0 returns all activities" do
-      activit = activit_fixture()
-      assert Activities.list_activities() == [activit]
+      activity = activity_fixture()
+      assert Activities.list_activities() == [activity]
     end
 
-    test "get_activit!/1 returns the activit with given id" do
-      activit = activit_fixture()
-      assert Activities.get_activit!(activit.id) == activit
+    test "get_activity!/1 returns the activity with given id" do
+      activity = activity_fixture()
+      assert Activities.get_activity!(activity.id) == activity
     end
 
-    test "create_activit/1 with valid data creates a activit" do
-      assert {:ok, %Activity{} = activit} = Activities.create_activit(@valid_attrs)
-      assert activit.ends_sec == 42
-      assert activit.starts_sec == 42
+    test "create_activity/1 with valid data creates a activity" do
+      valid_attrs = %{end_date: 42, is_signup: true, start_date: 42}
+
+      assert {:ok, %Activity{} = activity} = Activities.create_activity(valid_attrs)
+      assert activity.end_date == 42
+      assert activity.is_signup == true
+      assert activity.start_date == 42
     end
 
-    test "create_activit/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Activities.create_activit(@invalid_attrs)
+    test "create_activity/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Activities.create_activity(@invalid_attrs)
     end
 
-    test "update_activit/2 with valid data updates the activit" do
-      activit = activit_fixture()
-      assert {:ok, %Activity{} = activit} = Activities.update_activit(activit, @update_attrs)
-      assert activit.ends_sec == 43
-      assert activit.starts_sec == 43
+    test "update_activity/2 with valid data updates the activity" do
+      activity = activity_fixture()
+      update_attrs = %{end_date: 43, is_signup: false, start_date: 43}
+
+      assert {:ok, %Activity{} = activity} = Activities.update_activity(activity, update_attrs)
+      assert activity.end_date == 43
+      assert activity.is_signup == false
+      assert activity.start_date == 43
     end
 
-    test "update_activit/2 with invalid data returns error changeset" do
-      activit = activit_fixture()
-      assert {:error, %Ecto.Changeset{}} = Activities.update_activit(activit, @invalid_attrs)
-      assert activit == Activities.get_activit!(activit.id)
+    test "update_activity/2 with invalid data returns error changeset" do
+      activity = activity_fixture()
+      assert {:error, %Ecto.Changeset{}} = Activities.update_activity(activity, @invalid_attrs)
+      assert activity == Activities.get_activity!(activity.id)
     end
 
-    test "delete_activit/1 deletes the activit" do
-      activit = activit_fixture()
-      assert {:ok, %Activity{}} = Activities.delete_activit(activit)
-      assert_raise Ecto.NoResultsError, fn -> Activities.get_activit!(activit.id) end
+    test "delete_activity/1 deletes the activity" do
+      activity = activity_fixture()
+      assert {:ok, %Activity{}} = Activities.delete_activity(activity)
+      assert_raise Ecto.NoResultsError, fn -> Activities.get_activity!(activity.id) end
     end
 
-    test "change_activit/1 returns a activit changeset" do
-      activit = activit_fixture()
-      assert %Ecto.Changeset{} = Activities.change_activit(activit)
+    test "change_activity/1 returns a activity changeset" do
+      activity = activity_fixture()
+      assert %Ecto.Changeset{} = Activities.change_activity(activity)
     end
   end
 end

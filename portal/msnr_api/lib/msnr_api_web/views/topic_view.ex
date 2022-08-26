@@ -11,8 +11,10 @@ defmodule MsnrApiWeb.TopicView do
   end
 
   def render("topic.json", %{topic: topic}) do
-    %{id: topic.id,
+    %{
+      id: topic.id,
       title: topic.title,
-      available: topic.available}
+      number: topic.number
+    }
   end
 end

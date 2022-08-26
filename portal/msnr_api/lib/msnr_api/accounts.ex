@@ -1,193 +1,192 @@
 defmodule MsnrApi.Accounts do
+  @moduledoc """
+  The Accounts context.
+  """
 
   import Ecto.Query, warn: false
   alias MsnrApi.Repo
-  alias Ecto.Multi
 
-  alias MsnrApi.Accounts.Registration
   alias MsnrApi.Accounts.User
-  alias MsnrApi.Accounts.Password
-  alias MsnrApi.Accounts.Role
-  alias MsnrApi.Students.Student
+  alias MsnrApi.Students.StudentSemester
   alias MsnrApi.Semesters.Semester
+  alias MsnrApi.Accounts.Password
+  alias MsnrApi.StudentRegistrations.StudentRegistration
 
   def authenticate(email, password) do
-    user_info = get_user_info [email: email]
+    user_info = get_user_info(email: email)
 
-    with %{hashed_password: hash} <- user_info.user,
-        true <- Password.verify_with_hash(password, hash) do
-          {:ok, user_info}
+    with %{user: %{hashed_password: hash}} <- user_info,
+         true <- Password.verify_with_hash(password, hash) do
+      {:ok, user_info}
     else
       _ -> {:error, :unauthorized}
     end
   end
 
-  defp get_user_info(where_clause) do
-    student_info = from st in Student,
-      inner_join: sem in Semester, on: sem.is_active and sem.id == st.semester_id,
-      left_join: g in assoc(st, :group),
-      select: %{
-        id: st.id,
-        user_id: st.user_id,
-        group_id: g.id,
-        semester_id: sem.id}
-
-    Repo.one from u in User,
-      inner_join: r in Role, on: u.role_id == r.id,
-      left_join: s in subquery(student_info), on: s.user_id == u.id,
-      preload: [:role],
-      where: ^where_clause,
-      select: %{
-        user: u,
-        student_info: %{
-          student_id: s.id,
-          group_id: s.group_id,
-          semester_id: s.semester_id}
-      }
-  end
-
-  def verify_user_by_token(id, token) do
-    case get_user_info [id: id, refresh_token: token] do
-      nil  -> {:error, :unauthorized}
-      user -> {:ok, user}
+  def verify_user(%{id: id, refresh_token: token}) do
+    case get_user_info(id: id, refresh_token: token) do
+      nil -> {:error, :unauthorized}
+      user_info -> {:ok, user_info}
     end
   end
 
-
-  def verify_user_by_email(id, email) do
-    case Repo.get_by(User, [id: id, email: email]) do
-      nil  -> {:error, :unauthorized}
+  def verify_user(%{email: email, uuid: uuid}) do
+    case Repo.get_by(User, email: email, password_url_path: uuid) do
+      nil -> {:error, :unauthorized}
       user -> {:ok, user}
     end
   end
-
-  def get_user_by_url!(url), do: Repo.get_by!(User, [password_url_path: url])
-
-  def get_user!(id), do: Repo.get(User, id)
 
   def set_password(user, password) do
     user
     |> User.changeset_password(%{password: password})
-    |> Repo.update
+    |> Repo.update()
   end
+
+  def get_user_info(where_clause) do
+    student_query = create_student_query(where_clause)
+
+    query =
+      from u in User,
+        where: u.role == :professor,
+        where: ^where_clause,
+        select: %{
+          user: u,
+          semester_id: nil,
+          student_info: %{
+            index_number: nil,
+            group_id: nil
+          }
+        },
+        union_all: ^student_query
+
+    user_info = Repo.one(query)
+
+    case user_info do
+      %{semester_id: nil} ->
+        Map.put(user_info, :semester_id, MsnrApi.Semesters.get_active_semester!().id)
+
+      _ ->
+        user_info
+    end
+  end
+
+  defp create_student_query(where_clause) do
+    from u in User,
+      where: u.role == :student,
+      where: ^where_clause,
+      join: st in assoc(u, :student),
+      join: st_sem in StudentSemester,
+      on: st_sem.student_id == u.id,
+      join: sem in Semester,
+      on: sem.is_active and sem.id == st_sem.semester_id,
+      select: %{
+        user: u,
+        semester_id: sem.id,
+        student_info: %{
+          index_number: st.index_number,
+          group_id: st_sem.group_id
+        }
+      }
+  end
+
   @doc """
-  Returns the list of registrations.
+  Returns the list of users.
 
   ## Examples
 
-      iex> list_registrations()
-      [%Registration{}, ...]
+      iex> list_users()
+      [%User{}, ...]
 
   """
-  def list_registrations do
-    Repo.all(Registration)
+  def list_users do
+    Repo.all(User)
   end
 
   @doc """
-  Gets a single registration.
+  Gets a single user.
 
-  Raises `Ecto.NoResultsError` if the Registration does not exist.
+  Raises `Ecto.NoResultsError` if the User does not exist.
 
   ## Examples
 
-      iex> get_registration!(123)
-      %Registration{}
+      iex> get_user!(123)
+      %User{}
 
-      iex> get_registration!(456)
+      iex> get_user!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_registration!(id), do: Repo.get!(Registration, id)
-
-  # def get_registration(id) do
-  #   case Repo.get(Registration, id) do
-  #     nil -> {:error, :not_found}
-  #     registration -> {:ok, registration}
-  #   end
-  # end
-
-  def get_role!(name), do: Repo.get_by!(Role, [name: name])
+  def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
-  Creates a registration.
+  Creates a user.
 
   ## Examples
 
-      iex> create_registration(%{field: value})
-      {:ok, %Registration{}}
+      iex> create_user(%{field: value})
+      {:ok, %User{}}
 
-      iex> create_registration(%{field: bad_value})
+      iex> create_user(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_registration(attrs \\ %{}) do
-    %Registration{}
-    |> Registration.changeset(attrs)
+  def create_user(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_student_account(%StudentRegistration{} = registration) do
+    %User{}
+    |> User.changeset(registration)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a registration.
+  Updates a user.
 
   ## Examples
 
-      iex> update_registration(registration, %{field: new_value})
-      {:ok, %Registration{}}
+      iex> update_user(user, %{field: new_value})
+      {:ok, %User{}}
 
-      iex> update_registration(registration, %{field: bad_value})
+      iex> update_user(user, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_registration(%Registration{} = registration, attrs) do
-    registration
-    |> Registration.changeset_status(attrs)
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
     |> Repo.update()
   end
 
-  def accept_registration(%Registration{} = registration) do
-      student_role = get_role!(Role.student)
-      reg_changeset = Registration.changeset_status(registration, %{status: Registration.Status.accepted})
-      user_changeset =
-        %User{}
-        |> User.changeset(%{email: registration.email, first_name: registration.first_name, last_name: registration.last_name})
-        |> User.changeset_role(student_role)
-
-      Multi.new()
-      |> Multi.update(:registration, reg_changeset)
-      |> Multi.insert(:user, user_changeset)
-      |> Multi.run(:student, fn _repo, %{user: user} ->
-          %Student{}
-          |> Student.changeset(%{user_id: user.id, index_number: registration.index_number})
-          |> Repo.insert
-      end)
-  end
-
   @doc """
-  Deletes a registration.
+  Deletes a user.
 
   ## Examples
 
-      iex> delete_registration(registration)
-      {:ok, %Registration{}}
+      iex> delete_user(user)
+      {:ok, %User{}}
 
-      iex> delete_registration(registration)
+      iex> delete_user(user)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_registration(%Registration{} = registration) do
-    Repo.delete(registration)
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking registration changes.
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
 
   ## Examples
 
-      iex> change_registration(registration)
-      %Ecto.Changeset{data: %Registration{}}
+      iex> change_user(user)
+      %Ecto.Changeset{data: %User{}}
 
   """
-  def change_registration(%Registration{} = registration, attrs \\ %{}) do
-    Registration.changeset(registration, attrs)
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.changeset(user, attrs)
   end
 end

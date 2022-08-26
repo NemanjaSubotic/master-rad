@@ -6,8 +6,13 @@ defmodule MsnrApi.Groups do
   import Ecto.Query, warn: false
   alias MsnrApi.Repo
   alias Ecto.Multi
+
   alias MsnrApi.Groups.Group
-  alias MsnrApi.Groups.GroupRegistration
+  alias MsnrApi.Activities.Activity
+  alias MsnrApi.ActivityTypes.ActivityType
+  alias MsnrApi.Assignments.Assignment
+  alias MsnrApi.Students.StudentSemester
+  alias MsnrApi.Students.Student
 
   @doc """
   Returns the list of groups.
@@ -18,10 +23,18 @@ defmodule MsnrApi.Groups do
       [%Group{}, ...]
 
   """
-  def list_groups() do
-
-
-    Repo.all(Group)
+  def list_groups(semester_id) do
+    from(g in Group,
+      join: ss in StudentSemester,
+      on: ss.semester_id == ^semester_id and g.id == ss.group_id,
+      join: s in Student,
+      on: s.user_id == ss.student_id,
+      join: u in assoc(s, :user),
+      left_join: t in assoc(g, :topic),
+      preload: [topic: t, students: {s, user: u}],
+      select: g
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -38,7 +51,35 @@ defmodule MsnrApi.Groups do
       ** (Ecto.NoResultsError)
 
   """
-  def get_group!(id), do: Repo.get!(Group, id)
+  def get_group!(id) do
+    from(g in Group,
+      where: g.id == ^id,
+      join: s in assoc(g, :students),
+      join: u in assoc(s, :user),
+      left_join: t in assoc(g, :topic),
+      preload: [topic: t, students: {s, user: u}],
+      select: g
+    )
+    |> Repo.one()
+  end
+
+  def get_group(id) do
+    group =
+      from(g in Group,
+        where: g.id == ^id,
+        join: s in assoc(g, :students),
+        join: u in assoc(s, :user),
+        left_join: t in assoc(g, :topic),
+        preload: [topic: t, students: {s, user: u}],
+        select: g
+      )
+      |> Repo.one()
+
+    case group do
+      nil -> {:error, :not_found}
+      g -> {:ok, g}
+    end
+  end
 
   @doc """
   Creates a group.
@@ -52,26 +93,32 @@ defmodule MsnrApi.Groups do
       {:error, %Ecto.Changeset{}}
 
   """
-
-  def create_group(activity_id, creator_id, student_id, student_ids) do
-    student_ids =
-      case {is_nil(student_id), Enum.member?(student_ids, student_id) } do
-        {false, false} -> [student_id | student_ids]
-        _ -> student_ids
-      end
-
-    multi_struct = Multi.new
-    |> Multi.insert(:group, Group.changeset(%Group{}, %{creator_id: creator_id}))
-    |> Multi.run(:group_registrations, fn _repo, %{group: group} ->
-      student_ids
-      |> Enum.map(fn id ->
-        %GroupRegistration{}
-        |> GroupRegistration.changeset(%{activity_id: activity_id, group_id: group.id, student_id: id})
-        |> Repo.insert!
-      end)
-      {:ok, :ok}
-    end)
-
+  def create_group(%{semester_id: semester_id, students: stundets_ids}) do
+    multi_struct = Multi.new()
+    |> Multi.run(:activity, fn _, _ -> get_group_activity(semester_id) end)
+    |> Multi.insert(:group, %Group{})
+    |> Multi.update_all(
+      :students,
+      fn %{group: group} ->
+        from(
+          s in StudentSemester,
+          where: s.semester_id == ^semester_id and s.student_id in ^stundets_ids and is_nil(s.group_id),
+          update: [set: [group_id: ^group.id]]
+        )
+      end,
+      []
+    )
+    |> Multi.update_all(
+      :assignment,
+      fn %{activity: activity} ->
+        from(
+          a in Assignment,
+          where: a.activity_id == ^activity.id and a.student_id in ^stundets_ids,
+          update: [set: [completed: true]]
+        )
+      end,
+      []
+    )
 
     case Repo.transaction(multi_struct) do
       {:ok, %{group: group}} -> {:ok, group}
@@ -125,5 +172,25 @@ defmodule MsnrApi.Groups do
   """
   def change_group(%Group{} = group, attrs \\ %{}) do
     Group.changeset(group, attrs)
+  end
+
+  defp get_group_activity(semester_id) do
+    group_code = MsnrApi.ActivityTypes.TypeCode.group()
+
+    query = from(a in Activity,
+      join: at in ActivityType,
+      on: a.semester_id == ^semester_id and a.activity_type_id == at.id and at.code == ^group_code
+    )
+
+    case Repo.one(query) do
+      nil -> {:error, :bad_request }
+      activity ->
+        if activity.end_date >= System.os_time(:second) do
+          {:ok, activity}
+        else
+          {:error, :bad_request }
+        end
+    end
+
   end
 end
