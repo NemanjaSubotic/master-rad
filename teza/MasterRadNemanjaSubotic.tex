@@ -212,7 +212,7 @@ nazivi paketa su oblika \emph{autor/ime-paketa}.
 
 Kompilacija se vrši naredbom \textbf{elm make} \emph{<jedna-ili-više-elm-datoteka>},
 ukoliko se ne navede izlazna datoteka pomoću argumenta \emph{-{}-output} generisaće 
-se datoteka \emph{index.html} sa prevedenim JavaScript kodom. Ostali argumenti kao i
+se datoteka \emph{index.html} sa prevedenim \emph{JavaScript} kodom. Ostali argumenti kao i
 više informacija o drugim alatima mogu se videti pomoću naredbe \textbf{elm}
 \emph{naziv-alata} \textbf{-{}-help}.
 
@@ -303,7 +303,7 @@ Tip \textbf{Bool} predstavlja logički tip i može imati vrednost \texttt{True} 
 
 Tip \textbf{Int} se koristi za prikazivanje celih brojeva. Siguran opseg vrednosti je
 od \(-2^{31}\) do \(2^{31} - 1\), van toga sve zavisi od cilja kompilacije. Ukoliko je
-cilj kompilacije JavaScript (što je trenutni slučaj), opseg se proširuje na \(-2^{53}\) do
+cilj kompilacije \emph{JavaScript} (što je trenutni slučaj), opseg se proširuje na \(-2^{53}\) do
 \(2^{53} - 1\). Do proširivanja opsega ne bi dolazilo ukoliko bi se
 umesto \emph{JavaScript} koda generisao \emph{WebAssembly}, tada bi postojalo prekoračenje celih
 brojeva (eng. \emph{integer overflow}). Vrednosti se mogu navoditi i u heksadecimalnom
@@ -2215,7 +2215,7 @@ pored referenci ka ovim tabelama, sadrži i oznaku da li je taj dokument prikač
 
 \chapter{Implementacija serverskog dela portala}
 
-Budići da je \emph{Elixir} jezik opšte namene i za razliku od Elma ne uključuje sve alate i pakete
+Budući da je \emph{Elixir} jezik opšte namene i za razliku od \emph{Elm}-a ne uključuje sve alate i pakete
 potrebne za razvoj veb aplikacije, neophodna je njihova instalacija.
 
 \section{Instalacija razvojnog okruženja}
@@ -2238,11 +2238,11 @@ Pored navedenih alata potrebno je instalirati i \emph{PostgreSQL}.
 \emph{Phoenix} je okruženje za razvoj svih tipova veb aplikcaija, omogućava renderovanje \emph{HTML}-a na serverskoj strani i ima odličnu podršku
 za komunikaciju u realnom vremenu. Poseduje i svojstven koncept \emph{LiveView} koji pruža bogato korisničko iskustvo u realnom vremenu sa
 renderovanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreira se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
-Takođe, portal neće podržavati lokalizaciju, stoga nema potreba za uključivanje modula \emph{gettext}.
+Takođe, portal ne podržava lokalizaciju, stoga nema potreba za uključivanje modula \emph{gettext}.
 
 Komanda korišćena za kreiranje projekta:
 \mint{bash}|mix phx.new msnr_api --no-assets --no-html --no-gettext|
-\noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje foldera \emph{assets} koji je predviđen za JavaScript i CSS datoteke,
+\noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje foldera \emph{assets} koji je predviđen za \emph{JavaScript} i \emph{CSS} datoteke,
 dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šablona za serversko renderovanje.
 \begin{figure}[!h]
   \centering
@@ -2429,7 +2429,7 @@ end
 \end{listing}
 
 Poslednji poziv u akciji upravljača je funkcija \texttt{\textbf{render}} definisana u modulu \emph{ActivityTypeView} koja za argumente ima \emph{Plug.Conn} strukturu,
-naziv šablona i podatke potrebne za renderovanje. U slučaju JSON veb interfejsa kreira se mapa koja se prevodi u JSON objekat,
+naziv šablona i podatke potrebne za renderovanje. U slučaju \emph{JSON} veb interfejsa kreira se mapa koja se prevodi u \emph{JSON} objekat,
 čime se završava obrada zahteva u okviru razvojnog okruženja \emph{Phoenix}. 
 
 \section{Komunikacija sa bazom podataka}
@@ -3129,7 +3129,7 @@ svojstva \emph{HTTP} zahteva. Poljem \texttt{expect} se označava koji tip podat
 nije korišćeno u aplikaciji. Pored funkcije \texttt{request} i funkcija \texttt{riskyRequest} koja ima istu anotaciju, s tim što omogućava
 postavljanje kolačića od strane servera (uključuje opciju \texttt{withCredentials} \cite{withCredentials}).
 
-Za komuniciranje sa MSNR veb interfejsom kreiran je modul \emph{Api} koji otkriva funkcije \texttt{get}, \texttt{post},
+Za komuniciranje sa veb interfejsom portala MSNR kreiran je modul \emph{Api} koji otkriva funkcije \texttt{get}, \texttt{post},
 \texttt{put} i \texttt{delete} koje se oslanjaju na \texttt{request}, kao i funkcije koje se oslanjaju na
 \texttt{riskyRequest} --- \texttt{getWithCredentials} i \texttt{postWithCredentials}. Takođe, unutar modula
 su navedene sve putanje veb interfejsa koje se korste u aplikaciji.
