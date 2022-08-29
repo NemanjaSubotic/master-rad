@@ -82,9 +82,8 @@ Programski jezik \emph{Elm} odlikuje laka upotrebljivost, visoke performanse,
 robusnost i otpornost na greške. Kao jezik specifične namene uvodi poseban
 način izvršavanja aplikacije, poznat kao \emph{arhitektura Elm}, koja je
 poslužila kao inspiracija mnogim \emph{JavaScript} bibliotekama.
-Programski jezik \emph{Elixir} nastaje pod
-uticajem velikog broja programskih jezika sa idejom da se izvršava na virtuelnoj
-mašini \emph{Erlang}. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
+Programski jezik \emph{Elixir} nastaje kao moderan funkcionalni programski jezik
+sa osnovnom idejom da se izvršava na \emph{Erlang} virtuelnoj mašini. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
 ali je svoju upotrebu našao gotovo u svim oblastima računarstva.
 Za razvoj veb aplikacija najpopularnije je razvojno okruženje \emph{Phoenix}, koje
 nastaje i razvija se uporedo sa samim programskim jezikom.
@@ -111,15 +110,14 @@ portala korišćenjem programskog jezika \emph{Elm}. Sedmo poglavlje sadrži zak
 mogućim daljim unapređenjima.
 
 \chapter{Programski jezik i okruženje Elm}
-Evan Zaplicki (\emph{Evan Czaplicki}) je 2012. godine objavio svoju tezu "\emph{Elm}: Konkurento FRP
+Evan Čapliki (\emph{Evan Czaplicki}) je 2012. godine objavio svoju tezu "\emph{Elm}: Konkurentno FRP
 \footnote{FRP je skraćenica za funkcionalno reaktivno programiranje} za funkcionalne \emph{GUI}-je
 \footnote{GUI je skraćenica za grafički korisnički interfejs}" (eng. \emph{"Elm: Concurrent
 FRP for Functional GUIs"}) \cite{elm:2012} i, s ciljem da \emph{GUI} programiranje učini
 prijatnijim, dizajnirao novi programski jezik --- \emph{Elm}. Na slici \ref{fig:elm-logo} prikazan
 je logo jezika.
 \emph{Elm} je statički tipiziran, čisto funkcionalni programski jezik koji se
-kompilira, tačnije transpilira u \emph{JavaScript} i namenjen je isključivo za
-kreiranje korisničkog interfejsa veb aplikacija.
+kompilira, tačnije transpilira u \emph{JavaScript} i namenjen je isključivo za kreiranje veb aplikacija.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.3\textwidth]{elm.png}
@@ -127,22 +125,23 @@ kreiranje korisničkog interfejsa veb aplikacija.
   \label{fig:elm-logo}
 \end{figure}
 Takođe, \emph{Elm} nije samo programski jezik već i platforma za razvoj aplikacija.
-Zbog svoje funkcionalne prirode i prisustva kompilatora, \emph{Elm} spada među
-najstabilnija i najpouzdanija razvojna okruženja, a za \emph{Elm} aplikacije važi
+Zahvaljujući funkcionalnoj prirodi i svojstvenom kompilatoru, \emph{Elm} pruža programerima
+poseban osećaj sigurnosti i samouverenosti tokom refaktorisanja postojećih i
+dodavanja novih funkcionalnosti. Za \emph{Elm} aplikacije važi
 da, u praksi, ne izbacuju neplanirane greške tokom izvršavanja (eng. \emph{No 
 Runtime Exceptions}).
 
 \section{Uputstvo za instalaciju}
 Pored želje da frontend programiranje učini prijatnijim, kreator jezika nastoji 
-da ono bude i pristupačnije. Stoga, da bi se počelo sa korišćenjem progamskog jezika \emph{Elm}, instalacija
+da ono bude i pristupačnije. Stoga, da bi se počelo sa korišćenjem programskog jezika \emph{Elm}, instalacija
 nije potrebna, dovoljno je otići na zvaničnu veb stranicu i pokrenuti dostupan 
 interaktivni kompilator \cite{tryelm}, gde se može naći dosta primera, kao i vodič kroz \emph{Elm}.
 
-Za zahtevnije projekte neophodno je izvršiti instalaciju, koja je vrlo
+Za zahtevnije projekte neophodna je instalacija, koja je vrlo
 jednostavna. Potrebno je pratiti instrukcije sa zvanične stranice
-\cite{installelm}. Takođe, moguća je instalacija pomoću \textbf{npm}
+\cite{installelm}. Takođe, moguća je instalacija pomoću alata \textbf{npm} \cite{npm}
 \footnote{npm --- \emph{Node Package Manager} predstavlja alat za upravljanje paketima u 
-\emph{JavaScript} programskom jeziku} alata \cite{npm}.
+\emph{JavaScript} programskom jeziku}.
 Na slici \ref{fig:elm-cmd} prikazana je provera uspešne instalacije, koja se može izvršiti
 pokretanjem komande \textbf{elm} u komandnoj liniji, gde će se prikazati poruka
 dobrodošlice i spisak mogućih komandi o kojima će biti reč u sledećim poglavljima.
@@ -281,7 +280,7 @@ Karakteri se navode između dva apostorfa (\texttt{'a', '0', '\textbackslash t'}
 moguće je koristiti i unikod zapis  \texttt{'\textbackslash u\{0000\}}' -
 \texttt{'\textbackslash u\{10FFFF\}'}.
 
-Za razliku od \emph{Haskell} programskog jezika, gde je \textbf{String} zapravo lista karaktera, \emph{Elm} je
+Za razliku od programskog jezika \emph{Haskell}, gde je \textbf{String} zapravo lista karaktera, \emph{Elm}-u je
 poseban tip i predstavlja sekvencu unikod karaktera. Sekvenca se navodi između
 jednostrukih ili trostrukih navodnika (listing \ref{listing:string}).
 
@@ -330,7 +329,7 @@ Infinity : Float
 
 \subsection{Osnovni operatori}
 Kod aritmetičkih operacija, operatori \texttt{+, -, *} se mogu koristiti sa realnim i 
-celim brojevim, dok imamo posebne operatore za deljenje (\texttt{{/}} i \texttt{{//}} koji
+celim brojevima, dok imamo posebne operatore za deljenje (\texttt{{/}} i \texttt{{//}} koji
 su i ranije prikazani u listingu \ref{listing:tipovi}). \emph{Elm} ne podržava implicitne konverzije
 tipova, pa prilikom sabiranja celog broja sa realnim, bez eksplicitne konverzije, kompilator
 prijavljuje grešku (listing \ref{listing:konverzija}). Postoji još i eksponencijalni operator \^{},
@@ -451,7 +450,7 @@ naKvadrat x =
 \end{listing}
 
 Da bi se modul iz listinga \ref{listing:modul} koristio u interpreteru (\texttt{\textbf{elm repl}}),
-prvo je potrebno inicijalizovati \emph{Elm} projekat (\texttt{\textbf{elm init}}) i u folderu \texttt{src} napraviti 
+prvo je potrebno inicijalizovati \emph{Elm} projekat (\texttt{\textbf{elm init}}) i u direktorijumu \texttt{src} napraviti 
 datoteku \emph{Krug.elm} sa prikazanim sadržajem. Zatim, u interpreteru naredbom 
 \texttt{\textbf{import}} treba uvesti modul. Načini korišćenja funkcija iz modula
 \emph{Krug} prikazani su u listingu \ref{listing:import}.
@@ -553,7 +552,7 @@ g ( f x\textunderscore)) x}}. Operator kompozicije \texttt{\textbf{>\smallskip>}
 simetričan operatoru \texttt{\textbf{<\smallskip<}}, stoga važi: \texttt{\textbf{(f <\smallskip< g) x == (g >\smallskip> f) x}}.
 
 \subsection{Osnovne strukture podataka}
-Osnovne strukture podatka progamskog jezika \emph{Elm} čine liste, torke i slogovi. 
+Osnovne strukture podatka programskog jezika \emph{Elm} čine liste, torke i slogovi. 
 \subsubsection{Liste}
 Lista predstavlja kolekciju u obliku jednostruko povezane liste. Elementi se navode
 unutar uglastih zagrada---\textbf{\texttt{[\smallskip ]}} i moraju biti istog tipa. Funkcije za rad
@@ -740,7 +739,7 @@ NaCekanju : StatusPrijave
 \emph{Elm} ne izvršava naredbe, već evaluira izraze, tako da umesto naredbi grananja
 imamo izraze \texttt{\textbf{if}} i \texttt{\textbf{case}}, a rekurziju umesto petlji.  
 \subsubsection{Izraz \texttt{\textbf{if}}}
-Izraz \texttt{\textbf{if}} se može posmatrati kao ternarni operator u progamskim jezicima \emph{JavaScript}, \emph{C++} i 
+Izraz \texttt{\textbf{if}} se može posmatrati kao ternarni operator u programskim jezicima \emph{JavaScript}, \emph{C++} i 
 mnogim drugim.
 \begin{listing}[h]
 \begin{minted}{haskell}
@@ -812,7 +811,7 @@ factorialFold n =
 
 \subsection{Poklapanje obrazaca}
 Poklapanje obrazaca može se posmatrati kao pokušavanje usklađivanja (poklapanja) ulaznog
-podatka sa unapred definisanim obrascom. Ukoliko dođe do usklađivanja, poklopljenim
+podatka sa unapred definisanim obrascem. Ukoliko dođe do usklađivanja, poklopljenim
 vrednostima se može prisupiti putem identifikatora definisanim u obrascu. Pored spomenutih
 \texttt{\textbf{case}} izraza, poklapanje obrazaca može se korisiti u vidu 
 razlaganja slogova ili torki prilikom definisanja funkcija ili korišćenja \texttt{\textbf{
@@ -862,7 +861,7 @@ ulaznom podatku. U listingu \ref{listing:poklapanjeObrazaca} mogu se videti prim
 poklapanja obrazaca.
 
 \subsection{Obrada grešaka pomoću \texttt{\textbf{Maybe}} i \texttt{\textbf{Result}}}
-Unutar progamskog jezika \emph{Elm} ne postoje \texttt{\textbf{try catch}} blokovi, kao ni \texttt{\textbf{undefined, null, nil}}
+Unutar programskog jezika \emph{Elm} ne postoje \texttt{\textbf{try catch}} blokovi, kao ni \texttt{\textbf{undefined, null, nil}}
 i ostale slične vrednost prisutne u drugim programskim jezicima.
 Umesto njih koriste se \texttt{\textbf{Maybe}} i \texttt{\textbf{Result}} koji potiču iz programskog jezika \emph{Haskell},
 gde imamo \texttt{\textbf{Maybe}} i \texttt{\textbf{Either}}.
@@ -1022,7 +1021,7 @@ može naći i na zvaničnom \emph{Elm} vodiču\cite{elm-program}.
 
 U primeru jednostavnog brojača iz listinga \ref{listing:elmProgram} vidimo da funkcija
 \textbf{\texttt{sandbox}} kao argument prima slog sa inicijalnom vrednošću modela i 
-funkcijama za ažuriranje i prikazivanje modela. Program počinje sa pozivanjem funkcije
+funkcijama za ažuriranje i prikazivanje modela. Program počinje pozivanjem funkcije
 \texttt{\textbf{view}} sa parametrom \texttt{\textbf{init}}. Unutar funkcije
 \texttt{\textbf{view}} se pomoću funkcije za kreiranje atributa iz modula
 \texttt{\textbf{Html.Events}} mogu definisati načini slanja poruka, a kao rezultat 
@@ -2242,7 +2241,7 @@ Takođe, portal ne podržava lokalizaciju, stoga nema potreba za uključivanje m
 
 Komanda korišćena za kreiranje projekta:
 \mint{bash}|mix phx.new msnr_api --no-assets --no-html --no-gettext|
-\noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje foldera \emph{assets} koji je predviđen za \emph{JavaScript} i \emph{CSS} datoteke,
+\noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje direktorijuma \emph{assets} koji je predviđen za \emph{JavaScript} i \emph{CSS} datoteke,
 dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šablona za serversko renderovanje.
 \begin{figure}[!h]
   \centering
@@ -2253,21 +2252,21 @@ dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šab
 Nakon uspešno izvršene komande, struktura projekta prikazana je na slici \ref{fig:msnr-dir}.
 
 Nastali projekat je u osnovi \emph{Mix} projekat sa \emph{Phoenix} proširenjima. Svaki \emph{Mix} projekat ima
-konfiguracionu datoteku \emph{mix.exs}, folder \emph{lib} koji sadži osnovni k\^{o}d i folder \emph{test} sa testovima.
+konfiguracionu datoteku \emph{mix.exs}, direktorijum \emph{lib} koji sadži osnovni k\^{o}d i direktorijum \emph{test} sa testovima.
 Pored ove tri osnovne stavke, tu su i skripta \emph{.formatter.exs} za formatiranje \emph{Elixir} datoteka, kao i datoteke \emph{.gitignore} i
 \emph{.README.md}. Datoteka \emph{mix.exs} sadrži osnovne informacije o projektu --- kako se kompajlira, pokreće i 
 listu zavisnih paketa koji se koriste u projektu. Nakon kompajliranja projekta, generisaće se datoteka \emph{mix.lock} koja
 čuva precizne verzije zavisnih paketa čime se garantuje da se u produkciji koriste iste verzije kao i tokom razvoja.
 
 Razvojno okruženje \emph{Phoenix} dodaje i konfiguracije vezane za okruženje u kom se aplikacija izvršava. 
-Podržana okruženja su razvojno (\emph{dev.exs}), testno (\emph{test.exs}) i produkciono (\emph{prod.exs}) i konfiguracije su smeštene u folderu \emph{config},
+Podržana okruženja su razvojno (\emph{dev.exs}), testno (\emph{test.exs}) i produkciono (\emph{prod.exs}) i konfiguracije su smeštene u direktorijumu \emph{config},
 zajedno sa glavnom konfiguracijom (\emph{config.exs}) koja se odnosi na sva okruženja. Mogu se dodati i druga ukoliko je potrebno, a pored navedenih
-u folderu \emph{config} nalazi se i \emph{runtime.exs} konfiguracija zadužena za učitavanje šifri (eng. \emph{secrets}) i drugih konfiguracionih vrednosti
+u direktorijumu \emph{config} nalazi se i \emph{runtime.exs} konfiguracija zadužena za učitavanje šifri (eng. \emph{secrets}) i drugih konfiguracionih vrednosti
 iz varijabli okruženja.
 
 U razvojnom okruženju \emph{Phoenix} projekti se organizuju po kontekstima (eng. \emph{context}). Kontekst predstavlja modul koji grupiše funkcije sa
-zajedničkom svrhom. Folder \emph{lib} sadrži dva konteksta, odnosno modula: \emph{MsnrApi} koji enkapsulira svu domensku i
-poslovnu logiku i modul \emph{MsnrApiWeb} koji definiše veb interfejs. Podmoduli se definišu u folderima \emph{msnr{\textunderscore}api}
+zajedničkom svrhom. Direktorijum \emph{lib} sadrži dva konteksta, odnosno modula: \emph{MsnrApi} koji enkapsulira svu domensku i
+poslovnu logiku i modul \emph{MsnrApiWeb} koji definiše veb interfejs. Podmoduli se definišu u direktorijumima \emph{msnr{\textunderscore}api}
 i \emph{msnr{\textunderscore}api{\textunderscore}web}. 
 Kontekst \emph{MsnrApi} se odnosi na \emph{Model} u smislu arhitekture \emph{MVC --- Model-View-Controller} i u njemu će se definisati svi entiteta i
 funkcije za rad sa njima. Inicijalno su kreirani:
@@ -2277,11 +2276,11 @@ funkcije za rad sa njima. Inicijalno su kreirani:
   \item \emph{MsnrApi.Mailer} --- modul zadužen za slanje elektronske pošte.
 \end{itemize}
 Kontekst \emph{MsnrApiWeb} sadrži implementaciju za poglede i upravljače unutar arhitekture \emph{MVC}.
-Folder \emph{controllers} je inicijalno prazan, dok su u folderu \emph{views} kreirani pomoćni moduli za prikazivanje grešaka.
+Direktorijum \emph{controllers} je inicijalno prazan, dok su u direktorijumu \emph{views} kreirani pomoćni moduli za prikazivanje grešaka.
 Moduli \emph{MsnrApiWeb.Endpoint} i \emph{MsnrApiWeb.Router} imaju ulogu da pripreme \emph{HTTP} zahtev i proslede ga odgovarajućem
 upravljaču.
 
-Folder \emph{priv} sadrži sve resurse koji su potrebni u produkciji ali nisu direktan deo izvornog koda. U slučaju portala MSNR
+Direktorijum \emph{priv} sadrži sve resurse koji su potrebni u produkciji ali nisu direktan deo izvornog koda. U slučaju portala MSNR
 sadržaće skripte vezane za menjanje i popunjavanje baze podataka. Testiranje, kao ni telemetrija, nije tema ovog rada.
 
 \section{Obrada HTTP zahteva}
@@ -2313,7 +2312,7 @@ end
 \label{listing:plugsEndpoint}
 \end{listing}
 Modul \emph{MsnrApiWeb.Endpoint} predstavlja početnu tačku prilikom obrade \emph{HTTP} zahteva i sastoji se od niza utikača. Kostur
-modula prikazan je u listingu \ref{listing:plugsEndpoint}. Navedeni utikači imaju različite uloge --- za prikazivanje statičkih fajlova, za logovanje,
+modula prikazan je u listingu \ref{listing:plugsEndpoint}. Navedeni utikači imaju različite uloge --- za prikazivanje statičkih datoteka, za logovanje,
 za parsiranje i druge. Svaki zahtev prolazi kroz sve navedene utikače. Postavljaju se pomoću makroa \texttt{\textbf{plug}}, a njihovo
 navođenje se može posmatrati kao korišćenje operatora prosleđivanja, što je prikazano u listingu \ref{listing:plugsPipeline}.
 \begin{listing}[!h]
@@ -2392,7 +2391,7 @@ activity_type_path  DELETE  /api/activity-types/:id  MsnrApiWeb.ActivityTypeCont
 
 \subsection{Upravljači i pogledi}
 Budući da je upravljač takođe utikač, njegova osnovna uloga je da sakupi i pripremi podatke za sledeći korak obrade korisničkog zahteva.
-To može uključiti pozivanje baze podataka, eksternog veb servisa ili obradu nekog statičkog fajla. 
+To može uključiti pozivanje baze podataka, eksternog veb servisa ili obradu neke statičke datoteke. 
 Na primeru upravljača \emph{ActivityTypeController} u listingu \ref{listing:controller} može se videti generalna struktura upravljača
 i implementacija akcije \texttt{\textbf{:index}}.
 \begin{listing}[!h]
@@ -2480,7 +2479,7 @@ U listingu \ref{listing:dbDevConfig} prikazana je konfiguracija za razvojno okru
 
 \section{Definisanje entiteta}
 Budući da kontekst \emph{MsnrApi} sadži domensku logiku aplikacije, u njemu su definisani svi entiteti aplikacije, takođe
-kao konteksti. Na primeru tipa aktivnosti, pod folderom \emph{msnr{\textunderscore}api} nalazi se direktorijum
+kao konteksti. Na primeru tipa aktivnosti, pod direktorijumom \emph{msnr{\textunderscore}api} nalazi se direktorijum
 \emph{activity{\textunderscore}types} sa definicijom strukture \emph{ActivityType} kojom se predstavlja
 entitet i datoteka \emph{activity{\textunderscore}types.ex} u kojoj je definisan modul \emph{ActivityTypes} sa
 funkcijama za rad sa entitetom.
@@ -2532,7 +2531,7 @@ se atribut \texttt{\textbf{@primary{\textunderscore}key}}, što se može videti 
 Kreiranjem šeme entiteta, definiše se način na koji \emph{Ecto} komunicira sa bazom, dok se kreiranje odgovarajućih
 tabela u bazi vrši migracijama. Migracije su predstavljane modulima u kojima se definišu promene koje će se izvršiti nad
 bazom i pružaju mogućnost da se izvršene promene ponište. Kreiraju se pomoću \emph{Mix} komande 
-\texttt{\textbf{mix ecto.gen.migration \emph{<naziv migracije>}}} i nalaze se u folderu
+\texttt{\textbf{mix ecto.gen.migration \emph{<naziv migracije>}}} i nalaze se u direktorijumu
 \emph{priv/repo/migrations}, a naziv datoteke je oblika \emph{<vreme kreiranja>{\textunderscore}<naziv migracije>.exs}.
 U listingu \ref{listing:activityTypeMigration} prikazana je migracija kojom se kreira tabela \emph{activity{\textunderscore}types} i
 dodaju jedinstveni indeksi za naziv i k\^{o}d tipa aktivnosti.
@@ -2646,7 +2645,6 @@ registracija iz modula \emph{StudentRegistrations}.
     def list_student_registrations(semester_id) do
       Repo.all(from sr in StudentRegistration, where: sr.semester_id == ^semester_id)
     end
-  end
   \end{minted}
 \caption{Primer upita definisanog pomoću modula \emph{Ecto.Query}}
 \label{listing:query-example}
@@ -2656,7 +2654,7 @@ Modul \emph{Ecto.Query} pruža mogućnost definisanja dinamičnih upita, podupit
 
 \subsection{Izmena entiteta}
 U listingu \ref{listing:ActivityTypes} tokom kreiranja i izmene tipa aktivnosti poziva se
-funkcija \emph{ActivityType.changeset} kojom se kreira skup promena. Prilikom kreiranje
+funkcija \emph{ActivityType.changeset} kojom se kreira skup promena. Prilikom kreiranja
 podataka se može koristiti i struktura definisana sa \emph{Ecto.Schema}, dok je 
 menjanje podataka moguće samo korišćenjem strukture \emph{Ecto.Changeset}.
 Kreiranje strukture \emph{Ecto.Changeset} funkcijom \texttt{changeset} 
@@ -2691,7 +2689,7 @@ Prilikom definisanja entiteta, dodaje se njegov kontekst sa \emph{Ecto.Schema} s
 Ukoliko je potrebno dodati i upravljač, to su još dve datoteke --- upravljač i pogled. Da bi se olakšao ovaj
 proces, \emph{Phoenix} pruža komande za automatsko generisanje navedenih datoteka zajedno sa šablonima za testove.
 Za potrebe portala MSNR najčešće korišćena komanda jeste \texttt{mix phx.gen.json} koja generiše sve prethodno
-navedene fajlove. Prethodno prikazani listinzi vezani za \emph{ActivityType} entitet rezultat su komande prikazane u
+navedene datoteke. Prethodno prikazani listinzi vezani za \emph{ActivityType} entitet rezultat su komande prikazane u
 listingu \ref{listing:gen-json}. Parametri su redom: naziv konteksta, naziv strukture i naziv tabele u bazi, nakon čega slede
 definicije polja, odnosno kolona.
 \begin{listing}[h]
@@ -2945,7 +2943,7 @@ Ukoliko je vrednost kolone \emph{true} smatra se da je student izvršio prijavu.
 
 Najveći broj aktivnosti odnosi se na prilaganje dokumenata. Rad sa dokumentima izvršava se unutar upravljača \emph{DocumentController},
 čije se akcije izlistavanja i kreiranja nalaze pod putanjom \emph{assignments}. Kao i u prethodnim slučajevima, prilikom prilaganja dokumenta,
-izvršava se dodeljena aktivnost. Priloženi dokumenati se čuvaju na serveru u folderu podešenom u konfiguraciji.
+izvršava se dodeljena aktivnost. Priloženi dokumenati se čuvaju na serveru u direktorijumu podešenom u konfiguraciji.
 Tip i broj dokumenata koji se prilaže određen je sadržajem tipa aktivnosti. \emph{JSON} objekat za prilaganje dokumenata prikazan je
 na primeru recenzije u lisingu \ref{listing:files-json}. 
 \begin{listing}[h!]
@@ -3050,7 +3048,7 @@ a definisan je u datoteci \emph{Main.elm}.
 \label{listing:elm-model}
 \end{listing}
 
-Aplikacija je kompajlirana tako da se kreira fajl \emph{app.js} koji se uključuje u dokument \emph{index.html},
+Aplikacija je kompajlirana tako da se kreira datoteka \emph{app.js} koji se uključuje u dokument \emph{index.html},
 čija je osnovna struktura prikazana u listingu \ref{listing:elm-index-html}. Pokreće se pozivanjem \texttt{init}
 funkcije iz modula \texttt{Main} i tom prilikom se vrši prosleđivanje putanje ka veb interfejsu, tj. serverskom delu portala,
 preko oznaka.
@@ -3377,7 +3375,7 @@ Modul \emph{Accessibility.Styled} iz paketa \emph{tesk9/accessible-html-with-css
 Primer njene upotrebe unutar modula \emph{Main} prikazan je u listingu \ref{listing:elm-toUnstyled}.
 
 \section{Struktura profesorske stranice}
-Profesorske stranice nalaze se pod folderom \emph{ProfessorPage} (slika \ref{fig:prof-dir}).
+Profesorske stranice nalaze se pod direktorijumom \emph{ProfessorPage} (slika \ref{fig:prof-dir}).
 Svaka stranica predstavljena je zasebnim modulom i to su:
 \begin{itemize}
   \item \emph{RegistrationRequestsPage} --- za obradu studentskih zahteva za registraciju,
@@ -3390,7 +3388,7 @@ Svaka stranica predstavljena je zasebnim modulom i to su:
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{prof-page-dir.png}
-  \caption{Sadržaj foldera \emph{ProfessorPage}}
+  \caption{Sadržaj direktorijuma \emph{ProfessorPage}}
   \label{fig:prof-dir}
 \end{figure}
 
@@ -3454,12 +3452,12 @@ jedan se odnosi na osnovne podatke, a drugi na sam sadržaj aktivnosti potreban 
 tema, prilaganja dokumenata ili prijavljivanje za određenu aktivnost.
 
 Prikazivanje studentske stranice obrađuje se unutar modula \emph{StudentPage},
-a pomoćni moduli koji se tom prilikom koriste nalaze se pod folderom \emph{StudentPage} čija je
+a pomoćni moduli koji se tom prilikom koriste nalaze se pod direktorijumom \emph{StudentPage} čija je
 struktura prikazana na slici \ref{fig:student-dir}.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.5\textwidth]{student-dir.png}
-  \caption{Sadržaj foldera \emph{StudentPage}}
+  \caption{Sadržaj direktorijuma \emph{StudentPage}}
   \label{fig:student-dir}
 \end{figure}
 
@@ -3501,7 +3499,7 @@ Za razliku od modela profesorskih stranica, modeli sadržaja aktivnosti čuvaju 
 
 Osnovni modul za prikazivanje studentske stranice, pored modula \emph{StudentPage}, jeste modul
 \emph{AssignmentContent} koji ima sličnu ulogu kao modul \emph{ProfessorPage} kod profesorskih
-stranica. U folderu \emph{AssignmentContent} nalaze se moduli za obradu sadržaja --- \emph{GroupContent}, \emph{FilesContent},
+stranica. U direktorijumu \emph{AssignmentContent} nalaze se moduli za obradu sadržaja --- \emph{GroupContent}, \emph{FilesContent},
 \emph{SignupContent} i \emph{TopicContent}, i kao kod profesorskih stranica svaki od njih ima svoj
 model i funkcije \texttt{update} i \texttt{view}.
 
@@ -3554,7 +3552,7 @@ objašnjenje implementacije najvažnijih delova.
 Razvojno okruženje \emph{Phoenix} daje jasne smernice kako struktura projekta treba
 da izgleda. Biblioteke unutar ekosistema \emph{Elixir} nastale su na osnovu dobrih
 praksi postojećih biblioteka drugih programskih jezika što njihovu adaptaciju
-čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm}, sa svojstvenom arhitekturom \emph{Elm}
+čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm}, sa njemu svojstvenom arhitekturom \emph{Elm}
 kao centralnim delom, predstavlja potpuno novo iskustvo u odnosu na rad
 u programskom jeziku \emph{JavaScript}. Prilikom razvoja portala, korisnički interfejs je prošao
 kroz nekoliko iteracija i značajnih izmena tokom kojih se sam autor uverio u lakoću
