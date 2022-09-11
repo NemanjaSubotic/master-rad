@@ -2,7 +2,7 @@
 
 % Paket koji definiše sve specifičnosti master rada Matematičkog fakulteta
 \usepackage[latinica,biblatex]{matfmaster} 
-\usepackage{csquotes}
+% \usepackage{csquotes}
 \usepackage{listings}
 \usepackage[compatibility=false]{caption}
 \usepackage{subcaption}
@@ -11,7 +11,6 @@
 \AtEndEnvironment{listing}{\vspace{-15pt}}
 \usepackage{xcolor}
 
-% Podrazumevano pismo je ćirilica.
 
 % Datoteka sa literaturom u BibTex tj. BibLaTeX/Biber formatu
 \bib{MasterRadNemanjaSubotic} 
@@ -40,16 +39,16 @@
 Funkcionalni programski jezici \emph{Elm} i \emph{Elixir} pripadaju novoj generaciji
 programskih jezika koji sve više dobijaju na popularnosti.
 \emph{Elm} je statički tipiziran funkcionalni programski
-jezik namenjen za izradu korisničkog interfejsa veb aplikacija. Sa druge strane,
+jezik namenjen isključivo za izradu korisničkog interfejsa veb aplikacija. Sa druge strane,
 \emph{Elixir} je dinamički tipiziran funkcionalni programski jezik opšte namene i
-zajedno sa razvojnim okruženjem \emph{Phoenix} zauzima značajno mesto u razvoju veb aplikacija.
+zajedno sa razvojnim okvirom \emph{Phoenix} zauzima značajno mesto u razvoju veb aplikacija.
 Cilj rada je prikaz najbitnijih karakteristika i koncepata navedenih programskih jezika, kao i
-mogućnosti razvojnog okruženja \emph{Phoenix}, kroz razvoj studentskog veb portala
+mogućnosti razvojnog okvira \emph{Phoenix}, kroz razvoj studentskog veb portala
 koji prati aktivnosti kursa \emph{Metodologija stručnog i naučnog rada}.
 }
 
 % Ključne reči na srpskom jeziku (u odabranom pismu)
-\kljucnereci{programski jezici, funkcionalno programiranje, programski jezik \emph{Elm}, programski jezik \emph{Elixir}, razvojno okruženje \emph{Phoenix}}
+\kljucnereci{programski jezici, funkcionalno programiranje, programski jezik \emph{Elm}, programski jezik \emph{Elixir}, razvojni okvir \emph{Phoenix}}
 
 \begin{document}
 % ==============================================================================
@@ -73,19 +72,19 @@ koji prati aktivnosti kursa \emph{Metodologija stručnog i naučnog rada}.
 % ------------------------------------------------------------------------------
 \chapter{Uvod}
 % ------------------------------------------------------------------------------
-Savremen razvoj programskih jezika i odgovarajućih okruženja za rad u njima
-usmeren je ka ubrzanom procesu izgradnje složenih programskih rešenja. Posebno
+Savremen razvoj programskih jezika i odgovarajućih razvojnih okvira za rad sa njima
+usmeren je ka ubrzanom procesu implementacije složenih programskih rešenja. Posebno
 napreduje razvoj podrške funkcionalnim konceptima, kao i razvoj novih funkcionalnih
 programskih jezika među kojima se nalaze i \emph{Elm} i \emph{Elixir}. 
 
 Programski jezik \emph{Elm} odlikuje laka upotrebljivost, visoke performanse,
-robusnost i otpornost na greške. Kao jezik specifične namene uvodi poseban
+robusnost i otpornost na greške. Kao jezik specifične namene za klijentsko (eng. \emph{frontend}) veb programiranje uvodi poseban
 način izvršavanja aplikacije, poznat kao \emph{arhitektura Elm}, koja je
 poslužila kao inspiracija mnogim \emph{JavaScript} bibliotekama.
 Programski jezik \emph{Elixir} nastaje kao moderan funkcionalni programski jezik
-sa osnovnom idejom da se izvršava na \emph{Erlang} virtuelnoj mašini. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
+sa osnovnom idejom da se izvršava na \emph{Erlang} \cite{erlang} virtuelnoj mašini. Kao takav je veoma zastupljen u razvoju distribuiranih sistema,
 ali je svoju upotrebu našao gotovo u svim oblastima računarstva.
-Za razvoj veb aplikacija najpopularnije je razvojno okruženje \emph{Phoenix}, koje
+Za razvoj veb aplikacija najpopularniji razvojni okvir je \emph{Phoenix}, koji
 nastaje i razvija se uporedo sa samim programskim jezikom.
 
 Kurs \emph{Metodologija stručnog i naučnog rada} (skraćeno MSNR) se održava na master studijama
@@ -105,14 +104,14 @@ pregled aktivnosti, zajedno sa ocenama i komentarima nastavnika, na jednom mestu
 Detaljni opis programskog jezika \emph{Elm} dat je u drugom poglavlju dok je u trećem poglavlju predstavljen programski jezik \emph{Elixir}.
 Četvrto poglavlje sadrži opis funkcionalnosti portala MSNR i arhitekturu rešenja.
 U poglavlju pet prikazuje se implementacija serverskog dela upotrebom razvojnog
-okruženja \emph{Phoenix}. U poglavlju šest predstavljena je implementacija korisničkog interfejsa
+okvira \emph{Phoenix}. U poglavlju šest predstavljena je implementacija korisničkog interfejsa
 portala korišćenjem programskog jezika \emph{Elm}. Sedmo poglavlje sadrži zaključak celog rada sa
 mogućim daljim unapređenjima.
 
 \chapter{Programski jezik i okruženje Elm}
 Evan Čapliki (\emph{Evan Czaplicki}) je 2012. godine objavio svoju tezu "\emph{Elm}: Konkurentno FRP
-\footnote{FRP je skraćenica za funkcionalno reaktivno programiranje} za funkcionalne \emph{GUI}-je
-\footnote{GUI je skraćenica za grafički korisnički interfejs}" (eng. \emph{"Elm: Concurrent
+\footnote{FRP je skraćenica za funkcionalno reaktivno programiranje (eng. \emph{Functional Reactive Programming})} za funkcionalne \emph{GUI}-je
+\footnote{GUI je skraćenica za grafički korisnički interfejs (eng. \emph{Graphical User Interface})}" (eng. \emph{"Elm: Concurrent
 FRP for Functional GUIs"}) \cite{elm:2012} i, s ciljem da \emph{GUI} programiranje učini
 prijatnijim, dizajnirao novi programski jezik --- \emph{Elm}. Na slici \ref{fig:elm-logo} prikazan
 je logo jezika.
@@ -125,14 +124,14 @@ kompilira, tačnije transpilira u \emph{JavaScript} i namenjen je isključivo za
   \label{fig:elm-logo}
 \end{figure}
 Takođe, \emph{Elm} nije samo programski jezik već i platforma za razvoj aplikacija.
-Zahvaljujući funkcionalnoj prirodi i svojstvenom kompilatoru, \emph{Elm} pruža programerima
+Zahvaljujući funkcionalnoj prirodi i karakterističnom kompilatoru, \emph{Elm} pruža programerima
 poseban osećaj sigurnosti i samouverenosti tokom refaktorisanja postojećih i
 dodavanja novih funkcionalnosti. Za \emph{Elm} aplikacije važi
 da, u praksi, ne izbacuju neplanirane greške tokom izvršavanja (eng. \emph{No 
 Runtime Exceptions}).
 
 \section{Uputstvo za instalaciju}
-Pored želje da frontend programiranje učini prijatnijim, kreator jezika nastoji 
+Pored želje da klijentsko (eng. \emph{frontend}) programiranje učini prijatnijim, kreator jezika nastoji 
 da ono bude i pristupačnije. Stoga, da bi se počelo sa korišćenjem programskog jezika \emph{Elm}, instalacija
 nije potrebna, dovoljno je otići na zvaničnu veb stranicu i pokrenuti dostupan 
 interaktivni kompilator \cite{tryelm}, gde se može naći dosta primera, kao i vodič kroz \emph{Elm}.
@@ -162,21 +161,21 @@ da bude asistent, ne samo alat.
 
 \emph{Elm} koristi svoju verziju \emph{virtuelnog DOM\footnote{DOM --- Obejektni model
 dokumenta (eng. \emph{Document Object Model})\cite{dom}}-a}, koncepta koji se koristi u mnogim
-frontend okruženima. Ideja je da se u memoriji čuva "virtuelna" reprezentacija
+razvojnim okvirima klijentskog programiranje. Ideja je da se u memoriji čuva "virtuelna" reprezentacija
 korisničkog interfejsa na osnovu koje se ažurira "stvarni" \emph{DOM}. Još jedna bitna
 karakteristika je nepromenljivost podataka, što znači da se jednom definisani
 podaci ne mogu više menjati. Direktna posledica nepromenljivosti podataka je veoma
-brzo renderovanje \emph{HTML}-a, jer se poređenja u virtuelnom \emph{DOM}-u mogu vršiti po referenci. 
-Verzija \emph{Elm 0.17} imala je najbrže renderovanje u poređenju sa tadašnjim aktuelnim verzijama 
-popularnih okruženja\cite{elm-html}.
+brzo iscrtavanje \emph{HTML}-a, jer se poređenja u virtuelnom \emph{DOM}-u mogu vršiti po referenci. 
+Verzija \emph{Elm 0.17} imala je najbrže iscrtavanje u poređenju sa tadašnjim aktuelnim verzijama 
+popularnih okvira\cite{elm-html}.
 
 \emph{Elm} se može integrisati i u postojeće \emph{JavaScript} projekte za implementaciju pojedinačnih 
 komponenti. Takođe, moguća je i komunikacija između ova dva programska jezika. 
 
 \section{Elm kao platforma}
-\emph{Elm} sa sobom donosi niz alata (tabela \ref{table:elmTools}) i okruženje \emph{Elm} (eng. \emph{Elm 
+\emph{Elm} sa sobom donosi alat (tabela \ref{table:elmTools}) i okruženje \emph{Elm} (eng. \emph{Elm 
 Runtime}), koji su neophodni za razvoj i izvršavanje aplikacija. \emph{Elm} k\^{o}d se nalazi u 
-datotekama sa \emph{.elm} ekstenzijom i prilikom kompilacije kreira se jedna izlazna 
+datotekama sa ekstenzijom \emph{.elm} i prilikom kompilacije kreira se jedna izlazna 
 \emph{.js} datoteka. U izlaznoj datoteci se pored prevedenog koda iz ulaznih \emph{.elm} 
 datoteka nalaze i funkcije iz okruženja \emph{Elm} potrebne za izvršavanje programa.
 
@@ -184,7 +183,7 @@ datoteka nalaze i funkcije iz okruženja \emph{Elm} potrebne za izvršavanje pro
 \centering
 \begin{tabular}{|l l|} 
  \hline 
- Alati & Kratak opis  \\ [0.5ex] 
+ Alat & Kratak opis  \\ [0.5ex] 
  \hline
   \textbf{repl} & Pokretanje interaktivne sesije (eng. \emph{Read-Eval-Print-Loop}) \\ 
   \textbf{init} & Inicijalizacija projekta \\
@@ -196,7 +195,7 @@ datoteka nalaze i funkcije iz okruženja \emph{Elm} potrebne za izvršavanje pro
   \textbf{publish} & Objavljivanje paketa \\[1ex] 
  \hline
 \end{tabular}
-\caption{\emph{Elm} alati komandne linije}
+\caption{\emph{Elm} alatke komandne linije}
 \label{table:elmTools}
 \end{table}
 
@@ -212,13 +211,13 @@ nazivi paketa su oblika \emph{autor/ime-paketa}.
 Kompilacija se vrši naredbom \textbf{elm make} \emph{<jedna-ili-više-elm-datoteka>},
 ukoliko se ne navede izlazna datoteka pomoću argumenta \emph{-{}-output} generisaće 
 se datoteka \emph{index.html} sa prevedenim \emph{JavaScript} kodom. Ostali argumenti kao i
-više informacija o drugim alatima mogu se videti pomoću naredbe \textbf{elm}
+više informacija o drugim alatkama mogu se videti pomoću naredbe \textbf{elm}
 \emph{naziv-alata} \textbf{-{}-help}.
 
-\section{Elm kao jezik}
+\section{Uticaj drugih progamskih jezika na Elm}
 Kao i većina statički tipiziranih funkcionalnih programskih jezika, \emph{Elm} se zasniva na
 programskom jeziku \emph{ML}, a budući da su u programskom jeziku \emph{Haskell} napisani \emph{Elm} kompilator
-i ostali alati, \emph{Haskell} je ostavio veliki uticaj i na sam jezik. Autor \emph{Elm}-a smatra:
+i ostale alatke, \emph{Haskell} je ostavio veliki uticaj i na sam jezik. Autor \emph{Elm}-a smatra:
 \begin{displayquote}
 "Rekao bih da \emph{Elm} pripada porodici \emph{ML} jezika, sa sintaksom poput \emph{Haskell}-a. Ako poredimo semantiku,
 \emph{Elm} je dosta sličniji \emph{OCaml}-u i \emph{SML}-u." \cite{eczaplicki:2015}
@@ -230,7 +229,7 @@ na dizajniranju programskog jezika ML bio je Robin Milner, dobitnik Tjuringove n
 Nastao je pod uticajem programskog jezika LISP, a razvijan je za implementiranje automatskog
 dokazivača teorema. Osnovna karakteristika jeste uvođenje automatskog zaključivanja tipova, a
 odlikuje ga i poklapanje obrazaca, Karijeve funkcije i posedovanje sakupljača otpadaka. ML
-nije čist funkcionalan  jezik i nema ugrađenu podršku za lenjo izračunavanje. U porodicu ML 
+nije čist funkcionalan jezik i nema ugrađenu podršku za lenjo izračunavanje. U porodicu ML 
 jezika, između ostalih, spadaju i \textbf{Standard ML}, \textbf{OCaml} i \textbf{F{\#}}.
 
 
@@ -241,6 +240,9 @@ opšte namene, pruža podršku za paralelno i distribuirano programiranje. \emph
 omogućava manje grešaka i veću pouzdanost kroz kraći i čistiji k\^{o}d, koji je lakši za
 održavanje. 
 
+\section{Elm kao jezik}
+U ovom poglavlju predstavljene su osnovne programskog jezika Elm --- osnovni tipovi i strukture podataka,
+operatori, način definisanja i grupisanja funkcija, navođenje komentara, kontrola toka i obrada grešaka.
 
 \subsection{Komentari}
 Komentari u \emph{Elm}-u se mogu navoditi na dva načina: \begin{itemize}
@@ -264,49 +266,45 @@ True : Bool
 > 42 // 10 --celobrojno deljenje
 4 : Int
 \end{minted}
-\caption{Osnovni tipovi podataka prikazani u interpreteru}
+\caption{Osnovni tipovi podataka prikazani u interpretatoru}
 \label{listing:tipovi}
 \end{listing}
 Osnovni tipovi podataka programskog jezika \emph{Elm} su \textbf{Char}, \textbf{String}, \textbf{Bool},
 \textbf{Int} i \textbf{Float}. U listingu \ref{listing:tipovi} prikazani su osnovni
-tipovi korišćenjem interpretera (\texttt{\textbf{elm repl}}). Budući da i \emph{Elm} poseduje zaključivanje tipova, nakon
+tipovi korišćenjem interpretatora (\texttt{\textbf{elm repl}}). Budući da i \emph{Elm} poseduje zaključivanje tipova, nakon
 izračunate vrednosti unetog izraza ispisuje se tip. U konkretnom primeru broj 42 se
-može posmatrati i kao tip \textbf{Int} i kao tip \textbf{Float}, pa interpreter vraća
-\texttt{number} kao tip, iako \texttt{number} nije konkretan tip podataka.
+može posmatrati i kao tip \textbf{Int} i kao tip \textbf{Float}, pa interpretator vraća
+\texttt{number} kao tip, iako \texttt{number} nije konkretan tip podataka već poseban oblik tipske promenljive.
+Tipske promenljive objašnjene su dalje u posebnom poglavlju.
 
 
-Tip \textbf{Char} služi za predstavljanje unikod (eng. \emph{unicode}) karaktera.
+Tip \textbf{Char} služi za predstavljanje junikod (eng. \emph{unicode}) karaktera.
 Karakteri se navode između dva apostorfa (\texttt{'a', '0', '\textbackslash t'}...), a
-moguće je koristiti i unikod zapis  \texttt{'\textbackslash u\{0000\}}' -
+moguće je koristiti i junikod zapis \texttt{'\textbackslash u\{0000\}}' -
 \texttt{'\textbackslash u\{10FFFF\}'}.
 
-Za razliku od programskog jezika \emph{Haskell}, gde je \textbf{String} zapravo lista karaktera, \emph{Elm}-u je
-poseban tip i predstavlja sekvencu unikod karaktera. Sekvenca se navodi između
+Za razliku od programskog jezika \emph{Haskell}, gde je niska (\textbf{String}) zapravo lista karaktera, u \emph{Elm}-u je
+poseban tip i predstavlja sekvencu junikod karaktera. Sekvenca se navodi između
 jednostrukih ili trostrukih navodnika (listing \ref{listing:string}).
 
 \begin{listing}[ht]
 \begin{minted}{haskell}
-> "\t String u jednom redu: escape navodnici \"Zdravo!\""
-"\t String u jednom redu: escape navodnici \"Zdravo!\"" : String
+> "\t Niska u jednom redu: escape navodnici \"Zdravo!\""
+"\t Niska u jednom redu: escape navodnici \"Zdravo!\"" : String
 >
-> """String u više redova
+> """Niska u više redova
  sa "navodnicima"! """
-"String u više redova\n  sa \"navodnicima\"! " : String
+"Niska u više redova\n  sa \"navodnicima\"! " : String
 \end{minted}
-\caption{Primeri stringova}
+\caption{Primeri niski}
 \label{listing:string}
 \end{listing}
 
 Tip \textbf{Bool} predstavlja logički tip i može imati vrednost \texttt{True} ili
 \texttt{False}. 
 
-Tip \textbf{Int} se koristi za prikazivanje celih brojeva. Siguran opseg vrednosti je
-od \(-2^{31}\) do \(2^{31} - 1\), van toga sve zavisi od cilja kompilacije. Ukoliko je
-cilj kompilacije \emph{JavaScript} (što je trenutni slučaj), opseg se proširuje na \(-2^{53}\) do
-\(2^{53} - 1\). Do proširivanja opsega ne bi dolazilo ukoliko bi se
-umesto \emph{JavaScript} koda generisao \emph{WebAssembly}, tada bi postojalo prekoračenje celih
-brojeva (eng. \emph{integer overflow}). Vrednosti se mogu navoditi i u heksadecimalnom
-obliku (\texttt{0x2A, -0x2b}).
+Tip \textbf{Int} se koristi za prikazivanje celih brojeva. U trenutnoj verziji (\emph{0.19.1}) opseg vrednosti je
+od \(-2^{53}\) do \(2^{53} - 1\). Vrednosti se mogu navoditi i u heksadecimalnom obliku (\texttt{0x2A, -0x2b}).
 
 Tip \textbf{Float} služi za predstavljanje brojeva u pokretnom zarezu po strandardu
 \emph{IEEE 754}. Vrednosti se mogu navoditi i pomoću eksponencijalnog zapisa, a decimalna 
@@ -346,21 +344,26 @@ a za celobrojno deljenje sa ostatkom koriste se funkcije \texttt{modBy} i \textt
 \label{listing:konverzija}
 \end{listing}
 
-\emph{Elm} pruža logičke operatore \emph{i} \texttt{\&\&} i  \emph{ili} \texttt{||} kao i funkcije za negaciju 
+Od relacijskih operatora \texttt{==, /=, <, >, >= i <=}, jedino operator različitosti (\texttt{/=}) ima drugačiju
+sintaksu od uobičajene. Prioriteti između relacijskih operatora nisu definisani i prilikom njihovog kombinovanja
+izrazi se moraju odvojiti zagradama.
+\emph{Elm} pruža logičke operatore \emph{i} \texttt{\&\&} i \emph{ili} \texttt{||} kao i funkcije za negaciju 
 \texttt{not} i ekskluzivno ili \texttt{xor}. Operator \texttt{\&\&} ima viši prioritet 
-od operatora \texttt{||}, oba su levo asocijativna i lenjo izračunljiva. Od operatora poređenja 
-\texttt{==, /=, <, >, >= i <=}, jedino operator različitosti (\texttt{/=}) ima drugačiju
-sintaksu od uobičajene. Pored navednih, \emph{Elm} podržava i operator \texttt{++} koji se koristi za
-konkatenaciju stringova i listi. Listing \ref{listing:operatori} prikazuje primere upotrebe 
+od operatora \texttt{||}, oba su levo asocijativna i lenjo izračunljiva. Pored navednih, \emph{Elm} podržava i operator \texttt{++} koji se koristi za
+konkatenaciju niski i listi. Listing \ref{listing:operatori} prikazuje primere upotrebe 
 navedenih operatora.
 
 \begin{listing}[h]
 \begin{minted}{haskell}
+> 2 > 3 == 3 > 4 
+-- INFIX PROBLEM - You cannot mix (>) and (==) without parentheses.
+> (2 > 3) == (3 > 4)
+True : Bool
 > not (1 + 1 /= 2) && 2 + 2 <= 5 || 1^0 == 0^1 
 True : Bool
 > 2^6 - 0x100 / 4  * (1 + 2)
 -128 : Float
-> "Spojen " ++ "string!" == "Spojen string!"
+> "Spojena " ++ "niska!" == "Spojena niska!"
 True : Bool
 \end{minted}
 \caption{Primeri upotrebe osnovnih operatora}
@@ -391,13 +394,13 @@ neprekidnoj sekvenci, stoga je preporučena kamilja notacija (\texttt{camelCase}
 Parametri se odvajaju razmakom, dok se zagrade ne navode ni prilikom definisanja, ni
 pozivanja funkcije. Ipak, primena funkcije je levo asocijativna, pa je česta upotreba
 zagrada za ograđivanje izraza. Telo funkcije predstavlja jedan jedini izraz koji se izvršava
-prilikom pozivanja, a izračunata vrednost predstavlja povratnu vrednost funkcije. Ne koriste
-se vitičaste zagrade, ni naredba \texttt{\textbf{return}}. Izraz se, po konvenciji, piše u
-novom redu, ali je moguće i u istom.
+prilikom pozivanja, a izračunata vrednost predstavlja povratnu vrednost funkcije.
+Izraz se, po konvenciji, piše u novom redu, ali je moguće i u istom.
 
 Funkcije u \emph{Elm}-u mogu prihvatati funkcije kao parametre i vraćati funkcije kao 
 povratne vrednosti, što ih čini funkcijama višeg reda. Nije moguće navoditi
 podrazumevane vrednosti parametara, kao ni preopterećivanje funkcija.
+
 
 \subsubsection{Konstante}
 U programskom jeziku \emph{Elm} ne postoje promenljive, jednom definisani podaci se ne mogu promeniti, ali je 
@@ -421,57 +424,11 @@ dok se simboli \texttt{\textbf{->}} koristi umesto znaka pridruživanja (listing
 \label{listing:lambda}
 \end{listing}
 
-\subsubsection{Moduli}
-Moduli se koriste za grupisanje funkcija u logičke jedinice i kreiranje imenskih 
-prostora (eng. \emph{namespace}). Osnovni tipovi, kao i funkcije i operatori nad njima 
-definisani su u modulu \texttt{\textbf{Basics}}, koji je podrazumevano uvezen i nalazi se 
-unutar paketa \texttt{\textbf{elm/core}}. Svaki modul predstavlja jednu \emph{.elm} datoteku,
-koja se mora zvati isto kao i modul, dok ime modula mora počinjati velikim slovom.
-Za definisanje modula koristi se ključna reč \texttt{\textbf{module}} nakon koje sledi
-ime modula, ključna reč \texttt{\textbf{exposing}} i lista funkcija kojima se može 
-pristupiti van modula.
-\begin{listing}[h]
-\begin{minted}{haskell}
-module Krug exposing (povrsina, obim) 
--- module Krug exposing (..) - otrkivanje svega iz modula 
-pi = 3.14
-
-povrsina r =
-    naKvadrat r * pi
-
-obim r =
-    2 * r * pi
-
-naKvadrat x =
-    x * x
-\end{minted}
-\caption{Primer modula}
-\label{listing:modul}
-\end{listing}
-
-Da bi se modul iz listinga \ref{listing:modul} koristio u interpreteru (\texttt{\textbf{elm repl}}),
-prvo je potrebno inicijalizovati \emph{Elm} projekat (\texttt{\textbf{elm init}}) i u direktorijumu \texttt{src} napraviti 
-datoteku \emph{Krug.elm} sa prikazanim sadržajem. Zatim, u interpreteru naredbom 
-\texttt{\textbf{import}} treba uvesti modul. Načini korišćenja funkcija iz modula
-\emph{Krug} prikazani su u listingu \ref{listing:import}.
-\begin{listing}[h]
-\begin{minted}{haskell}
-import Krug                           -- Krug.obim Krug.povrsina
-import Krug as K                      -- K.obim K.povrsina
-
-import Krug exposing (obim)           -- obim, Krug.povrsina
-import Krug exposing (..)             -- obim, povrsina
-import Krug as K exposing (povrsina)  -- K.obim, povrsina
-\end{minted}
-\caption{Primer korišćenja modula}
-\label{listing:import}
-\end{listing}
-
 \subsubsection{Tip funkcije}
-Prilikom definisanja funkcije u interpreteru ili
+Prilikom definisanja funkcije u interpretatoru ili
 poziva funkcije bez parametara, kao vrednost izraza vraća se \texttt{\textbf{<function>}} 
-i tip funkcije. U listingu  \ref{listing:tipoviFunkcije} prikazano je nekoliko primera 
-tipova funkcija u interpreteru.
+i tip funkcije. U listingu \ref{listing:tipoviFunkcije} prikazano je nekoliko primera 
+tipova funkcija u interpretatoru.
 \begin{listing}[h]
 \begin{minted}{haskell}
 > not
@@ -489,14 +446,13 @@ tipova funkcija u interpreteru.
   
 U primeru funkcije \texttt{\textbf{not}} vidimo da je njen tip \emph{Bool -> Bool},
 što je na prvi pogled jasno i znači da se radi o funkciji jednog argumenta koja
-prihvata vrednost tipa \emph{Bool} i vraća vrednost tipa \emph{Bool}. U slučaju
-funkcija koje imaju više argumenata, tip funkcije se može
-posmatrati na način da poslednji tip u nizu koji je razdvojen strelicama
+prihvata vrednost tipa \emph{Bool} i vraća vrednost tipa \emph{Bool}. 
+U slučaju funkcije \texttt{\textbf{deljivSa}} i anonimne funkcije koja sabira tri broja,
+tip funkcije se može posmatrati tako da poslednji tip u nizu koji je razdvojen strelicama
 (\texttt{\textbf{->}}) predstavlja povratni tip funkcije, dok tipovi pre njega 
-predstavljaju tipove argumenata funkcije. Tipovi argumenata se takođe odvajaju strelicama
-iz razloga što su sve funkcije u \emph{Elm} programskom jeziku zapravo Karijeve (\emph{Curried}) funkcije,
-što znači da su sve n-arne funkcije zapravo funkcije jednog argumeta
-koje kao povratnu vrednost imaju funkciju --- slika \ref{fig:currying}.
+predstavljaju tipove argumenata funkcije. Tipovi argumenata su takođe odvojeni strelicama
+jer su sve funkcije u programskom jeziku \emph{Elm} zapravo Karijeve (\emph{Curried}) funkcije (slika \ref{fig:currying}),
+što znači da su funkcije jednog argumenta koje kao povratnu vrednost imaju funkciju.
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.5\textwidth]{currying.png}
@@ -538,11 +494,11 @@ Operatori prosleđivanja ili \textbf{pipe} operatori su zapravo operatori primen
 i omogućavaju pisanje čitljivijeg koda sa manje zagrada.
 \begin{itemize}
   \item \texttt{\textbf{<|}} - pipe operator unazad radi isto što i primena funkcije, 
-  s tim što nas oslobađa pisanja zagrada. Preciznije, \texttt{\textbf{ f <| x}} je drugi zapis
-  za \texttt{\textbf{ f (x)}}
+  s tim što nas oslobađa pisanja zagrada. Preciznije, \texttt{\textbf{f <| x}} je drugi zapis
+  za \texttt{\textbf{f (x)}}
   \item \texttt{\textbf{|>}} - pipe operator inspirisan je Unix pipe-om, odatle i
-  naziv, i služi za prosleđivanje argumenta funkciji. Preciznije,  \texttt{\textbf{ x |> f}}
-  je drugi zapis za \texttt{\textbf{ f (x)}}
+  naziv, i služi za prosleđivanje argumenta funkciji. Preciznije, \texttt{\textbf{x |> f}}
+  je drugi zapis za \texttt{\textbf{f (x)}}
 \end{itemize}
 
 Operator kompozicije unazad \texttt{\textbf{<\smallskip<}} predstavlja operator matematičke 
@@ -551,14 +507,84 @@ u programskom jeziku \emph{Elm} može posmatrati kao: \texttt{\textbf{(g <\small
 g ( f x\textunderscore)) x}}. Operator kompozicije \texttt{\textbf{>\smallskip>}} je
 simetričan operatoru \texttt{\textbf{<\smallskip<}}, stoga važi: \texttt{\textbf{(f <\smallskip< g) x == (g >\smallskip> f) x}}.
 
+
+\subsubsection{Moduli}
+Moduli se koriste za grupisanje funkcija u logičke jedinice i kreiranje imenskih 
+prostora (eng. \emph{namespace}). Osnovni tipovi, kao i funkcije i operatori nad njima 
+definisani su u modulu \texttt{\textbf{Basics}}, koji je podrazumevano uvezen i nalazi se 
+unutar paketa \texttt{\textbf{elm/core}}. Svaki modul predstavlja jednu \emph{.elm} datoteku,
+koja se mora zvati isto kao i modul, dok ime modula mora počinjati velikim slovom.
+Za definisanje modula koristi se ključna reč \texttt{\textbf{module}} nakon koje sledi
+ime modula, ključna reč \texttt{\textbf{exposing}} i lista funkcija kojima se može 
+pristupiti van modula.
+\begin{listing}[h]
+\begin{minted}{haskell}
+module Krug exposing (povrsina, obim) 
+-- module Krug exposing (..) - otrkivanje svega iz modula 
+pi = 3.14
+
+povrsina r =
+    naKvadrat r * pi
+
+obim r =
+    2 * r * pi
+
+naKvadrat x =
+    x * x
+\end{minted}
+\caption{Primer modula}
+\label{listing:modul}
+\end{listing}
+
+Da bi se modul iz listinga \ref{listing:modul} koristio u interpretatoru (\texttt{\textbf{elm repl}}),
+prvo je potrebno inicijalizovati \emph{Elm} projekat (\texttt{\textbf{elm init}}) i u direktorijumu \texttt{src} napraviti 
+datoteku \emph{Krug.elm} sa prikazanim sadržajem. Zatim, u interpretatoru naredbom 
+\texttt{\textbf{import}} treba uvesti modul. Načini korišćenja funkcija iz modula
+\emph{Krug} prikazani su u listingu \ref{listing:import}.
+\begin{listing}[h]
+\begin{minted}{haskell}
+import Krug                           -- Krug.obim Krug.povrsina
+import Krug as K                      -- K.obim K.povrsina
+
+import Krug exposing (obim)           -- obim, Krug.povrsina
+import Krug exposing (..)             -- obim, povrsina
+import Krug as K exposing (povrsina)  -- K.obim, povrsina
+\end{minted}
+\caption{Primer korišćenja modula}
+\label{listing:import}
+\end{listing}
+
 \subsection{Osnovne strukture podataka}
 Osnovne strukture podatka programskog jezika \emph{Elm} čine liste, torke i slogovi. 
 \subsubsection{Liste}
 Lista predstavlja kolekciju u obliku jednostruko povezane liste. Elementi se navode
 unutar uglastih zagrada---\textbf{\texttt{[\smallskip ]}} i moraju biti istog tipa. Funkcije za rad
-sa listama nalaze se unutar modula \texttt{List}, među kojim su i tri veoma važne funkcije 
-u funkcionalnoj paradigmi --- \textbf{\texttt{map, filter}} i \textbf{\texttt{fold}} (ili
-\textbf{\texttt{reduce}} u drugim programskim jezicima).
+sa listama nalaze se unutar modula \texttt{List}, među kojim su i tri veoma važne funkcije višeg reda
+u funkcionalnoj paradigmi --- \textbf{\texttt{map, filter}} i \textbf{\texttt{fold}} (
+\textbf{\texttt{reduce}} ili \textbf{\texttt{accumulate}} u drugim programskim jezicima). 
+
+Funkcija \textbf{\texttt{map}} prihvata funkciju i listu i primenjuje datu funkciju na svaki elemenat
+liste čime se kreira nova lista. Funkcija \textbf{\texttt{filter}} prihvata predikat (funkciju koja
+vraća logičku vrednost) i listu, a vraća novu listu koja sadži samo elemente koji zadovoljavaju dati predikat.
+Funkcije \textbf{\texttt{fold}} koriste se za "savijanje" liste u jednu vrednost koja se često naziva akumulator.
+U zavisnosit od smera "savijanja" --- da li se ide sa početka ili kraja liste koriste se leva (\textbf{\texttt{foldl}}),
+odnosno desna (\textbf{\texttt{foldr}}) funkcija. Funkcije (\textbf{\texttt{fold}}) prihvataju binarnu funkciju,
+početnu vrednost akumulatora i listu i prilikom prolaska kroz elemnte liste primenjuje se data funkcija
+nad trenutnim elementom i akumulatorom čime se kreira nova vrednost akumulatora. Tipovi navedenih funkcija prikazani su u
+listingu \ref{listing:listFnTypes}, a njihova upotreba u listingu \ref{listing:liste}.
+\begin{listing}[h]
+\begin{minted}{haskell}
+> List.map
+<function> : (a -> b) -> List a -> List b
+> List.filter
+<function> : (a -> Bool) -> List a -> List a
+> List.foldl
+<function> : (a -> b -> b) -> b -> List a -> b
+\end{minted}
+\caption{Tipovi funkcija \texttt{map, filter} i \texttt{foldl}}
+\label{listing:listFnTypes}
+\end{listing}
+
 Pored operatora za nadovezivanje \textbf{\texttt{++}}, postoji i operator \textbf{\texttt{::}} koji
 dodaje element na početak liste, iz istorijskih razloga ovaj operator naziva se kons
 (eng. \emph{cons}). 
@@ -568,9 +594,9 @@ dodaje element na početak liste, iz istorijskih razloga ovaj operator naziva se
 ["aaa","bbb","ccc"] : List String
 > List.map (List.member 2) [[1,2,3],[2,2],[42]]
 [True,True,False] : List Bool
-> [1,2]++[3,4,5] |> List.filter (\x -> modBy 2 x == 0) |>List.length
+> [1,2]++[3,4,5] |> List.filter (\x -> modBy 2 x == 0) |> List.length
 2 : Int
-> List.foldl (\x y -> x + y) 0 <| List.range 1 5 
+> List.foldl (\acc x -> acc + x) 0 <| List.range 1 5 
 15 : Int
 \end{minted}
 \caption{Primeri lista različitih tipova i funkcija za rad sa njima}
@@ -592,7 +618,7 @@ o kojem će biti više reči kasnije.
 True : Bool
 > Tuple.second ("nebitan", "drugi")
 "drugi" : String
-> Tuple.mapFirst String.length  ("mapiran", 1)
+> Tuple.mapFirst String.length ("mapiran", 1)
 (7,1) : ( Int, number )
 \end{minted}
 \caption{Primeri torki i upotreba funkcija iz modula \texttt{Tuple}}
@@ -710,11 +736,15 @@ u listingu \ref{listing:alias}. Redosled argumenata funkcije za konstrukciju ide
 redosledu u alijasu.
 \subsection{Korisnički definisani tipovi}
 Pored korišćenja alijasa za postojeće tipove podataka, \emph{Elm} pruža mogućnost kreiranja novih 
-tipova. Korisnički definisani tipovi se često nazivaju i \emph{unijski tipovi}, jer mogu  
-predstavljati uniju više varijanti definisanog tipa. Definišu se ključnom reči 
+tipova. Korisnički definisani tipovi se često nazivaju algebarskim tipovima (eng. \emph{algebraic datatype}),
+kao i \emph{unijskim} tipovi, jer mogu predstavljati uniju više varijanti definisanog tipa. Definišu se ključnom reči 
 \textbf{\texttt{type}}, a varijante se odvajaju simbolom \texttt{\textbf{|}}.
 
-Slično kao kod alijasa tipova za slogove i ovde se kreiraju konstruktori za definisani tip. 
+Slično kao kod alijasa tipova za slogove i ovde se kreiraju konstruktori za definisani tip.
+Bitna razlika u odnosu na alijase tipova je ta što algebarski tipovi mogu biti rekurzivni, tj.
+tip koji se definiše se može navoditi unutar svoje definicije. U listingu \ref{listing:algebraic}
+se mogu videti primeri definisanja algebarskih tipova i tipovi njihovih konstruktora. Takođe je prikazana
+i definicija binarnog stabla kao primer rekurzivne strukutre.
 \begin{listing}[h]
 \begin{minted}{haskell}
 > type VectorF4 = Vector4F Float Float Float Float
@@ -731,13 +761,17 @@ NaCekanju : StatusPrijave
 <function> : String -> StatusPrijave
 > Uspesno
 <function> : { id : Int, token : String } -> StatusPrijave
+> type BinarnoStablo a 
+  = PraznoStablo 
+  | CvorStabla a (BinarnoStablo a) (BinarnoStablo a)
 \end{minted}
 \caption{ Primeri korisnički definisanih tipova}
+\label{listing:algebraic}
 \end{listing}
 
 \subsection{Kontrola toka}
 \emph{Elm} ne izvršava naredbe, već evaluira izraze, tako da umesto naredbi grananja
-imamo izraze \texttt{\textbf{if}} i \texttt{\textbf{case}}, a rekurziju umesto petlji.  
+imamo izraze \texttt{\textbf{if}} i \texttt{\textbf{case}}, a funkcije višeg reda ili rekurziju umesto petlji.
 \subsubsection{Izraz \texttt{\textbf{if}}}
 Izraz \texttt{\textbf{if}} se može posmatrati kao ternarni operator u programskim jezicima \emph{JavaScript}, \emph{C++} i 
 mnogim drugim.
@@ -759,11 +793,10 @@ izrazi \texttt{\textbf{if}}, pa \texttt{\textbf{else if}} grana predstavlja kori
 izraza \texttt{\textbf{if}} nakon ključne reči \texttt{\textbf{else}}.
 
 \subsubsection{Izraz \texttt{\textbf{case}}}
-Izraz \texttt{\textbf{case}} predstavlja pandan \texttt{\textbf{switch}} naredbi u drugim
-programskim jezicima. Prilikom korišćenja izraza \texttt{\textbf{case}} moraju se pokriti sve
-mogućnosti, ukoliko to nije slučaj kompilator prijavljuje grešku. Za podrazumevani slučaj
-može se korisiti simbol \texttt{\textbf{\textunderscore}}. Izraz \texttt{\textbf{case}}
-zauzima značajno mesto u programskom jeziku \emph{Elm}, jer se koristi u \textbf{poklapanju obrazaca}.
+Za raliku od izraza \texttt{\textbf{if}}, izraz \texttt{\textbf{case}} omogućava grananje na
+osnovu šireg raspona vrednosti, umesto samo sa \emph{tačno} ili \emph{netačno}. Takođe, pruža mogućnost navođenja više grana.
+Primer upotrebe izaraza \texttt{\textbf{case}} prikazan je u listingu \ref{listing:case}. Vrednost navedena nakon ključne reči
+\texttt{\textbf{case}} se redom upoređuje sa navedenim opcijama i prvim poklpanjem se određuje vrednost izraza.
 \begin{listing}[h]
 \begin{minted}{haskell}
 case mesto of
@@ -775,9 +808,15 @@ case mesto of
 \caption{Primer upotrebe izraza \texttt{\textbf{case}}}
 \label{listing:case}
 \end{listing}
+
+Prilikom korišćenja izraza \texttt{\textbf{case}} moraju se pokriti sve
+mogućnosti, ukoliko to nije slučaj kompilator prijavljuje grešku. Za podrazumevani slučaj
+može se korisiti simbol \texttt{\textbf{\textunderscore}}. Izraz \texttt{\textbf{case}}
+zauzima značajno mesto u programskom jeziku \emph{Elm}, jer se koristi u \textbf{poklapanju obrazaca}.
+
 \subsubsection{Izraz \texttt{\textbf{let}}}
 Budući da ne postoje blokovi naredbi, izrazi \texttt{\textbf{let}} nam omogućavaju da 
-ograničimo oblast važenja --- dosega (eng. \emph{scope)} funkcija i konstanti u okviru
+ograničimo oblast važenja --- dosega (eng. \emph{scope}) funkcija i konstanti u okviru
 jedne funkcije. Doprinose boljoj čitljivosti koda, a moguće je koristiti anotacije tipova
 unutar njih.
 \begin{listing}[h]
@@ -795,8 +834,9 @@ in pozitivan 10
 \end{listing}
 \subsubsection{Rekurzija}
 Rekurzivno definisana funkcija poziva samu sebe, čime se postiže ponavljanje izvršavanja
-koje se u imperativnom programiranju ostvaruje korišćenjem petlji. U mnogim slučajevima,
-umesto rekurzije mogu se koristiti funkcije nad listama.
+koje se u imperativnom programiranju ostvaruje korišćenjem petlji (ili takođe rekurzijom).
+U mnogim slučajevima, umesto rekurzije mogu se koristiti funkcije višeg reda i treba ih
+upotrebiti kad god je to moguće.
 \begin{listing}[h]
 \begin{minted}{haskell}
 factorial n = 
@@ -810,12 +850,11 @@ factorialFold n =
 \end{listing}
 
 \subsection{Poklapanje obrazaca}
-Poklapanje obrazaca može se posmatrati kao pokušavanje usklađivanja (poklapanja) ulaznog
+Poklapanje obrazaca (eng. \emph{pattern matching}) može se posmatrati kao pokušavanje usklađivanja (poklapanja) ulaznog
 podatka sa unapred definisanim obrascem. Ukoliko dođe do usklađivanja, poklopljenim
 vrednostima se može prisupiti putem identifikatora definisanim u obrascu. Pored spomenutih
 \texttt{\textbf{case}} izraza, poklapanje obrazaca može se korisiti u vidu 
-razlaganja slogova ili torki prilikom definisanja funkcija ili korišćenja \texttt{\textbf{
-let}} izraza.
+razlaganja slogova ili torki prilikom definisanja funkcija ili korišćenja \texttt{\textbf{let}} izraza.
 \begin{listing}[h]
 \begin{minted}{haskell}
 -- liste 
@@ -927,7 +966,7 @@ Takođe, podrška za rad sa obrascem \emph{MVU} počinje da se pojavljuje i u dr
 jedna od njih je i \emph{.NET 5} \cite{net5}.
 
 \subsection{Generisanje HTML sadržaja}
-Za razliku od drugih radnih okruženja koji uglavnom koriste \emph{HTML} šablone, \emph{Elm} za 
+Za razliku od drugih razvojnih okvira koji uglavnom koriste \emph{HTML} šablone (eng. \emph{templates}), \emph{Elm} za 
 opisivanje izgleda stranice koristi funkcije. Stoga imamo funkcije za kreiranje \emph{HTML}
 čvorova i atributa.
 \begin{listing}[h]
@@ -1026,7 +1065,7 @@ funkcijama za ažuriranje i prikazivanje modela. Program počinje pozivanjem fun
 \texttt{\textbf{view}} se pomoću funkcije za kreiranje atributa iz modula
 \texttt{\textbf{Html.Events}} mogu definisati načini slanja poruka, a kao rezultat 
 izvršavanja nastaje virtuelni \emph{DOM}, na osnovu kog okruženje \emph{Elm} izmenjuje stvarni \emph{DOM}.
-Ukoliko dođe do odgovarajuće akcije korisnika, u ovom sličaju klikom na dugme, \emph{Elm} okruženje
+Ukoliko dođe do odgovarajuće akcije korisnika, u ovom sličaju klikom na dugme, okruženje \emph{Elm}
 generiše poruku i prosleđuje je zajedno sa modelom funkciji \texttt{\textbf{update}} koja
 kreira novi model nad kojim se poziva ponovo funkcija \texttt{\textbf{view}}.
 Okruženje \emph{Elm} poredi prethodni virtuelni \emph{DOM} sa novim i vrši minimalan broj izmena.  
@@ -1045,7 +1084,7 @@ veba, u sistemima sa ugrađenim računarom (eng. \emph{embedded sotfware}), uči
 
 Prva verzija programskog jezika \emph{Elixir} objavljena je 2011. godine. Autor jezika, Žozé Valim
 (José Valim), prethodno je radio kao programer u programskom jeziku \emph{Ruby} i uvideo je probleme rada
-okruženja \emph{Ruby on Rails} na višejezgarnim sistemima. Rešenje problema video je u novom funkcionalnom
+razvojnog okvira \emph{Ruby on Rails} na višejezgarnim sistemima. Rešenje problema video je u novom funkcionalnom
 programskom jeziku koji će koristiti prednosti virtuelne mašine jezika \emph{Erlang}. Stoga, najveći
 uticaj na razvoj programskog jezika \emph{Elixir} imali su \emph{Erlang}, sa kojim je semantički vrlo sličan,
 i \emph{Ruby} u smislu sintakse. 
@@ -1055,7 +1094,7 @@ programskih paradigmi. Nastao je sredinom devedesetih godina prošlog veka, a ra
 japanski naučnik i programer Jukihiro Macumoto (\emph{Yukihiro Matsumoto}). \emph{Ruby} je dizajniran
 kao programski jezik fokusiran na programera, tako da svojom lakoćom korišćenja, jednostavnošću i 
 fleksibilnošću učini programiranje prijatnijim. Sam autor kaže da pokušava da napravi \emph{Ruby} 
-što prirodnijim.  
+što prirodnijim.
 
 Budući da je \emph{Elixir} nastao na ideji upotrebe virtuelne mašine jezika \emph{Erlang}, više o programskom jeziku \emph{Erlang} biće rečeno
 u sledećem poglavlju. Takođe, pored dva navedena programska jezika, uticaj na razvoj \emph{Elixir}-a 
@@ -1064,7 +1103,7 @@ imali su \emph{Clojure} \cite{clojure}, \emph{Haskell}\cite{haskell} i \emph{Pyt
 \section{Programski jezik i razvojna platforma Erlang}
 \emph{Erlang} nije samo programski jezik, već i razvojna platforma za izgradnju skalabilnih i pouzdanih
 sistema koji gotovo neprestano pružaju usluge. Švedska telekomunikaciona kompanija Erikson (eng.
-\emph{Ericsson}) osmislila je ovu platformu sredinom  osamdesetih godina prošlog veka. 
+\emph{Ericsson}) osmislila je ovu platformu sredinom osamdesetih godina prošlog veka. 
 Da bi \emph{Erlang} mogao da upravlja telekomunikacionim sistemima kompanije, morao
 je da bude pouzdan, skalabilan, da ima brz odziv i bude konstantno dostupan, jer telefonska mreža
 mora da funkcioniše bez obzira na broj istovremenih poziva i neočekivane greške.
@@ -1072,16 +1111,16 @@ mora da funkcioniše bez obzira na broj istovremenih poziva i neočekivane greš
 Iako je prvobitno izgrađen za telekomunikacione sisteme, \emph{Erlang} ni na koji način nije 
 specijalizovan za ovaj domen, ne sadrži podršku za programiranje telefona i drugih 
 telekomunikacionih uređaja. \emph{Erlang} predstavlja razvojnu platformu koja pruža posebnu podršku
-tehničkim, nefunkcionalnim zahtevima kao što su: paralelnost, skalabilnost, tolerancija na
+tehničkim zahtevima kao što su: paralelnost, skalabilnost, tolerancija na
 greške, distribuiranost i velika dostupnost. U vreme njegovog nastajanja, programi su se uglavnom
 koristili bez komunikacije sa nekim veb servisom (eng. \emph{desktop-based sotfware}), pa je 
 upotreba \emph{Erlang} jezika bila ograničena na telekomunikacione sisteme. Međutim, zahtevi modernih 
-sistema i aplikacija poklapaju se sa nefunkcionalnim zahtevima za koje \emph{Erlang} pruža podršku, tako
+sistema i aplikacija poklapaju se sa tehničkim zahtevima za koje \emph{Erlang} pruža podršku, tako
 da je u poslednje vreme privukao veliku pažnju. \emph{Erlang} pokreće razne velike sisteme, među kojima
-su aplikacije \emph{WhatsApp}\cite{whatsapp} i \emph{WeChat}\cite{wechat}, \emph{Riak}\cite{riak}  
-distribuirana baza podataka i \emph{Heroku Cloud}\cite{heroku}.
+su aplikacije \emph{WhatsApp}\cite{whatsapp} i \emph{WeChat}\cite{wechat},
+distribuirana baza podataka \emph{Riak}\cite{riak} i \emph{Heroku Cloud}\cite{heroku}.
 
-Kao razvojna platforma, \emph{Erlang} se sastoji od jezika, virtuelne mašine, razvojnog okruženja (eng.
+Kao razvojna platforma, \emph{Erlang} se sastoji od jezika, virtuelne mašine, razvojnog okvira (eng.
 \emph{framework}) i alata.
 \subsection{ Virtuelna mašina Erlang --- BEAM}
 Jezik \emph{Erlang} predstavlja primaran način pisanja koda koji se izvršava na sopstvenoj virtuelnoj
@@ -1104,9 +1143,9 @@ Ovi laki procesi su međusobno potpuno izolovani, ne dele memoriju i komuniciraj
 asinhronih poruka, što pruža mogućnost \emph{Erlang} sistemima da budu skalabilni, distribuirani i 
 otporni na greške.  
 
-\subsection{Razvojno okruženje OTP}
-\emph{OTP} je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovo razvojno
-okruženje. On nije vezan za telekomunikacione sisteme, već predstavlja razvojno okruženje opšte namene koji
+\subsection{Razvojni okvir OTP}
+\emph{OTP} je skraćenica za \emph{Open Telecom Platform}, što je donekle pogrešan naziv za ovaj razvojni
+okvir. On nije vezan za telekomunikacione sisteme, već predstavlja razvojni okvir opšte namene koji
 apstrahuje tipične zadatke \emph{Erlang} sistema:
 \begin{itemize}
   \item Obrasce konkurentnosti i distribuiranosti
@@ -1134,13 +1173,13 @@ komandom \textbf{\texttt{iex}}.
 Za razliku od programskog jezika \emph{Elm}, \emph{Elixir} nije čist funkcionalni programski jezik, jer dozvoljava bočne efekte.
 Pored prethodno spomenutih karakteristika preuzetih od \emph{Erlang}-a, dinamičke tipiziranosti i 
 sintakse slične \emph{Ruby}-ju, \emph{Elixir} odlikuju izraženo poklapanje obrazaca, polimorfizam, makroi
-i metaprogramiranje, kao i podrška za lenjo izračunavanje.   
+i metaprogramiranje, kao i podrška za lenjo izračunavanje.
 \section{Osnove jezika Elixir}
-U ovoj glavi biće predstavljeni osnovni operatori i tipovi podataka, poklapanje obrazaca,
+U ovoj glavi predstavljeni su osnovni operatori i tipovi podataka, poklapanje obrazaca,
 definisanje i grupisanje funkcija u module. 
 \subsubsection{Osnovni tipovi podataka}
-Osnovne tipove podataka predstavljaju brojevi (celobrojni i realni), bulovske
-vrednosti, atomi i stringovi. Takođe, u osnovne tipove podataka jezika \emph{Elixir} ubrajaju se liste i torke. Pregled
+Osnovne tipove podataka predstavljaju brojevi (celobrojni i realni), logičke
+vrednosti, atomi i niske. Takođe, u osnovne tipove podataka jezika \emph{Elixir} ubrajaju se liste, torke i mape, ali će one biti objašnjene u poglavlju o strukturama podataka. Pregled
 osnovnih tipova dat je u listingu \ref{listing:tipoviElixir}, gde se može videti i način pisanja
 komentara. \emph{Elixir} podržava samo linijske komentare koji se označavaju simbolom \texttt{\textbf{\#}}.
 \begin{listing}[!h]
@@ -1150,8 +1189,6 @@ iex> 1.0        # float
 iex> true       # boolean 
 iex> :atom      # atom
 iex> "elixir"   # string
-iex> [1, 2, 3]  # lista
-iex> {1, 2, 3}  # torka
 \end{minted}
 \caption{Pregled osnovnih tipova podataka u \emph{Elixir}-u}
 \label{listing:tipoviElixir}
@@ -1164,9 +1201,9 @@ heksadecimalnog zapisa, \emph{Elixir} pruža mogućnost navođenja celobrojnih v
 oktalnom obliku. Simbol \texttt{\textbf{\textunderscore}} može se koristiti za odvajanje 
 cifara i kod celih i kod brojeva u pokretnom zarezu (listing \ref{listing:brojeviElixir}).
 \subsubsection{Brojevi u pokretnom zarezu}
-Brojevi u pokretnom zarezu su dvostruke preciznosti (64 bita) po standardu \emph{IEEE-754}.
-Vrednosti se mogu navoditi i u eksponencijalnom zapisu, a vrednost kao što su \texttt{NaN}
-ili \texttt{Infinity} ne postoje.
+Brojevi u pokretnom zarezu su dvostruke preciznosti (64 bita) i delimično prate
+standard \emph{IEEE-754}, jer ne postoji podrška za vrednosti \texttt{NaN} i \texttt{Infinity}.
+Vrednosti brojeva se mogu navoditi i u eksponencijalnom zapisu.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 iex> 10_000
@@ -1191,8 +1228,8 @@ nakon koje slede alfanumerički karakteri, simboli \texttt{\textbf{@}} ili
 \texttt{\textbf{\textunderscore}}, a može se završavati znakom pitanja ili uzvika. Takođe, moguće
 je koristite i razmake, tada se sadržaj posle dvotačke mora navesti unutar navodnika.
 Postoji i notacija atoma bez početne dvotačke, ali u tom slučaju moraju počinjati velikim
-slovom i takvi atomi se nazivaju \emph{alijasi}. Upotreba atoma prikazana je u listingu
-\ref{listing:atomi}.
+slovom, takvi atomi se nazivaju \emph{alijasi} i tokom kompilacije se transformišu u atome oblika
+\texttt{:''Elixir.<naziv aliasa>''}. Upotreba atoma prikazana je u listingu \ref{listing:atomi}.
 
 Atom se sastoji od teksta i vrednosti. U toku izvršavanja tekst se čuva u \emph{tabeli atoma},
 dok vrednost predstavlja referencu na tekst u tabeli atoma, što omogućava brže poređenje atoma
@@ -1204,7 +1241,7 @@ iex> :neka_vrednost
 :neka_vrednost
 iex> :"atom sa razmacima"
 :"atom sa razmacima"
-iex> AliasAtom # tokom kompilacije se transformiše u :"Elixir.AliasAtom"
+iex> AliasAtom # kompilacijom se transformiše u :"Elixir.AliasAtom"
 AliasAtom
 iex> AliasAtom == :"Elixir.AliasAtom"
 true
@@ -1212,13 +1249,11 @@ true
 \caption{Primeri atoma u \emph{Elixir}-u}
 \label{listing:atomi}
 \end{listing}
-\paragraph{Bulovske vrednosti kao atomi}
-\emph{Elixir} zapravo nema poseban tip za bulovske vrednosti, već koristi atome \texttt{\textbf{:true}}
-i \texttt{\textbf{:false}}, i pruža mogućnost njihovog navođenja bez početne dvotačke. U okviru
-modula \texttt{Kernel}, koji predstavlja pandan modulu \texttt{Basics} u \emph{Elm}-u, \emph{Elixir} pruža
-funkcije za proveru tipa, među kojima su \texttt{\textbf{is{\textunderscore}atom}} i
-\texttt{\textbf{is{\textunderscore}boolean}} i čija upotreba je predstavljena u listingu
-\ref{listing:boolAtomi}.
+\paragraph{Logičke vrednosti kao atomi}
+\emph{Elixir} zapravo nema poseban tip za logičke vrednosti, već koristi atome
+\texttt{\textbf{:true}} i \texttt{\textbf{:false}}, i pruža mogućnost njihovog navođenja
+bez početne dvotačke, tj. samo sa \texttt{\textbf{true}} i \texttt{\textbf{false}}.
+\emph{Elixir} pruža funkcije za proveru tipa podataka, među kojima su \texttt{\textbf{is{\textunderscore}atom}} i \texttt{\textbf{is{\textunderscore}boolean}} i čija upotreba je predstavljena u listingu \ref{listing:boolAtomi}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 iex> is_atom(true)
@@ -1228,42 +1263,40 @@ true
 iex> false == :false
 true
 \end{minted}
-\caption{Predstavljanje bulovskih vrednosti preko atoma}
+\caption{Predstavljanje logičkih vrednosti preko atoma}
 \label{listing:boolAtomi}
 \end{listing}
 
-Pored bulovskih vrednosti, jos jedna specifična vrednost predstavljena atomom jeste
+Pored logičkih vrednosti, jos jedna specifična vrednost predstavljena atomom jeste
 \texttt{\textbf{:nil}}, slična vrednosti \texttt{\textbf{null}} u drugim programskim jezicima.
-Ona se takođe može navoditi bez početne dvotačke.
-\subsubsection{Stringovi}
-Stringovi se navode identično kao u \emph{Elm}-u, unutar jednostrukih ili trostrukih navodnika. 
-U \emph{Elixir}-u, stringovi koriste \emph{UTF-8} kodiranje i pružaju mogućnost ugrađivanja izraza --- interpolaciju
-stringova, što se može videti u listingu \ref{listing:elixirString}. Modul \texttt{Kernel}
-pruža operator konkatenacije (\texttt{\textbf{<>}}), a funkcije za rad sa stringovima nalaze
-se u modulu \texttt{String}.
+Ona se takođe može navoditi bez početne dvotačke (sa \texttt{\textbf{nil}}).
+\subsubsection{Niske}
+Niske (\texttt{\textbf{string}}) se navode slično kao u \emph{Elm}-u, unutar jednostrukih ili trostrukih navodnika, s tim da se u slučaju trostrukih navodnika oni moraju navesti u posebnim redovima.
+U \emph{Elixir}-u, niske koriste \emph{UTF-8} kodiranje i pružaju mogućnost ugrađivanja izraza --- interpolaciju
+niski, što se može videti u listingu \ref{listing:elixirString}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 iex> "Ćao!"
 "Ćao!"
+iex(1)> """
+...(1)> Niska u više
+...(1)> redova.
+...(1)> """
+"Niska u vise\nredova.\n"
 iex> "1+1=#{1+1}"
 "1+1=2"
-iex> "primer " <> "konkatenacije"
-"primer konkatenacije"
-iex> String.length("Ćao")
-3
 \end{minted}
 \caption{Primeri stringova u \emph{Elixir}-u}
 \label{listing:elixirString}
 \end{listing}
-\paragraph{Bitstringovi i sekvence bajtova}
-Kao i kod bulovskih vrednosti, \emph{Elixir} nema poseban tip za stringove, već za njihovo
+\paragraph{Niske bitova i sekvence bajtova}
+Kao i kod logičkih vrednosti, \emph{Elixir} nema poseban tip za niske, već za njihovo
 predstavljanje koristi sekvencu bajtova (eng. \emph{binary}) i \emph{UTF-8} kodiranje.
-Zapravo fundamentalni tip za njihovo predstavljanje jeste \textbf{bitstring}, kojem odgovara 
-neprekidni niz bitova u memoriji. Bitstringovi mogu biti proizvoljne dužine, a sekvenca
-bajtova ---\emph{binary} predstavlja posebnu vrstu bitstringova čiji je broj bitova deljiv sa
+Zapravo fundamentalni tip za njihovo predstavljanje jeste niska bitova --- \textbf{bitstring}, kojoj odgovara neprekidni niz bitova u memoriji. Niske bitova mogu biti proizvoljne dužine, a sekvenca
+bajtova ---\emph{binary} predstavlja posebnu vrstu niske bitova čiji je broj bitova deljiv sa
 osam. 
 
-Bitstringovi se navode kao sekvenca brojeva unutar znakova
+Niske bitova se navode kao sekvenca brojeva unutar znakova
 \texttt{\textbf{<\smallskip<}} i \texttt{\textbf{>\smallskip>}}. Podrazumevano se koristi
 osam bitova za čuvanje svakog broja u bitstringu, ali je moguće navesti broj bitova pomoću
 modifikatora \texttt{\textbf{::n}} da bi se označila veličina od \texttt{\textbf{n}} bitova,
@@ -1286,96 +1319,15 @@ iex> ?a # određivanje koda karakter a
 97
 iex> <<97,98,99>>  
 "abc"
-iex> "123" <> <<0>> # konkatenacija
-<<49, 50, 51, 0>>
 \end{minted}
-\caption{Predstavljane stringova kao niz bajtova}
+\caption{Predstavljane nisk kao niz bajtova}
 \label{listing:elixirBitstring}
 \end{listing}
-U listingu \ref{listing:elixirBitstring} vidimo da je operator \texttt{\textbf{<>}} zapravo
-operator kontatenacije bitstringova i ukoliko sadržaj bitstringa čine samo ASCII
-karakteri, interaktivni \emph{Elixir} ispisuje string. \emph{Elixir} nema tip \texttt{Char} za rad sa
+U listingu \ref{listing:elixirBitstring} vidimo da ukoliko sadržaj niske bitova čine samo ASCII
+karakteri, interaktivni \emph{Elixir} ispisuje nisku. \emph{Elixir} nema tip \texttt{Char} za rad sa
 karakterima, ali daje mogućnost određivanja koda pomoću simbola \texttt{\textbf{?}}, nakon 
-kog se navodi karakter. 
+kog se navodi karakter.
 
-\subsubsection{Liste}
-Kao i u \emph{Elm}-u, lista kao tip predstavlja jednostuko povezanu listu, čiji se elementi navode
-unutar uglastih zagrada, ali za razliku od \emph{Elm}-a ne moraju biti istog tipa. Lista spada u 
-nabrojive (eng. \emph{enumerable}) tipove, pa se pored funkcija iz modula \texttt{\textbf{List}},
-mogu koristiti i funkcije iz modula \texttt{\textbf{Enum}}. Takođe, u modulu \texttt{\textbf{Kernel}}
-se nalaze operatori za proveru da li element pripada listi (\texttt{\textbf{in}}), za nadovezivanje
-listi (\texttt{\textbf{++}}), kao i operator oduzimanja (\texttt{\textbf{-{}-}}) koji predstavlja
-razliku elemenata levog i desnog operanda. Tu su i funkcije za određivanje
-glave, repa i dužine liste. Umesto operatora \emph{cons}, \emph{Elixir} pruža sintaksu u obliku
-\texttt{\textbf{[}glava\textbf{|}rep\textbf{]}} koja se može koristiti u kreiranju nove
-liste i poklapanju obrazaca. Primeri upotrebe nekih od navedenih funkcija prikazani su u
-listingu \ref{listing:elixirList}, a nešto više o modulu \texttt{\textbf{Enum}} biće rečeno kasnije. 
-\begin{listing}[h]
-\begin{minted}{elixir}
-iex> [1,2,3, "123", true] ++ [:atom, ["aaa", "bbb"]]
-[1, 2, 3, "123", true, :atom, ["aaa", "bbb"]]
-iex> [1, 2, 1, 3, 5] -- [1, 5, 6]
-[2, 1, 3]
-iex> "abc" in [1, 2, "abc", false]
-true
-iex> List.insert_at([0,1,2], 1, 3)
-[0, 3, 1, 2]
-iex> tl([1,2,3,4])
-[2, 3, 4]
-iex> Enum.sum([1 | [2 | [3, 4]]])
-10
-\end{minted}
-\caption{Rad sa listama u \emph{Elixir}-u}
-\label{listing:elixirList}
-\end{listing}
-\paragraph{Liste karaktera }
-Lista karaktera (eng. \emph{charlists}) je lista celih brojeva, gde svaki element predstavlja jedan karakter.
-Veoma je slična stringovima, za navođenje se koriste apostrofi umesto navodnika, 
-ali glavna razlika je u internoj reprezentaciji, kao i funkcijama koje se nad njima
-izvršavaju. Mogu se navoditi u jednostrukoj i trostrukoj notaciji, a moguća je i 
-interpolacija. U listingu \ref{listing:elixirCharList} dati su primeri liste karaktera.
-\begin{listing}[h]
-\begin{minted}{elixir}
-iex>'''
-Primer u
-više redova
-'''
-'Primer u\nvise redova\n'
-iex>'2+2=#{2+2}'
-'2+2=4'
-iex> [97,98,99]
-'abc'
-iex> '123' ++ [0] 
-[49, 50, 51, 0]
-\end{minted}
-\caption{Primeri lista karaktera u \emph{Elixir}-u}
-\label{listing:elixirCharList}
-\end{listing}
-
-\subsubsection{Torke}
-I u \emph{Elixir}-u torke mogu sadržati elemente različitih tipova, ali za razliku od \emph{Elm}-a,
-navode se unutar vitičastih zagrada, broj elemenata nije ograničen i elementi se mogu uklanjati
-i dodavati. Iako dozvoljavaju promenljiv broj elemenata, torke su zamišljene kao kolekcija
-podataka fiksne dužine i ne spadaju u nabrojive tipove. U modulu \texttt{\textbf{Kernel}}
-se nalaze funkcije za pristupanje i ažuriranje elemenata, kao i funkcija za određivanje broja
-elemenata torke, dok se ostale funkcije za rad sa torkama nalaze u modulu \texttt{\textbf{Tuple}}.
-Prikaz rada navedenih funkcija dat je u listingu \ref{listing:elixirTorke}.
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> tuple_size({1, "aaa", false})
-3
-iex> elem({:prvi, :drugi, :treci}, 0)
-:prvi
-iex> put_elem({1, 2}, 1, 4)
-{1, 4}
-iex> Tuple.insert_at({1, 2}, 1, 4)
-{1, 4, 2}
-iex> Tuple.to_list({1, 2, 3})
-[1, 2, 3]
-\end{minted}
-\caption{Rad sa torkama u \emph{Elixir}-u}
-\label{listing:elixirTorke}
-\end{listing}
 \subsubsection{Drugi ugrađeni tipovi podataka}
 Pored navedenih, \emph{Elixir} poseduje i druge ugrađene tipove podataka:
 \begin{itemize}
@@ -1385,101 +1337,6 @@ Pored navedenih, \emph{Elixir} poseduje i druge ugrađene tipove podataka:
   \item Identifikator porta --- koristi se za identifikaciju porta, mehanizma koji se
   koristi za komunikaciju sa spoljnim svetom (datotekama, programima...)
 \end{itemize} 
-\subsubsection{Asocijativne strukture podataka}
-Osim navedenih osnovnih tipova, dve vrlo važne asocijativne strukture podataka koje se 
-veoma često koriste u \emph{Elixir} programima predsavljaju \textbf{liste ključnih reči} (eng.
-\emph{keyword list}) i \textbf{mape}.
-\paragraph{Liste ključnih reči}
-Liste ključnih reči predstavljaju posebnu vrstu listi gde je svaki element dvočlana torka,
-čiji je prvi član (tj. ključna reč) obavezno atom, a drugi može biti bilo kog tipa. Takođe,
-jedna ključna reč može se navesti više puta. \emph{Elixir} pruža i jednostavniju sintaksu koja izuzima
-pisanje vitičastih zagrada. Za rad sa listama ključnih reči mogu se koristiti sve funkcije i
-operatori kao i sa običnim listama i, dodatno, funkcije iz modula \texttt{Keyword} i operator
-\texttt{\textbf{[\smallskip]}} za prisup po određenoj ključnoj reči. Prikaz nekih od funkcija i operatora
-dat je u listingu \ref{listing:keywordList}.
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> [{:prvi, 1}, {:drugi, 2}, {:treci, 3}]
-[prvi: 1, drugi: 2, treci: 3]
-iex> Keyword.get([prvi: 1, drugi: 2, treci: 3], :drugi)
-2
-iex> lista = [prvi: 1, drugi: 2, treci: 3]
-[prvi: 1, drugi: 2, treci: 3]
-iex> lista[:prvi]
-1
-iex> [a: 1, b: 2] ++ [c: "3"]
-[a: 1, b: 2, c: "3"]
-\end{minted}
-\caption{Primeri rada sa listama ključnih reči u \emph{Elixir}-u}
-\label{listing:keywordList}
-\end{listing}
-
-\paragraph{Mape}
-Za razliku od liste ključnih reči, mape predstavljaju kolekciju elemenata u obliku
-\emph{ključ-vrednost} gde oba člana mogu biti proizvoljnog tipa. Liste ključnih
-reči čuvaju uređenje, što je osobina koju nemaju mape, ali u slučaju većeg broja elemenata
-mape pružaju bolju efikasnost. Takođe, ključevi unutar mape moraju biti jedinstveni.
-Elementi mape navode se koristeći \texttt{\textbf{\%\{\}}} sintaksu, a ključ i vrednost se
-odvajaju znakom \texttt{\textbf{=>}}. U slučaju da su svi ključevi atomi, može se koristiti
-jednostavnija sintaksa kao kod liste ključnih reči. Oba slučaja prikazana su u listingu 
-\ref{listing:elixirMap}.
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> %{1 => false, "bb" => [1,2], {1,2} => 3}
-%{1 => false, {1, 2} => 3, "bb" => [1, 2]}
-iex> %{a: 123, b: 'bbb', c: "c"}
-%{a: 123, b: 'bbb', c: "c"}
-\end{minted}
-\caption{Primeri mapa u \emph{Elixir}-u}
-\label{listing:elixirMap}
-\end{listing}
-
-Pristup elementima mape moguć je pomoću operatora \texttt{\textbf{[\smallskip]}}, kao i
-funkcija iz modula \texttt{Map}, a ukoliko su svi ključevi mape atomi, dostupna je 
-sintaksa oblika \emph{mapa.ključ}. Pored funkcija iz modula \texttt{Map}, nad mapama se
-mogu koristiti i funkcije iz modula \texttt{Enum}, jer pripadaju nabrojivim tipovima.
-Mape predstavljaju dinamičku strukturu u kojoj se mogu dodavati i uklanjati elementi,
-a moguće je i ažuriranje elemenata. Zbog nepromenljivosti, ne menja se postojeći, već se
-kreira novi element. Pored funkcija iz modula, dostupna je i sintaksa ažuriranja slična 
-sintaksi ažuriranja slogova u \emph{Elm}-u i prikazana je u listingu \ref{listing:elixirMap2}. 
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> mapa = %{a: 1, b: 2, c: 3}
-%{a: 1, b: 2, c: 3}
-iex>mapa.b
-2
-iex> mapa[:c]
-3
-iex> %{mapa | a: 4}
-%{a: 4, b: 2, c: 3}
-iex>%{ %{"a" => true, :b => 0} | :b => false}
-%{:b => false, "a" => true}
-\end{minted}
-\caption{Pristup i ažuriranje elemenata mape}
-\label{listing:elixirMap2}
-\end{listing}
-\paragraph{Modul Enum}
-\emph{Elixir} pruža mogućnost rada sa nabrojivim podacima koristeći modul \texttt{Enum}, koji sadrži
-veliki broj funkcija uobičajenih za ovaj tip podataka (pronalazak i transformisanje elemenata,
-grupisanje, sortiranje, filtriranje...). Prethodno su navedene liste i mape kao nabrojivi tipovi.
-Pored njih, \emph{Elixir} omogućava i rad sa \emph{opsezima} (eng. \emph{ranges}), čija se
-upotreba korišćenjem nekih od funkcija iz modula \texttt{Enum} može videti u listingu
-\ref{listing:elixirEnum}, zajedno sa listama i mapama. U datim primerima korišćene su anonimne
-funkcije, koje će se detaljnije obraditi u poglavlju 3.7. Funkcije iz modula \texttt{Enum}
-mogu raditi sa bilo kojim tipom koji implementira \texttt{Enumerable} protokol. Više
-o protokolima biće rečeno u poglavlju 3.10.
-\begin{listing}[!ht]
-\begin{minted}{elixir}
-iex> Enum.map([1, 2, 3], fn x -> x * 3 end)
-[3, 6, 9]
-iex> Enum.reduce(%{1 => 2, 3 => 4}, 0, fn {k, v}, s -> s + k + v end)
-10
-iex> Enum.filter(1..10, fn x -> rem(x, 3) == 0 end)
-[3, 6, 9]
-\end{minted}
-\caption{Upotreba funkcija iz modula \texttt{Enum} nad listama, mapama i opsezima}
-\label{listing:elixirEnum}
-\end{listing}
 
 \subsection{Osnovni operatori}
 Za razliku od \emph{Elm}-a, \emph{Elixir} vrši implicitnu konverziju celih brojeva u realne prilikom
@@ -1489,12 +1346,36 @@ primene aritmetičkih operatora \textbf{\texttt{+}}, \textbf{\texttt{-}} i
 celobrojno deljenje i izračunavanje ostatka pri celobrojnom deljenju koriste se funkcije 
 \textbf{\texttt{div}} i \textbf{\texttt{rem}}, koje se mogu koristiti samo nad celim brojevima.
 
+Relacijski operatori u \emph{Elixir}-u slični su kao i u drugim jezicima. S tim što pored operatora 
+\texttt{\textbf{==, !=, <=, >=, <}} i \texttt{\textbf{>}}, postoje i operatori 
+\texttt{\textbf{===}} i \texttt{\textbf{!==}} koji se od operatora \texttt{\textbf{==}} i
+\texttt{\textbf{!=}} razlikuju samo prilikom poređenja brojeva, tako što ne vrše konverziju
+tipova, tj. vrše poređenje po tipu i vrednosti. Upotreba operatora poređenja prikazana je u
+listingu \ref{listing:elixirOp}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> 1 == 1.0
+true
+iex> 1 === 1.0
+false
+iex> 1 == "1"
+false
+iex> 1 < false and "12" > '123'
+true
+\end{minted}
+\caption{Rad sa operatorima poređenja}
+\label{listing:elixirOp}
+\end{listing}
+Takođe, u listingu \ref{listing:elixirOp} vidimo da \emph{Elixir} dozvoljava poređenje vrednosti
+različitih tipova i to po sledećem uređenju : \textbf{\texttt{number < atom < reference <
+function < port < pid < tuple < map < list < bitstring}}
+
 Logički operatori u \emph{Elixir}-u su specifični po tome što rezultat njihove primene ne mora
-biti bulovska vrednost, već može biti vrednost proizvoljnog tipa. Takođe, \emph{Elixir} ima dvostruke operatore
+biti logička vrednost, već može biti vrednost proizvoljnog tipa. Takođe, \emph{Elixir} ima dvostruke operatore
 za logičko \emph{i}, \emph{ili} i \emph{ne}, koji se mogu podeliti u dve grupe:
 \begin{enumerate}
   \item \textbf{\texttt{and}}, \textbf{\texttt{or}} i \textbf{\texttt{not}} --- prvi operand
-  mora biti bulovska vrednost
+  mora biti logička vrednost
   \item \textbf{\texttt{\&\&}}, \textbf{\texttt{||}} i \textbf{\texttt{!}} --- oba operanda 
   mogu biti proizvoljnog tipa
 \end{enumerate}
@@ -1525,123 +1406,23 @@ iex> :atom || false
 \label{listing:elixirLogicOp}
 \end{listing}
 
-Operatori poređenja u \emph{Elixir}-u slični su kao i u drugim jezicima. S tim što pored operatora 
-\texttt{\textbf{==, !=, <=, >=, <}} i \texttt{\textbf{>}}, postoje i operatori 
-\texttt{\textbf{===}} i \texttt{\textbf{!==}} koji se od operatora \texttt{\textbf{==}} i
-\texttt{\textbf{!=}} razlikuju samo prilikom poređenja brojeva, tako što ne vrše konverziju
-tipova, tj. vrše poređenje po tipu i vrednosti. Upotreba operatora poređenja prikazana je u
-listingu \ref{listing:elixirOp}.  
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> 1 == 1.0
-true
-iex> 1 === 1.0
-false
-iex> 1 == "1"
-false
-iex> 1 < false and "12" > '123'
-true
-\end{minted}
-\caption{Rad sa operatorima poređenja}
-\label{listing:elixirOp}
-\end{listing}
-
-Takođe, u listingu \ref{listing:elixirOp} vidimo da \emph{Elixir} dozvoljava poređenje vrednosti
-različitih tipova i to po sledećem uređenju : \textbf{\texttt{number < atom < reference <
-function < port < pid < tuple < map < list < bitstring}}
-
-\subsection{Poklapanje obrazaca}
-U prethodnom poglavlju nije naveden jedan od najvažnijih operatora u programskom jeziku
-\emph{Elixir} ---  operator uparivanja ili poklapanja (\texttt{\textbf{=}}), koji ima veoma
-bitnu ulogu u poklapanju obrazaca. Za razliku od \emph{Elm}-a gde se
-poklapanje obrazaca korisiti isključivo unutar izraza \textbf{\texttt{case}} i
-\textbf{\texttt{let}}, u \emph{Elixir}-u je ono dosta prisutnije i koristi se prilikom
-definisanja promenljivih i funkcija, kao i u kontroli toka.
-
-Operator uparivanja pokušava da izraz sa leve strane upari sa izrazom sa desne strane,
-ukoliko ne dođe do uspešnog uparivanja prijavljuje grešku --- \texttt{MatchError}.
-U većini drugih programskih jezika, operator \texttt{\textbf{=}} koristi se za dodeljivanje
-vrednosti promenljivoj, što se u \emph{Elixir}-u postiže kroz poklapanje obrazaca. Ukoliko
-dođe do uspešnog poklapanja, promenljive u levom izrazu \emph{vezuju se} za odgovarajuće
-vrednosti u desnom. Imenovanje promenljivih slično je imenovanju atoma, s tim što umesto
-dvotačke promenljiva mora počinjati malim slovom, po konvenciji se koristi
-\emph{snake\textunderscore{}case} notacija. Moguće je koristiti operator uparivanja bez 
-promenljivih, kao i izvršiti ponovno vezivanje promenljive za drugu vrednost, što je 
-prikazano u listingu \ref{listing:elixirPoklapanjeObrazaca}. Takođe, ukoliko ne želimo
-ponovno vezivanje možemo korisiti \emph{pin} operator \textbf{\texttt{ \^{}}}.  
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> x = 1
-1
-iex> 1 = 1
-1
-iex> x = x + 1
-2
-iex> 1 = x  
-** (MatchError) no match of right hand side value: 2
-iex> ^x = 1
-** (MatchError) no match of right hand side value: 1
-\end{minted}
-\caption{Vezivanje promenljive za vrednost}
-\label{listing:elixirPoklapanjeObrazaca}
-\end{listing}
-
-Operator uparivanja se često upotrebljava za pristupanje elementima torki, listi i mapa,
-gde se može izvršiti vezivanje više promenljivih odjednom. Kao i u \emph{Elm}-u, simbol 
-\texttt{\textbf{\textunderscore}} se može koristiti za poklapanje vrednosti koje se neće
-dalje koristiti. Primeri poklapanja obrazaca listi i torki dati su u listingu
-\ref{listing:elixirPoklapanjeTorki}.
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> {a, b} = {1, 2}
-{1, 2}
-iex> [c, c] = [3, 3]
-[3, 3]
-iex> {1, 2, 3, d} = {a, b, c, {4}}
-{1, 2, 3, {4}}
-iex> [ _ | rep ] = 'abcd'
-iex> rep
-'bcd'
-\end{minted}
-\caption{Poklapanje obrazaca listi i torki}
-\label{listing:elixirPoklapanjeTorki}
-\end{listing}
-
-U slučaju mapa moguće je parcijalno poklapanje, tj. leva strana ne mora da sadrži sve
-ključeve desne, što omogućava pristupanje samo potrebnim vrednostima iz mape. Parcijalno
-poklapanje je prikazano u listingu \ref{listing:elixirPoklapanjeMapa}.
-\begin{listing}[!h]
-\begin{minted}{elixir}
-iex> %{ime: ime, godine: godine} = %{ime: "Pera", godine: 25}
-%{godine: 25, ime: "Pera"}
-iex> "#{ime} ima #{godine} godina."
-"Pera ima 25 godina."
-iex> %{ime: ime} = %{ime: "Pera", godine: 25}
-%{godine: 25, ime: "Pera"}
-iex(55)> %{ime: ime, prezime: prezime} = %{ime: "Pera", godine: 25}
-** (MatchError) no match of right hand side value: %{godine: 25, ime: "Pera"}
-\end{minted}
-\caption{Poklapanje obrazaca mapa}
-\label{listing:elixirPoklapanjeMapa}
-\end{listing}
-
-\subsection{Funkcije}
+\subsection{Funkcije i moduli}
 \emph{Elixir}, kao i \emph{Elm}, poseduje imenovane i anonimne funkcije. Imenovane funkcije se navode
 isključivo unutar modula, a sintaksa je veoma jednostavna i prikazana je u listingu
 \ref{listing:elixirModul}.
 \begin{listing}[!h]
 \begin{minted}{elixir}
 defmodule Kalkulator do
-  def saberi_i_ispisi(x, y) do
-    IO.puts("#{a} + #{b} = #{a+b}")  #primer bočnog efekta
-    saberi(x, y)
-  end
-
   def pomnozi(x, y), do: x * y
 
   #privatna funkcija
   defp saberi(x, y) do 
     x + y
+  end
+
+  def saberi_i_ispisi(x, y) do
+    IO.puts("#{a} + #{b} = #{a+b}")  #primer bočnog efekta
+    saberi(x, y)
   end
 end
 \end{minted}
@@ -1687,24 +1468,11 @@ end
 \label{listing:elixirOverload}
 \end{listing}
 
-Prilikom definisanja funkcija može se koristi poklapanje obrazaca za razlaganje argumenata,
-ali i za preopterećivanje funkcija iste arnosti koršćenjem različitih šablona. Takođe,
-preopterećivanje funkcije, pored različitog broja argumenata i obrazaca, može se vršiti 
-korišćenjem \emph{čuvara} (eng. \emph{guards}), tj. postavljanjem uslova nad argumentima
-prilikom definisanja funkcija. U oba slučaja bitan je redosled navođenja, jer se i šabloni
-i uslovi mogu preklapati. Primer preopterećivanja funkcije upotrebom poklapanja obrazaca
-i čuvara dat je u listingu \ref{listing:elixirGuards}.
+Pored različitog broja argumenata, preopterećivanje funkcije
+može se vršiti korišćenjem čuvara (eng. guards), tj. postavljanjem uslova nad argumentima
+prilikom definisanja funkcija. Primer preopterećivanja funkcije upotrebom čuvara dat je u listingu
 \begin{listing}[!h]
 \begin{minted}{elixir}
-defmodule Oblik do
-  def povrsina({:pravougaonik, a, b}), do: a * b
-  def povrsina({:kvadrat, a}), do: a * a
-  def povrsina({:krug, r}), do: r * r * 3.141593
-  # podrazumvani slučaj
-  def povrsina(oblik), do: {:error, {:nepoznat_oblik, oblik}}
-end
-
-# upotreba čuvara
 defmodule Math do
   def sgn(x) when x < 0 do
     -1
@@ -1714,12 +1482,13 @@ defmodule Math do
   
   def sgn(x) when x > 0 do
     1
-  end 
+  end
 end
 \end{minted}
-\caption{Upotrebe čuvara i poklapanja obrazaca prilikom definisanja funkcija}
-\label{listing:elixirGuards}
+\caption{Preopterećivanja funkcija upotrebom čuvara}
+\label{listing:elixirOverload}
 \end{listing}
+
 \subsubsection{Anonimne funkcije}
 Sintaksa navođenja anonimnih funkcija prikazana je u listingu \ref{listing:elixirLambda}. Za
 razliku od imenovanih funkcija, argumenti se ne navode unutar zagrada po konvenciji, mada je
@@ -1777,7 +1546,7 @@ iex(35)> saberi_sa_3.(3)
 \label{listing:elixirClosures}
 \end{listing}
  
-\paragraph{Operator prosleđivanja - \emph{pipe} operator (\texttt{\textbf{|>}})}
+\subsubsection{Operator prosleđivanja - \emph{pipe} operator (\texttt{\textbf{|>}})}
 Operator \texttt{\textbf{|>}} u \emph{Elixir}-u prosleđuje vrednost sa leve strane kao prvi argument
 funkciji sa desne strana, što je različito ponašanje koje isti operator ima u \emph{Elm}-u, gde se
 vrednost sa leve strane prosleđuje kao poslednji argument funkciji sa desne
@@ -1803,10 +1572,8 @@ operatora \texttt{\textbf{|>}} u oba jezika predstavljeno je u listingu \ref{lis
 \captionof{listing}{Upotreba \textbf{pipe} operatora u \emph{Elixir}-u (levo) i \emph{Elm}-u (desno)}
 \label{listing:elixirPipe}
 \end{figure}
-\subsubsection{Moduli}
-Pored funkcija, moduli u \emph{Elixir}-u mogu sadržati dva veoma važna koncepta --- atribute i
-stukture.
-\paragraph{Atributi}
+
+\subsubsection{Atributi}
 Atributi u modulu se mogu koristiti za definisanje konstanti. Takođe, \emph{Elixir} pruža atribute
 za dokumentovanje koda: \texttt{@moduledoc} i \texttt{@doc}, čija je upotreba prikazana u
 listingu \ref{listing:elixirAtributi}.
@@ -1831,7 +1598,235 @@ Atributi imaju višestruku upotrebu i mnogi bitni koncepti se zasnivaju na njima
 je i specifikacija tipova (eng. \emph{typespecs}) koja se može koristiti za definisanje
 korisničkih tipova, kao i za anotaciju tipova sličnu anotaciji u \emph{Elm}-u. Više o specifikaciji
 tipova i samim atributima može se videti na zvaničnoj stranici \cite{elixir}.
-\paragraph{Strukture}
+
+\subsubsection{Korišćenje funkcija iz drugog modula}
+Funkcije modula mogu se pozivati kao \emph{NazivModula.naziv\textunderscore{}funkcije},
+što često nije praktično jer nazivi modula
+mogu biti veoma dugački. Stoga \emph{Elixir} nudi dve direktive za kraći i čitljiviji k\^{o}d prilikom
+upotrebe funkcija iz drugih modula --- \texttt{import} i \texttt{alias}, koje su prikazane u
+listingu \ref{listing:elixirAliasImport}.
+
+Upotrebom direktive \texttt{import} sve funkcije navedenog modula uključuju se u trenutni
+modul i mogu se pozivati bez navođenja imena modula, a moguće je ograničiti uključivanje samo
+određenih funkcija. Sa druge strane, \texttt{alias} omogućava korišćenje određenog imena
+(alijasa) za bilo koji modul i prilikom pozivanja funkcija obavezno je njegovo navođenje.
+\begin{listing}[h]
+\begin{minted}{elixir}
+alias Api.Accounts.User, as: AccUser
+alias Api.Accounts.User #isto kao alias Api.Accounts.User, as: User
+
+# uključivanje samo authenticate/2 funkcija 
+import Api.Accounts, :only [authenticate: 2] 
+\end{minted}
+\caption{Upotreba direktiva \texttt{import} i \texttt{alias}}
+\label{listing:elixirAliasImport}
+\end{listing}
+
+\subsection{Osnovne strukture podataka}
+Osnovne strukture podataka u programskom jeziku \emph{Elixir} predstavljaju liste, torke i mape.
+Pored njih, bitno mesto zauzimaju i liste ključnih reči. Podaci u \emph{Elixir}-u su nepromenljivi (imutabilni) i prilikom izvršavanja operacija nad njima ne menja se trenutna vrednost, već se uvek
+kreira nova.
+
+\subsubsection{Liste}
+Kao i u \emph{Elm}-u, lista kao tip predstavlja jednostuko povezanu listu, čiji se elementi navode
+unutar uglastih zagrada, ali za razliku od \emph{Elm}-a ne moraju biti istog tipa. U modulu \texttt{\textbf{Kernel}} se nalaze operatori za proveru da li element pripada listi
+(\texttt{\textbf{in}}), za nadovezivanje listi (\texttt{\textbf{++}}), kao i operator oduzimanja
+(\texttt{\textbf{-{}-}}) koji predstavlja razliku elemenata levog i desnog operanda. Tu su i funkcije
+za određivanje glave, repa i dužine liste. Umesto operatora \emph{cons}, \emph{Elixir} pruža sintaksu
+u obliku \texttt{\textbf{[}glava\textbf{|}rep\textbf{]}} koja se može koristiti u kreiranju nove
+liste i poklapanju obrazaca. Za rad sa listama može se koristiti veliki broj funkcija iz modula
+\texttt{\textbf{List}}, kao i funkcije iz modula \texttt{\textbf{Enum}} o kom će više rečeno kasnije. Primeri upotrebe nekih od navedenih funkcija prikazani su u listingu \ref{listing:elixirList}.
+\begin{listing}[h]
+\begin{minted}{elixir}
+iex> [1,2,3, "123", true] ++ [:atom, ["aaa", "bbb"]]
+[1, 2, 3, "123", true, :atom, ["aaa", "bbb"]]
+iex> [1, 2, 1, 3, 5] -- [1, 5, 6]
+[2, 1, 3]
+iex> "abc" in [1, 2, "abc", false]
+true
+iex> List.insert_at([0,1,2], 1, 3)
+[0, 3, 1, 2]
+iex> tl([1,2,3,4])
+[2, 3, 4]
+\end{minted}
+\caption{Rad sa listama u \emph{Elixir}-u}
+\label{listing:elixirList}
+\end{listing}
+\paragraph{Liste karaktera }
+Lista karaktera (eng. \emph{charlists}) je lista celih brojeva, gde svaki element predstavlja jedan karakter.
+Veoma je slična niskama, za navođenje se koriste apostrofi umesto navodnika, 
+ali glavna razlika je u internoj reprezentaciji, kao i funkcijama koje se nad njima
+izvršavaju. Mogu se navoditi u jednostrukoj i trostrukoj notaciji, a moguća je i 
+interpolacija. U listingu \ref{listing:elixirCharList} dati su primeri liste karaktera.
+\begin{listing}[h]
+\begin{minted}{elixir}
+iex>'''
+Primer u
+više redova
+'''
+'Primer u\nvise redova\n'
+iex>'2+2=#{2+2}'
+'2+2=4'
+iex> [97,98,99]
+'abc'
+iex> '123' ++ [0] 
+[49, 50, 51, 0]
+\end{minted}
+\caption{Primeri lista karaktera u \emph{Elixir}-u}
+\label{listing:elixirCharList}
+\end{listing}
+
+\subsubsection{Torke}
+I u \emph{Elixir}-u torke mogu sadržati elemente različitih tipova, ali za razliku od \emph{Elm}-a,
+navode se unutar vitičastih zagrada, broj elemenata nije ograničen i elementi se mogu uklanjati
+i dodavati. Iako dozvoljavaju promenljiv broj elemenata, torke su zamišljene kao kolekcija
+podataka fiksne dužine. U modulu \texttt{\textbf{Kernel}}
+se nalaze funkcije za pristupanje i ažuriranje elemenata, kao i funkcija za određivanje broja
+elemenata torke, dok se ostale funkcije za rad sa torkama nalaze u modulu \texttt{\textbf{Tuple}}.
+Prikaz rada navedenih funkcija dat je u listingu \ref{listing:elixirTorke}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> tuple_size({1, "aaa", false})
+3
+iex> elem({:prvi, :drugi, :treci}, 0)
+:prvi
+iex> put_elem({1, 2}, 1, 4)
+{1, 4}
+iex> Tuple.insert_at({1, 2}, 1, 4)
+{1, 4, 2}
+iex> Tuple.to_list({1, 2, 3})
+[1, 2, 3]
+\end{minted}
+\caption{Rad sa torkama u \emph{Elixir}-u}
+\label{listing:elixirTorke}
+\end{listing}
+
+\subsubsection{Liste ključnih reči}
+Liste ključnih (eng. \emph{keyword list}) reči predstavljaju posebnu vrstu listi gde je svaki element dvočlana torka,
+čiji je prvi član (tj. ključna reč) obavezno atom, a drugi može biti bilo kog tipa. Takođe,
+jedna ključna reč može se navesti više puta. \emph{Elixir} pruža i jednostavniju sintaksu koja izuzima
+pisanje vitičastih zagrada. Za rad sa listama ključnih reči mogu se koristiti sve funkcije i
+operatori kao i sa običnim listama i, dodatno, funkcije iz modula \texttt{Keyword} i operator
+\texttt{\textbf{[\smallskip]}} za prisup po određenoj ključnoj reči. Prikaz nekih od funkcija i operatora dat je u listingu \ref{listing:keywordList}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> [{:prvi, 1}, {:drugi, 2}, {:treci, 3}]
+[prvi: 1, drugi: 2, treci: 3]
+iex> Keyword.get([prvi: 1, drugi: 2, treci: 3], :drugi)
+2
+iex> lista = [prvi: 1, drugi: 2, treci: 3]
+[prvi: 1, drugi: 2, treci: 3]
+iex> lista[:prvi]
+1
+iex> [a: 1, b: 2] ++ [c: "3"]
+[a: 1, b: 2, c: "3"]
+\end{minted}
+\caption{Primeri rada sa listama ključnih reči u \emph{Elixir}-u}
+\label{listing:keywordList}
+\end{listing}
+
+\subsubsection{Mape}
+Za razliku od liste ključnih reči, mape predstavljaju kolekciju elemenata u obliku
+\emph{ključ-vrednost} gde oba člana mogu biti proizvoljnog tipa. Liste ključnih
+reči čuvaju uređenje, što je osobina koju nemaju mape, ali u slučaju većeg broja elemenata
+mape pružaju bolju efikasnost. Takođe, ključevi unutar mape moraju biti jedinstveni.
+Elementi mape navode se koristeći \texttt{\textbf{\%\{\}}} sintaksu, a ključ i vrednost se
+odvajaju znakom \texttt{\textbf{=>}}. U slučaju da su svi ključevi atomi, može se koristiti
+jednostavnija sintaksa kao kod liste ključnih reči. Oba slučaja prikazana su u listingu 
+\ref{listing:elixirMap}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> %{1 => false, "bb" => [1,2], {1,2} => 3}
+%{1 => false, {1, 2} => 3, "bb" => [1, 2]}
+iex> %{a: 123, b: 'bbb', c: "c"}
+%{a: 123, b: 'bbb', c: "c"}
+\end{minted}
+\caption{Primeri mapa u \emph{Elixir}-u}
+\label{listing:elixirMap}
+\end{listing}
+
+Pristup elementima mape moguć je pomoću operatora \texttt{\textbf{[\smallskip]}}, kao i
+funkcija iz modula \texttt{Map}, a ukoliko su svi ključevi mape atomi, dostupna je 
+sintaksa oblika \emph{mapa.ključ}. Pored funkcija iz modula \texttt{Map}, nad mapama se
+mogu koristiti i funkcije iz modula \texttt{Enum}.
+Mape predstavljaju dinamičku strukturu u kojoj se mogu dodavati i uklanjati elementi,
+a moguće je i ažuriranje elemenata. Pored funkcija iz modula, dostupna je i sintaksa ažuriranja slična sintaksi ažuriranja slogova u \emph{Elm}-u i prikazana je u listingu \ref{listing:elixirMap2}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> mapa = %{a: 1, b: 2, c: 3}
+%{a: 1, b: 2, c: 3}
+iex>mapa.b
+2
+iex> mapa[:c]
+3
+iex> %{mapa | a: 4}
+%{a: 4, b: 2, c: 3}
+iex>%{ %{"a" => true, :b => 0} | :b => false}
+%{:b => false, "a" => true}
+\end{minted}
+\caption{Pristup i ažuriranje elemenata mape}
+\label{listing:elixirMap2}
+\end{listing}
+
+\subsubsection{Modul Enum}
+\emph{Elixir} pruža koncept nabrojivih podataka (eng. \emph{enumerables}), odnosno tipove podataka
+kroz koje je moguće iterirati. Veliki broj funkcija uobičajenih za ovaj tip podataka (pronalazak i transformisanje elemenata, grupisanje, sortiranje, filtriranje...) nalazi se u modulu \texttt{Enum}. Liste i mape spadaju u nabrojive tipove, a pored njih, \emph{Elixir} omogućava i rad sa \emph{opsezima} (eng. \emph{ranges}).
+Upotreba  nekih od funkcija iz modula \texttt{Enum} nad listama, opsezima i mapama se može videti u listingu \ref{listing:elixirEnum}. Funkcije iz modula \texttt{Enum}
+mogu raditi sa bilo kojim tipom koji implementira \texttt{Enumerable} protokol. Više
+o protokolima biće rečeno u poglavlju 3.10.
+\begin{listing}[!ht]
+\begin{minted}{elixir}
+iex> Enum.map([1, 2, 3], fn x -> x * 3 end)
+[3, 6, 9]
+iex> Enum.reduce(%{1 => 2, 3 => 4}, 0, fn {k, v}, s -> s + k + v end)
+10
+iex> Enum.filter(1..10, fn x -> rem(x, 3) == 0 end)
+[3, 6, 9]
+\end{minted}
+\caption{Upotreba funkcija iz modula \texttt{Enum} nad listama, mapama i opsezima}
+\label{listing:elixirEnum}
+\end{listing}
+\paragraph{Skraćenice}
+Filtriranje i mapiranje nad nabrojivim podacima predstavljaju čestu pojavu u \emph{Elixir} programima,
+te su uvedene skraćenice (eng. \emph{comprehensions}) kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
+grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}}. Upotreba skraćenica
+prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj
+\cite{elixir} stranici.
+\begin{listing}[!ht]
+\begin{minted}{elixir}
+for n <- 1..5, do: n * n
+[1, 4, 9, 16, 25]
+iex> for i <- [:a, :b, :c], j <- [1, 2], do:  {i, j}
+[a: 1, a: 2, b: 1, b: 2, c: 1, c: 2]
+iex> nije_paran? = &(rem(&1, 2) != 0)
+iex> for n <- 1..10, nije_paran?.(n), do: 2 * n
+[2, 6, 10, 14, 18]
+\end{minted}
+\caption{Primeri upotrebe skraćenica}
+\label{listing:elixirComprehensions}
+\end{listing}
+\subsubsection{Tokovi}
+Tokovi (eng. \emph{Streams}) predstavljaju posebnu vrstu nabrojivih tipova koji se mogu koristiti za kreiranje
+složenih lenjih operacija nad nabrojivim podacima. Tokovi su definisani u modulu
+\texttt{Stream} i funkcije unutar ovog modula izgledaju vrlo slično funkcijama u modulu
+\texttt{Enum}, s tim da je povratna vrednost ovih funkcija uvek tok, što omogućava
+njihovu kompoziciju. Primer lenjog izračunavanja upotrebom tokova dat je u listingu
+\ref{listing:elixirStream}. 
+\begin{listing}[!ht]
+\begin{minted}{elixir}
+# kompozicija operacija, ne vrši se izračunavanje
+iex> stream = 1..1_000_000 |> 
+...> Stream.filter(&(rem(&1, 3) == 0)) |> 
+...> Stream.map(&(&1 * 2))
+# lenjo izračunavanje - samo za prvih 5
+iex> stream |> Enum.take(5) 
+[6, 12, 18, 24, 30]
+\end{minted}
+\caption{Kompozicija tokova i lenjo izračunavanje}
+\label{listing:elixirStream}
+\end{listing}
+
+\subsection{Strukture}
 Strukture predstavljaju koncept razvijen na osnovu mapa, s tim što imaju podrazumevane 
 vrednosti, a ključevi su isključivo atomi. Sintaksa definisanja struktura data je u listingu
 \ref{listing:elixirStruct}. Mogu se navoditi samo unutar modula i to najviše jedna.
@@ -1877,27 +1872,98 @@ korišćenjem simbola \texttt{\textbf{|}} kao kod mapa. Svaka struktura ima spec
 \texttt{\textunderscore\textunderscore{}struct\textunderscore\textunderscore} koja sadrži 
 naziv strukture, odnosno modula. 
 
-\paragraph{Korišćenje funkcija iz drugog modula}
-Funkcije modula mogu se pozivati kao \emph{NazivModula.naziv\textunderscore{}funkcije},
-što često nije praktično jer nazivi modula
-mogu biti veoma dugački. Stoga \emph{Elixir} nudi dve direktive za kraći i čitljiviji k\^{o}d prilikom
-upotrebe funkcija iz drugih modula --- \texttt{import} i \texttt{alias}, koje su prikazane u
-listingu \ref{listing:elixirAliasImport}.
 
-Upotrebom direktive \texttt{import} sve funkcije navedenog modula uključuju se u trenutni
-modul i mogu se pozivati bez navođenja imena modula, a moguće je ograničiti uključivanje samo
-određenih funkcija. Sa druge strane, \texttt{alias} omogućava korišćenje određenog imena
-(alijasa) za bilo koji modul i prilikom pozivanja funkcija obavezno je njegovo navođenje.
-\begin{listing}[h]
+\subsection{Poklapanje obrazaca}
+U prethodnom poglavlju nije naveden jedan od najvažnijih operatora u programskom jeziku
+\emph{Elixir} --- operator uparivanja ili poklapanja (\texttt{\textbf{=}}), koji ima veoma
+bitnu ulogu u poklapanju obrazaca. Za razliku od \emph{Elm}-a gde se
+poklapanje obrazaca korisiti isključivo unutar izraza \textbf{\texttt{case}} i
+\textbf{\texttt{let}}, u \emph{Elixir}-u je ono dosta prisutnije i koristi se prilikom
+definisanja promenljivih i funkcija, kao i u kontroli toka.
+
+Operator uparivanja pokušava da izraz sa leve strane upari sa izrazom sa desne strane,
+ukoliko ne dođe do uspešnog uparivanja prijavljuje grešku --- \texttt{MatchError}.
+U većini drugih programskih jezika, operator \texttt{\textbf{=}} koristi se za dodeljivanje
+vrednosti promenljivoj, što se u \emph{Elixir}-u postiže kroz poklapanje obrazaca. Ukoliko
+dođe do uspešnog poklapanja, promenljive u levom izrazu \emph{vezuju se} za odgovarajuće
+vrednosti u desnom. Imenovanje promenljivih slično je imenovanju atoma, s tim što umesto
+dvotačke promenljiva mora počinjati malim slovom, po konvenciji se koristi
+\emph{snake\textunderscore{}case} notacija. Moguće je koristiti operator uparivanja bez 
+promenljivih, kao i izvršiti ponovno vezivanje promenljive za drugu vrednost, što je 
+prikazano u listingu \ref{listing:elixirPoklapanjeObrazaca}. Takođe, ukoliko ne želimo
+ponovno vezivanje možemo korisiti \emph{pin} operator \textbf{\texttt{ \^{}}}.
+\begin{listing}[!h]
 \begin{minted}{elixir}
-alias Api.Accounts.User, as: AccUser
-alias Api.Accounts.User #isto kao alias Api.Accounts.User, as: User
-
-# uključivanje samo authenticate/2 funkcija 
-import Api.Accounts, :only [authenticate: 2] 
+iex> x = 1
+1
+iex> 1 = 1
+1
+iex> x = x + 1
+2
+iex> 1 = x  
+** (MatchError) no match of right hand side value: 2
+iex> ^x = 1
+** (MatchError) no match of right hand side value: 1
 \end{minted}
-\caption{Upotreba direktiva \texttt{import} i \texttt{alias}}
-\label{listing:elixirAliasImport}
+\caption{Vezivanje promenljive za vrednost}
+\label{listing:elixirPoklapanjeObrazaca}
+\end{listing}
+
+Operator uparivanja se često upotrebljava za pristupanje elementima torki, listi i mapa,
+gde se može izvršiti vezivanje više promenljivih odjednom. Kao i u \emph{Elm}-u, simbol 
+\texttt{\textbf{\textunderscore}} se može koristiti za poklapanje vrednosti koje se neće
+dalje koristiti. Primeri poklapanja obrazaca listi i torki dati su u listingu
+\ref{listing:elixirPoklapanjeTorki}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> {a, b} = {1, 2}
+{1, 2}
+iex> [c, c] = [3, 3]
+[3, 3]
+iex> {1, 2, 3, d} = {a, b, c, {4}}
+{1, 2, 3, {4}}
+iex> [ _ | rep ] = 'abcd'
+iex> rep
+'bcd'
+\end{minted}
+\caption{Poklapanje obrazaca listi i torki}
+\label{listing:elixirPoklapanjeTorki}
+\end{listing}
+
+U slučaju mapa moguće je parcijalno poklapanje, tj. leva strana ne mora da sadrži sve
+ključeve desne, što omogućava pristupanje samo potrebnim vrednostima iz mape. Parcijalno
+poklapanje je prikazano u listingu \ref{listing:elixirPoklapanjeMapa}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+iex> %{ime: ime, godine: godine} = %{ime: "Pera", godine: 25}
+%{godine: 25, ime: "Pera"}
+iex> "#{ime} ima #{godine} godina."
+"Pera ima 25 godina."
+iex> %{ime: ime} = %{ime: "Pera", godine: 25}
+%{godine: 25, ime: "Pera"}
+iex(55)> %{ime: ime, prezime: prezime} = %{ime: "Pera", godine: 25}
+** (MatchError) no match of right hand side value: %{godine: 25, ...
+\end{minted}
+\caption{Poklapanje obrazaca mapa}
+\label{listing:elixirPoklapanjeMapa}
+\end{listing}
+
+Prilikom definisanja funkcija može se koristi poklapanje obrazaca za razlaganje argumenata,
+ali i za preopterećivanje funkcija iste arnosti koršćenjem različitih šablona.
+Primer preopterećivanja funkcije upotrebom poklapanja obrazaca dat je u listingu
+\ref{listing:elixir-fn-pattern-matching}.
+\begin{listing}[!h]
+\begin{minted}{elixir}
+defmodule Oblik do
+  def povrsina({:pravougaonik, a, b}), do: a * b
+  def povrsina({:kvadrat, a}), do: a * a
+  def povrsina({:krug, r}), do: r * r * 3.141593
+  # podrazumvani slučaj
+  def povrsina(oblik), do: {:error, {:nepoznat_oblik, oblik}}
+end
+\end{minted}
+\caption{Preopterećivanje funkcija upotrebom poklapanja obrazaca}
+\label{listing:elixir-fn-pattern-matching}
 \end{listing}
 
 \subsection{Makroi}
@@ -1915,7 +1981,7 @@ u kojima su definisani moraju biti dostupni, što se obezbeđuje direktivom \tex
 Veoma bitan makro koji se često povezuje sa direktivama jeste makro \texttt{\textbf{use}},
 koji omogućava ubacivanje spoljne funkcionalnosti (koda) u trenutni modul. U listingu 
 \ref{listing:use} prikazan je primer upotrebe makroa \texttt{\textbf{use}} za kreiranje modula
-sa jediničnim testovima pomoću okruženja \emph{ExUnit}, koje je instalirano zajedno sa \emph{Elixir}-om.
+sa jediničnim testovima pomoću biblioteke \emph{ExUnit}, koja je instalirana zajedno sa \emph{Elixir}-om.
 \begin{listing}[h]
 \begin{minted}{elixir}
 defmodule ModulSaTestom do
@@ -1929,54 +1995,63 @@ end
 \caption{Upotreba makroa \texttt{use}}
 \label{listing:use}
 \end{listing}
-  
-\subsection{Kontrola toka}
-U delu o funkcijama prikazano je kako se korišćenjem čuvara i poklapanja obrazaca može
-vršiti kontrola toka izvršavanja, ali ovakva rešenja nisu uvek adekvatna i jednostavna za
-upotrebu jer podrazumevaju kreiranje zasebnih funkcija i prosleđivanje neophodnih
-argumenata. Stoga \emph{Elixir} omogućava i upotrebu makroa \texttt{if, unless, cond} i
-\texttt{case} za standardan način grananja.
 
-\subsubsection{Upotreba makroa \emph{if} i \emph{unless}}
+
+\subsection{Kontrola toka}
+\emph{Elixir} nema izraze ili naredbe za kotrolu toka i prethodno je prikazano kako
+se korišćenjem čuvara i poklapanja obrazaca može vršiti kontrola toka izvršavanja.
+Ovakva rešenja nisu uvek adekvatna i jednostavna za upotrebu,
+jer podrazumevaju kreiranje zasebnih funkcija i prosleđivanje neophodnih
+argumenata što dovodi do povećanja šablonskog (eng. \emph{boilerplate}) koda.
+Stoga \emph{Elixir} uvodi makroe koji ovo rade tokom kompilacije umesto nas, i to su
+\texttt{if, unless, cond} i \texttt{case}.
+
+\subsubsection{Upotreba makroa \texttt{\textbf{if}} i \texttt{\textbf{unless}}}
 Makro \texttt{if} se koristi za standardno \emph{if-else} grananje. Makro \texttt{unless} suprotan
-je makrou \texttt{if} i može se posmatrati kao \texttt{if not}. Sintaksa upotrebe oba makroa data je u listingu
-\ref{listing:elixirIf}. 
+je makrou \texttt{if} i može se posmatrati kao \texttt{if not}. Sintaksa upotrebe oba makroa data je
+u listingu \ref{listing:elixirIf}. 
 \begin{figure}[!h]
 \begin{minipage}{0.5\textwidth} 
-  \centering
+  \raggedleft 
   \begin{minted}{elixir}
-    if uslov do
-    ...
+    if uslovni_izraz do
+        blok_izraza_1
     else
-    ...
+        blok_izraza_2
     end
-    
-    #kraći oblik
-    if uslov, do: ..., else: ...
   \end{minted}
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
-  \centering
+  \raggedright
   \begin{minted}{elixir}
-    unless uslov do
-    ...
+    unless uslovni_izraz do
+        blok_izraza_2
     else
-    ...
+        blok_izraza_1
     end
-    
-
-    unless uslov, do: ..., else: ...
   \end{minted}
 \end{minipage}
 \captionof{listing}{Sintaksa makroa \texttt{if} i \texttt{unless}}
 \label{listing:elixirIf}
 \end{figure}
   
-Kao kod operatora \texttt{\&\&} i \texttt{||} uslov se smatra tačnim ukoliko njegova vrednost
-nije \texttt{nil} ili \texttt{false}. Za razliku od Elm-a, gde je navođenje \texttt{else} grane
-obavezno, u \emph{Elixir}-u to nije slučaj. Ukoliko se \texttt{else} grana ne navede, a uslov nije istinit
-(odnosno nije neistinit u slučaju makroa \texttt{unless}), vrednost izraza je \texttt{nil}.
-\subsubsection{Upotreba makroa \emph{cond} i \emph{case}}
+Kao kod operatora \texttt{\&\&} i \texttt{||} uslovni izraz se smatra tačnim ukoliko njegova
+vrednost nije \texttt{nil} ili \texttt{false}. Za razliku od Elm-a, gde je navođenje \texttt{else}
+grane obavezno, u \emph{Elixir}-u to nije slučaj. Vrednost izraza odgovara vrednosti poslednjeg
+izraza u bloku, a ukoliko se \texttt{else} grana ne navede i uslov
+nije istinit (odnosno nije neistinit u slučaju makroa \texttt{unless}), vrednost izraza je
+\texttt{nil}. Postoje i skraćene, jednolinijske verzije sintaksi i prikazane su u listingu
+\ref{listing:elixirShortIf}.
+\begin{listing}[h]
+\begin{minted}{elixir}
+if uslovni_izraz, do: izraz_1, else: izraz_2
+
+unless uslovni_izraz, do: izraz_2, else: izraz_1
+\end{minted}
+\caption{Skraćena sintaksa makroa \texttt{if} i \texttt{unless}}
+\label{listing:elixirShortIf}
+\end{listing}
+\subsubsection{Upotreba makroa \texttt{\textbf{cond}} i \texttt{\textbf{case}}}
 Makroi \texttt{cond} i \texttt{case} se mogu posmatrati kao grananje oblika \texttt{if...else
 if ... else}, pri čemu se u slučaju makroa \texttt{cond} proverava istinitost izraza, a kod
 makroa \texttt{case} koristi poklapanje obrazaca. Sintaksa navedenih makroa data je u
@@ -1986,8 +2061,8 @@ listingu \ref{listing:elixirCond}.
   \centering
   \begin{minted}{elixir}
     cond do
-      izraz_1 -> ...
-      izraz_2 -> ...
+      izraz_1 -> blok_1
+      izraz_2 -> blok_2
       ...
     end
   \end{minted}
@@ -1996,8 +2071,8 @@ listingu \ref{listing:elixirCond}.
   \centering
   \begin{minted}{elixir}
     case izraz do
-      obrazac_1 -> ...
-      obrazac_2 -> ...
+      obrazac_1 -> blok_1
+      obrazac_2 -> blok_2
       ...
     end
   \end{minted}
@@ -2010,50 +2085,10 @@ Bitan je redosled navođenja, jer će se izvršiti blok prvog istinitog izraza (
 poklopljenog obrasca (\texttt{case}). Povratna vrednost predstavlja vrednost izvršenog bloka, a
 u slučaju da se ne izvrši nijedan blok izbacuje se greška. 
 
-\subsubsection{Iteracija}
-Slično \emph{Elm}-u, \emph{Elixir} umesto petlji koristi rekurziju i funkcije modula \texttt{Enum}, s tim
-što \emph{Elixir} pruža mogućnost lenjog izračunavanja kao i upotebu \emph{skraćenica}
-(eng. \emph{comprehensions}).
+\subsubsection{Iteracije}
+Slično \emph{Elm}-u, \emph{Elixir} umesto petlji koristi funkije višeg reda i rekurziju, s tim
+što \emph{Elixir} pruža mogućnost lenjog izračunavanja korišćenjem tokova.
 
-\paragraph{Tokovi}
-Tokovi (eng. \emph{Streams}) predstavljaju posebnu vrstu nabrojivih tipova koji se mogu koristiti za kreiranje
-složenih lenjih operacija nad nabrojivim podacima. Tokovi su definisani u modulu
-\texttt{Stream} i funkcije unutar ovog modula izgledaju vrlo slično funkcijama u modulu
-\texttt{Enum}, s tim da je povratna vrednost ovih funkcija uvek tok, što omogućava
-njihovu kompoziciju. Primer lenjog izračunavanja upotrebom tokova dat je u listingu
-\ref{listing:elixirStream}. 
-\begin{listing}[!ht]
-\begin{minted}{elixir}
-# kompozicija operacija, ne vrši se izračunavanje
-iex> stream = 1..1_000_000 |> 
-...> Stream.filter(&(rem(&1, 3) == 0)) |> 
-...> Stream.map(&(&1 * 2))
-# lenjo izračunavanje - samo za prvih 5
-iex> stream |> Enum.take(5) 
-[6, 12, 18, 24, 30]
-\end{minted}
-\caption{Kompozicija tokova i lenjo izračunavanje}
-\label{listing:elixirStream}
-\end{listing}
-\paragraph{Skraćenice}
-Filtriranje i mapiranje nad nabrojivim podacima predstavljaju čestu pojavu u \emph{Elixir} programima,
-te su uvedene skraćenice (eng. \emph{comprehensions}) kao sintaksička olakšica (eng. \emph{syntactic sugar}), koja
-grupiše ovakve operacije u specijalnu formu koja se naziva \texttt{\textbf{for}}. Upotreba skraćenica
-prikazana je u listingu \ref{listing:elixirComprehensions}, a više o njima može se pronaći na zvaničnoj
-\cite{elixir} stranici.
-\begin{listing}[!ht]
-\begin{minted}{elixir}
-for n <- 1..5, do: n * n
-[1, 4, 9, 16, 25]
-iex> for i <- [:a, :b, :c], j <- [1, 2], do:  {i, j}
-[a: 1, a: 2, b: 1, b: 2, c: 1, c: 2]
-iex> nije_paran? = &(rem(&1, 2) != 0)
-iex> for n <- 1..10, nije_paran?.(n), do: 2 * n
-[2, 6, 10, 14, 18]
-\end{minted}
-\caption{Primeri upotrebe skraćenica}
-\label{listing:elixirComprehensions}
-\end{listing}
 \subsubsection{Upravljanje greškama}
 \emph{Elixir} za razliku od \emph{Elm}-a, nema tipove kao \texttt{Maybe} i \texttt{Result}, ali je praksa
 da se prilikom pisanja funkcija, koje mogu dovesti do greške, rezultat izvršavanja vraća kao
@@ -2096,9 +2131,8 @@ Kada postoji definisan protokol moguće je dodati neograničen broj implementaci
 različitim modulima. Za implementiranje protokola koristi se makro \texttt{defimpl} pri čemu
 se navodi protokol koji se implementira, tip za koji se implementira i implementacija funkcija protokola.
 Prilikom implementacije protokola nad strukturama moguće je izostaviti navođenje tipa.
-Primeri nekoliko implementacija protokola iz listinga \ref{listing:elixirDefProtocol} može se videti u
-listingu \ref{listing:elixirImplProtocol}.
-\begin{listing}[!ht]
+Primeri nekoliko implementacija protokola iz listinga \ref{listing:elixirDefProtocol} može se videti u listingu \ref{listing:elixirImplProtocol}.
+\begin{listing}[t]
 \begin{minted}{elixir}
 defimpl Size, for: Map do
   def size(map), do: map_size(map)
@@ -2151,7 +2185,7 @@ K\^{o}d implementacije portala MSNR javno je dostupan na \emph{GitHub}-u \cite{m
 Arhitektura portala MSNR prikazana je na slici \ref{fig:msnr-arch} i predstavlja tipičan primer troslojne arhitekture.
 Na klijentskoj strani se nalazi korisnički interfejs koji je implementiran u \emph{Elm}-u kao jednostranična aplikacija (eng. \emph{Single Page Application --- SPA}).
 Središnji sloj predstavlja aplikacioni veb interfejs - (eng. \emph{Web Appilicatoin Programming Interface --- API})
-koji je pomoću razvojnog okruženja \emph{Phoenix} \cite{phoenix} implementiran u stilu arhitekture REST (eng. \emph{Representational State Transfer}) \cite{rest}.
+koji je pomoću razvojnog okvira \emph{Phoenix} \cite{phoenix} implementiran u stilu arhitekture REST (eng. \emph{Representational State Transfer}) \cite{rest}.
 Treći sloj čini relaciona baza podataka, a odabrani sistem za upravljanje bazom je \emph{PostgreSQL} \cite{psql} .
 \begin{figure}[!ht]
   \centering
@@ -2169,80 +2203,89 @@ Na slici \ref{fig:msnr-db} data je šema baze gde su prikazani osnovni entiteti 
   \label{fig:msnr-db}
 \end{figure}
 
-\subsection{Zahtev za registraciju studenata}
+\paragraph{Zahtev za registraciju studenata}
 Zahtev za registraciju, pored entiteta semestar i korisnik, predstavlja polazni entitet. Predstavljen je tabelom \emph{student{\textunderscore}registrations} i sadrži
 informacije potrebne za registrovanje studenata --- ime, prezime, broj indeksa i email adresu, kao i status zahteva koji označava da li je odobren, odbijen ili nerazrešen.
 
-\subsection{Korisnik}
+\paragraph{Korisnik}
 Tabela \emph{users} predviđena je za upravljanje korisničkim nalozima. Mogu postojati dva tipa, odnosno uloge, korisnika --- student i profesor. 
 Pored osnovnih informacija o korisniku --- ime, prezime, rola i email, sadrži šifrovanu lozinku (\emph{hashed{\textunderscore}password}), osvežavajući
 token (\emph{refresh{\textunderscore}token}) čija će upotreba biti objšnjena kasnije, i jedinstveni univerzalni identifikator koji se koristi prilikom postvaljanja lozinke
 pre prvog prijavljivanja ili u slučaju da se zaboravi. Inicijalno će postojati profesorski nalog u tabeli, a prilikom prihvatanja zahteva za registraciju kreira se studentski nalog
 i studentu se šalje mail sa vezom za postavljanje lozinke. 
 
-\subsection{Semestar}
+\paragraph{Semestar}
 Sve aktivnosti studenata vezane su za semestar, koji se predstavlja godinom u kojoj se održava i oznakom da li je aktivan, gde samo jedan semestar može biti trenutno aktivan. 
 
-\subsection{Student}
+\paragraph{Student}
 Kada profesor prihvati zahtev za registraciju, pored unosa u tabelu korisnici, vrše se još dva unosa --- jedan u tabelu \emph{students}, koja sadrži samo referencu ka korisniku i broj indeksa studenta, i 
 drugi u tabelu koja predstavlja relaciju studenta i semestra --- \emph{students{\textunderscore}semestars}. Ova tabela, pored referenci ka studentu i semestru, ima i referencu ka grupi tako da 
 svaki student u toku jednog semestra može biti član samo jedne grupe.
 
-\subsection{Grupa}
+\paragraph{Grupa}
 Prilikom prijave grupe, kreira se novi unos u tabeli grupe, dok se u tabeli \emph{students{\textunderscore}semestars} unosi
 referenca ka kreiranoj grupi za sve studente iz grupe. Tabela grupe sadrži i referencu ka temi koja se unosi prilikom odabira teme.
 
-\subsection{Tema seminarskog rada} 
+\paragraph{Tema seminarskog rada} 
 Profesor unosi naslove tema seminarskih radova koji se mogu odabrati u toku trenutnog semestra. Teme su predstavljene tabelom \emph{topics} i sadrže naslov, redni broj i referencu ka semestru u kom se mogu odabrati.
 
-\subsection{Aktivnost i tip aktivnosti}
+\paragraph{Aktivnost i tip aktivnosti}
 Navedene aktivnosti na početku poglavlja su zapravo tipovi aktivnosti koji su predstavljeni tabelom \emph{activity{\textunderscore}types},
 a aktivnosti (tabela \emph{activities}) predstavljaju relaciju između tipa aktivnosti i semestra. 
 Tip aktivnosti sadrži naziv i opis aktivnosti, jedinstven k\^{o}d, oznake da li ima prijavu i da li je grupna aktivnost, i sam sadržaj aktivnosti.
 Pored reference ka semestru i tipu, aktivnost sadrži informacije o periodu u kom se može izvršiti, broju poena koji nosi i oznaku da li predstavlja
 samo prijavu za referisani tip ili konkretno izvršavanje.
 
-\subsection{Dodeljene aktivnosti}
+\paragraph{Dodeljene aktivnosti}
 Dodeljena aktivnost je centralni entitet portala i predstavljena je tabelom \emph{assignments}. U zavisnosti da li je aktivnost grupna ili ne, dodeljena aktivnost će imati referencu
 ka studentu ili grupi. Neke aktivnosti, kao u slučaju recenzije, mogu se odnositi na određenu temu zbog čega je dodata kolona \emph{related{\textunderscore}topic{\textunderscore}id}. Pored
 navedenih referenci, tabela sadrži i broj poena koji je osvojen, komentar koji je ostavio profesor, kao i oznaku da li je dodeljena aktivnost urađena. 
 
-\subsection{Dokument}
+\paragraph{Dokument}
 Veliki broj aktivnosti se zasniva na predaji dokumenata. Svi predati dokumenti nalaziće se na serveru, a u tabeli \emph{documents} čuvaće se informacije o nazivu, lokaciji dokumenta
 na serveru i referenca ka korisniku koji je priložio dokument. Tabela \emph{assignments{\textunderscore}documents} označava koja dokumenta su povezana sa kojom dodeljenom aktivnosti, a
 pored referenci ka ovim tabelama, sadrži i oznaku da li je taj dokument prikačen --- što označava da je taj dokument priložio profesor.
 
 \chapter{Implementacija serverskog dela portala}
 
-Budući da je \emph{Elixir} jezik opšte namene i za razliku od \emph{Elm}-a ne uključuje sve alate i pakete
-potrebne za razvoj veb aplikacije, neophodna je njihova instalacija.
+Programski jezik \emph{Elixir}, kao jezik opšte namene, nema ugrađenu podršku za razvoj
+veb aplikacija i za tu svrhu razvojni okvir \emph{Phoenix} predstavlja najpopularniji izbor.
+U prvod delu ove glave predstavljen je deo razvojnog okvira \emph{Phoenix} na primeru
+portala MSNR, nakon čega je opisana implenentacija osnovnih delova samog portala.
 
-\section{Instalacija razvojnog okruženja}
+\section{Razvojni okvir Phoenix}
+
+Razvojni okvir \emph{Phoenix} napisan je na programskom jeziku \emph{Elixir} i razvija se uporedo
+sa samim jezikom. Jedan od autora razojnog okvira je i Žozé Valim (autor jeziku \emph{Elixir}).
+Analogno uticaju programskog jezika \emph{Ruby} na \emph{Elixir}, razvojni okvir \emph{Phoenix} je
+u velikoj meri inspirisan razvojnim okvirom \emph{Ruby on Rails}, ali i drugim popularnim razvojnim okvirima.
+
+\subsection{Instalacija razvojnog okvira}
 Instaliranjem \emph{Elixir}-a ujedno je instaliran i osnovni alat za rad sa \emph{Elixir} projektima --- \emph{Mix}, koji se koristi za
 kreiranje, kompajliranje i testiranje projekata, instaliranje i objavljivanje paketa, kao i za upravljanje zavisnim paketima projekta.
-Upravo se pomoću njega instalira razvojno okruženje \emph{Phoenix} i alat za generisanje \emph{Phoenix} projekata, ali prethodno je potrebno instalirati
-\emph{Hex} \cite{hex} --- menadžer paketa za ekosistem \emph{Erlang}. Instalacija potrebnih alata prikazana je u listingu \ref{listing:installPhxNew}.
-Pored navedenih alata potrebno je instalirati i \emph{PostgreSQL}.
+Upravo se pomoću njega instalira razvojni okvir \emph{Phoenix} i alat za generisanje \emph{Phoenix} projekata, ali prethodno je potrebno instalirati
+\emph{Hex} \cite{hex} --- menadžer paketa za ekosistem \emph{Erlang}. Instalacija potrebnih alatki prikazana je u listingu \ref{listing:installPhxNew}.
+Pored navedenih alatki potrebno je instalirati i \emph{PostgreSQL}.
 
 \begin{listing}[h]
 \begin{minted}{bash}
   mix local.hex
   mix archive.install hex phx_new
 \end{minted}
-\caption{Instalacija alata \emph{hex} i \emph{phx{\textunderscore}new}}
+\caption{Instalacija alatki \emph{hex} i \emph{phx{\textunderscore}new}}
 \label{listing:installPhxNew}
 \end{listing}
 
-\section{Kreiranje i struktura projekta}
-\emph{Phoenix} je okruženje za razvoj svih tipova veb aplikcaija, omogućava renderovanje \emph{HTML}-a na serverskoj strani i ima odličnu podršku
+\subsection{Kreiranje i struktura projekta}
+\emph{Phoenix} je okvir za razvoj svih tipova veb aplikcaija, omogućava iscrtavanje \emph{HTML}-a na serverskoj strani i ima odličnu podršku
 za komunikaciju u realnom vremenu. Poseduje i svojstven koncept \emph{LiveView} koji pruža bogato korisničko iskustvo u realnom vremenu sa
-renderovanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreira se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
+iscrtavanjem na serverskoj strani. Za potrebe implementacije portala MSNR kreira se jednostavan veb API i prethodno navedene mogućnosti nisu potrebne.
 Takođe, portal ne podržava lokalizaciju, stoga nema potreba za uključivanje modula \emph{gettext}.
 
 Komanda korišćena za kreiranje projekta:
 \mint{bash}|mix phx.new msnr_api --no-assets --no-html --no-gettext|
 \noindent Parametrom \emph{-{}-no-assets} isključuje se generisanje direktorijuma \emph{assets} koji je predviđen za \emph{JavaScript} i \emph{CSS} datoteke,
-dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šablona za serversko renderovanje.
+dok se postavljanjem \emph{-{}-no-html} isključuje generisanje \emph{HTML} šablona za serversko iscrtavanje.
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.5\textwidth]{msnr-dir.png}
@@ -2253,18 +2296,17 @@ Nakon uspešno izvršene komande, struktura projekta prikazana je na slici \ref{
 
 Nastali projekat je u osnovi \emph{Mix} projekat sa \emph{Phoenix} proširenjima. Svaki \emph{Mix} projekat ima
 konfiguracionu datoteku \emph{mix.exs}, direktorijum \emph{lib} koji sadži osnovni k\^{o}d i direktorijum \emph{test} sa testovima.
-Pored ove tri osnovne stavke, tu su i skripta \emph{.formatter.exs} za formatiranje \emph{Elixir} datoteka, kao i datoteke \emph{.gitignore} i
-\emph{.README.md}. Datoteka \emph{mix.exs} sadrži osnovne informacije o projektu --- kako se kompajlira, pokreće i 
+Datoteka \emph{mix.exs} sadrži osnovne informacije o projektu --- kako se kompajlira, pokreće i 
 listu zavisnih paketa koji se koriste u projektu. Nakon kompajliranja projekta, generisaće se datoteka \emph{mix.lock} koja
 čuva precizne verzije zavisnih paketa čime se garantuje da se u produkciji koriste iste verzije kao i tokom razvoja.
 
-Razvojno okruženje \emph{Phoenix} dodaje i konfiguracije vezane za okruženje u kom se aplikacija izvršava. 
+Razvojni okvir \emph{Phoenix} dodaje i konfiguracije vezane za okruženje u kom se aplikacija izvršava. 
 Podržana okruženja su razvojno (\emph{dev.exs}), testno (\emph{test.exs}) i produkciono (\emph{prod.exs}) i konfiguracije su smeštene u direktorijumu \emph{config},
 zajedno sa glavnom konfiguracijom (\emph{config.exs}) koja se odnosi na sva okruženja. Mogu se dodati i druga ukoliko je potrebno, a pored navedenih
 u direktorijumu \emph{config} nalazi se i \emph{runtime.exs} konfiguracija zadužena za učitavanje šifri (eng. \emph{secrets}) i drugih konfiguracionih vrednosti
 iz varijabli okruženja.
 
-U razvojnom okruženju \emph{Phoenix} projekti se organizuju po kontekstima (eng. \emph{context}). Kontekst predstavlja modul koji grupiše funkcije sa
+U razvojnom okviru \emph{Phoenix} projekti se organizuju po kontekstima (eng. \emph{context}). Kontekst predstavlja modul koji grupiše funkcije sa
 zajedničkom svrhom. Direktorijum \emph{lib} sadrži dva konteksta, odnosno modula: \emph{MsnrApi} koji enkapsulira svu domensku i
 poslovnu logiku i modul \emph{MsnrApiWeb} koji definiše veb interfejs. Podmoduli se definišu u direktorijumima \emph{msnr{\textunderscore}api}
 i \emph{msnr{\textunderscore}api{\textunderscore}web}. 
@@ -2283,10 +2325,10 @@ upravljaču.
 Direktorijum \emph{priv} sadrži sve resurse koji su potrebni u produkciji ali nisu direktan deo izvornog koda. U slučaju portala MSNR
 sadržaće skripte vezane za menjanje i popunjavanje baze podataka. Testiranje, kao ni telemetrija, nije tema ovog rada.
 
-\section{Obrada HTTP zahteva}
+\subsection{Obrada HTTP zahteva}
 
 U osnovi obrade \emph{HTTP} zahteva nalazi se biblioteka \emph{Plug} \cite{plug}, koja se koristi gotovo kroz sve faze obrade zahteva.
-Osnovne komponente razvojnog okruženja \emph{Phoenix}, kao što su \emph{Endpoint}, ruter i upravljači, su interno utikači (eng. \emph{plug}).
+Osnovne komponente razvojnog okvira \emph{Phoenix}, kao što su \emph{Endpoint}, ruter i upravljači, su interno utikači (eng. \emph{plug}).
 Utikač predstavlja funkciju čija je ulazna i povratna vrednost \emph{Plug.Conn} struktura koja sadrži sve informacije o
 primljenom \emph{HTTP} zahtevu. Veb server daje početne podatke za obradu zahteva, nakon čega \emph{Phoenix} poziva utikače jedan za drugim,
 gde svaki utikač transformiše strukturu \emph{Plug.Conn} dok se obrada ne završi i odgovor pošalje korisniku. Za upotrebu utikača neophodan je
@@ -2331,30 +2373,30 @@ connection
 \label{listing:plugsPipeline}
 \end{listing}
 
-\subsection{Ruter}
+\subsubsection{Ruter}
 Poslednji utikač modula \emph{Endpoint} je \emph{Router} koji se takođe sastoji od utikača, ali se oni grupišu
 u tokove (eng. \emph{pipeline}). Unutar modula \emph{Router}, na osnovu putanje iz zahteva defnišu se opsezi
 (eng. \emph{scope}), u kojima se navodi tok utikača koji će se koristiti i upravljači koji će se pozivati za određene rute.
 Deo modula \emph{Router} koji sadrži definicije toka i opsega dat je u listingu \ref{listing:router}.
 \begin{listing}[!h]
-  \begin{minted}[fontsize=\footnotesize]{elixir}
-    defmodule MsnrApiWeb.Router do
-    use MsnrApiWeb, :router
-  
-    pipeline :api do
-      plug :accepts, ["json"]
-      plug MsnrApiWeb.Plugs.TokenAuthentication
-    end
-  
-    scope "/api", MsnrApiWeb do
-      pipe_through :api
-  
-      get "/auth/refresh", AuthController, :refresh
-      post "/auth/login", AuthController, :login
-      get "/auth/logout", AuthController, :logout
-  
-      resources "/activity-types", ActivityTypeController, except: [:new, :edit]
-      ...
+\begin{minted}[fontsize=\footnotesize]{elixir}
+defmodule MsnrApiWeb.Router do
+use MsnrApiWeb, :router
+
+pipeline :api do
+  plug :accepts, ["json"]
+  plug MsnrApiWeb.Plugs.TokenAuthentication
+end
+
+scope "/api", MsnrApiWeb do
+  pipe_through :api
+
+  get "/auth/refresh", AuthController, :refresh
+  post "/auth/login", AuthController, :login
+  get "/auth/logout", AuthController, :logout
+
+  resources "/activity-types", ActivityTypeController, except: [:new, :edit]
+  ...
 \end{minted}
 \caption{Deo modula \emph{MsnrApiWeb.Router}}
 \label{listing:router}
@@ -2374,22 +2416,22 @@ prikazan je deo rezultata izvršene komande \texttt{\textbf{mix phx.routes}} koj
 \begin{listing}[!h]
   \begin{minted}[fontsize=\scriptsize]{bash}
 $ mix phx.routes
-         auth_path  GET     /api/auth/refresh        MsnrApiWeb.AuthController :refresh
-         auth_path  POST    /api/auth/login          MsnrApiWeb.AuthController :login
-         auth_path  GET     /api/auth/logout         MsnrApiWeb.AuthController :logout
-activity_type_path  GET     /api/activity-types      MsnrApiWeb.ActivityTypeController :index
-activity_type_path  GET     /api/activity-types/:id  MsnrApiWeb.ActivityTypeController :show
-activity_type_path  POST    /api/activity-types      MsnrApiWeb.ActivityTypeController :create
-activity_type_path  PATCH   /api/activity-types/:id  MsnrApiWeb.ActivityTypeController :update
-                    PUT     /api/activity-types/:id  MsnrApiWeb.ActivityTypeController :update
-activity_type_path  DELETE  /api/activity-types/:id  MsnrApiWeb.ActivityTypeController :delete
+         auth_path  GET     /api/auth/refresh        AuthController :refresh
+         auth_path  POST    /api/auth/login          AuthController :login
+         auth_path  GET     /api/auth/logout         AuthController :logout
+activity_type_path  GET     /api/activity-types      ActivityTypeController :index
+activity_type_path  GET     /api/activity-types/:id  ActivityTypeController :show
+activity_type_path  POST    /api/activity-types      ActivityTypeController :create
+activity_type_path  PATCH   /api/activity-types/:id  ActivityTypeController :update
+                    PUT     /api/activity-types/:id  ActivityTypeController :update
+activity_type_path  DELETE  /api/activity-types/:id  ActivityTypeController :delete
 ...
 \end{minted}
 \caption{Izlistavanje ruta komandom \texttt{\textbf{mix phx.routes}}}
 \label{listing:routes}
 \end{listing}
 
-\subsection{Upravljači i pogledi}
+\subsubsection{Upravljači i pogledi}
 Budući da je upravljač takođe utikač, njegova osnovna uloga je da sakupi i pripremi podatke za sledeći korak obrade korisničkog zahteva.
 To može uključiti pozivanje baze podataka, eksternog veb servisa ili obradu neke statičke datoteke. 
 Na primeru upravljača \emph{ActivityTypeController} u listingu \ref{listing:controller} može se videti generalna struktura upravljača
@@ -2428,12 +2470,12 @@ end
 \end{listing}
 
 Poslednji poziv u akciji upravljača je funkcija \texttt{\textbf{render}} definisana u modulu \emph{ActivityTypeView} koja za argumente ima \emph{Plug.Conn} strukturu,
-naziv šablona i podatke potrebne za renderovanje. U slučaju \emph{JSON} veb interfejsa kreira se mapa koja se prevodi u \emph{JSON} objekat,
-čime se završava obrada zahteva u okviru razvojnog okruženja \emph{Phoenix}. 
+naziv šablona i podatke potrebne za iscrtavanje. U slučaju \emph{JSON} veb interfejsa kreira se mapa koja se prevodi u \emph{JSON} objekat,
+čime se završava obrada zahteva unutar razvojnog okvira \emph{Phoenix}. 
 
-\section{Komunikacija sa bazom podataka}
+\subsection{Komunikacija sa bazom podataka}
 Za komunikaciju sa bazom podataka u \emph{Elixir} projektima pretežno se koristi biblioteka \emph{Ecto} \cite{ecto}.
-Ona nije sastavni deo okruženja \emph{Phoenix}, ali se podrazumevano uključuje i prilikom kreiranja
+Ona nije sastavni deo razvojnog okvira \emph{Phoenix}, ali se podrazumevano uključuje i prilikom kreiranja
 \emph{Phoenix} projekta u se potrebni \emph{Ecto} moduli i konfiguracija. Ukoliko nije potrebno
 korišćenje ove biblioteke prilikom kreiranja projekta navodi se parametar \emph{-{}-no-ecto}.
 
@@ -2477,7 +2519,7 @@ U listingu \ref{listing:dbDevConfig} prikazana je konfiguracija za razvojno okru
 \label{listing:dbDevConfig}
 \end{listing}
 
-\section{Definisanje entiteta}
+\subsubsection{Definisanje entiteta}
 Budući da kontekst \emph{MsnrApi} sadži domensku logiku aplikacije, u njemu su definisani svi entiteti aplikacije, takođe
 kao konteksti. Na primeru tipa aktivnosti, pod direktorijumom \emph{msnr{\textunderscore}api} nalazi se direktorijum
 \emph{activity{\textunderscore}types} sa definicijom strukture \emph{ActivityType} kojom se predstavlja
@@ -2527,7 +2569,7 @@ Pored prikazanih polja, \emph{Ecto} podrazumevano dodaje i \texttt{\textbf{:id}}
 koje predstavlja primarni ključ tabele. U sličaju kada je potrebno drugačije definisati primarni ključ koristi
 se atribut \texttt{\textbf{@primary{\textunderscore}key}}, što se može videti na primeru definisanja studenta.
 
-\subsection{Migracije}
+\subsubsection{Migracije}
 Kreiranjem šeme entiteta, definiše se način na koji \emph{Ecto} komunicira sa bazom, dok se kreiranje odgovarajućih
 tabela u bazi vrši migracijama. Migracije su predstavljane modulima u kojima se definišu promene koje će se izvršiti nad
 bazom i pružaju mogućnost da se izvršene promene ponište. Kreiraju se pomoću \emph{Mix} komande 
@@ -2567,14 +2609,14 @@ poništavanja migracije. U slučaju funkcije \texttt{\textbf{change}} \emph{Ecto
 poništavanja migracije. Prilikom implementacije portala MSNR funkcije \texttt{\textbf{up}} i \texttt{\textbf{down}} korišćene
 su za definisanje tipova uloga korsnika i statusa registracije.
 
-\subsection{Kreiranje, preuzimanje i brisanje podataka iz baze}
+\subsubsection{Kreiranje, preuzimanje i brisanje podataka iz baze}
 \emph{Ecto} pruža brojne funkcije za interakciju sa bazom podataka kroz modul \emph{Ecto.Repo}.
 U tabeli \ref{table:repoFuntions} prikazane su najčešće korišćene funkcije i njihov kratak opis.
 \begin{table}[h!]
   \renewcommand*{\arraystretch}{1.4}
   \small
   \centering
-  \begin{tabular}{p{0.1\textwidth} | p{0.45\textwidth} | p{0.42\textwidth}}
+  \begin{tabular}{p{0.1\textwidth} | p{0.39\textwidth} | p{0.42\textwidth}}
     Funkcija & Opis & Povratna vrednost\\ [0.5ex] 
     \hline
     \texttt{all} & Vraća svaki red iz tabele za zadati upit & Lista redova \\ 
@@ -2631,10 +2673,10 @@ funkciji \texttt{all} se prosleđuje samo naziv tabela, tako da funkcija vraća 
 \label{listing:ActivityTypes}
 \end{listing}
 
-\subsection{Definisanje upita}
+\subsubsection{Definisanje upita}
 Modul \emph{Ecto.Query} pruža sintaksu za pisanje upita koja je veoma slična samoj \emph{SQL} sintaksi. 
 S tim da sintaksa upita započinje makroom \texttt{from} nakon čega se ostali delovi upita definišu pomoću liste ključnih reči.
-Praksa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} \cite{linq} sintakse iz razvojnog okruženja \emph{.NET}
+Praksa je da se ključna reč \texttt{:select} navodi na kraju, kao kod \emph{LINQ} \cite{linq} sintakse iz razvojnog okvira \emph{.NET}
 koja je bila inspiracija za \emph{Ecto}, a može se i izostaviti. Za interpolaciju parametara koristi se operator \texttt{ \^{}}.
 Primer jednostavnog upita dat je u listingu \ref{listing:query-example} gde je prikazana funkcija za prikazivanje studentskih
 registracija iz modula \emph{StudentRegistrations}.
@@ -2643,7 +2685,8 @@ registracija iz modula \emph{StudentRegistrations}.
     import Ecto.Query
 
     def list_student_registrations(semester_id) do
-      Repo.all(from sr in StudentRegistration, where: sr.semester_id == ^semester_id)
+      Repo.all(
+        from sr in StudentRegistration, where: sr.semester_id == ^semester_id)
     end
   \end{minted}
 \caption{Primer upita definisanog pomoću modula \emph{Ecto.Query}}
@@ -2652,7 +2695,7 @@ registracija iz modula \emph{StudentRegistrations}.
 
 Modul \emph{Ecto.Query} pruža mogućnost definisanja dinamičnih upita, podupita i dosta drugih karakteristika o kojima se može videti više na zvaničnoj stranici.
 
-\subsection{Izmena entiteta}
+\subsubsection{Izmena entiteta}
 U listingu \ref{listing:ActivityTypes} tokom kreiranja i izmene tipa aktivnosti poziva se
 funkcija \emph{ActivityType.changeset} kojom se kreira skup promena. Prilikom kreiranja
 podataka se može koristiti i struktura definisana sa \emph{Ecto.Schema}, dok je 
@@ -2684,7 +2727,7 @@ proveravaju obavezna polja i jedinstvenost naziva i koda. Rezultat izvršavanja 
 među kojima su promene koje treba izvršiti, validnost izmena i greške validacije ukoliko ih ima.
 Modul \emph{Ecto.Changeset} pruža brojne funkcije za validiranje, a moguće je definisati i prilagođene funkcije.
 
-\subsection{Generisanje datoteka}
+\subsubsection{Generisanje datoteka}
 Prilikom definisanja entiteta, dodaje se njegov kontekst sa \emph{Ecto.Schema} strukturom, kao i migracija. 
 Ukoliko je potrebno dodati i upravljač, to su još dve datoteke --- upravljač i pogled. Da bi se olakšao ovaj
 proces, \emph{Phoenix} pruža komande za automatsko generisanje navedenih datoteka zajedno sa šablonima za testove.
@@ -2710,7 +2753,7 @@ Prve dve celine se izvršavaju unutar upravljača \emph{StudentRegistrationContr
 osnovne akcije \texttt{create} za podnošenje zahteva, \texttt{index} za izlistavanje svih zahteva u toku
 trenutnog semestra i \texttt{update} za obradu zahteva. Akcija za izlistavanje zahteva se razlikuje od drugih
 po tome što uključuje i informaciju o semestru, tako da se za akciju \texttt{index} definiše putanja pod upravljačem
-\emph{SemesterController}. Ovo je moguće zato što razvojno okruženje \emph{Phoenix} omogućava definisanje potputanja, kao i korišćenje jednog upravljača u više putanja.
+\emph{SemesterController}. Ovo je moguće zato što razvojni okvir \emph{Phoenix} omogućava definisanje potputanja, kao i korišćenje jednog upravljača u više putanja.
 Putanje koje se koriste prilikom registrovanja studenata prikazane su u listingu \ref{listing:registration-routes}.
 U poslednjem koraku registrovanja studenata koristi se upravljač \emph{PasswordController}.
 \begin{listing}[h]
@@ -2766,7 +2809,9 @@ Funkcija za prihvatanje zahteva unutar modula \emph{StudentsRegistrations} prika
     end
 
     Multi.new()
-    |> Multi.update(:student_registration, StudentRegistration.changeset(registration, attrs))
+    |> Multi.update(
+        :student_registration,
+        StudentRegistration.changeset(registration, attrs))
     |> Multi.run(:user, create_user)
     |> Multi.run(:student, create_student)
     |> Multi.run(:email, send_email)
@@ -2794,21 +2839,21 @@ Nakon uspešne verifikacije korisnika, unutar funkcije \texttt{set{\textundersco
 Ukoliko i provera lozinke prođe uspešno, šalje se odgovor sa statusom 200 bez sadržaja.
 
 \begin{listing}[h!]
-  \begin{minted}[fontsize=\footnotesize]{elixir}
-    defmodule MsnrApiWeb.PasswordController do
-    use MsnrApiWeb, :controller
+\begin{minted}[fontsize=\footnotesize]{elixir}
+defmodule MsnrApiWeb.PasswordController do
+use MsnrApiWeb, :controller
   
-    alias MsnrApi.Accounts
+alias MsnrApi.Accounts
   
-    action_fallback MsnrApiWeb.FallbackController
+action_fallback MsnrApiWeb.FallbackController
   
-    def update(conn, %{"id" => uuid, "email" => email, "password" => password}) do
-      with {:ok, user} <- Accounts.verify_user(%{email: email, uuid: uuid}),
-           {:ok, _} <- Accounts.set_password(user, password) do
-        send_resp(conn, :no_content, "")
+def update(conn, %{"id" => uuid, "email" => email, "password" => password}) do
+    with {:ok, user} <- Accounts.verify_user(%{email: email, uuid: uuid}),
+         {:ok, _} <- Accounts.set_password(user, password) do
+         send_resp(conn, :no_content, "")
       end
     end
-  end
+end
 \end{minted}
 \caption{Definicija upravljača \emph{MsnrApiWeb.PasswordController}}
 \label{listing:password-controller}
@@ -2834,7 +2879,7 @@ Unutar implementacije portala MSNR koriste se dva tokena: \begin{itemize}
 Prijavljivanje korisnika izvršava se unutar akcije \texttt{login} upravljača \emph{AuthController} i
 način obrade zahteva je sličan akciji \texttt{refresh} za obnavljanje tokena. U prvoj se
 korisnik verifikuje na osnovu imejla i lozinke, a u drugoj na osnovu sadržaja kolačića, nakon čega se kreiraju novi tokeni.
-Razvojno okruženje \emph{Phoenix} ima ugrađenu podršku za rad sa tokenima i preko modula \emph{Phoenix.Token}
+Razvojni okvir \emph{Phoenix} ima ugrađenu podršku za rad sa tokenima i preko modula \emph{Phoenix.Token}
 pruža funkcije za potpisivanje i verifikaciju tokena koje se koriste unutar modula \emph{MsnrApiWeb.Authentication}.
 Akcijom \texttt{logout} se uklanja token za obnavljanje iz kolačića i kada token za pristup istekne potrebno je ponovno prijavljivanje. 
 
@@ -2842,22 +2887,22 @@ Akcijom \texttt{logout} se uklanja token za obnavljanje iz kolačića i kada tok
 Uključivanje utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication} prikazano je zajedno sa registrovanjem akcija upravljača
 \emph{AuthController} u listingu \ref{listing:router} u poglavlju 5.3 prilikom opisa obrade \emph{HTTP} zahteva.
 \begin{listing}[h!]
-  \begin{minted}[fontsize=\footnotesize]{elixir}
-    defmodule MsnrApiWeb.Plugs.TokenAuthentication do
-    import Plug.Conn
-  
-    def init(opts), do: opts
-  
-    def call(conn, _opts) do
-      with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
-           {:ok, payload} <- MsnrApiWeb.Authentication.verify_access_token(token) do
-        assign(conn, :user_info, payload)
-      else
-        _ ->
-          assign(conn, :user_info, nil)
-      end
-    end
+\begin{minted}[fontsize=\footnotesize]{elixir}
+defmodule MsnrApiWeb.Plugs.TokenAuthentication do
+import Plug.Conn
+
+def init(opts), do: opts
+
+def call(conn, _opts) do
+  with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+       {:ok, payload} <- MsnrApiWeb.Authentication.verify_access_token(token) do
+    assign(conn, :user_info, payload)
+  else
+    _ ->
+      assign(conn, :user_info, nil)
   end
+end
+end
 \end{minted}
 \caption{Definicija utikača \emph{MsnrApiWeb.Plugs.TokenAuthentication}}
 \label{listing:authentication-plug}
@@ -2876,16 +2921,16 @@ iste argumente kao i funkcija \texttt{call} (listing \ref{listing:authentication
 Prilikom provere studentske uloge proverava se, ukoliko postoji, i \emph{student{\textunderscore}id} parametar iz putanje.
 Upotreba utkača se može ograničiti na određene akcije unutar upravljača, što se može videti na primeru upravljača \emph{AssignmentController} (listing \ref{listing:authorization-plug}).
 \begin{listing}[h!]
-  \begin{minted}[fontsize=\footnotesize]{elixir}
-    defmodule MsnrApiWeb.AssignmentController do
-      use MsnrApiWeb, :controller
-      import MsnrApiWeb.Plugs.Authorization
-    
-      action_fallback MsnrApiWeb.FallbackController
-    
-      plug :allow_students when action in [:index]
-      plug :professor_only when action in [:create, :update, :delete, :show]
-      ...
+\begin{minted}[fontsize=\footnotesize]{elixir}
+defmodule MsnrApiWeb.AssignmentController do
+  use MsnrApiWeb, :controller
+  import MsnrApiWeb.Plugs.Authorization
+
+  action_fallback MsnrApiWeb.FallbackController
+
+  plug :allow_students when action in [:index]
+  plug :professor_only when action in [:create, :update, :delete, :show]
+  ...
 \end{minted}
 \caption{Primer upotrebe utikača za autorizaciju}
 \label{listing:authorization-plug}
@@ -2900,25 +2945,25 @@ Rad sa aktivnostima vrši se unutar upravljača \emph{ActivityController} čije 
 pod putanjom \emph{semesters}. Kreiranjem aktivnosti za trenutni semestar, ona se istovremeno dodeljuje studentima ili
 grupama u zavisnosti od tipa aktivnosti. Takođe, ukoliko postoji prijava za aktivnost dodela se vrši samo studentima koji su
 se prijavili. Neki tipovi aktivnosti, poput recenzija, zahtevaju dodatnu obradu, ali osnovni princip dodele je isti za sve i
-izvršava se unutar funkcije \texttt{create{\textunderscore}activity}  unutar \emph{Activities} (listing \ref{listing:create-activity}). 
+izvršava se unutar funkcije \texttt{create{\textunderscore}activity} unutar \emph{Activities} (listing \ref{listing:create-activity}). 
 \begin{listing}[h!]
 \begin{minted}[fontsize=\footnotesize]{elixir}
-  def create_activity(str_semester_id, attrs) do
-    {semester_id, _} = Integer.parse(str_semester_id)
-    activity_changeset =
-      %Activity{semester_id: semester_id}
-      |> Activity.changeset(attrs)
+def create_activity(str_semester_id, attrs) do
+  {semester_id, _} = Integer.parse(str_semester_id)
+  activity_changeset =
+    %Activity{semester_id: semester_id}
+    |> Activity.changeset(attrs)
 
-    multi_struct = Multi.new()
-    |> Multi.insert(:activity, activity_changeset)
-    |> Multi.insert_all(:assignments, Assignment, &create_assignments_for_activity/1)
+  multi_struct = Multi.new()
+  |> Multi.insert(:activity, activity_changeset)
+  |> Multi.insert_all(:assignments, Assignment, &create_assignments_for_activity/1)
 
-    case MsnrApi.Repo.transaction(multi_struct) do
-      {:ok, %{activity: activity}} -> {:ok, activity}
-      {:error, :activity, changeset, _changes} -> {:error, changeset}
-      _ ->  {:error, :bad_request}
-    end
+  case MsnrApi.Repo.transaction(multi_struct) do
+    {:ok, %{activity: activity}} -> {:ok, activity}
+    {:error, :activity, changeset, _changes} -> {:error, changeset}
+    _ ->  {:error, :bad_request}
   end
+end
 \end{minted}
 \caption{Kreiranje i dodela aktivnosti}
 \label{listing:create-activity}
@@ -2970,7 +3015,7 @@ Nije moguće promeniti više dokumenata istovremeno i čuva se samo poslednja ve
 
 Profesor ocenjuje aktivnosti pozivanjem akcije \texttt{update} upravljača \emph{AssignmentController},
 unoseći odgovarajući komentar i broj poena. Takođe, preko upravljača \emph{DocumentController} profesor može
-priložiti dokument, ukoliko je to potrebno.  
+priložiti dokument, ukoliko je to potrebno
 
 \chapter{Implementacija klijentskog dela portala}
 Za razliku od \emph{Phoenix} projekata, inicijalizacijom \emph{Elm} projekta kreira
@@ -3549,7 +3594,7 @@ kom su prikazane osnovne osobine i koncepti ovih programskih jezika. U okviru ra
 data su objašnjenja osnovnih funkcionalnosti i komponenti portala, kao i
 objašnjenje implementacije najvažnijih delova.
 
-Razvojno okruženje \emph{Phoenix} daje jasne smernice kako struktura projekta treba
+Razvojni okvir \emph{Phoenix} daje jasne smernice kako struktura projekta treba
 da izgleda. Biblioteke unutar ekosistema \emph{Elixir} nastale su na osnovu dobrih
 praksi postojećih biblioteka drugih programskih jezika što njihovu adaptaciju
 čini lakom. Sa druge strane, rad sa programskim jezikom \emph{Elm}, sa njemu svojstvenom arhitekturom \emph{Elm}
