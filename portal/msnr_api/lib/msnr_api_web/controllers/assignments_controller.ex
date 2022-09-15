@@ -22,6 +22,7 @@ defmodule MsnrApiWeb.AssignmentController do
       Assignments.list_assignments(params)
       render(conn, "index_shallow.json", assignments: assignments)
   end
+
   def show(conn, %{"id" => id}) do
     assignment = Assignments.get_assignment!(id)
     render(conn, "show.json", assignment: assignment)

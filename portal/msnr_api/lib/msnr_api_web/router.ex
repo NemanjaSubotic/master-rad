@@ -39,6 +39,7 @@ defmodule MsnrApiWeb.Router do
 
     resources "/documents", DocumentController, only: [:show, :update]
     resources "/activities", ActivityController, only: [:show, :update]
+    resources "/assignments", AssignmentController, only: [:show, :update]
     resources "/topics", TopicController, only: [:show, :update, :delete]
     resources "/groups", GroupController, only: [:show, :update]
     resources "/signups", SignupController, only: [:update]

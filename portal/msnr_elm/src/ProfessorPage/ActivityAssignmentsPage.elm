@@ -3,6 +3,7 @@ module ProfessorPage.ActivityAssignmentsPage exposing (..)
 import Accessibility.Styled as Html exposing (Html)
 import Activity exposing (Activity)
 import ActivityType exposing (ActivityType)
+import Api
 import Assignment exposing (ShallowAssignment)
 import Bytes
 import Css exposing (backgroundColor, column, displayFlex, fitContent, flexDirection, height, justifyContent, marginLeft, marginTop, maxWidth, minWidth, pct, px, rem, width)
@@ -13,6 +14,7 @@ import Group exposing (Group)
 import Html.Styled.Attributes exposing (css)
 import Http
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Nri.Ui.Button.V10 as Button
 import Nri.Ui.Colors.V1 as Colors
 import Nri.Ui.Heading.V2 as Heading
@@ -36,12 +38,13 @@ type alias Model =
     , hasProcessingError : Bool
     , selectedAssignment : ShallowAssignment
     , modalState : Modal.Model
-    , grade : Int
     , modalType : ModalType
     , loadingFiles : Bool
     , files : Dict Int (List FileInfo)
     , editFile : Maybe FileInfo
     , selectedFile : Maybe File
+    , grade : Maybe Int
+    , comment : String
     }
 
 
@@ -52,11 +55,12 @@ init =
     , selectedAssignment = emptyAssignment
     , modalState = Modal.init
     , modalType = EditModal
-    , grade = 0
     , loadingFiles = False
     , files = Dict.empty
     , editFile = Nothing
     , selectedFile = Nothing
+    , grade = Nothing
+    , comment = ""
     }
 
 
@@ -65,10 +69,14 @@ type Msg
     | LoadedFiles Int (Result Http.Error (List FileInfo))
     | DownloadedFile String (Result Http.Error Bytes.Bytes)
     | DownloadFile FileInfo
+    | Comment String
+    | Grade (Maybe Int)
     | EditFile FileInfo
     | SelectedFile (List File)
     | OpenModal ModalType ShallowAssignment { startFocusOn : String, returnFocusTo : String }
     | ModalMsg Modal.Msg
+    | UpateAssignement Int
+    | UpatedAssignement (Result Http.Error ())
     | Focus String
     | Dismiss
 
@@ -134,6 +142,18 @@ update msg model { accessToken, apiBaseUrl } =
 
         SelectedFile [ file ] ->
             ( { model | selectedFile = Just file }, Cmd.none )
+
+        Comment comment -> 
+            ( { model | comment = comment }, Cmd.none )
+
+        Grade grade -> 
+            ( { model | grade = grade }, Cmd.none )
+        
+        UpateAssignement grade ->
+            ( { model | processingModal = True }
+            , updateAssignement model.selectedAssignment.id model.comment grade { token = accessToken, apiBaseUrl = apiBaseUrl }
+            )
+        
 
         _ ->
             ( model, Cmd.none )
@@ -394,8 +414,8 @@ modalView model { groups, students } =
             "save-btn"
 
         editContent =
-            [ TextInput.view "Komentar" []
-            , TextInput.view "Broj poena" []
+            [ TextInput.view "Komentar" [ TextInput.text Comment, TextInput.value model.comment ]
+            , TextInput.view "Broj poena" [ TextInput.number Grade, TextInput.value model.grade ]
             ]
 
         uploadFilesView files =
@@ -432,10 +452,22 @@ modalView model { groups, students } =
         savaBtnAttrs =
             [ Button.id saveButtonId, Button.primary ]
 
+        editBtn =
+            Button.button "Oceni"
+                [ case model.grade of
+                    Nothing ->
+                        Button.disabled
+
+                    Just g ->
+                        Button.onClick (UpateAssignement g)
+                , Button.id saveButtonId
+                , Button.primary
+                ]
+
         ( content, saveBtn ) =
             case model.modalType of
                 EditModal ->
-                    ( editContent, Button.button "Sačuvaj" savaBtnAttrs )
+                    ( editContent, editBtn )
 
                 DocumentModal ->
                     ( documentsContent, Button.button "Otpremi" savaBtnAttrs )
@@ -497,3 +529,25 @@ emptyAssignment =
 loadFiles : Int -> { token : String, apiBaseUrl : String } -> Cmd Msg
 loadFiles assignmentId apiParams =
     Util.loadFiles assignmentId apiParams (LoadedFiles assignmentId)
+
+
+updateAssignement : Int -> String -> Int -> { token : String, apiBaseUrl : String } -> Cmd Msg
+updateAssignement assignmentId comment grade { token, apiBaseUrl } =
+    let
+        body =
+            Encode.object
+                [ ( "assignment"
+                  , Encode.object
+                        [ ( "comment", Encode.string comment )
+                        , ( "grade", Encode.int grade )
+                        ]
+                  )
+                ]
+    in
+    Api.put
+        { apiBaseUrl = apiBaseUrl
+        , endpoint = Api.endpoints.assignment assignmentId
+        , body = Http.jsonBody body
+        , token = token
+        , expect = Http.expectWhatever UpatedAssignement
+        }

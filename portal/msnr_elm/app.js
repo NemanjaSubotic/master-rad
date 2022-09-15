@@ -6754,6 +6754,14 @@ var $author$project$Api$endpoints = {
 	activityTypes: $author$project$Api$relativeUrl(
 		_List_fromArray(
 			['activity-types'])),
+	assignment: function (id) {
+		return $author$project$Api$relativeUrl(
+			_List_fromArray(
+				[
+					'assignments',
+					$elm$core$String$fromInt(id)
+				]));
+	},
 	assignments: function (semId) {
 		return $author$project$Api$relativeUrl(
 			_List_fromArray(
@@ -9402,11 +9410,43 @@ var $author$project$Util$saveData = F2(
 	function (fileName, bytes) {
 		return A3($elm$file$File$Download$bytes, fileName, 'application/pdf', bytes);
 	});
+var $author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement = function (a) {
+	return {$: 'UpatedAssignement', a: a};
+};
+var $author$project$ProfessorPage$ActivityAssignmentsPage$updateAssignement = F4(
+	function (assignmentId, comment, grade, _v0) {
+		var token = _v0.token;
+		var apiBaseUrl = _v0.apiBaseUrl;
+		var body = $elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'assignment',
+					$elm$json$Json$Encode$object(
+						_List_fromArray(
+							[
+								_Utils_Tuple2(
+								'comment',
+								$elm$json$Json$Encode$string(comment)),
+								_Utils_Tuple2(
+								'grade',
+								$elm$json$Json$Encode$int(grade))
+							])))
+				]));
+		return $author$project$Api$put(
+			{
+				apiBaseUrl: apiBaseUrl,
+				body: $elm$http$Http$jsonBody(body),
+				endpoint: $author$project$Api$endpoints.assignment(assignmentId),
+				expect: $elm$http$Http$expectWhatever($author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement),
+				token: token
+			});
+	});
 var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 	function (msg, model, _v0) {
 		var accessToken = _v0.accessToken;
 		var apiBaseUrl = _v0.apiBaseUrl;
-		_v1$6:
+		_v1$9:
 		while (true) {
 			switch (msg.$) {
 				case 'OpenModal':
@@ -9526,10 +9566,36 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 								}),
 							$elm$core$Platform$Cmd$none);
 					} else {
-						break _v1$6;
+						break _v1$9;
 					}
+				case 'Comment':
+					var comment = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{comment: comment}),
+						$elm$core$Platform$Cmd$none);
+				case 'Grade':
+					var grade = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{grade: grade}),
+						$elm$core$Platform$Cmd$none);
+				case 'UpateAssignement':
+					var grade = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{processingModal: true}),
+						A4(
+							$author$project$ProfessorPage$ActivityAssignmentsPage$updateAssignement,
+							model.selectedAssignment.id,
+							model.comment,
+							grade,
+							{apiBaseUrl: apiBaseUrl, token: accessToken}));
 				default:
-					break _v1$6;
+					break _v1$9;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -11474,7 +11540,7 @@ var $author$project$UserType$fromSession = function (_v0) {
 };
 var $author$project$ProfessorPage$ActivityAssignmentsPage$EditModal = {$: 'EditModal'};
 var $author$project$ProfessorPage$ActivityAssignmentsPage$emptyAssignment = {activityId: 0, comment: $elm$core$Maybe$Nothing, completed: false, grade: $elm$core$Maybe$Nothing, groupId: $elm$core$Maybe$Nothing, id: 0, studentId: $elm$core$Maybe$Nothing};
-var $author$project$ProfessorPage$ActivityAssignmentsPage$init = {editFile: $elm$core$Maybe$Nothing, files: $elm$core$Dict$empty, grade: 0, hasProcessingError: false, loadingFiles: false, modalState: $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$init, modalType: $author$project$ProfessorPage$ActivityAssignmentsPage$EditModal, processingModal: false, selectedAssignment: $author$project$ProfessorPage$ActivityAssignmentsPage$emptyAssignment, selectedFile: $elm$core$Maybe$Nothing};
+var $author$project$ProfessorPage$ActivityAssignmentsPage$init = {comment: '', editFile: $elm$core$Maybe$Nothing, files: $elm$core$Dict$empty, grade: $elm$core$Maybe$Nothing, hasProcessingError: false, loadingFiles: false, modalState: $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$init, modalType: $author$project$ProfessorPage$ActivityAssignmentsPage$EditModal, processingModal: false, selectedAssignment: $author$project$ProfessorPage$ActivityAssignmentsPage$emptyAssignment, selectedFile: $elm$core$Maybe$Nothing};
 var $author$project$ProfessorPage$RegistrationRequestsPage$None = {$: 'None'};
 var $author$project$ProfessorPage$RegistrationRequestsPage$Pending = {$: 'Pending'};
 var $author$project$ProfessorPage$RegistrationRequestsPage$init = {acceptedRequests: _List_Nil, dismissedMsg: false, hasProcessingError: false, isInitialized: false, modalAction: $author$project$ProfessorPage$RegistrationRequestsPage$None, modalState: $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$init, pendingRequests: _List_Nil, rejectedRequests: _List_Nil, tab: $author$project$ProfessorPage$RegistrationRequestsPage$Pending, updatingRequest: false};
@@ -25760,6 +25826,9 @@ var $author$project$ProfessorPage$ActivitiesPage$view = F2(
 					model.modalState)
 				]));
 	});
+var $author$project$ProfessorPage$ActivityAssignmentsPage$Comment = function (a) {
+	return {$: 'Comment', a: a};
+};
 var $author$project$ProfessorPage$ActivityAssignmentsPage$Dismiss = {$: 'Dismiss'};
 var $author$project$ProfessorPage$ActivityAssignmentsPage$DownloadFile = function (a) {
 	return {$: 'DownloadFile', a: a};
@@ -25770,9 +25839,22 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$EditFile = function (a
 var $author$project$ProfessorPage$ActivityAssignmentsPage$Focus = function (a) {
 	return {$: 'Focus', a: a};
 };
+var $author$project$ProfessorPage$ActivityAssignmentsPage$Grade = function (a) {
+	return {$: 'Grade', a: a};
+};
 var $author$project$ProfessorPage$ActivityAssignmentsPage$SelectedFile = function (a) {
 	return {$: 'SelectedFile', a: a};
 };
+var $author$project$ProfessorPage$ActivityAssignmentsPage$UpateAssignement = function (a) {
+	return {$: 'UpateAssignement', a: a};
+};
+var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$Disabled = {$: 'Disabled'};
+var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled = $NoRedInk$noredink_ui$Nri$Ui$Button$V10$set(
+	function (attributes) {
+		return _Utils_update(
+			attributes,
+			{state: $NoRedInk$noredink_ui$Nri$Ui$Button$V10$Disabled});
+	});
 var $elm$html$Html$Attributes$accept = $elm$html$Html$Attributes$stringProperty('accept');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $NoRedInk$noredink_ui$Nri$Ui$UiIcon$V1$document = $NoRedInk$noredink_ui$Nri$Ui$Svg$V1$fromHtml(
@@ -26093,6 +26175,27 @@ var $author$project$Util$filesView = F2(
 				]));
 	});
 var $elm$file$File$name = _File_name;
+var $NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$text = function (onInput_) {
+	return A2(
+		$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$Attribute,
+		_Utils_update(
+			$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$emptyEventsAndValues,
+			{
+				fromString: $elm$core$Maybe$Just($elm$core$Basics$identity),
+				onInput: $elm$core$Maybe$Just(
+					A2($elm$core$Basics$composeR, $elm$core$Basics$identity, onInput_)),
+				toString: $elm$core$Maybe$Just($elm$core$Basics$identity)
+			}),
+		function (config) {
+			return _Utils_update(
+				config,
+				{
+					autocomplete: $elm$core$Maybe$Nothing,
+					fieldType: $elm$core$Maybe$Just('text'),
+					inputMode: $elm$core$Maybe$Nothing
+				});
+		});
+};
 var $author$project$Topic$toString = function (_v0) {
 	var number = _v0.number;
 	var title = _v0.title;
@@ -26155,12 +26258,12 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 				$NoRedInk$noredink_ui$Nri$Ui$Button$V10$primary
 			]);
 		var loading = function () {
-			var _v6 = _Utils_Tuple3(model.processingModal, model.modalType, model.loadingFiles);
-			if (_v6.a) {
+			var _v7 = _Utils_Tuple3(model.processingModal, model.modalType, model.loadingFiles);
+			if (_v7.a) {
 				return true;
 			} else {
-				if ((_v6.b.$ === 'DocumentModal') && _v6.c) {
-					var _v7 = _v6.b;
+				if ((_v7.b.$ === 'DocumentModal') && _v7.c) {
+					var _v8 = _v7.b;
 					return true;
 				} else {
 					return false;
@@ -26170,9 +26273,41 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 		var fileName = $elm$core$Maybe$map($elm$file$File$name);
 		var editContent = _List_fromArray(
 			[
-				A2($NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$view, 'Komentar', _List_Nil),
-				A2($NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$view, 'Broj poena', _List_Nil)
+				A2(
+				$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$view,
+				'Komentar',
+				_List_fromArray(
+					[
+						$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$text($author$project$ProfessorPage$ActivityAssignmentsPage$Comment),
+						$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$value(model.comment)
+					])),
+				A2(
+				$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$view,
+				'Broj poena',
+				_List_fromArray(
+					[
+						$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$number($author$project$ProfessorPage$ActivityAssignmentsPage$Grade),
+						$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$value(model.grade)
+					]))
 			]);
+		var editBtn = A2(
+			$NoRedInk$noredink_ui$Nri$Ui$Button$V10$button,
+			'Oceni',
+			_List_fromArray(
+				[
+					function () {
+					var _v6 = model.grade;
+					if (_v6.$ === 'Nothing') {
+						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled;
+					} else {
+						var g = _v6.a;
+						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$onClick(
+							$author$project$ProfessorPage$ActivityAssignmentsPage$UpateAssignement(g));
+					}
+				}(),
+					$NoRedInk$noredink_ui$Nri$Ui$Button$V10$id(saveButtonId),
+					$NoRedInk$noredink_ui$Nri$Ui$Button$V10$primary
+				]));
 		var documentsContent = function () {
 			var _v5 = A2($elm$core$Dict$get, model.selectedAssignment.id, model.files);
 			if (_v5.$ === 'Just') {
@@ -26229,9 +26364,7 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 		var _v1 = function () {
 			var _v2 = model.modalType;
 			if (_v2.$ === 'EditModal') {
-				return _Utils_Tuple2(
-					editContent,
-					A2($NoRedInk$noredink_ui$Nri$Ui$Button$V10$button, 'Sačuvaj', savaBtnAttrs));
+				return _Utils_Tuple2(editContent, editBtn);
 			} else {
 				return _Utils_Tuple2(
 					documentsContent,
@@ -28973,35 +29106,7 @@ var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$danger = $NoRedInk$noredink_ui$Nri$U
 				style: {background: $NoRedInk$noredink_ui$Nri$Ui$Colors$V1$red, border: $elm$core$Maybe$Nothing, hover: $NoRedInk$noredink_ui$Nri$Ui$Colors$V1$redDark, shadow: $NoRedInk$noredink_ui$Nri$Ui$Colors$V1$redDark, text: $NoRedInk$noredink_ui$Nri$Ui$Colors$V1$white}
 			});
 	});
-var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$Disabled = {$: 'Disabled'};
-var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled = $NoRedInk$noredink_ui$Nri$Ui$Button$V10$set(
-	function (attributes) {
-		return _Utils_update(
-			attributes,
-			{state: $NoRedInk$noredink_ui$Nri$Ui$Button$V10$Disabled});
-	});
 var $rtfeldman$elm_css$Css$end = $rtfeldman$elm_css$Css$prop1('end');
-var $NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$text = function (onInput_) {
-	return A2(
-		$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$Attribute,
-		_Utils_update(
-			$NoRedInk$noredink_ui$Nri$Ui$TextInput$V7$emptyEventsAndValues,
-			{
-				fromString: $elm$core$Maybe$Just($elm$core$Basics$identity),
-				onInput: $elm$core$Maybe$Just(
-					A2($elm$core$Basics$composeR, $elm$core$Basics$identity, onInput_)),
-				toString: $elm$core$Maybe$Just($elm$core$Basics$identity)
-			}),
-		function (config) {
-			return _Utils_update(
-				config,
-				{
-					autocomplete: $elm$core$Maybe$Nothing,
-					fieldType: $elm$core$Maybe$Just('text'),
-					inputMode: $elm$core$Maybe$Nothing
-				});
-		});
-};
 var $author$project$ProfessorPage$TopicsPage$view = function (model) {
 	var topicView = function (_v0) {
 		var id = _v0.id;

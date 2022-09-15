@@ -7,7 +7,7 @@ defmodule MsnrApiWeb.AssignmentView do
   end
 
   def render("show.json", %{assignment: assignment}) do
-    %{data: render_one(assignment, AssignmentView, "assignment.json")}
+    %{data: render_one(assignment, AssignmentView, "assignment_shallow.json")}
   end
 
   def render("assignment.json", %{assignment: assignment}) do

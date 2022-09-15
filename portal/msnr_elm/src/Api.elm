@@ -24,6 +24,7 @@ type alias Endpoints =
     , activityTypes : String
     , activities : Int -> String
     , assignments : Int -> String
+    , assignment : Int -> String
     , activity : Int -> String
     , students : Int -> String
     , student : Int -> Int -> String
@@ -55,6 +56,7 @@ endpoints =
     , topics = \semId -> relativeUrl [ "semesters", fromInt semId, "topics" ]
     , signup = \id -> relativeUrl [ "signups", fromInt id ]
     , assignments = \semId -> relativeUrl [ "semesters", fromInt semId, "assignments" ]
+    , assignment = \id -> relativeUrl [ "assignments", fromInt id ]
     }
 
 

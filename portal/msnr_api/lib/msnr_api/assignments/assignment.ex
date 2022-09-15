@@ -14,11 +14,10 @@ defmodule MsnrApi.Assignments.Assignment do
     timestamps()
   end
 
-  @doc false
   def changeset(assignment, attrs) do
     assignment
-    |> cast(attrs, [:activity_id])
-    |> validate_required([:activity_id])
+    |> cast(attrs, [:comment, :grade])
+    |> validate_required([:comment, :grade])
   end
 
   def signup_changeset(assignment, attrs) do
@@ -26,4 +25,5 @@ defmodule MsnrApi.Assignments.Assignment do
     |> cast(attrs, [:completed])
     |> validate_required([:completed])
   end
+
 end
