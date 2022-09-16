@@ -25,6 +25,7 @@ import Nri.Ui.TextInput.V7 as TextInput
 import Nri.Ui.UiIcon.V1 as UiIcon
 import Route exposing (Route)
 import Student exposing (Student)
+import StudentPage.AssignmentContent.FilesContent exposing (Msg(..))
 import Util
 
 
@@ -76,7 +77,9 @@ type Msg
     | OpenModal ModalType ShallowAssignment { startFocusOn : String, returnFocusTo : String }
     | ModalMsg Modal.Msg
     | UpateAssignement Int
-    | UpatedAssignement (Result Http.Error ())
+    | UpatedAssignement (Result Http.Error ShallowAssignment)
+    | UploadFile File
+    | UploadedFile Int (Result Http.Error FileInfo)
     | Focus String
     | Dismiss
 
@@ -105,7 +108,7 @@ update msg model { accessToken, apiBaseUrl } =
                         _ ->
                             ( Cmd.map ModalMsg modalCmd, model.loadingFiles )
             in
-            ( { model | modalType = modalType, modalState = modalState, selectedAssignment = assignment, loadingFiles = loadingFiles }, cmd )
+            ( { model | modalType = modalType, modalState = modalState, selectedAssignment = assignment, loadingFiles = loadingFiles, comment = Maybe.withDefault "" assignment.comment, grade = assignment.grade }, cmd )
 
         ModalMsg modalMsg ->
             let
@@ -143,17 +146,64 @@ update msg model { accessToken, apiBaseUrl } =
         SelectedFile [ file ] ->
             ( { model | selectedFile = Just file }, Cmd.none )
 
-        Comment comment -> 
+        UploadFile file ->
+            ( { model | processingModal = True, hasProcessingError = False }
+            , uploadFile model.selectedAssignment.id file { token = accessToken, apiBaseUrl = apiBaseUrl }
+            )
+
+        UploadedFile assignmentId result ->
+            let
+                model_ =
+                    { model | processingModal = False }
+
+                ( modalState, cmd ) =
+                    Modal.close model.modalState
+
+                docs =
+                    Dict.get assignmentId model.files
+            in
+            case result of
+                Ok file ->
+                    ( { model_
+                        | modalState = modalState
+                        , selectedFile = Nothing
+                      }
+                    , Cmd.map ModalMsg cmd
+                    )
+
+                Err err ->
+                    Debug.log (Debug.toString err) <|
+                        ( { model_ | hasProcessingError = True }, Cmd.none )
+
+        Comment comment ->
             ( { model | comment = comment }, Cmd.none )
 
-        Grade grade -> 
+        Grade grade ->
             ( { model | grade = grade }, Cmd.none )
-        
+
         UpateAssignement grade ->
-            ( { model | processingModal = True }
+            ( { model | processingModal = True, hasProcessingError = False }
             , updateAssignement model.selectedAssignment.id model.comment grade { token = accessToken, apiBaseUrl = apiBaseUrl }
             )
-        
+
+        UpatedAssignement result ->
+            let
+                model_ =
+                    { model | processingModal = False }
+
+                ( modalState, cmd ) =
+                    Modal.close model.modalState
+            in
+            case result of
+                Ok _ ->
+                    ( { model_ | modalState = modalState }, Cmd.map ModalMsg cmd )
+
+                Err err ->
+                    Debug.log (Debug.toString err) <|
+                        ( { model_ | hasProcessingError = True }, Cmd.none )
+
+        Dismiss ->
+            ( { model | hasProcessingError = False }, Cmd.none )
 
         _ ->
             ( model, Cmd.none )
@@ -454,12 +504,27 @@ modalView model { groups, students } =
 
         editBtn =
             Button.button "Oceni"
-                [ case model.grade of
+                [ case ( model.grade, model.comment ) of
+                    ( Nothing, _ ) ->
+                        Button.disabled
+
+                    ( _, "" ) ->
+                        Button.disabled
+
+                    ( Just g, _ ) ->
+                        Button.onClick (UpateAssignement g)
+                , Button.id saveButtonId
+                , Button.primary
+                ]
+
+        uploadBtn =
+            Button.button "Otpremi"
+                [ case model.selectedFile of
                     Nothing ->
                         Button.disabled
 
-                    Just g ->
-                        Button.onClick (UpateAssignement g)
+                    Just f ->
+                        Button.onClick (UploadFile f)
                 , Button.id saveButtonId
                 , Button.primary
                 ]
@@ -470,7 +535,7 @@ modalView model { groups, students } =
                     ( editContent, editBtn )
 
                 DocumentModal ->
-                    ( documentsContent, Button.button "Otpremi" savaBtnAttrs )
+                    ( documentsContent, uploadBtn )
 
         loading =
             case ( model.processingModal, model.modalType, model.loadingFiles ) of
@@ -549,5 +614,22 @@ updateAssignement assignmentId comment grade { token, apiBaseUrl } =
         , endpoint = Api.endpoints.assignment assignmentId
         , body = Http.jsonBody body
         , token = token
-        , expect = Http.expectWhatever UpatedAssignement
+        , expect = Http.expectJson UpatedAssignement (Decode.field "data" Assignment.shallowDecoder)
+        }
+
+
+uploadFile : Int -> File.File -> { token : String, apiBaseUrl : String } -> Cmd Msg
+uploadFile assignmentId file { token, apiBaseUrl } =
+    let
+        body =
+            Http.multipartBody
+                [ Http.filePart "document" file
+                ]
+    in
+    Api.post
+        { apiBaseUrl = apiBaseUrl
+        , endpoint = Api.endpoints.documents assignmentId
+        , body = body
+        , token = token
+        , expect = Http.expectJson (UploadedFile assignmentId) (Decode.field "data" FileInfo.decoder)
         }

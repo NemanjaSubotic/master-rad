@@ -8277,11 +8277,26 @@ var $author$project$ProfessorPage$GotActivitiesMsg = function (a) {
 var $author$project$ProfessorPage$GotActivityAssignmentsMsg = function (a) {
 	return {$: 'GotActivityAssignmentsMsg', a: a};
 };
+var $author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement = function (a) {
+	return {$: 'UpatedAssignement', a: a};
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
 var $author$project$ProfessorPage$ActivitiesPage$New = {$: 'New'};
 var $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$Closed = {$: 'Closed'};
 var $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$init = $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$Closed;
 var $author$project$ProfessorPage$ActivitiesPage$init = {endDate: '', hasProcessingError: false, isSignup: false, modalAction: $author$project$ProfessorPage$ActivitiesPage$New, modalState: $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$init, points: 0, processingActivity: false, selectedActivityTypeId: $elm$core$Maybe$Nothing, startDate: ''};
 var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Basics$neq = _Utils_notEqual;
 var $elm$core$Dict$fromList = function (assocs) {
 	return A3(
 		$elm$core$List$foldl,
@@ -8586,7 +8601,6 @@ var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$lastDayOf = F2(
 				return $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$Day(31);
 		}
 	});
-var $elm$core$Basics$neq = _Utils_notEqual;
 var $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayFromInt = F3(
 	function (year, month, day) {
 		var maxValidDay = $PanagiotisGeorgiadis$elm_datetime$Calendar$Internal$dayToInt(
@@ -9410,9 +9424,6 @@ var $author$project$Util$saveData = F2(
 	function (fileName, bytes) {
 		return A3($elm$file$File$Download$bytes, fileName, 'application/pdf', bytes);
 	});
-var $author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement = function (a) {
-	return {$: 'UpatedAssignement', a: a};
-};
 var $author$project$ProfessorPage$ActivityAssignmentsPage$updateAssignement = F4(
 	function (assignmentId, comment, grade, _v0) {
 		var token = _v0.token;
@@ -9438,7 +9449,42 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$updateAssignement = F4
 				apiBaseUrl: apiBaseUrl,
 				body: $elm$http$Http$jsonBody(body),
 				endpoint: $author$project$Api$endpoints.assignment(assignmentId),
-				expect: $elm$http$Http$expectWhatever($author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement),
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement,
+					A2($elm$json$Json$Decode$field, 'data', $author$project$Assignment$shallowDecoder)),
+				token: token
+			});
+	});
+var $author$project$ProfessorPage$ActivityAssignmentsPage$UploadedFile = F2(
+	function (a, b) {
+		return {$: 'UploadedFile', a: a, b: b};
+	});
+var $elm$http$Http$filePart = _Http_pair;
+var $elm$http$Http$multipartBody = function (parts) {
+	return A2(
+		_Http_pair,
+		'',
+		_Http_toFormData(parts));
+};
+var $author$project$ProfessorPage$ActivityAssignmentsPage$uploadFile = F3(
+	function (assignmentId, file, _v0) {
+		var token = _v0.token;
+		var apiBaseUrl = _v0.apiBaseUrl;
+		var body = $elm$http$Http$multipartBody(
+			_List_fromArray(
+				[
+					A2($elm$http$Http$filePart, 'document', file)
+				]));
+		return $author$project$Api$post(
+			{
+				apiBaseUrl: apiBaseUrl,
+				body: body,
+				endpoint: $author$project$Api$endpoints.documents(assignmentId),
+				expect: A2(
+					$elm$http$Http$expectJson,
+					$author$project$ProfessorPage$ActivityAssignmentsPage$UploadedFile(assignmentId),
+					A2($elm$json$Json$Decode$field, 'data', $author$project$FileInfo$decoder)),
 				token: token
 			});
 	});
@@ -9446,7 +9492,7 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 	function (msg, model, _v0) {
 		var accessToken = _v0.accessToken;
 		var apiBaseUrl = _v0.apiBaseUrl;
-		_v1$9:
+		_v1$13:
 		while (true) {
 			switch (msg.$) {
 				case 'OpenModal':
@@ -9484,7 +9530,14 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{loadingFiles: loadingFiles, modalState: modalState, modalType: modalType, selectedAssignment: assignment}),
+							{
+								comment: A2($elm$core$Maybe$withDefault, '', assignment.comment),
+								grade: assignment.grade,
+								loadingFiles: loadingFiles,
+								modalState: modalState,
+								modalType: modalType,
+								selectedAssignment: assignment
+							}),
 						cmd);
 				case 'ModalMsg':
 					var modalMsg = msg.a;
@@ -9566,7 +9619,46 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 								}),
 							$elm$core$Platform$Cmd$none);
 					} else {
-						break _v1$9;
+						break _v1$13;
+					}
+				case 'UploadFile':
+					var file = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{hasProcessingError: false, processingModal: true}),
+						A3(
+							$author$project$ProfessorPage$ActivityAssignmentsPage$uploadFile,
+							model.selectedAssignment.id,
+							file,
+							{apiBaseUrl: apiBaseUrl, token: accessToken}));
+				case 'UploadedFile':
+					var assignmentId = msg.a;
+					var result = msg.b;
+					var model_ = _Utils_update(
+						model,
+						{processingModal: false});
+					var docs = A2($elm$core$Dict$get, assignmentId, model.files);
+					var _v11 = $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$close(model.modalState);
+					var modalState = _v11.a;
+					var cmd = _v11.b;
+					if (result.$ === 'Ok') {
+						var file = result.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model_,
+								{modalState: modalState, selectedFile: $elm$core$Maybe$Nothing}),
+							A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$ActivityAssignmentsPage$ModalMsg, cmd));
+					} else {
+						var err = result.a;
+						return A2(
+							$elm$core$Debug$log,
+							$elm$core$Debug$toString(err),
+							_Utils_Tuple2(
+								_Utils_update(
+									model_,
+									{hasProcessingError: true}),
+								$elm$core$Platform$Cmd$none));
 					}
 				case 'Comment':
 					var comment = msg.a;
@@ -9587,15 +9679,46 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{processingModal: true}),
+							{hasProcessingError: false, processingModal: true}),
 						A4(
 							$author$project$ProfessorPage$ActivityAssignmentsPage$updateAssignement,
 							model.selectedAssignment.id,
 							model.comment,
 							grade,
 							{apiBaseUrl: apiBaseUrl, token: accessToken}));
+				case 'UpatedAssignement':
+					var result = msg.a;
+					var model_ = _Utils_update(
+						model,
+						{processingModal: false});
+					var _v13 = $NoRedInk$noredink_ui$Nri$Ui$Modal$V11$close(model.modalState);
+					var modalState = _v13.a;
+					var cmd = _v13.b;
+					if (result.$ === 'Ok') {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model_,
+								{modalState: modalState}),
+							A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$ActivityAssignmentsPage$ModalMsg, cmd));
+					} else {
+						var err = result.a;
+						return A2(
+							$elm$core$Debug$log,
+							$elm$core$Debug$toString(err),
+							_Utils_Tuple2(
+								_Utils_update(
+									model_,
+									{hasProcessingError: true}),
+								$elm$core$Platform$Cmd$none));
+					}
+				case 'Dismiss':
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{hasProcessingError: false}),
+						$elm$core$Platform$Cmd$none);
 				default:
-					break _v1$9;
+					break _v1$13;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -9603,17 +9726,6 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$update = F3(
 var $author$project$ProfessorPage$RegistrationRequestsPage$ModalMsg = function (a) {
 	return {$: 'ModalMsg', a: a};
 };
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$partition = F2(
 	function (pred, list) {
 		var step = F2(
@@ -9975,7 +10087,7 @@ var $author$project$ProfessorPage$TopicsPage$update = F3(
 	});
 var $author$project$ProfessorPage$update = F2(
 	function (msg, model) {
-		_v0$11:
+		_v0$12:
 		while (true) {
 			switch (msg.$) {
 				case 'AdjustTimeZone':
@@ -10089,7 +10201,7 @@ var $author$project$ProfessorPage$update = F2(
 								}),
 							$elm$core$Platform$Cmd$none);
 					} else {
-						break _v0$11;
+						break _v0$12;
 					}
 				case 'GotActivitiesMsg':
 					if ((msg.a.$ === 'SavedActivity') && (msg.a.a.$ === 'Ok')) {
@@ -10122,17 +10234,46 @@ var $author$project$ProfessorPage$update = F2(
 							{topicsModel: model_}),
 						A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$GotTopicsMsg, cmd));
 				case 'GotActivityAssignmentsMsg':
-					var assignementMsg = msg.a;
-					var _v8 = A3($author$project$ProfessorPage$ActivityAssignmentsPage$update, assignementMsg, model.activityAssignmentsModel, model);
-					var model_ = _v8.a;
-					var cmd = _v8.b;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{activityAssignmentsModel: model_}),
-						A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$GotActivityAssignmentsMsg, cmd));
+					if ((msg.a.$ === 'UpatedAssignement') && (msg.a.a.$ === 'Ok')) {
+						var assignment = msg.a.a.a;
+						var _v8 = A3(
+							$author$project$ProfessorPage$ActivityAssignmentsPage$update,
+							$author$project$ProfessorPage$ActivityAssignmentsPage$UpatedAssignement(
+								$elm$core$Result$Ok(assignment)),
+							model.activityAssignmentsModel,
+							model);
+						var model_ = _v8.a;
+						var cmd = _v8.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									activityAssignmentsModel: model_,
+									assignments: A2(
+										$elm$core$List$cons,
+										assignment,
+										A2(
+											$elm$core$List$filter,
+											function (_v9) {
+												var id = _v9.id;
+												return !_Utils_eq(id, assignment.id);
+											},
+											model.assignments))
+								}),
+							A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$GotActivityAssignmentsMsg, cmd));
+					} else {
+						var assignementMsg = msg.a;
+						var _v10 = A3($author$project$ProfessorPage$ActivityAssignmentsPage$update, assignementMsg, model.activityAssignmentsModel, model);
+						var model_ = _v10.a;
+						var cmd = _v10.b;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{activityAssignmentsModel: model_}),
+							A2($elm$core$Platform$Cmd$map, $author$project$ProfessorPage$GotActivityAssignmentsMsg, cmd));
+					}
 				default:
-					break _v0$11;
+					break _v0$12;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -10704,13 +10845,6 @@ var $author$project$StudentPage$AssignmentContent$FilesContent$ModalMsg = functi
 };
 var $author$project$StudentPage$AssignmentContent$FilesContent$UpdatedFile = function (a) {
 	return {$: 'UpdatedFile', a: a};
-};
-var $elm$http$Http$filePart = _Http_pair;
-var $elm$http$Http$multipartBody = function (parts) {
-	return A2(
-		_Http_pair,
-		'',
-		_Http_toFormData(parts));
 };
 var $author$project$Util$updateFile = F4(
 	function (id, file, _v0, msg) {
@@ -25848,6 +25982,9 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$SelectedFile = functio
 var $author$project$ProfessorPage$ActivityAssignmentsPage$UpateAssignement = function (a) {
 	return {$: 'UpateAssignement', a: a};
 };
+var $author$project$ProfessorPage$ActivityAssignmentsPage$UploadFile = function (a) {
+	return {$: 'UploadFile', a: a};
+};
 var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$Disabled = {$: 'Disabled'};
 var $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled = $NoRedInk$noredink_ui$Nri$Ui$Button$V10$set(
 	function (attributes) {
@@ -26252,18 +26389,36 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 			}
 		};
 		var saveButtonId = 'save-btn';
+		var uploadBtn = A2(
+			$NoRedInk$noredink_ui$Nri$Ui$Button$V10$button,
+			'Otpremi',
+			_List_fromArray(
+				[
+					function () {
+					var _v10 = model.selectedFile;
+					if (_v10.$ === 'Nothing') {
+						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled;
+					} else {
+						var f = _v10.a;
+						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$onClick(
+							$author$project$ProfessorPage$ActivityAssignmentsPage$UploadFile(f));
+					}
+				}(),
+					$NoRedInk$noredink_ui$Nri$Ui$Button$V10$id(saveButtonId),
+					$NoRedInk$noredink_ui$Nri$Ui$Button$V10$primary
+				]));
 		var savaBtnAttrs = _List_fromArray(
 			[
 				$NoRedInk$noredink_ui$Nri$Ui$Button$V10$id(saveButtonId),
 				$NoRedInk$noredink_ui$Nri$Ui$Button$V10$primary
 			]);
 		var loading = function () {
-			var _v7 = _Utils_Tuple3(model.processingModal, model.modalType, model.loadingFiles);
-			if (_v7.a) {
+			var _v8 = _Utils_Tuple3(model.processingModal, model.modalType, model.loadingFiles);
+			if (_v8.a) {
 				return true;
 			} else {
-				if ((_v7.b.$ === 'DocumentModal') && _v7.c) {
-					var _v8 = _v7.b;
+				if ((_v8.b.$ === 'DocumentModal') && _v8.c) {
+					var _v9 = _v8.b;
 					return true;
 				} else {
 					return false;
@@ -26296,13 +26451,18 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 			_List_fromArray(
 				[
 					function () {
-					var _v6 = model.grade;
-					if (_v6.$ === 'Nothing') {
+					var _v6 = _Utils_Tuple2(model.grade, model.comment);
+					if (_v6.a.$ === 'Nothing') {
+						var _v7 = _v6.a;
 						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled;
 					} else {
-						var g = _v6.a;
-						return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$onClick(
-							$author$project$ProfessorPage$ActivityAssignmentsPage$UpateAssignement(g));
+						if (_v6.b === '') {
+							return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$disabled;
+						} else {
+							var g = _v6.a.a;
+							return $NoRedInk$noredink_ui$Nri$Ui$Button$V10$onClick(
+								$author$project$ProfessorPage$ActivityAssignmentsPage$UpateAssignement(g));
+						}
 					}
 				}(),
 					$NoRedInk$noredink_ui$Nri$Ui$Button$V10$id(saveButtonId),
@@ -26366,9 +26526,7 @@ var $author$project$ProfessorPage$ActivityAssignmentsPage$modalView = F2(
 			if (_v2.$ === 'EditModal') {
 				return _Utils_Tuple2(editContent, editBtn);
 			} else {
-				return _Utils_Tuple2(
-					documentsContent,
-					A2($NoRedInk$noredink_ui$Nri$Ui$Button$V10$button, 'Otpremi', savaBtnAttrs));
+				return _Utils_Tuple2(documentsContent, uploadBtn);
 			}
 		}();
 		var content = _v1.a;
@@ -30573,6 +30731,7 @@ var $elm$core$Set$member = F2(
 	});
 var $author$project$StudentPage$toAccordionEntry = F3(
 	function (model, arrIndex, assignment) {
+		var displayDate = A2($author$project$Util$dateView, $author$project$Util$DisplayMode, model.zone);
 		return A2(
 			$NoRedInk$noredink_ui$Nri$Ui$Accordion$V3$AccordionEntry,
 			{
@@ -30607,6 +30766,44 @@ var $author$project$StudentPage$toAccordionEntry = F3(
 							_List_fromArray(
 								[
 									$tesk9$accessible_html_with_css$Accessibility$Styled$text(assignment.activityType.description)
+								])),
+							A2(
+							$tesk9$accessible_html_with_css$Accessibility$Styled$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$tesk9$accessible_html_with_css$Accessibility$Styled$span,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$tesk9$accessible_html_with_css$Accessibility$Styled$text(
+											displayDate(assignment.activity.startDate) + (' - ' + displayDate(assignment.activity.endDate)))
+										])),
+									function () {
+									var _v1 = assignment.grade;
+									if (_v1.$ === 'Just') {
+										var g = _v1.a;
+										return A2(
+											$tesk9$accessible_html_with_css$Accessibility$Styled$span,
+											_List_fromArray(
+												[
+													$rtfeldman$elm_css$Html$Styled$Attributes$css(
+													_List_fromArray(
+														[
+															$rtfeldman$elm_css$Css$marginLeft(
+															$rtfeldman$elm_css$Css$px(20))
+														]))
+												]),
+											_List_fromArray(
+												[
+													$tesk9$accessible_html_with_css$Accessibility$Styled$text(
+													'Ocena: ' + $elm$core$String$fromInt(g))
+												]));
+									} else {
+										return $author$project$Util$emptyHtmlNode;
+									}
+								}()
 								]))
 						])),
 				headerId: 'accordion-entry-' + $elm$core$String$fromInt(assignment.id),

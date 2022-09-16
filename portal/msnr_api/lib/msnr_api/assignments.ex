@@ -78,7 +78,8 @@ defmodule MsnrApi.Assignments do
           semester_year: s.year,
           start_date: a.start_date,
           end_date: a.end_date,
-          content: at.content
+          content: at.content,
+          name: at.name
         }
 
     Repo.one!(query)

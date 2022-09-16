@@ -25,7 +25,7 @@ import StudentPage.Model exposing (Model)
 import Task
 import Time
 import Topic exposing (Topic)
-import Util
+import Util exposing (ViewMode(..), dateView)
 
 
 type Msg
@@ -224,6 +224,10 @@ assignmentsView ({ assignments } as model) =
 
 toAccordionEntry : Model -> Int -> Assignment -> Accordion.AccordionEntry Msg
 toAccordionEntry model arrIndex assignment =
+    let
+        displayDate =
+            dateView DisplayMode model.zone
+    in
     AccordionEntry
         { caret = DisclosureIndicator.large [ Css.marginRight (Css.px 8) ]
         , content =
@@ -243,6 +247,15 @@ toAccordionEntry model arrIndex assignment =
                                )
                     ]
                 , Html.h4 [] [ Html.text assignment.activityType.description ]
+                , Html.div []
+                    [ Html.span [] [ Html.text (displayDate assignment.activity.startDate ++ " - " ++ displayDate assignment.activity.endDate) ]
+                    , case assignment.grade of
+                        Just g ->
+                            Html.span [ css [ marginLeft (px 20) ] ] [ Html.text ("Ocena: " ++ String.fromInt g) ]
+
+                        Nothing ->
+                            Util.emptyHtmlNode
+                    ]
                 ]
         , headerId = "accordion-entry-" ++ String.fromInt assignment.id
         , headerLevel = Accordion.H4

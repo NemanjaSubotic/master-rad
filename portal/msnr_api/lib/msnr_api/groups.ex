@@ -13,6 +13,7 @@ defmodule MsnrApi.Groups do
   alias MsnrApi.Assignments.Assignment
   alias MsnrApi.Students.StudentSemester
   alias MsnrApi.Students.Student
+  alias MsnrApi.Semesters
 
   @doc """
   Returns the list of groups.
@@ -94,8 +95,9 @@ defmodule MsnrApi.Groups do
 
   """
   def create_group(%{semester_id: semester_id, students: stundets_ids}) do
+    group_code = MsnrApi.ActivityTypes.TypeCode.group()
     multi_struct = Multi.new()
-    |> Multi.run(:activity, fn _, _ -> get_group_activity(semester_id) end)
+    |> Multi.run(:activity, fn _, _ -> get_activity(semester_id, group_code) end)
     |> Multi.insert(:group, %Group{})
     |> Multi.update_all(
       :students,
@@ -140,9 +142,29 @@ defmodule MsnrApi.Groups do
 
   """
   def update_group(%Group{} = group, attrs) do
-    group
-    |> Group.changeset(attrs)
-    |> Repo.update()
+    semester = Semesters.get_active_semester!()
+    topic_code = MsnrApi.ActivityTypes.TypeCode.topic()
+    multi_struct = Multi.new()
+    |> Multi.run(:activity, fn _, _ -> get_activity(semester.id, topic_code) end)
+    |> Multi.update(:group, Group.changeset(group, attrs))
+    |> Multi.run(:assignment, fn repo, %{activity: activity} ->
+        case repo.get_by(Assignment, [activity_id: activity.id, group_id: group.id]) do
+          nil -> {:error, :bad_request}
+          assignment -> {:ok, assignment}
+        end
+      end)
+    |> Multi.run(:update_assignement, fn repo,%{assignment: assignment} ->
+        Ecto.Changeset.change(assignment, completed: true)
+        |> repo.update
+      end)
+
+
+    case Repo.transaction(multi_struct) do
+      {:ok, %{group: group}} -> {:ok, group}
+      {:error, :group, group_changeset, _changes} -> {:error, group_changeset}
+      _ ->  {:error, :bad_request}
+    end
+
   end
 
   @doc """
@@ -174,12 +196,10 @@ defmodule MsnrApi.Groups do
     Group.changeset(group, attrs)
   end
 
-  defp get_group_activity(semester_id) do
-    group_code = MsnrApi.ActivityTypes.TypeCode.group()
-
+  defp get_activity(semester_id, code) do
     query = from(a in Activity,
       join: at in ActivityType,
-      on: a.semester_id == ^semester_id and a.activity_type_id == at.id and at.code == ^group_code
+      on: a.semester_id == ^semester_id and a.activity_type_id == at.id and at.code == ^code
     )
 
     case Repo.one(query) do

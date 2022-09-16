@@ -166,6 +166,18 @@ update msg model =
             in
             ( { model | topicsModel = model_ }, Cmd.map GotTopicsMsg cmd )
 
+        GotActivityAssignmentsMsg (ActivityAssignments.UpatedAssignement (Ok assignment)) ->
+            let
+                ( model_, cmd ) =
+                    ActivityAssignments.update (ActivityAssignments.UpatedAssignement (Ok assignment)) model.activityAssignmentsModel model
+            in
+            ( { model
+                | activityAssignmentsModel = model_
+                , assignments = assignment :: List.filter (\{ id } -> id /= assignment.id) model.assignments
+              }
+            , Cmd.map GotActivityAssignmentsMsg cmd
+            )
+
         GotActivityAssignmentsMsg assignementMsg ->
             let
                 ( model_, cmd ) =

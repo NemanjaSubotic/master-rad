@@ -6,11 +6,12 @@ defmodule MsnrApi.Documents do
   import Ecto.Query, warn: false
   import Ecto.Changeset, only: [change: 2]
   alias MsnrApi.Repo
-  alias Ecto.Multi
+  # alias Ecto.Multi
 
   alias MsnrApi.Documents.Document
   alias MsnrApi.Accounts.TokenPayload
-  alias MsnrApi.Assignments.Assignment
+  alias MsnrApi.Assignments
+  # alias MsnrApi.Assignments.Assignment
   alias MsnrApi.Assignments.AssignmentDocument
 
   @documents_store Application.get_env(:msnr_api, :documents_store)
@@ -166,7 +167,7 @@ defmodule MsnrApi.Documents do
             |> Repo.insert!()
 
           %AssignmentDocument{}
-          |> AssignmentDocument.changeset(%{document_id: doc.id, assignment_id: assignment.id})
+          |> AssignmentDocument.changeset(%{document_id: doc.id, assignment_id: assignment.id, attached: false})
           |> Repo.insert!()
 
           doc
@@ -179,6 +180,45 @@ defmodule MsnrApi.Documents do
       docs
     end)
   end
+
+  def create_document(assignment_id, %{filename: filename, path: path}, %TokenPayload{} = curr_user) do
+    assignment_extended = Assignments.get_assignment_extended!(assignment_id)
+    assignment = assignment_extended.assignment
+
+    Repo.transaction(fn ->
+      folder_path =
+        @documents_store
+        |> Path.join("professor")
+        |> Path.join("#{assignment_extended.semester_year}")
+        |> Path.join(assignment_extended.name)
+
+      new_path = Path.join(folder_path, filename)
+
+      File.mkdir_p!(folder_path)
+      File.copy!(path, new_path)
+
+      doc =
+        %Document{}
+        |> Document.changeset(%{
+          file_name: filename,
+          file_path: new_path,
+          creator_id: curr_user.id
+        })
+        |> Repo.insert!()
+
+      %AssignmentDocument{}
+      |> AssignmentDocument.changeset(%{document_id: doc.id, assignment_id: assignment.id, attached: true})
+      |> Repo.insert!()
+
+
+      # complete assignment
+      Repo.update!(change(assignment, completed: true))
+
+      # return created document
+      doc
+    end)
+  end
+
 
   def filename_infix(%{student_id: s_id, group_id: nil}) do
     st = MsnrApi.Students.get_student!(s_id)

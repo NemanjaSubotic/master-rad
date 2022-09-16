@@ -2,12 +2,13 @@ defmodule MsnrApiWeb.DocumentController do
   use MsnrApiWeb, :controller
 
   alias MsnrApi.Documents
+  alias MsnrApi.Documents.Document
   alias MsnrApi.Assignments
   alias MsnrApiWeb.Validation
 
   action_fallback MsnrApiWeb.FallbackController
 
-  @professor %{assigns: %{role: :professor}}
+  @professor %{assigns: %{user_info: %{role: :professor}}}
 
   def index(conn, params) do
     documents = Documents.list_documents(params)
@@ -34,20 +35,29 @@ defmodule MsnrApiWeb.DocumentController do
 
   def create(@professor = conn, %{
     "assignment_id" => assignment_id,
-    "documentsIds" => docIds,
-    "documents" => docs
+    "document" => file
   }) do
-assignment_extended = Assignments.get_assignment_extended!(assignment_id)
-curr_user = conn.assigns[:user_info]
+    curr_user = conn.assigns[:user_info]
+    IO.inspect(file)
+    with {:ok, %Document{} = document} <-
+      Documents.create_document(assignment_id, file, curr_user) do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", Routes.document_path(conn, :show, document))
+        |> render("show.json", document: document)
+    end
 
-with {:ok} <- Validation.validate_user(curr_user, assignment_extended.assignment),
-     {:ok} <- Validation.validate_time(curr_user, assignment_extended),
-     {:ok, file_tuples} <-
-       Validation.validate_files(docIds, docs, assignment_extended.content),
-     {:ok, documents} <-
-       Documents.create_documents(file_tuples, assignment_extended, curr_user) do
-  render(conn, "index.json", documents: documents)
-end
+
+    # curr_user = conn.assigns[:user_info]
+
+    # with {:ok} <- Validation.validate_user(curr_user, assignment_extended.assignment),
+    #     {:ok} <- Validation.validate_time(curr_user, assignment_extended),
+    #     {:ok, file_tuples} <-
+    #       Validation.validate_files(docIds, docs, assignment_extended.content),
+    #     {:ok, documents} <-
+    #       Documents.create_documents(file_tuples, assignment_extended, curr_user) do
+    #   render(conn, "index.json", documents: documents)
+#end
 end
 
 

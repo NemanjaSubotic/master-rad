@@ -14,7 +14,7 @@ defmodule MsnrApi.Assignments.AssignmentDocument do
   @doc false
   def changeset(assignment_document, attrs) do
     assignment_document
-    |> cast(attrs, [:assignment_id, :document_id])
-    |> validate_required([:assignment_id, :document_id])
+    |> cast(attrs, [:assignment_id, :document_id, :attached])
+    |> validate_required([:assignment_id, :document_id, :attached])
   end
 end
